@@ -1,0 +1,30 @@
+<!-- @dsCard group="Estrutura do portal" height=700 subtitle="Busca no topo da tela com sugestões ao vivo" -->
+<div class="sdb-stage">
+  <div class="sdb-row"><button class="sdb-btn sdb-btn--secondary" type="button" data-open="painel-busca"><span data-icon="busca" class="sdb-icon--sm"></span>Abrir sobre a página</button></div>
+  <div class="sdb-searchpanel" style="margin:0 auto">
+    <form class="sdb-searchbar" role="search" novalidate>
+      <div class="sdb-row sdb-row--between" style="padding:2px 2px 0">
+        <div class="sdb-segmented" role="group" aria-label="Modo de busca"><button type="button" data-toggle data-toggle-group="pb" aria-pressed="false">Por Sala</button><button type="button" data-toggle data-toggle-group="pb" aria-pressed="true">Por tema ou pergunta</button></div>
+        <button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button">Fechar <span class="sdb-kbd">esc</span></button>
+      </div>
+      <div class="sdb-searchbar__row"><span data-icon="busca"></span><label class="sdb-sr" for="pb-q">Buscar no acervo</label><input id="pb-q" autocomplete="off" value="alma" role="combobox" aria-expanded="true" aria-controls="pb-lista" aria-activedescendant="pb-o1"><button class="sdb-btn sdb-btn--primary" type="submit">Comparar</button></div>
+    </form>
+    <div class="sdb-searchpanel__results" id="pb-lista" role="listbox" aria-label="Sugestões">
+      <div class="sdb-palette__group">Temas</div>
+      <a class="sdb-palette__item" id="pb-o1" role="option" aria-selected="true" href="#"><span class="sdb-palette__lead"><span data-icon="comparar"></span></span><span>Comparar «Alma» entre as Salas <small>· 7 conteúdos em 5 Salas</small></span><span class="sdb-kbd">↵</span></a>
+      <div class="sdb-palette__group">Salas</div>
+      <a class="sdb-palette__item" role="option" aria-selected="false" href="#"><span class="sdb-palette__lead"><span data-arc></span></span><span>Corpus Hermeticum <small>· Hermetismo greco-egípcio</small></span></a>
+      <div class="sdb-palette__group">Conteúdos</div>
+      <a class="sdb-palette__item" role="option" aria-selected="false" href="#"><span class="sdb-palette__lead"><span data-icon="artigo"></span></span><span>As sete esferas no Poimandres <small>· Corpus Hermeticum</small></span></a>
+      <a class="sdb-palette__item" role="option" aria-selected="false" href="#"><span class="sdb-palette__lead"><span data-icon="glossario"></span></span><span>Ajustador do Pensamento <small>· O Livro de Urântia</small></span></a>
+      <div class="sdb-palette__group">Assistente</div>
+      <a class="sdb-palette__item" role="option" aria-selected="false" href="#"><span class="sdb-palette__lead"><span data-icon="assistente"></span></span><span>Perguntar ao assistente: «alma»</span></a>
+      <div class="sdb-searchpanel__foot"><span><span class="sdb-kbd">↑</span><span class="sdb-kbd">↓</span> navegar</span><span><span class="sdb-kbd">↵</span> abrir</span><span><span class="sdb-kbd">esc</span> fechar</span></div>
+    </div>
+  </div>
+  <div id="painel-busca" class="sdb-overlay sdb-overlay--top" aria-hidden="true"><div class="sdb-searchpanel" role="dialog" aria-modal="true" aria-label="Buscar no acervo">
+    <form class="sdb-searchbar" role="search" novalidate><div class="sdb-searchbar__row"><span data-icon="busca"></span><label class="sdb-sr" for="pb-q2">Buscar no acervo</label><input id="pb-q2" autocomplete="off" placeholder="Uma Sala, um tema ou uma pergunta"><button class="sdb-btn sdb-btn--primary" type="submit">Comparar</button></div></form>
+    <div class="sdb-searchpanel__results"><div class="sdb-palette__group">Temas</div><a class="sdb-palette__item" href="#"><span class="sdb-palette__lead"><span data-icon="comparar"></span></span><span>Comparar «Morte» entre as Salas</span></a><a class="sdb-palette__item" href="#"><span class="sdb-palette__lead"><span data-icon="comparar"></span></span><span>Comparar «Origem do universo» entre as Salas</span></a></div>
+  </div></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltip · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage" style="padding-top:72px">
+  <div class="sdb-row" style="gap:16px">
+    <button class="sdb-btn sdb-btn--icon" aria-label="Copiar citação" data-tip="Copiar citação"><span data-icon="copiar" class=""></span></button>
+    <button class="sdb-btn sdb-btn--icon" aria-label="Compartilhar" data-tip="Compartilhar link do trecho"><span data-icon="compartilhar" class=""></span></button>
+    <button class="sdb-btn sdb-btn--icon" aria-label="Salvar" data-tip="Salvar na estante"><span data-icon="estante" class=""></span></button>
+    <span class="sdb-badge sdb-badge--solid is-open" data-tip="Texto preservado em manuscrito da época, sem edição do portal." tabindex="0">Fonte primária · aberto</span>
+    <span class="sdb-link" data-tip="Nag Hammadi Codex II, tratado 2" data-tip-side="bottom" tabindex="0">NHC II,2</span>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

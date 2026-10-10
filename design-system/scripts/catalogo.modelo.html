@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="{{TEMA_PADRAO}}">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design system · A Sala dos Buscadores</title><link rel="icon" href="data:,">
+<link rel="stylesheet" href="{{TOKENS}}"><link rel="stylesheet" href="{{BUNDLE_CSS}}"><link rel="stylesheet" href="{{THEMES}}"><link rel="stylesheet" href="{{REFINEMENT}}"><link rel="stylesheet" href="{{ORB_CSS}}"><link rel="stylesheet" href="{{CAT_CSS}}">
+<script>try{const t=localStorage.getItem('sdb-tema');if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(t))document.documentElement.dataset.theme=t;}catch{}</script>
+<script src="{{BUNDLE_JS}}" defer></script><script src="{{REFINED_JS}}" defer></script><script src="{{CAT_JS}}" defer></script>
+</head>
+<body class="catalog-body">
+<a class="cat-skip" href="#conteudo">Ir para os componentes</a>
+<aside class="cat-sidebar">
+  <a href="#visao-geral" class="cat-brand"><span data-arc></span><span>A Sala<br>dos Buscadores<small>DESIGN SYSTEM · 1.0</small></span></a>
+  <p class="cat-overline">Biblioteca</p>
+  <nav class="cat-navigation" aria-label="Seções da biblioteca"><a href="#visao-geral" aria-current="page"><span data-icon="inicio"></span>Visão geral <span>{{TOTAL}}</span></a>{{NAVEGACAO}}</nav>
+  <div class="cat-sidebar-foot"><span class="cat-status-dot"></span> Uma linguagem em evolução<p>A porta está aberta.<br>A escada é de quem sobe.</p><a href="DIRETRIZES.md">Diretrizes da marca ↗</a></div>
+</aside>
+<div class="cat-workspace">
+<header class="cat-topbar"><span class="cat-breadcrumb">Biblioteca <span>/</span> <b id="cat-location">Visão geral</b></span><label class="cat-theme">Aparência<select id="cat-theme" aria-label="Tema da biblioteca">{{OPCOES_TEMA}}</select></label></header>
+<main id="conteudo" class="cat-main" tabindex="-1">
+<section class="cat-intro" id="visao-geral"><div><p class="cat-overline">A SALA DOS BUSCADORES / SISTEMA VISUAL</p><h1>Uma linguagem.<br><em>Muitas formas de buscar.</em></h1><p>Superfícies serenas, imagens que convidam e espaço para o conhecimento. Uma biblioteca feita para conectar cada parte do acervo.</p></div><span class="cat-edition">Edição 01 <span>Outubro / 2026</span></span></section>
+<section class="cat-feature-grid" aria-label="Princípios do sistema">
+  <a href="#CardSala" class="cat-feature cat-feature--image"><img src="assets/images/corpus-hermeticum.webp" alt="" width="736" height="414"><div class="cat-feature__label"><span class="cat-overline">COMPONENTES DO ACERVO</span><h2>O conteúdo encontra<br>o seu lugar.</h2><span>Explorar os novos cards <b>↗</b></span></div></a>
+  <div class="cat-feature cat-feature--geometry"><span class="cat-overline">FORMA E RITMO</span><div class="cat-radius-demo"><div><span>24</span><small>px</small></div></div><h2>Uma base de 8 pontos.</h2><p>24 px no exterior. 16 px por dentro.<br>8 px para deixar respirar.</p></div>
+  <a href="#BotaoFlutuante" class="cat-feature cat-feature--material"><span class="cat-overline">MATERIAL E INTERAÇÃO</span><div class="cat-material-demo"><i></i><i></i><i></i></div><h2>Profundidade com propósito.</h2><p>Sólido ou translúcido.<br>Claro ou escuro.</p><span class="cat-feature__arrow">Conhecer o assistente ↗</span></a>
+</section>
+<section class="cat-library" aria-label="Componentes">
+  <div class="cat-library-head"><div><p class="cat-overline">PEÇAS DO SISTEMA</p><h2 id="cat-heading">Explore a biblioteca</h2></div><label class="cat-search"><span data-icon="busca"></span><input id="cat-search" type="search" placeholder="Buscar componente…" aria-label="Buscar componente"><kbd>/</kbd></label></div>
+  <p class="cat-count" id="cat-count" role="status" aria-live="polite">{{TOTAL}} componentes · 7 famílias · 4 temas</p>
+  <p id="cat-empty" class="cat-empty" hidden>Nenhum componente encontrado. Tente outro nome ou limpe a busca.</p>
+  {{SECOES}}
+</section>
+<footer class="cat-footer"><span>A porta está aberta. A escada é de quem sobe.</span><span>Design system · v1.0</span></footer>
+</main>
+</div>
+{{ASSISTANT_WIDGET}}
+</body>
+</html>

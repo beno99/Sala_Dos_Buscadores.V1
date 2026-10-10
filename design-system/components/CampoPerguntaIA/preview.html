@@ -1,0 +1,46 @@
+<!-- @dsCard group="Assistente de IA" height=420 subtitle="Compositor que cresce, com sugestões" -->
+<div class="sdb-stage">
+  <div class="sdb-col" style="gap:16px;max-width:720px">
+    <div class="sdb-ask__suggest" id="ask-sugg">
+      <button type="button" class="sdb-chip sdb-chip--sm">O que é o Pleroma?</button>
+      <button type="button" class="sdb-chip sdb-chip--sm">Como o Poimandres descreve a criação?</button>
+      <button type="button" class="sdb-chip sdb-chip--sm">Morte em três tradições</button>
+      <button type="button" class="sdb-chip sdb-chip--sm">Quem foram os Três Iniciados?</button>
+    </div>
+    <form class="sdb-ask" id="ask" novalidate>
+      <label for="ask-t" class="sdb-sr">Pergunta ao assistente</label>
+      <textarea id="ask-t" rows="1" maxlength="2000" data-autogrow placeholder="Pergunte ao acervo. Ex.: como a alma é descrita no Corpus Hermeticum?"></textarea>
+      <div class="sdb-ask__bar">
+        <div class="sdb-menu-wrap"><button type="button" class="sdb-btn sdb-btn--secondary sdb-btn--sm" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span data-icon="salas" class="sdb-icon--sm"></span><span id="ask-scope">Todo o acervo</span><span data-icon="chevronDuplo" class="sdb-icon--sm"></span></button>
+          <div class="sdb-menu sdb-menu--up" role="menu">
+            <button class="sdb-menu__item" role="menuitem" data-scope="Todo o acervo"><span>Todo o acervo</span></button>
+            <button class="sdb-menu__item" role="menuitem" data-scope="Nag Hammadi"><span>Só Biblioteca de Nag Hammadi</span></button>
+            <button class="sdb-menu__item" role="menuitem" data-scope="Corpus Hermeticum"><span>Só Corpus Hermeticum</span></button>
+          </div></div>
+        <span class="sdb-counter" data-count-for="ask-t"></span>
+        <button type="submit" class="sdb-btn sdb-btn--icon sdb-btn--primary" id="ask-send" aria-label="Enviar pergunta" disabled><span data-icon="enviar" class=""></span></button>
+      </div>
+    </form>
+    <p id="ask-state" class="sdb-hint" aria-live="polite" style="padding:0 8px">Enter envia · Shift + Enter quebra a linha.</p>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+var f = document.getElementById("ask"), t = document.getElementById("ask-t"), send = document.getElementById("ask-send"), st = document.getElementById("ask-state"), gen = null, tries = 0;
+function upd() { send.disabled = !gen && !t.value.trim(); }
+t.addEventListener("input", function () { f.classList.remove("is-error"); upd(); });
+t.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (!send.disabled) f.requestSubmit(); } });
+Array.prototype.forEach.call(document.querySelectorAll("#ask-sugg .sdb-chip"), function (c) { c.addEventListener("click", function () { t.value = c.textContent; t.dispatchEvent(new Event("input", { bubbles: true })); t.focus(); }); });
+Array.prototype.forEach.call(document.querySelectorAll("[data-scope]"), function (m) { m.addEventListener("click", function () { document.getElementById("ask-scope").textContent = m.dataset.scope; }); });
+function stopGen(msg) { clearTimeout(gen); gen = null; t.readOnly = false; send.setAttribute("aria-label", "Enviar pergunta"); send.innerHTML = SalaBuscadores.icon("enviar"); st.textContent = msg; upd(); }
+f.addEventListener("submit", function (e) {
+  e.preventDefault();
+  if (gen) { stopGen("Geração interrompida. A resposta parcial fica salva."); return; }
+  tries++;
+  t.readOnly = true; send.setAttribute("aria-label", "Interromper geração"); send.innerHTML = SalaBuscadores.icon("parar"); st.textContent = "Consultando o acervo… toque no quadrado para interromper.";
+  gen = setTimeout(function () {
+    if (tries % 3 === 0) { f.classList.add("is-error"); stopGen("Erro: não foi possível consultar o acervo. Sua pergunta foi mantida; tente de novo."); }
+    else { stopGen("Resposta pronta com 3 fontes citadas."); t.value = ""; t.dispatchEvent(new Event("input", { bubbles: true })); }
+  }, 2600);
+  upd();
+});
+</script>

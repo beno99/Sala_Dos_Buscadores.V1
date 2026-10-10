@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IndicadorConsulta · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <section class="sdb-consult is-running" id="ic" aria-labelledby="ic-t">
+    <div class="sdb-consult__head"><span class="sdb-consult__stairs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><b id="ic-t" class="sdb-headline">Assistente de IA</b><span class="sdb-consult__status" role="status"><span id="ic-label">Consultando o acervo</span><i class="sdb-consult__dot"></i></span></div>
+    <div class="sdb-consult__rail" aria-hidden="true"><i id="ic-rail"></i></div>
+    <div class="sdb-consult__box">
+      <div class="sdb-consult__q">Como o Corpus Hermeticum descreve a alma?<span id="ic-count">0 / 4</span></div>
+      <ol class="sdb-consult__steps" id="ic-steps">
+        <li><span class="sdb-mark"></span>Buscar em 5 Salas</li>
+        <li><span class="sdb-mark"></span>Ler 14 trechos relevantes</li>
+        <li><span class="sdb-mark"></span>Conferir as fontes citadas</li>
+        <li><span class="sdb-mark"></span>Escrever a síntese</li>
+      </ol>
+    </div>
+    <div class="sdb-consult__foot"><span class="sdb-consult__time" id="ic-time">0,0 s</span><span class="sdb-footnote">· 14 trechos · 5 Salas</span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" id="ic-stop">Interromper<span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+  </section>
+  <div class="sdb-row" style="gap:8px"><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="ic-restart" type="button">Reiniciar</button><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="ic-fail" type="button">Simular falha</button></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var ic = document.getElementById("ic"), t0, raf, timers = [], steps = document.querySelectorAll("#ic-steps li");
+function fmt(ms) { return (ms / 1000).toFixed(1).replace(".", ",") + " s"; }
+function setStep(n) {
+  Array.prototype.forEach.call(steps, function (li, i) {
+    li.className = i < n ? "is-done" : i === n ? "is-active" : "";
+    li.firstChild.innerHTML = i < n ? SalaBuscadores.icon("check") : i === n ? '<span class="sdb-spinner" style="width:16px;height:16px"></span>' : "";
+  });
+  document.getElementById("ic-rail").style.setProperty("--p", Math.min(n, 4) / 4);
+  document.getElementById("ic-count").textContent = Math.min(n, 4) + " / 4";
+}
+function tick() { document.getElementById("ic-time").textContent = fmt(Date.now() - t0); raf = requestAnimationFrame(tick); }
+function end(label, err) {
+  cancelAnimationFrame(raf); timers.forEach(clearTimeout); timers = [];
+  ic.classList.remove("is-running"); ic.classList.toggle("is-error", !!err);
+  document.getElementById("ic-label").textContent = label;
+  document.getElementById("ic-stop").hidden = true;
+}
+function start() {
+  timers.forEach(clearTimeout); timers = []; ic.classList.remove("is-error"); ic.classList.add("is-running");
+  document.getElementById("ic-label").textContent = "Consultando o acervo"; document.getElementById("ic-stop").hidden = false;
+  t0 = Date.now(); cancelAnimationFrame(raf); tick(); setStep(0);
+  [1500, 3200, 4600].forEach(function (d, i) { timers.push(setTimeout(function () { setStep(i + 1); }, d)); });
+  timers.push(setTimeout(function () { setStep(4); end("Consulta concluída"); }, 6200));
+}
+document.getElementById("ic-stop").addEventListener("click", function () { end("Consulta interrompida"); });
+document.getElementById("ic-restart").addEventListener("click", start);
+document.getElementById("ic-fail").addEventListener("click", function () { if (!ic.classList.contains("is-running")) start(); setTimeout(function () { end("Erro: uma Sala não respondeu", true); SalaBuscadores.toast("Tente de novo ou restrinja o escopo a uma Sala.", { variant: "erro", title: "Erro: a consulta não terminou" }); }, 900); });
+start();
+</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

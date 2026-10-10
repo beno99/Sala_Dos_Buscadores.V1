@@ -1,0 +1,43 @@
+<!-- @dsCard group="Busca comparativa" height=760 subtitle="Sala, tema, nível, tipo e formato" -->
+<div class="sdb-stage">
+  <section class="sdb-filters" style="max-width:460px" aria-labelledby="fl-t">
+    <div class="sdb-row sdb-row--between"><h2 id="fl-t" class="sdb-headline" style="font-size:20px">Filtros</h2><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="fl-clear" type="button">Limpar</button></div>
+    <div class="sdb-filters__active" id="fl-active" aria-live="polite"></div>
+    <div class="sdb-list" id="fl">
+      <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="true" aria-controls="fx1"><span>Sala</span><span data-icon="chevronDireita" class="sdb-chev"></span></button><div id="fx1" class="sdb-acc-panel is-open"><div><div class="sdb-acc-body"><button type="button" class="sdb-option" data-toggle data-f="Nag Hammadi" aria-pressed="true"><span>Biblioteca de Nag Hammadi</span><span class="sdb-option__n">148</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Corpus Hermeticum" aria-pressed="true"><span>Corpus Hermeticum</span><span class="sdb-option__n">64</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Caibalion" aria-pressed="false"><span>O Caibalion</span><span class="sdb-option__n">39</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Urântia" aria-pressed="false"><span>O Livro de Urântia</span><span class="sdb-option__n">96</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Apócrifos" aria-pressed="false"><span>Apócrifos do Cristianismo Primitivo</span><span class="sdb-option__n">211</span><span data-icon="check" class="sdb-option__check"></span></button></div></div></div></div>
+      <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="true" aria-controls="fx2"><span>Tema</span><span data-icon="chevronDireita" class="sdb-chev"></span></button><div id="fx2" class="sdb-acc-panel is-open"><div><div class="sdb-acc-body sdb-row" style="gap:8px;padding:0 16px 16px">
+        <button type="button" class="sdb-chip sdb-chip--sm" data-toggle data-f="Alma" aria-pressed="true">Alma</button><button type="button" class="sdb-chip sdb-chip--sm" data-toggle data-f="Morte" aria-pressed="false">Morte</button><button type="button" class="sdb-chip sdb-chip--sm" data-toggle data-f="Meditação" aria-pressed="false">Meditação</button><button type="button" class="sdb-chip sdb-chip--sm" data-toggle data-f="Origem do universo" aria-pressed="false">Origem do universo</button></div></div></div></div>
+      <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="false" aria-controls="fx3"><span>Nível</span><span data-icon="chevronDireita" class="sdb-chev"></span></button><div id="fx3" class="sdb-acc-panel"><div><div class="sdb-acc-body"><button type="button" class="sdb-option" data-toggle data-f="Iniciante" aria-pressed="false"><span>Iniciante</span><span class="sdb-option__n">180</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Intermediário" aria-pressed="false"><span>Intermediário</span><span class="sdb-option__n">241</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Avançado" aria-pressed="false"><span>Avançado</span><span class="sdb-option__n">137</span><span data-icon="check" class="sdb-option__check"></span></button></div></div></div></div>
+      <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="false" aria-controls="fx4"><span>Tipo de conteúdo</span><span data-icon="chevronDireita" class="sdb-chev"></span></button><div id="fx4" class="sdb-acc-panel"><div><div class="sdb-acc-body"><button type="button" class="sdb-option" data-toggle data-f="Fonte primária" aria-pressed="false"><span>Fonte primária</span><span class="sdb-option__n">92</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Artigo" aria-pressed="false"><span>Artigo</span><span class="sdb-option__n">214</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Glossário" aria-pressed="false"><span>Glossário</span><span class="sdb-option__n">118</span><span data-icon="check" class="sdb-option__check"></span></button><button type="button" class="sdb-option" data-toggle data-f="Síntese de IA" aria-pressed="false"><span>Síntese de IA</span><span class="sdb-option__n">34</span><span data-icon="check" class="sdb-option__check"></span></button></div></div></div></div>
+    </div>
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Formato</span>
+      <div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Formato" id="fl-fmt"><button type="button" data-toggle data-toggle-group="fmt" aria-pressed="true" data-v="">Todos</button><button type="button" data-toggle data-toggle-group="fmt" aria-pressed="false" data-v="Texto">Texto</button><button type="button" data-toggle data-toggle-group="fmt" aria-pressed="false" data-v="Vídeo">Vídeo</button><button type="button" disabled>Áudio</button></div></div>
+    <button class="sdb-btn sdb-btn--primary sdb-btn--lg sdb-btn--block" id="fl-go" type="button">Ver resultados</button>
+  </section>
+</div>
+<script>SalaBuscadores.hydrate();
+var root = document.getElementById("fl"), act = document.getElementById("fl-active"), go = document.getElementById("fl-go"), fmt = document.getElementById("fl-fmt");
+function sync() {
+  var on = Array.prototype.slice.call(root.querySelectorAll('[data-f][aria-pressed="true"]'));
+  var fv = fmt.querySelector('[aria-pressed="true"]');
+  act.innerHTML = "";
+  if (!on.length && !(fv && fv.dataset.v)) act.innerHTML = '<span class="sdb-footnote">Nenhum filtro ativo.</span>';
+  on.forEach(function (el) {
+    var c = document.createElement("span"); c.className = "sdb-chip sdb-chip--sm sdb-chip--static"; c.setAttribute("aria-pressed", "true");
+    c.innerHTML = el.dataset.f + '<button class="sdb-chip__x" aria-label="Remover filtro ' + el.dataset.f + '">' + SalaBuscadores.icon("fechar", "sdb-icon--sm") + "</button>";
+    c.querySelector("button").addEventListener("click", function () { el.setAttribute("aria-pressed", "false"); sync(); });
+    act.appendChild(c);
+  });
+  var n = on.length + (fv && fv.dataset.v ? 1 : 0);
+  var total = n ? Math.max(3, Math.round(212 / (1 + n * 0.9))) : 212;
+  go.textContent = "Ver " + total + " resultados";
+}
+document.addEventListener("click", function (e) { if (e.target.closest("#fl [data-f], #fl-fmt button")) setTimeout(sync, 0); });
+document.getElementById("fl-clear").addEventListener("click", function () {
+  Array.prototype.forEach.call(root.querySelectorAll("[data-f]"), function (b) { b.setAttribute("aria-pressed", "false"); });
+  Array.prototype.forEach.call(fmt.querySelectorAll("[data-v]"), function (b, i) { b.setAttribute("aria-pressed", i === 0 ? "true" : "false"); });
+  SalaBuscadores.syncSeg(fmt); sync();
+});
+fmt.addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; setTimeout(function () { if (b.getAttribute("aria-pressed") !== "true") { b.setAttribute("aria-pressed", "true"); SalaBuscadores.syncSeg(fmt); } sync(); }, 0); });
+sync();
+</script>

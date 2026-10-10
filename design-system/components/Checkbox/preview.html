@@ -1,0 +1,20 @@
+<!-- @dsCard group="Componentes básicos" height=360 subtitle="Escolha múltipla" -->
+<div class="sdb-stage">
+  <div class="sdb-grid" style="--sdb-col:260px">
+    <div class="sdb-material sdb-panel"><fieldset class="sdb-fieldset"><legend class="sdb-caption">Tipo de conteúdo</legend>
+      <label class="sdb-check"><input type="checkbox" checked> <span>Artigos <small>Textos editoriais com fontes citadas</small></span></label>
+      <label class="sdb-check"><input type="checkbox"> <span>Vídeos</span></label>
+      <label class="sdb-check"><input type="checkbox" id="ind"> <span>Fontes primárias <small>Estado misto</small></span></label>
+      <label class="sdb-check"><input type="checkbox" class="is-error" aria-invalid="true"> <span>Li as diretrizes de contribuição <small style="color:var(--critical)">Obrigatório para enviar</small></span></label>
+      <label class="sdb-check"><input type="checkbox" disabled> <span>Áudio (em breve)</span></label>
+    </fieldset></div>
+    <div class="sdb-material sdb-panel"><fieldset class="sdb-fieldset"><legend class="sdb-caption">Circular · listas de tarefa</legend>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox" checked> <span>Ler o Poimandres</span></label>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox" checked> <span>Anotar as sete esferas</span></label>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox"> <span>Comparar com o Asclépio</span></label>
+    </fieldset></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+document.getElementById("ind").indeterminate = true;
+</script>

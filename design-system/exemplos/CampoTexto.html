@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampoTexto · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-grid" style="--sdb-col:260px;gap:16px 16px">
+      <div class="sdb-field"><label class="sdb-label" for="f1">Nome da trilha</label><div class="sdb-control"><input id="f1" placeholder="Ex.: Introdução ao hermetismo"></div><p class="sdb-help">Aparece no topo da sua estante.</p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f2">Nome da trilha <small>foco</small></label><div class="sdb-control is-focus"><input id="f2" value="Gnose e cristianismo primitivo"></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="f3">E-mail</label><div class="sdb-control is-error"><input id="f3" value="buscador@exemplo" aria-invalid="true" aria-describedby="f3e"></div><p id="f3e" class="sdb-error-msg"><span data-icon="erro" class=""></span><span><b>Erro:</b> falta o domínio depois do @. Ex.: nome@exemplo.com</span></p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f4">Código do códice <small>desabilitado</small></label><div class="sdb-control is-disabled"><input id="f4" value="NHC II,2" disabled></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="f5">Senha</label><div class="sdb-control"><input id="f5" type="password" value="escada-de-quem-sobe" autocomplete="new-password"><button class="sdb-control__btn" type="button" data-toggle-password aria-pressed="false" aria-label="Mostrar senha"><span data-icon="olho" class=""></span></button></div><p class="sdb-help">Mínimo de 10 caracteres.</p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f6">Buscar nesta Sala</label><div class="sdb-control sdb-control--search"><span data-icon="busca" class=""></span><input id="f6" type="search" value="Poimandres"><button class="sdb-control__btn" type="button" data-clear aria-label="Limpar busca"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div></div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

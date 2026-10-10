@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rodape · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <footer class="sdb-footer">
+    <div class="sdb-footer__top">
+      <div class="sdb-footer__brand"><span class="sdb-footer__mark"><span data-arc data-on="bege"></span>A Sala dos Buscadores</span><p class="sdb-footer__tagline">Biblioteca digital de estudos comparados. A porta está aberta; a escada é de quem sobe.</p></div>
+      <nav class="sdb-footer__col" aria-labelledby="rod-acervo"><h2 id="rod-acervo">Acervo</h2><ul><li><a href="#">Destaques</a></li><li><a href="#">Biblioteca</a></li><li><a href="#">Salas</a></li><li><a href="#">Comparar</a></li><li><a href="#">Assistente</a></li></ul></nav>
+      <nav class="sdb-footer__col" aria-labelledby="rod-sobre"><h2 id="rod-sobre">Sobre</h2><ul><li><a href="#">Como funciona o assistente</a></li><li><a href="#">Política editorial</a></li><li><a href="#">Política de publicidade</a></li></ul></nav>
+      <nav class="sdb-footer__col" aria-labelledby="rod-legal"><h2 id="rod-legal">Legal</h2><ul><li><a href="#">Termos em linguagem simples</a></li><li><a href="#">Privacidade e LGPD</a></li></ul></nav>
+      <nav class="sdb-footer__col" aria-labelledby="rod-canal"><h2 id="rod-canal">Canal</h2><ul><li><a href="#">YouTube</a></li></ul></nav>
+    </div>
+    <div class="sdb-footer__bottom"><p>A Sala dos Buscadores · Curador de museu, não pregador</p><p>Protótipo com dados simulados. Obras e referências citadas são reais; autores de artigos são fictícios.</p></div>
+  </footer>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!-- @dsCard group="Busca comparativa" height=620 subtitle="Busca rápida, como o Spotlight" -->
+<div class="sdb-stage" style="align-items:center">
+  <div class="sdb-palette" role="dialog" aria-label="Busca rápida">
+    <div class="sdb-palette__input"><span data-icon="busca" class=""></span><input id="cp" role="combobox" aria-expanded="true" aria-controls="cp-list" aria-autocomplete="list" placeholder="Salas, temas ou ações" autocomplete="off"><span class="sdb-kbd">esc</span></div>
+    <div class="sdb-palette__list" id="cp-list" role="listbox"></div>
+    <div class="sdb-palette__foot"><span><span class="sdb-kbd">↑</span><span class="sdb-kbd">↓</span>navegar</span><span><span class="sdb-kbd">↵</span>abrir</span><span><span class="sdb-kbd">⌘</span><span class="sdb-kbd">K</span>focar</span></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+var items = [
+  { g: "Salas", t: "Biblioteca de Nag Hammadi", s: "148 conteúdos", a: 1 },
+  { g: "Salas", t: "Corpus Hermeticum", s: "64 conteúdos", a: 1 },
+  { g: "Salas", t: "O Caibalion", s: "39 conteúdos", a: 1 },
+  { g: "Salas", t: "O Livro de Urântia", s: "96 conteúdos", a: 1 },
+  { g: "Salas", t: "Apócrifos do Cristianismo Primitivo", s: "211 conteúdos", a: 1 },
+  { g: "Temas", t: "Alma", s: "58 em 5 Salas", i: "comparar" },
+  { g: "Temas", t: "Morte", s: "42 em 4 Salas", i: "comparar" },
+  { g: "Temas", t: "Origem do universo", s: "27 em 5 Salas", i: "comparar" },
+  { g: "Ações", t: "Perguntar ao assistente", i: "ia", k: "A" },
+  { g: "Ações", t: "Nova comparação", i: "mais", k: "N" },
+  { g: "Ações", t: "Abrir minha estante", i: "estante", k: "E" },
+  { g: "Ações", t: "Alternar vidro e sólido", i: "tema", k: "T" }
+];
+var input = document.getElementById("cp"), list = document.getElementById("cp-list"), sel = 0, shown = [];
+function norm(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
+function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function render() {
+  var q = norm(input.value.trim());
+  shown = items.filter(function (it) { return !q || norm(it.t).split(/\s+/).some(function (w) { return w.indexOf(q) === 0; }) || norm(it.t).indexOf(q) === 0 || norm(it.g).indexOf(q) === 0; });
+  sel = Math.min(sel, Math.max(0, shown.length - 1));
+  list.innerHTML = "";
+  if (!shown.length) { list.innerHTML = '<div class="sdb-palette__empty">Nenhum resultado para “' + esc(input.value) + '”. Tente um tema, como <b>alma</b>.</div>'; return; }
+  var last = "";
+  shown.forEach(function (it, i) {
+    if (it.g !== last) { var h = document.createElement("div"); h.className = "sdb-palette__group"; h.textContent = it.g; list.appendChild(h); last = it.g; }
+    var d = document.createElement("div"); d.className = "sdb-palette__item"; d.setAttribute("role", "option"); d.id = "cp-o" + i;
+    d.setAttribute("aria-selected", i === sel ? "true" : "false");
+    d.innerHTML = '<span class="sdb-palette__lead">' + (it.a ? SalaBuscadores.arc() : SalaBuscadores.icon(it.i)) + "</span><span>" + esc(it.t) + (it.s ? " <small>· " + esc(it.s) + "</small>" : "") + "</span>" + (it.k ? '<span class="sdb-kbd">⌘' + it.k + "</span>" : "");
+    d.addEventListener("mousemove", function () { if (sel !== i) { sel = i; mark(); } });
+    d.addEventListener("click", function () { sel = i; run(); });
+    list.appendChild(d);
+  });
+  input.setAttribute("aria-activedescendant", "cp-o" + sel);
+}
+function mark() { Array.prototype.forEach.call(list.querySelectorAll(".sdb-palette__item"), function (d, i) { d.setAttribute("aria-selected", i === sel ? "true" : "false"); }); input.setAttribute("aria-activedescendant", "cp-o" + sel); var c = list.querySelector('[aria-selected="true"]'); if (c) c.scrollIntoView({ block: "nearest" }); }
+function run() { var it = shown[sel]; if (!it) return; SalaBuscadores.toast(it.g === "Ações" ? it.t + "." : "Abrindo " + it.t + "…", { icon: it.a ? "salas" : it.i }); }
+input.addEventListener("input", function () { sel = 0; render(); });
+input.addEventListener("keydown", function (e) {
+  if (!shown.length) return;
+  if (e.key === "ArrowDown") { e.preventDefault(); sel = (sel + 1) % shown.length; mark(); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); sel = (sel - 1 + shown.length) % shown.length; mark(); }
+  else if (e.key === "Enter") { e.preventDefault(); run(); }
+  else if (e.key === "Escape") { input.value = ""; sel = 0; render(); }
+});
+document.addEventListener("keydown", function (e) { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); input.focus(); input.select(); } });
+render();
+</script>

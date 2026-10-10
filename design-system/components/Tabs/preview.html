@@ -1,0 +1,42 @@
+<!-- @dsCard group="Componentes básicos" height=520 subtitle="Segmentado com polegar deslizante e barra de abas" -->
+<div class="sdb-stage">
+  <div data-sdb-tabs>
+    <div class="sdb-segmented sdb-segmented--lg" role="tablist" aria-label="Conteúdo da Sala">
+      <button role="tab" aria-selected="true" aria-controls="p1" id="tb1">Visão geral</button>
+      <button role="tab" aria-selected="false" aria-controls="p2" id="tb2" tabindex="-1">Textos <span class="sdb-count">52</span></button>
+      <button role="tab" aria-selected="false" aria-controls="p3" id="tb3" tabindex="-1">Glossário <span class="sdb-count">118</span></button>
+      <button role="tab" aria-selected="false" aria-controls="p4" id="tb4" tabindex="-1">Linha do tempo</button>
+      <button role="tab" aria-selected="false" disabled>Áudio</button>
+    </div>
+    <div id="p1" class="sdb-tabs__panel" role="tabpanel" aria-labelledby="tb1"><p class="sdb-body-sm">Treze códices em copta, enterrados no século IV e encontrados em 1945.</p></div>
+    <div id="p2" class="sdb-tabs__panel" role="tabpanel" aria-labelledby="tb2" hidden><p class="sdb-body-sm">52 tratados, do Evangelho de Tomé ao Trovão, Mente Perfeita.</p></div>
+    <div id="p3" class="sdb-tabs__panel" role="tabpanel" aria-labelledby="tb3" hidden><p class="sdb-body-sm">Pleroma, Demiurgo, Arconte, Éon, Sofia…</p></div>
+    <div id="p4" class="sdb-tabs__panel" role="tabpanel" aria-labelledby="tb4" hidden><p class="sdb-body-sm">Da composição (séc. II) à publicação do fac-símile (1972–1977).</p></div>
+  </div>
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Barra de abas flutuante</span>
+    <nav class="sdb-tabbar" role="tablist" aria-label="Seções do portal">
+      <button role="tab" aria-selected="true"><span data-icon="salas" class=""></span>Salas</button>
+      <button role="tab" aria-selected="false"><span data-icon="comparar" class=""></span>Comparar</button>
+      <button role="tab" aria-selected="false"><span data-icon="ia" class=""></span>Assistente</button>
+      <button role="tab" aria-selected="false"><span data-icon="estante" class=""></span>Estante</button>
+    </nav></div>
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Navegação entre páginas · links</span>
+    <nav class="sdb-tabbar" aria-label="Navegação principal">
+      <a href="#" aria-current="page"><span data-icon="salas" class=""></span>Salas</a>
+      <a href="#"><span data-icon="comparar" class=""></span>Comparar</a>
+      <a href="#"><span data-icon="ia" class=""></span>Assistente</a>
+    </nav></div>
+  <div class="sdb-spec" style="align-items:stretch;max-width:420px"><span class="sdb-caption">Barra de abas do app · celular, camada flutuante</span>
+    <nav class="sdb-tabbar sdb-tabbar--app sdb-tabbar--static" aria-label="Navegação principal">
+      <a href="#" aria-current="page"><span data-icon="inicio"></span>Portal</a>
+      <a href="#"><span data-icon="biblioteca"></span>Biblioteca</a>
+      <a href="#"><span data-icon="trilha"></span>Trilhas</a>
+      <a href="#"><span data-icon="estante"></span>Estante</a>
+      <button type="button" aria-haspopup="dialog"><span data-icon="reticencias"></span>Mais</button>
+    </nav></div>
+</div>
+<script>SalaBuscadores.hydrate();
+Array.prototype.forEach.call(document.querySelectorAll(".sdb-tabbar [role=tab]"), function (t) {
+  t.addEventListener("click", function () { Array.prototype.forEach.call(t.parentNode.children, function (o) { o.setAttribute("aria-selected", o === t ? "true" : "false"); }); });
+});
+</script>

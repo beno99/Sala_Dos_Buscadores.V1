@@ -1,0 +1,53 @@
+{
+  "name": "sala-dos-buscadores-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MVP de frontend de A Sala dos Buscadores: acervo em Salas, busca comparativa e assistente de IA, com dados simulados.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "predev": "npm run ds:sync",
+    "dev": "next dev",
+    "prebuild": "npm run ds:check",
+    "build": "next build",
+    "start": "next start",
+    "ds:sync": "node scripts/sync-design-system.mjs",
+    "ds:check": "node scripts/sync-design-system.mjs --check",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "check": "npm run ds:check && npm run lint && npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.14",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^5.0.2",
+    "babel-plugin-react-compiler": "1.0.0",
+    "jsdom": "^30.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

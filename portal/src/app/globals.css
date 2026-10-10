@@ -1,0 +1,57 @@
+/*
+ * Tailwind entra só com tema e utilitários: sem preflight, porque o reset e a
+ * base visual vêm do design system (src/design-system/tokens.css e bundle.css,
+ * importados antes deste arquivo no layout raiz).
+ *
+ * Regra: utilitários servem para LAYOUT (flex, grid, gap, espaço, largura,
+ * responsividade) em elementos de estrutura. Cor, tipografia, raio, sombra e
+ * movimento vêm das classes `sdb-*`. O tema abaixo mapeia os tokens, então
+ * nenhum valor solto entra por aqui.
+ */
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --*: initial;
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  /* Abaixo daqui a lateral dá lugar à barra de abas (900 px). */
+  --breakpoint-nav: 56.25rem;
+
+  --container-prose: 68ch;
+  --container-read: 46rem;
+  --container-page: 80rem;
+  --container-form: 32rem;
+
+  /* Folga para a barra de navegação fixa no celular. */
+  --spacing-tabbar: 5.75rem;
+}
+
+/* Tokens do design system (valores definidos em tokens.css, por tema). */
+@theme inline {
+  --spacing-0: 0px;
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-7: var(--space-7);
+  --spacing-8: var(--space-8);
+  --spacing-9: var(--space-9);
+
+  --color-canvas: var(--bg-canvas);
+  --color-label: var(--label);
+  --color-label-secondary: var(--label-secondary);
+  --color-label-tertiary: var(--label-tertiary);
+  --color-accent: var(--accent);
+  --color-separator: var(--separator);
+
+  --font-ui: var(--font-ui);
+  --font-reading: var(--font-reading);
+  --font-display: var(--font-display-lower);
+}

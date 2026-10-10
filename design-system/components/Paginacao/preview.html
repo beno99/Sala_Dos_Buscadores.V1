@@ -1,0 +1,14 @@
+<!-- @dsCard group="Componentes básicos" height=240 subtitle="Páginas e pontos" -->
+<div class="sdb-stage">
+  <nav class="sdb-pages" aria-label="Paginação dos resultados">
+    <button class="sdb-page sdb-page--nav" aria-label="Página anterior"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span><span>Anterior</span></button>
+    <button class="sdb-page">1</button><span class="sdb-pages__gap">…</span><button class="sdb-page">4</button><button class="sdb-page" aria-current="page">5</button><button class="sdb-page">6</button><span class="sdb-pages__gap">…</span><button class="sdb-page">12</button>
+    <span class="sdb-pages__compact">Página 5 de 12</span>
+    <button class="sdb-page sdb-page--nav" aria-label="Próxima página"><span>Próxima</span><span data-icon="chevronDireita" class="sdb-icon--sm"></span></button>
+  </nav>
+  <div class="sdb-row" style="gap:16px"><div class="sdb-dots" role="tablist" aria-label="Destaques" id="dots"><button aria-current="true" aria-label="Destaque 1"></button><button aria-label="Destaque 2"></button><button aria-label="Destaque 3"></button><button aria-label="Destaque 4"></button></div><span class="sdb-hint">Pontos para carrosséis de destaques.</span></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var d = document.getElementById("dots");
+d.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; Array.prototype.forEach.call(d.children, function (x) { x.removeAttribute("aria-current"); }); b.setAttribute("aria-current", "true"); });
+</script>

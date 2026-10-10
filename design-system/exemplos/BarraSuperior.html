@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BarraSuperior · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage" style="gap:16px">
+  <header class="sdb-topbar" style="--sdb-gutter:20px">
+    <div class="sdb-topbar__titles"><h1 class="sdb-topbar__title">Portal</h1><p class="sdb-topbar__greeting">Boas-vindas de volta, Lúcia.</p></div>
+    <div class="sdb-topbar__actions">
+      <button class="sdb-topbar__search" type="button" data-shortcut-k aria-label="Buscar no acervo" aria-keyshortcuts="Meta+K Control+K"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+      <!-- TODO(notificacoes): sininho entra aqui quando houver notificações. -->
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência" data-tip="Aparência" data-tip-side="bottom"><span data-icon="tema"></span></button>
+      <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes" aria-haspopup="menu"><span class="sdb-avatar">LM</span></button>
+    </div>
+  </header>
+  <header class="sdb-topbar is-scrolled" style="--sdb-gutter:20px;position:relative">
+    <div class="sdb-topbar__titles"><h1 class="sdb-topbar__title">Biblioteca</h1><p class="sdb-topbar__greeting">Todos os conteúdos do acervo.</p></div>
+    <div class="sdb-topbar__actions">
+      <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+      <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes"><span class="sdb-avatar">LM</span></button>
+    </div>
+  </header>
+  <p class="sdb-hint">Em repouso, sobre o fundo · ao rolar (<code>.is-scrolled</code>), na camada flutuante. Abaixo de 900 px a saudação some e a busca vira só a lupa.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

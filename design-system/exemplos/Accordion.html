@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accordion · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-list" data-single style="max-width:640px">
+    <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="true" aria-controls="a1"><span>Como os códices foram encontrados?</span><span data-icon="chevronDireita" class="sdb-chev"></span></button>
+      <div id="a1" class="sdb-acc-panel is-open" role="region"><div><div class="sdb-acc-body">Em dezembro de 1945, perto de Nag Hammadi, no Alto Egito, camponeses encontraram um jarro com treze códices de papiro encadernados em couro. Os textos, em copta, datam do século IV.</div></div></div></div>
+    <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="false" aria-controls="a2"><span>Quantos tratados a coleção reúne?</span><span data-icon="chevronDireita" class="sdb-chev"></span></button>
+      <div id="a2" class="sdb-acc-panel" role="region"><div><div class="sdb-acc-body">São 52 tratados, alguns em mais de uma versão. Entre eles estão o Evangelho de Tomé, o Evangelho de Filipe e o Apócrifo de João.</div></div></div></div>
+    <div><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="false" aria-controls="a3" disabled><span>Edição crítica em português (em preparação)</span><span data-icon="chevronDireita" class="sdb-chev"></span></button><div id="a3" class="sdb-acc-panel"><div></div></div></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

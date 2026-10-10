@@ -1,0 +1,133 @@
+/* Materiais dos cards e do catálogo. Carregar após tokens.css.
+   Sólido e translúcido são materiais; claro e escuro definem a luminosidade.
+   --ds-solid é sempre opaco, inclusive nos temas de vidro. */
+:root, [data-theme="solido-claro"] {
+  --ds-canvas: #f6f2e9;
+  --ds-ambient: none;
+  --ds-muted: #5c5a54;
+  --ds-subtle: #6b665e;
+  --ds-control: #e9e5dc;
+  --ds-control-solid: #e9e5dc;
+  --ds-control-selected: #fffcf6;
+  --ds-edge: rgb(57 0 7 / 12%);
+  --ds-solid: #fdf8ef;
+  --ds-glass: rgb(253 248 239 / 86%);
+  --ds-surface: var(--ds-solid);
+  --ds-frame: #e9e5da;
+  --ds-rim: rgb(255 255 255 / 80%);
+  --ds-shadow: 0 2px 4px rgb(57 0 7 / 3%), 0 16px 32px -24px rgb(57 0 7 / 28%);
+  --ds-shadow-hover: 0 4px 8px rgb(57 0 7 / 5%), 0 20px 40px -24px rgb(57 0 7 / 32%);
+  --ds-brand: var(--bordo-rubro);
+  --ds-backdrop: none;
+}
+
+[data-theme="vidro-claro"] {
+  --ds-canvas: #f1ebe0;
+  --ds-ambient: radial-gradient(ellipse at 12% 0%, rgb(255 246 221 / 65%), transparent 55%), radial-gradient(ellipse at 92% 48%, rgb(87 17 23 / 7%), transparent 62%);
+  --ds-muted: #56564f;
+  --ds-subtle: #656058;
+  --ds-control: rgb(225 217 202 / 65%);
+  --ds-control-solid: #e9e3d8;
+  --ds-control-selected: rgb(255 252 246 / 94%);
+  --ds-edge: rgb(57 0 7 / 13%);
+  --ds-solid: #fdf8ef;
+  --ds-glass: rgb(253 248 239 / 86%);
+  --ds-surface: rgb(253 248 239 / 72%);
+  --ds-frame: rgb(253 248 239 / 48%);
+  --ds-rim: rgb(255 255 255 / 86%);
+  --ds-shadow: 0 2px 4px rgb(57 0 7 / 4%), 0 18px 36px -24px rgb(57 0 7 / 28%);
+  --ds-shadow-hover: 0 4px 8px rgb(57 0 7 / 5%), 0 24px 44px -24px rgb(57 0 7 / 33%);
+  --ds-brand: var(--bordo-rubro);
+  --ds-backdrop: blur(24px) saturate(110%);
+}
+
+[data-theme="solido-escuro"] {
+  --ds-canvas: #111313;
+  --ds-ambient: none;
+  --ds-muted: #bec2bd;
+  --ds-subtle: #aab0aa;
+  --ds-control: #1b1f1f;
+  --ds-control-solid: #1b1f1f;
+  --ds-control-selected: #333938;
+  --ds-edge: rgb(246 231 206 / 16%);
+  --ds-solid: #202424;
+  --ds-glass: rgb(27 31 31 / 88%);
+  --ds-surface: var(--ds-solid);
+  --ds-frame: #303635;
+  --ds-rim: rgb(246 231 206 / 18%);
+  --ds-shadow: 0 2px 4px rgb(0 0 0 / 18%), 0 16px 32px -24px rgb(0 0 0 / 65%);
+  --ds-shadow-hover: 0 4px 8px rgb(0 0 0 / 24%), 0 20px 40px -24px rgb(0 0 0 / 78%);
+  --ds-brand: var(--bege-damasco);
+  --ds-backdrop: none;
+}
+
+[data-theme="vidro-escuro"] {
+  --ds-canvas: #121414;
+  --ds-ambient: radial-gradient(ellipse at 8% 0%, rgb(89 13 22 / 24%), transparent 55%), radial-gradient(ellipse at 92% 50%, rgb(246 231 206 / 5%), transparent 60%);
+  --ds-muted: #c6c9c3;
+  --ds-subtle: #b0b5ae;
+  --ds-control: rgb(34 39 38 / 76%);
+  --ds-control-solid: #222726;
+  --ds-control-selected: rgb(60 66 63 / 94%);
+  --ds-edge: rgb(246 231 206 / 18%);
+  --ds-solid: #202424;
+  --ds-glass: rgb(27 31 31 / 88%);
+  --ds-surface: rgb(32 36 36 / 78%);
+  --ds-frame: rgb(69 75 70 / 48%);
+  --ds-rim: rgb(246 231 206 / 23%);
+  --ds-shadow: 0 2px 4px rgb(0 0 0 / 20%), 0 18px 36px -24px rgb(0 0 0 / 70%);
+  --ds-shadow-hover: 0 4px 8px rgb(0 0 0 / 26%), 0 24px 44px -24px rgb(0 0 0 / 80%);
+  --ds-brand: var(--bege-damasco);
+  --ds-backdrop: blur(24px) saturate(110%);
+}
+
+/* Sem seleção explícita, acompanha o mesmo padrão do arquivo de tokens. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --ds-canvas: #111313;
+    --ds-muted: #bec2bd;
+    --ds-subtle: #aab0aa;
+    --ds-control: #1b1f1f;
+    --ds-control-solid: #1b1f1f;
+    --ds-control-selected: #333938;
+    --ds-edge: rgb(246 231 206 / 16%);
+    --ds-solid: #202424;
+    --ds-glass: rgb(27 31 31 / 88%);
+    --ds-frame: #303635;
+    --ds-rim: rgb(246 231 206 / 18%);
+    --ds-shadow: 0 2px 4px rgb(0 0 0 / 18%), 0 16px 32px -24px rgb(0 0 0 / 65%);
+    --ds-shadow-hover: 0 4px 8px rgb(0 0 0 / 24%), 0 20px 40px -24px rgb(0 0 0 / 78%);
+    --ds-brand: var(--bege-damasco);
+  }
+}
+
+/* Todos os materiais mantêm leitura legível sem depender do desfoque. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root, :root:not([data-theme]), [data-theme] {
+    --ds-surface: var(--ds-solid);
+    --ds-glass: var(--ds-solid);
+    --ds-frame: var(--ds-solid);
+    --ds-control: var(--ds-control-solid);
+    --ds-control-selected: var(--ds-solid);
+    --ds-backdrop: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root, :root:not([data-theme]), [data-theme] {
+    --ds-ambient: none;
+    --ds-surface: var(--ds-solid);
+    --ds-glass: var(--ds-solid);
+    --ds-frame: var(--ds-solid);
+    --ds-control: var(--ds-control-solid);
+    --ds-control-selected: var(--ds-solid);
+    --ds-backdrop: none;
+  }
+}
+@media (prefers-contrast: more) {
+  :root, :root:not([data-theme]), [data-theme] {
+    --ds-muted: var(--label);
+    --ds-subtle: var(--label);
+    --ds-edge: var(--label);
+    --ds-rim: var(--label);
+  }
+}

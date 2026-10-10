@@ -1,0 +1,42 @@
+<!-- @dsCard group="Estrutura do portal" height=520 subtitle="Marca, episódios e anúncios, com pausa" -->
+<div class="sdb-stage">
+  <section class="sdb-banner" data-sdb-banner data-interval="7000" aria-roledescription="carrossel" aria-label="Destaques do Portal">
+    <div class="sdb-banner__slides" aria-live="off">
+      <div class="sdb-banner__slide" role="group" aria-roledescription="slide" aria-label="1 de 3">
+        <div class="sdb-banner__text">
+          <p class="sdb-banner__label">Biblioteca digital de estudos comparados</p>
+          <h2 class="sdb-banner__brand">A Sala dos Buscadores</h2>
+          <p class="sdb-banner__sub">Um acervo curado para compreender textos, ideias e cosmologias em seus próprios contextos, sem hierarquias, sem respostas prontas.</p>
+          <div class="sdb-banner__actions"><a class="sdb-btn sdb-btn--primary" href="#">Comparar um tema</a><a class="sdb-btn sdb-btn--secondary" href="#"><span data-icon="assistente" class="sdb-icon--sm"></span>Perguntar ao assistente</a></div>
+        </div>
+        <div class="sdb-banner__media"><div class="sdb-plate sdb-plate--bordo"><span data-arc data-on="bordo"></span></div></div>
+      </div>
+      <div class="sdb-banner__slide" role="group" aria-roledescription="slide" aria-label="2 de 3">
+        <div class="sdb-banner__text">
+          <p class="sdb-banner__label">Episódio novo do canal · 22 min</p>
+          <h2 class="sdb-banner__title">As sete esferas no Poimandres<span>o que o Tratado I descreve sobre a subida da alma</span></h2>
+          <p class="sdb-banner__sub">Leitura comentada do primeiro tratado do Corpus Hermeticum, com o texto grego ao lado.</p>
+          <div class="sdb-banner__actions"><a class="sdb-btn sdb-btn--primary" href="#"><span data-icon="play" class="sdb-icon--sm"></span>Assistir no YouTube</a></div>
+        </div>
+        <div class="sdb-banner__media"><div class="sdb-plate sdb-plate--grafite"><span data-arc data-on="grafite"></span></div></div>
+      </div>
+      <div class="sdb-banner__slide sdb-banner__slide--ad" role="group" aria-roledescription="slide" aria-label="3 de 3, publicidade">
+        <div class="sdb-banner__text">
+          <p class="sdb-banner__label"><span class="sdb-badge sdb-badge--neutral">Publicidade</span>Edições Pórtico (anunciante fictício)</p>
+          <h2 class="sdb-banner__title">Textos antigos em domínio público<span>em edição de bolso, com notas</span></h2>
+          <p class="sdb-banner__sub">Coleção com traduções revisadas do Corpus Hermeticum e dos ditos de Tomé.</p>
+          <div class="sdb-banner__actions"><a class="sdb-btn sdb-btn--secondary" href="#" rel="sponsored noopener" target="_blank">Conhecer a coleção<span data-icon="externo" class="sdb-icon--sm"></span></a><button class="sdb-btn sdb-btn--plain sdb-banner__why" type="button">Por que estou vendo isto?</button></div>
+        </div>
+        <div class="sdb-banner__media"><div class="sdb-plate sdb-plate--bege"><span data-arc data-on="bege"></span></div></div>
+      </div>
+    </div>
+    <div class="sdb-banner__controls">
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" data-banner-prev aria-label="Destaque anterior"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span></button>
+      <div class="sdb-dots" role="group" aria-label="Escolher destaque"><button type="button" data-banner-go="0" aria-label="Destaque 1"></button><button type="button" data-banner-go="1" aria-label="Destaque 2"></button><button type="button" data-banner-go="2" aria-label="Destaque 3"></button></div>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" data-banner-next aria-label="Próximo destaque"><span data-icon="chevronDireita" class="sdb-icon--sm"></span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" data-banner-toggle aria-label="Pausar rotação" data-tip="Pausar"><span data-icon="pausar" class="sdb-icon--sm"></span></button>
+    </div>
+  </section>
+  <p class="sdb-hint">Troca a cada 7 s; pausa no hover, no foco e no botão; parado com <code>prefers-reduced-motion</code>. O título da marca em <code>display-caps</code> aparece só aqui, uma vez por tela.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>

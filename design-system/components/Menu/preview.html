@@ -1,0 +1,26 @@
+<!-- @dsCard group="Componentes básicos" height=420 subtitle="Menu de contexto em vidro" -->
+<div class="sdb-stage">
+  <div class="sdb-row sdb-row--top" style="gap:32px">
+    <div class="sdb-menu-wrap">
+      <button class="sdb-btn sdb-btn--glass" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false">Ações do trecho<span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+      <div class="sdb-menu" role="menu">
+        <button class="sdb-menu__item" role="menuitem" data-toast="Citação copiada no formato ABNT."><span>Copiar citação</span><span class="sdb-kbd">⌘C</span><span data-icon="copiar" class=""></span></button>
+        <button class="sdb-menu__item" role="menuitem" data-toast="Trecho salvo na estante."><span>Salvar na estante</span><span data-icon="estante" class=""></span></button>
+        <button class="sdb-menu__item" role="menuitem" data-toast="Abrindo a grade comparativa."><span>Comparar com outras Salas</span><span data-icon="comparar" class=""></span></button>
+        <div class="sdb-menu__sep"></div>
+        <button class="sdb-menu__item sdb-menu__item--danger" role="menuitem" data-toast="Trecho removido." data-toast-action="Desfazer"><span>Remover da estante</span><span data-icon="lixeira" class=""></span></button>
+      </div>
+    </div>
+    <div class="sdb-spec"><span class="sdb-caption">Aberto</span>
+      <div class="sdb-menu sdb-menu--static" role="menu" aria-label="Exibição">
+        <div class="sdb-menu__label">Exibição</div>
+        <button class="sdb-menu__item" role="menuitemcheckbox" aria-checked="true"><span>Texto original</span></button>
+        <button class="sdb-menu__item is-active" role="menuitemcheckbox" aria-checked="true"><span>Tradução</span></button>
+        <button class="sdb-menu__item" role="menuitemcheckbox" aria-checked="false"><span>Notas de rodapé</span></button>
+        <div class="sdb-menu__sep"></div>
+        <button class="sdb-menu__item" role="menuitem" disabled><span>Ouvir trecho (em breve)</span><span data-icon="audio" class=""></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

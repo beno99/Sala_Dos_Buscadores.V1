@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breadcrumbs · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <nav class="sdb-crumbs" aria-label="Você está em"><ol><li><a href="#">Acervo</a></li><li><a href="#">Salas</a></li><li><a href="#">Nag Hammadi</a></li><li><a href="#">Códice II</a></li><li><span aria-current="page">O Evangelho de Tomé</span></li></ol></nav>
+  <nav class="sdb-crumbs" aria-label="Você está em (recolhido)"><ol><li><a href="#">Acervo</a></li><li><button aria-label="Mostrar níveis ocultos" data-tip="Salas / Corpus Hermeticum">…</button></li><li><a href="#">Tratado I</a></li><li><span aria-current="page" title="Poimandres: a visão de Hermes sobre a origem do cosmos e a subida da alma">Poimandres: a visão de Hermes sobre a origem do cosmos e a subida da alma</span></li></ol></nav>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!-- @dsCard group="Componentes básicos" height=360 subtitle="Painel flutuante lateral ou sheet inferior; versão larga" -->
+<div class="sdb-stage">
+  <div class="sdb-row"><button class="sdb-btn sdb-btn--glass" data-open="d1"><span data-icon="filtro" class=""></span>Filtros (3)</button><button class="sdb-btn sdb-btn--secondary" data-open="d2">Sobre esta fonte</button><button class="sdb-btn sdb-btn--secondary" data-open="d3"><span data-icon="assistente" class="sdb-icon--sm"></span>Assistente (largo)</button></div>
+  <div id="d3" class="sdb-overlay sdb-overlay--drawer" aria-hidden="true"><aside class="sdb-drawer sdb-drawer--wide" role="dialog" aria-modal="true" aria-labelledby="d3t">
+    <span class="sdb-grabber" aria-hidden="true"></span>
+    <div class="sdb-drawer__head"><h2 id="d3t">Assistente</h2><div class="sdb-row" style="gap:8px"><a class="sdb-btn sdb-btn--plain sdb-btn--sm" href="#">Abrir em tela cheia</a><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" data-close aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div></div>
+    <div class="sdb-drawer__body"><p class="sdb-bubble">O que acontece com a alma após a morte?</p><div class="sdb-neutral"><span class="sdb-neutral__icon"><span data-arc data-on="bordo"></span></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira.</p></div></div>
+  </aside></div>
+  <p class="sdb-hint">Flutua 12 px afastado das bordas. Abaixo de 600 px vira sheet inferior com alça.</p>
+  <div id="d1" class="sdb-overlay sdb-overlay--drawer" aria-hidden="true"><aside class="sdb-drawer" role="dialog" aria-modal="true" aria-labelledby="d1t">
+    <span class="sdb-grabber" aria-hidden="true"></span>
+    <div class="sdb-drawer__head"><h2 id="d1t">Filtros</h2><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" data-close aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+    <div class="sdb-drawer__body">
+      <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Sala</span><div class="sdb-list">
+        <button class="sdb-option" data-toggle aria-pressed="true"><span>Biblioteca de Nag Hammadi</span><span class="sdb-option__n">148</span><span data-icon="check" class="sdb-option__check"></span></button>
+        <button class="sdb-option" data-toggle aria-pressed="true"><span>Corpus Hermeticum</span><span class="sdb-option__n">64</span><span data-icon="check" class="sdb-option__check"></span></button>
+        <button class="sdb-option" data-toggle aria-pressed="false"><span>O Livro de Urântia</span><span class="sdb-option__n">96</span><span data-icon="check" class="sdb-option__check"></span></button></div></div>
+      <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Nível</span><div class="sdb-segmented sdb-segmented--block" role="group"><button type="button" data-toggle data-toggle-group="dn" aria-pressed="false">Iniciante</button><button type="button" data-toggle data-toggle-group="dn" aria-pressed="true">Intermediário</button><button type="button" data-toggle data-toggle-group="dn" aria-pressed="false">Avançado</button></div></div>
+    </div>
+    <div class="sdb-drawer__foot"><button class="sdb-btn sdb-btn--secondary">Limpar</button><button class="sdb-btn sdb-btn--primary" data-close>Ver 24 resultados</button></div>
+  </aside></div>
+  <div id="d2" class="sdb-overlay sdb-overlay--drawer" aria-hidden="true"><aside class="sdb-drawer" role="dialog" aria-modal="true" aria-labelledby="d2t">
+    <span class="sdb-grabber" aria-hidden="true"></span>
+    <div class="sdb-drawer__head"><h2 id="d2t">Sobre esta fonte</h2><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" data-close aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+    <div class="sdb-drawer__body"><div class="sdb-row" style="flex-wrap:nowrap;gap:16px"><span class="sdb-cover" aria-hidden="true">P</span><div><p class="sdb-title-2">Poimandres</p><p class="sdb-footnote" style="margin:4px 0 0">Corpus Hermeticum · Tratado I</p></div></div>
+      <p class="sdb-body-sm">Primeiro tratado do Corpus Hermeticum, composto em grego provavelmente entre os séculos I e III. Traduzido para o latim por Marsilio Ficino em 1463.</p>
+      <div class="sdb-list"><div class="sdb-list-row"><span class="sdb-secondary">Tradição</span><span>Hermetismo</span></div><div class="sdb-list-row"><span class="sdb-secondary">Idioma</span><span>Grego koiné</span></div><div class="sdb-list-row"><span class="sdb-secondary">Edição</span><span>Copenhaver, 1992</span></div></div></div>
+  </aside></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

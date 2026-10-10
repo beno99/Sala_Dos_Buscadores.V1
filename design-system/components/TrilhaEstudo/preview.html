@@ -1,0 +1,80 @@
+<!-- @dsCard group="Componentes do acervo" height=740 subtitle="Degraus em arco com progresso" -->
+<div class="sdb-stage">
+  <section class="sdb-trail" aria-labelledby="tr-t" style="max-width:640px">
+    <div class="sdb-trail__head">
+      <span class="sdb-emblem" aria-hidden="true"><span data-arc data-on="ouro" class="" style=""></span></span>
+      <div><p class="sdb-footnote" style="margin:0">Trilha · Corpus Hermeticum</p><h3 id="tr-t" class="sdb-title-2" style="margin-top:2px">Hermetismo em cinco degraus</h3></div>
+      <div class="sdb-trail__pct"><b id="tr-pct">40%</b><span id="tr-sum">2 de 5 degraus</span></div>
+    </div>
+    <svg class="sdb-trail__track" id="tr-svg" viewBox="0 0 520 124" aria-hidden="true"></svg>
+    <div class="sdb-tasks" id="tr-tasks" role="list"></div>
+    <div class="sdb-col" style="gap:8px"><button class="sdb-btn sdb-btn--primary sdb-btn--lg sdb-btn--block" id="tr-next" type="button">Concluir degrau III</button><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="tr-reset" type="button" style="align-self:center">Reiniciar demonstração</button></div>
+  </section>
+</div>
+<script>SalaBuscadores.hydrate();
+var D = [
+  { t: "O que é o hermetismo", k: "Artigo · 12 min" },
+  { t: "Poimandres: a visão de Hermes", k: "Leitura · 25 min" },
+  { t: "As sete esferas", k: "Vídeo · 22 min" },
+  { t: "Ficino e o Renascimento", k: "Artigo · 18 min" },
+  { t: "O Asclépio em latim", k: "Fonte primária · 40 min" }
+];
+var R = ["I", "II", "III", "IV", "V"], NS = "http://www.w3.org/2000/svg", st;
+var START = [{ s: "done" }, { s: "done" }, { s: "current", p: 60 }, { s: "available" }, { s: "locked" }];
+function reset() { st = START.map(function (x) { return { s: x.s, p: x.p || 0 }; }); render(); }
+function mk(tag, at, txt) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt) e.textContent = txt; return e; }
+function X(i) { return 40 + i * 110; }
+function ringSvg(p) { var c = 2 * Math.PI * 8; return '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="var(--fill-strong)" stroke-width="2.4"/><circle cx="11" cy="11" r="8" fill="none" stroke="var(--accent-fill)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + c * (1 - p / 100) + '" transform="rotate(-90 11 11)"/></svg>'; }
+function render() {
+  var svg = document.getElementById("tr-svg"), base = 84; svg.innerHTML = "";
+  svg.appendChild(mk("path", { d: "M8 " + base + " H512", "class": "k-base" }));
+  for (var i = 0; i < 4; i++) {
+    var ry = 14 + i * 11, rx = 55;
+    svg.appendChild(mk("path", { d: "M" + X(i) + " " + base + " A" + rx + " " + ry + " 0 0 1 " + X(i + 1) + " " + base, "class": "k-arc" + (st[i].s === "done" && st[i + 1].s !== "locked" && st[i + 1].s !== "available" ? " is-done" : "") }));
+  }
+  st.forEach(function (x, i) {
+    var g = mk("g", { "class": "k-node" }), cx = X(i);
+    if (x.s === "done") { g.appendChild(mk("circle", { cx: cx, cy: base, r: 15, "class": "k-done" })); g.appendChild(mk("path", { d: "M" + (cx - 5.5) + " " + base + " l3.8 3.8 l7.4 -7.6", "class": "k-mark" })); }
+    else if (x.s === "current") {
+      var c = 2 * Math.PI * 15;
+      g.appendChild(mk("circle", { cx: cx, cy: base, r: 15, "class": "k-cur-bg" }));
+      g.appendChild(mk("circle", { cx: cx, cy: base, r: 15, "class": "k-cur-ring", "stroke-dasharray": c, "stroke-dashoffset": c * (1 - x.p / 100), transform: "rotate(-90 " + cx + " " + base + ")" }));
+      g.appendChild(mk("text", { x: cx, y: base, "class": "k-num-in" }, R[i]));
+    } else if (x.s === "available") { g.appendChild(mk("circle", { cx: cx, cy: base, r: 14, "class": "k-avail" })); g.appendChild(mk("text", { x: cx, y: base, "class": "k-num-in" }, R[i])); }
+    else { g.appendChild(mk("circle", { cx: cx, cy: base, r: 14, "class": "k-lock" })); g.appendChild(mk("path", { d: "M" + (cx - 4) + " " + (base - 1) + " h8 v6 h-8z M" + (cx - 2.5) + " " + (base - 1) + " v-2 a2.5 2.5 0 0 1 5 0 v2", fill: "none", stroke: "var(--label-tertiary)", "stroke-width": "1.5", "stroke-linejoin": "round" })); }
+    svg.appendChild(g);
+    svg.appendChild(mk("text", { x: cx, y: base + 34, "class": "k-num" }, "Degrau " + R[i]));
+  });
+  var box = document.getElementById("tr-tasks"); box.innerHTML = "";
+  var done = 0;
+  st.forEach(function (x, i) {
+    if (x.s === "done") done++;
+    var el = document.createElement(x.s === "available" ? "button" : "div");
+    el.className = "sdb-task"; el.dataset.state = x.s; el.setAttribute("role", "listitem");
+    if (x.s === "available") el.type = "button";
+    var ic = { done: SalaBuscadores.icon("check"), current: ringSvg(x.p), available: "", locked: SalaBuscadores.icon("cadeado", "sdb-icon--sm") }[x.s];
+    var lab = { done: "Concluído", current: x.p + "%", available: "Disponível quando quiser", locked: "Conclua o degrau " + R[i - 1] }[x.s];
+    el.innerHTML = '<span class="sdb-task__i">' + ic + '</span><span><span class="sdb-task__t">' + R[i] + " · " + D[i].t + '</span><span class="sdb-task__m">' + D[i].k + '</span></span><span class="sdb-task__s">' + lab + "</span>";
+    if (x.s === "available") el.addEventListener("click", function () { st.forEach(function (y) { if (y.s === "current" && y.p === 0) y.s = "available"; }); if (!st.some(function (y) { return y.s === "current"; })) { x.s = "current"; x.p = 0; } render(); });
+    box.appendChild(el);
+  });
+  document.getElementById("tr-pct").textContent = Math.round(done / st.length * 100) + "%";
+  document.getElementById("tr-sum").textContent = done + " de " + st.length + " degraus";
+  var cur = st.findIndex(function (y) { return y.s === "current"; }), btn = document.getElementById("tr-next");
+  btn.disabled = cur < 0;
+  btn.textContent = cur >= 0 ? "Concluir degrau " + R[cur] : (done === st.length ? "Trilha concluída" : "Escolha um degrau disponível");
+}
+document.getElementById("tr-next").addEventListener("click", function () {
+  var i = st.findIndex(function (y) { return y.s === "current"; }); if (i < 0) return;
+  st[i].p = 100; render();
+  setTimeout(function () {
+    st[i].s = "done";
+    if (st[i + 1]) { st[i + 1].s = "current"; st[i + 1].p = 0; }
+    if (st[i + 2] && st[i + 2].s === "locked") st[i + 2].s = "available";
+    render();
+    SalaBuscadores.toast(st[i + 1] ? "Degrau " + R[i] + " concluído. O próximo está aberto." : "Trilha concluída.", { icon: "trilha" });
+  }, 650);
+});
+document.getElementById("tr-reset").addEventListener("click", reset);
+reset();
+</script>

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Fundamentos" height=420 subtitle="Molas interrompíveis, resposta imediata" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-row sdb-row--between"><p class="sdb-headline">Compare as curvas</p><button id="mv-go" class="sdb-btn sdb-btn--primary sdb-btn--sm" type="button">Mover</button></div>
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">spring-soft · polegares, sheets, menus</span><div style="height:44px;border-radius:999px;background:var(--fill);position:relative"><i id="mv-a" style="position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;background:var(--accent-fill);transition:transform 520ms var(--sdb-spring)"></i></div></div>
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">ease-standard · crítico, sem ressalto</span><div style="height:44px;border-radius:999px;background:var(--fill);position:relative"><i id="mv-b" style="position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;background:var(--label);transition:transform 420ms var(--sdb-ease)"></i></div></div>
+    <p class="sdb-hint">Clique várias vezes seguidas: as transições retomam do ponto atual, sem saltar.</p>
+  </div>
+  <div class="sdb-list">
+    <div class="sdb-list-row"><span>Afundar ao pressionar</span><span class="sdb-footnote sdb-tabular">scale 0,96 · 90 ms</span></div>
+    <div class="sdb-list-row"><span>Hover, cor, tooltip</span><span class="sdb-footnote sdb-tabular">160 ms</span></div>
+    <div class="sdb-list-row"><span>Polegar, menu, modal, toast</span><span class="sdb-footnote sdb-tabular">mola 460–520 ms</span></div>
+    <div class="sdb-list-row"><span>Drawer e sheet</span><span class="sdb-footnote sdb-tabular">mola 560 ms · saída 300 ms</span></div>
+    <div class="sdb-list-row"><span>Command palette</span><span class="sdb-footnote">sem animação</span></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+var on = false;
+document.getElementById("mv-go").addEventListener("click", function () {
+  on = !on;
+  ["mv-a", "mv-b"].forEach(function (id) {
+    var el = document.getElementById(id), w = el.parentNode.clientWidth - 44;
+    el.style.transform = on ? "translateX(" + w + "px)" : "none";
+  });
+});
+</script>

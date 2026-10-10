@@ -1,0 +1,45 @@
+<!-- @dsCard group="Componentes do acervo" height=620 subtitle="Índice alfabético e verbetes" -->
+<div class="sdb-stage">
+  <p class="sdb-large-title">Glossário</p>
+  <div class="sdb-alpha" id="gl-alpha" role="group" aria-label="Letra inicial"></div>
+  <div class="sdb-gloss" id="gl-list"></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var T = [
+  { t: "Ajustador do Pensamento", o: "Livro de Urântia · expressão", d: "No Livro de Urântia, fragmento do Pai Universal que habita a mente humana e orienta a ascensão da alma.", s: ["O Livro de Urântia"] },
+  { t: "Arconte", o: "grego · ἄρχων · governante", d: "Nos textos gnósticos de Nag Hammadi, as potências que governam as esferas do mundo material e tentam reter a alma.", s: ["Biblioteca de Nag Hammadi", "Apócrifos do Cristianismo Primitivo"] },
+  { t: "Demiurgo", o: "grego · δημιουργός · artesão", d: "No Apócrifo de João, Ialdabaoth é o criador do mundo material, gerado por Sofia fora do Pleroma. No Timeu de Platão, o termo designa o artífice do cosmos.", s: ["Biblioteca de Nag Hammadi"] },
+  { t: "Éon", o: "grego · αἰών · era, eternidade", d: "Na cosmologia gnóstica, cada uma das emanações divinas que compõem o Pleroma.", s: ["Biblioteca de Nag Hammadi"] },
+  { t: "Gnose", o: "grego · γνῶσις · conhecimento", d: "Nos textos de Nag Hammadi e no Corpus Hermeticum, conhecimento de ordem espiritual sobre a origem e o destino da alma, apresentado como caminho de libertação.", s: ["Biblioteca de Nag Hammadi", "Corpus Hermeticum"] },
+  { t: "Mentalismo", o: "O Caibalion · princípio", d: "Primeiro dos sete princípios apresentados no Caibalion: “O TODO é MENTE; o Universo é Mental.”", s: ["O Caibalion"] },
+  { t: "Mundos das mansões", o: "Livro de Urântia · expressão", d: "No Documento 47 do Livro de Urântia, os mundos onde os mortais sobreviventes despertam após a morte e continuam a ascensão.", s: ["O Livro de Urântia"] },
+  { t: "Nous", o: "grego · νοῦς · mente, intelecto", d: "No Corpus Hermeticum, a Mente divina que se apresenta a Hermes como Poimandres, descrita como luz e pai de todas as coisas.", s: ["Corpus Hermeticum", "O Caibalion"] },
+  { t: "Ogdóade", o: "grego · ὀγδοάς · o oitavo", d: "No Corpus Hermeticum (Tratado I), a oitava esfera, acima das sete planetárias, que a alma alcança após se despojar. Nag Hammadi guarda um tratado hermético sobre ela (NHC VI,6).", s: ["Corpus Hermeticum", "Biblioteca de Nag Hammadi"] },
+  { t: "Pleroma", o: "grego · πλήρωμα · plenitude", d: "Nos textos gnósticos de Nag Hammadi, a totalidade da esfera divina, habitada pelos éons. Segundo o Apócrifo de João, a queda de Sofia ocorre fora dele e dá origem ao mundo material.", s: ["Biblioteca de Nag Hammadi", "Apócrifos do Cristianismo Primitivo"] },
+  { t: "Sofia", o: "grego · σοφία · sabedoria", d: "No Apócrifo de João, o último dos éons; sua ação sem consentimento dá origem ao demiurgo.", s: ["Biblioteca de Nag Hammadi"] }
+];
+function key(s) { return s.normalize("NFD").charAt(0).toUpperCase(); }
+var alpha = document.getElementById("gl-alpha"), list = document.getElementById("gl-list"), cur = "P";
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (L) {
+  var b = document.createElement("button"); b.type = "button"; b.textContent = L;
+  var has = T.some(function (x) { return key(x.t) === L; });
+  b.disabled = !has; b.setAttribute("aria-pressed", L === cur ? "true" : "false");
+  b.setAttribute("aria-label", has ? "Letra " + L : "Letra " + L + ", sem verbetes");
+  b.addEventListener("click", function () { cur = L; Array.prototype.forEach.call(alpha.children, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); render(); });
+  alpha.appendChild(b);
+});
+function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function render() {
+  list.innerHTML = "";
+  T.filter(function (x) { return key(x.t) === cur; }).forEach(function (x, i) {
+    var id = "gl" + i, open = i === 0;
+    var el = document.createElement("div"); el.className = "sdb-gloss__item";
+    el.innerHTML = '<button class="sdb-acc-trigger" data-acc-trigger aria-expanded="' + open + '" aria-controls="' + id + '"><span><span class="sdb-gloss__term">' + esc(x.t) + '</span><span class="sdb-gloss__origin">' + esc(x.o) + "</span></span>" + SalaBuscadores.icon("chevronDireita", "sdb-chev") + "</button>" +
+      '<div id="' + id + '" class="sdb-acc-panel' + (open ? " is-open" : "") + '"><div><div class="sdb-acc-body" style="display:flex;flex-direction:column;gap:16px"><p style="margin:0">' + esc(x.d) + '</p><div class="sdb-row" style="gap:8px">' +
+      x.s.map(function (s) { return '<a href="#" class="sdb-chip sdb-chip--sm">' + SalaBuscadores.arc() + esc(s) + "</a>"; }).join("") +
+      '</div><p class="sdb-gloss__note">Verbete redigido pela equipe editorial da Sala.</p></div></div></div>';
+    list.appendChild(el);
+  });
+}
+render();
+</script>

@@ -1,0 +1,48 @@
+<!-- @dsCard group="Busca comparativa" height=380 subtitle="Por Sala ou por tema e pergunta" -->
+<div class="sdb-stage">
+  <form class="sdb-searchbar" id="sb" role="search" novalidate style="max-width:760px">
+    <div class="sdb-row sdb-row--between" style="padding:2px 2px 0">
+      <div class="sdb-segmented" role="group" aria-label="Modo de busca" id="sb-mode">
+        <button type="button" data-toggle data-toggle-group="sbm" aria-pressed="false" data-mode="sala">Por Sala</button>
+        <button type="button" data-toggle data-toggle-group="sbm" aria-pressed="true" data-mode="tema">Por tema ou pergunta</button>
+      </div>
+      <span class="sdb-footnote" style="padding-right:8px"><span data-icon="comando" class="sdb-icon--sm"></span> K abre a busca rápida</span>
+    </div>
+    <div class="sdb-searchbar__row"><span data-icon="busca" class=""></span><label class="sdb-sr" for="sb-q">Buscar</label><input id="sb-q" autocomplete="off" placeholder="O que acontece com a alma após a morte?">
+      <button class="sdb-btn sdb-btn--primary" id="sb-go" type="submit"><span id="sb-label">Comparar</span><span class="sdb-spinner" aria-hidden="true"></span></button></div>
+    <div class="sdb-searchbar__foot" id="sb-foot"></div>
+  </form>
+  <p id="sb-msg" class="sdb-hint" aria-live="polite" style="padding:0 8px">Escreva uma pergunta ou escolha um tema para ver a resposta de cada Sala lado a lado.</p>
+</div>
+<script>SalaBuscadores.hydrate();
+var mode = "tema", bar = document.getElementById("sb"), q = document.getElementById("sb-q"), msg = document.getElementById("sb-msg"), go = document.getElementById("sb-go");
+var S = { tema: ["Morte", "Alma", "Meditação", "Origem do universo"], sala: ["Nag Hammadi", "Corpus Hermeticum", "O Caibalion", "Urântia", "Apócrifos"] };
+var PH = { tema: "O que acontece com a alma após a morte?", sala: "Buscar dentro das Salas escolhidas" };
+function paint() {
+  var f = document.getElementById("sb-foot"); f.innerHTML = "";
+  S[mode].forEach(function (s, i) {
+    var c = document.createElement("button"); c.type = "button"; c.className = "sdb-chip sdb-chip--sm";
+    c.setAttribute("aria-pressed", mode === "sala" && i < 2 ? "true" : "false");
+    c.innerHTML = (mode === "sala" ? SalaBuscadores.arc() : "") + s;
+    c.addEventListener("click", function () {
+      if (mode === "tema") { q.value = s; bar.classList.remove("is-error"); q.focus(); }
+      else c.setAttribute("aria-pressed", c.getAttribute("aria-pressed") === "true" ? "false" : "true");
+    });
+    f.appendChild(c);
+  });
+  q.placeholder = PH[mode];
+  document.getElementById("sb-label").textContent = mode === "tema" ? "Comparar" : "Buscar";
+}
+document.getElementById("sb-mode").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-mode]"); if (!b) return;
+  setTimeout(function () { if (b.getAttribute("aria-pressed") !== "true") { b.setAttribute("aria-pressed", "true"); SalaBuscadores.syncSeg(b.parentNode); } mode = b.dataset.mode; paint(); }, 0);
+});
+bar.addEventListener("submit", function (e) {
+  e.preventDefault();
+  if (!q.value.trim()) { bar.classList.add("is-error"); msg.textContent = "Erro: escreva uma pergunta ou escolha um tema abaixo."; q.focus(); return; }
+  bar.classList.remove("is-error"); go.classList.add("is-loading"); go.setAttribute("aria-busy", "true"); msg.textContent = "Consultando as Salas…";
+  setTimeout(function () { go.classList.remove("is-loading"); go.removeAttribute("aria-busy"); msg.textContent = "5 Salas consultadas para “" + q.value.trim() + "”: 4 respondem diretamente, 1 não trata do tema."; }, 1200);
+});
+q.addEventListener("input", function () { bar.classList.remove("is-error"); });
+paint();
+</script>

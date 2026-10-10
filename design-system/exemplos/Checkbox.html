@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkbox · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-grid" style="--sdb-col:260px">
+    <div class="sdb-material sdb-panel"><fieldset class="sdb-fieldset"><legend class="sdb-caption">Tipo de conteúdo</legend>
+      <label class="sdb-check"><input type="checkbox" checked> <span>Artigos <small>Textos editoriais com fontes citadas</small></span></label>
+      <label class="sdb-check"><input type="checkbox"> <span>Vídeos</span></label>
+      <label class="sdb-check"><input type="checkbox" id="ind"> <span>Fontes primárias <small>Estado misto</small></span></label>
+      <label class="sdb-check"><input type="checkbox" class="is-error" aria-invalid="true"> <span>Li as diretrizes de contribuição <small style="color:var(--critical)">Obrigatório para enviar</small></span></label>
+      <label class="sdb-check"><input type="checkbox" disabled> <span>Áudio (em breve)</span></label>
+    </fieldset></div>
+    <div class="sdb-material sdb-panel"><fieldset class="sdb-fieldset"><legend class="sdb-caption">Circular · listas de tarefa</legend>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox" checked> <span>Ler o Poimandres</span></label>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox" checked> <span>Anotar as sete esferas</span></label>
+      <label class="sdb-check sdb-check--circle"><input type="checkbox"> <span>Comparar com o Asclépio</span></label>
+    </fieldset></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+document.getElementById("ind").indeterminate = true;
+</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

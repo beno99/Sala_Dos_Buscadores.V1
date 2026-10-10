@@ -1,0 +1,12 @@
+<!-- @dsCard group="Componentes básicos" height=330 subtitle="Valor contínuo com polegar redondo" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel" style="max-width:560px">
+    <div class="sdb-field"><label class="sdb-label" for="sl1">Período histórico <small><output data-slider-out="sl1"></output></small></label>
+      <input id="sl1" class="sdb-slider" type="range" min="-500" max="2000" step="50" value="150" data-format="até {v} d.C.">
+      <div class="sdb-slider-scale"><span>500 a.C.</span><span>0</span><span>1000</span><span>2000</span></div></div>
+    <div class="sdb-field"><label class="sdb-label" for="sl2">Tamanho do texto de leitura <small><output data-slider-out="sl2"></output></small></label>
+      <div class="sdb-row" style="flex-wrap:nowrap;gap:16px"><span style="font:500 13px var(--font-reading)">A</span><input id="sl2" class="sdb-slider" type="range" min="16" max="24" value="19" data-format="{v} px"><span style="font:500 22px var(--font-reading)">A</span></div></div>
+    <div class="sdb-field"><label class="sdb-label" for="sl3">Densidade <small>desabilitado</small></label><input id="sl3" class="sdb-slider" type="range" value="40" disabled></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

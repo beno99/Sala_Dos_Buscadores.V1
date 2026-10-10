@@ -1,0 +1,60 @@
+<!-- @dsCard group="Componentes do acervo" height=760 subtitle="Arcos entre datas, eventos por período" -->
+<div class="sdb-stage">
+  <section class="sdb-arcline" aria-labelledby="tl-t">
+    <div class="sdb-row sdb-row--between"><p id="tl-t" class="sdb-headline">Das fontes à redescoberta</p><div class="sdb-row" style="gap:8px"><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" id="tl-prev" aria-label="Evento anterior"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span></button><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" id="tl-next" aria-label="Próximo evento"><span data-icon="chevronDireita" class="sdb-icon--sm"></span></button></div></div>
+    <svg id="tl-svg" viewBox="0 0 700 150" role="img" aria-label="Linha do tempo: a altura de cada arco representa o intervalo entre dois eventos"></svg>
+    <div class="sdb-event" id="tl-card" aria-live="polite"></div>
+  </section>
+  <div class="sdb-list" id="tl-list"></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var E = [
+  { d: "séc. I–III", y: "I–III", a: 150, t: "Composição do Corpus Hermeticum", x: "Tratados em grego atribuídos a Hermes Trismegisto, provavelmente escritos no Egito romano.", s: "Corpus Hermeticum", k: "doc", p: "Antiguidade" },
+  { d: "séc. II", y: "II", a: 150, t: "Apocalipse de Pedro", x: "Um dos primeiros textos cristãos a descrever o destino das almas após a morte.", s: "Apócrifos do Cristianismo Primitivo", k: "doc", p: "Antiguidade" },
+  { d: "c. 350–400", y: "IV", a: 375, t: "Os códices são copiados e enterrados", x: "Treze códices em copta são guardados num jarro no Alto Egito.", s: "Biblioteca de Nag Hammadi", k: "evt", p: "Antiguidade" },
+  { d: "1463", y: "1463", a: 1463, t: "Ficino traduz o Corpus Hermeticum", x: "A pedido de Cosimo de Médici, em Florença. A edição impressa sai em 1471.", s: "Corpus Hermeticum", k: "evt", p: "Renascimento" },
+  { d: "1908", y: "1908", a: 1908, t: "Publicação de O Caibalion", x: "Assinado por “Três Iniciados”, em Chicago.", s: "O Caibalion", k: "doc", p: "Século XX" },
+  { d: "1945", y: "1945", a: 1945, t: "Descoberta em Nag Hammadi", x: "Camponeses encontram o jarro com os códices perto do Jabal al-Tarif.", s: "Biblioteca de Nag Hammadi", k: "evt", p: "Século XX" },
+  { d: "1955", y: "1955", a: 1955, t: "Publicação de O Livro de Urântia", x: "Editado pela Fundação Urântia, em Chicago.", s: "O Livro de Urântia", k: "doc", p: "Século XX" }
+];
+var NS = "http://www.w3.org/2000/svg", svg = document.getElementById("tl-svg"), sel = 5, base = 110;
+function X(i) { return 34 + i * (632 / (E.length - 1)); }
+function mk(tag, at) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); return e; }
+function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+svg.appendChild(mk("path", { d: "M10 " + base + " H690", "class": "t-base" }));
+var arcs = [], dots = [];
+for (var i = 0; i < E.length - 1; i++) {
+  var gap = Math.max(0, E[i + 1].a - E[i].a), ry = 12 + Math.min(72, Math.log(gap + 1) * 10.5), rx = (X(i + 1) - X(i)) / 2;
+  var p = mk("path", { d: "M" + X(i) + " " + base + " A" + rx + " " + ry + " 0 0 1 " + X(i + 1) + " " + base, "class": "t-arc" });
+  svg.appendChild(p); arcs.push(p);
+}
+var ring = mk("circle", { cx: 0, cy: base, r: 8, "class": "t-sel" });
+E.forEach(function (e, i) {
+  var d = mk("circle", { cx: X(i), cy: base, r: 4.5, "class": "t-dot" }); svg.appendChild(d); dots.push(d);
+  var tx = mk("text", { x: X(i), y: base + 28, "class": "t-year" }); tx.textContent = e.y; svg.appendChild(tx);
+  var hit = mk("circle", { cx: X(i), cy: base, r: 18, "class": "t-hit" });
+  hit.addEventListener("click", function () { go(i); }); svg.appendChild(hit);
+});
+svg.insertBefore(ring, svg.querySelector(".t-hit"));
+var list = document.getElementById("tl-list"), last = "";
+E.forEach(function (e, i) {
+  if (e.p !== last) { var h = document.createElement("div"); h.className = "sdb-period"; h.textContent = e.p; list.appendChild(h); last = e.p; }
+  var b = document.createElement("button"); b.type = "button"; b.className = "sdb-event-row";
+  b.innerHTML = '<i class="' + (e.k === "evt" ? "is-event" : "") + '"></i><span class="sdb-tabular">' + esc(e.d) + "</span><span>" + esc(e.t) + "</span>";
+  b.addEventListener("click", function () { go(i); }); list.appendChild(b);
+});
+function go(i) {
+  sel = Math.max(0, Math.min(E.length - 1, i));
+  arcs.forEach(function (a, j) { a.classList.toggle("is-past", j < sel); });
+  dots.forEach(function (d, j) { d.classList.toggle("is-past", j <= sel); });
+  ring.style.transform = "translateX(" + X(sel) + "px)";
+  var e = E[sel];
+  document.getElementById("tl-card").innerHTML = '<div><div class="sdb-meta sdb-secondary">' + esc(e.d) + " · " + (e.k === "doc" ? "Documento" : "Evento") + '</div><p class="sdb-event__title" style="margin-top:8px">' + esc(e.t) + '</p></div><a href="#" class="sdb-chip sdb-chip--sm">' + SalaBuscadores.arc() + esc(e.s) + '</a><p class="sdb-event__text">' + esc(e.x) + "</p>";
+  Array.prototype.forEach.call(list.querySelectorAll(".sdb-event-row"), function (r, j) { r.setAttribute("aria-current", j === sel ? "true" : "false"); });
+  document.getElementById("tl-prev").disabled = sel === 0;
+  document.getElementById("tl-next").disabled = sel === E.length - 1;
+}
+document.getElementById("tl-prev").addEventListener("click", function () { go(sel - 1); });
+document.getElementById("tl-next").addEventListener("click", function () { go(sel + 1); });
+go(sel);
+</script>

@@ -1,0 +1,48 @@
+<!-- @dsCard group="Assistente de IA" height=520 subtitle="Consultando o acervo, etapa por etapa" -->
+<div class="sdb-stage">
+  <section class="sdb-consult is-running" id="ic" aria-labelledby="ic-t">
+    <div class="sdb-consult__head"><span class="sdb-consult__stairs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><b id="ic-t" class="sdb-headline">Assistente de IA</b><span class="sdb-consult__status" role="status"><span id="ic-label">Consultando o acervo</span><i class="sdb-consult__dot"></i></span></div>
+    <div class="sdb-consult__rail" aria-hidden="true"><i id="ic-rail"></i></div>
+    <div class="sdb-consult__box">
+      <div class="sdb-consult__q">Como o Corpus Hermeticum descreve a alma?<span id="ic-count">0 / 4</span></div>
+      <ol class="sdb-consult__steps" id="ic-steps">
+        <li><span class="sdb-mark"></span>Buscar em 5 Salas</li>
+        <li><span class="sdb-mark"></span>Ler 14 trechos relevantes</li>
+        <li><span class="sdb-mark"></span>Conferir as fontes citadas</li>
+        <li><span class="sdb-mark"></span>Escrever a síntese</li>
+      </ol>
+    </div>
+    <div class="sdb-consult__foot"><span class="sdb-consult__time" id="ic-time">0,0 s</span><span class="sdb-footnote">· 14 trechos · 5 Salas</span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" id="ic-stop">Interromper<span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+  </section>
+  <div class="sdb-row" style="gap:8px"><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="ic-restart" type="button">Reiniciar</button><button class="sdb-btn sdb-btn--plain sdb-btn--sm" id="ic-fail" type="button">Simular falha</button></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var ic = document.getElementById("ic"), t0, raf, timers = [], steps = document.querySelectorAll("#ic-steps li");
+function fmt(ms) { return (ms / 1000).toFixed(1).replace(".", ",") + " s"; }
+function setStep(n) {
+  Array.prototype.forEach.call(steps, function (li, i) {
+    li.className = i < n ? "is-done" : i === n ? "is-active" : "";
+    li.firstChild.innerHTML = i < n ? SalaBuscadores.icon("check") : i === n ? '<span class="sdb-spinner" style="width:16px;height:16px"></span>' : "";
+  });
+  document.getElementById("ic-rail").style.setProperty("--p", Math.min(n, 4) / 4);
+  document.getElementById("ic-count").textContent = Math.min(n, 4) + " / 4";
+}
+function tick() { document.getElementById("ic-time").textContent = fmt(Date.now() - t0); raf = requestAnimationFrame(tick); }
+function end(label, err) {
+  cancelAnimationFrame(raf); timers.forEach(clearTimeout); timers = [];
+  ic.classList.remove("is-running"); ic.classList.toggle("is-error", !!err);
+  document.getElementById("ic-label").textContent = label;
+  document.getElementById("ic-stop").hidden = true;
+}
+function start() {
+  timers.forEach(clearTimeout); timers = []; ic.classList.remove("is-error"); ic.classList.add("is-running");
+  document.getElementById("ic-label").textContent = "Consultando o acervo"; document.getElementById("ic-stop").hidden = false;
+  t0 = Date.now(); cancelAnimationFrame(raf); tick(); setStep(0);
+  [1500, 3200, 4600].forEach(function (d, i) { timers.push(setTimeout(function () { setStep(i + 1); }, d)); });
+  timers.push(setTimeout(function () { setStep(4); end("Consulta concluída"); }, 6200));
+}
+document.getElementById("ic-stop").addEventListener("click", function () { end("Consulta interrompida"); });
+document.getElementById("ic-restart").addEventListener("click", start);
+document.getElementById("ic-fail").addEventListener("click", function () { if (!ic.classList.contains("is-running")) start(); setTimeout(function () { end("Erro: uma Sala não respondeu", true); SalaBuscadores.toast("Tente de novo ou restrinja o escopo a uma Sala.", { variant: "erro", title: "Erro: a consulta não terminou" }); }, 900); });
+start();
+</script>

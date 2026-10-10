@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AvisoNeutralidade · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Vidro · fixo no rodapé do assistente</span>
+    <aside class="sdb-neutral" aria-label="Aviso de neutralidade" style="max-width:720px"><span class="sdb-neutral__icon"><span data-arc data-on="bordo" class="" style=""></span></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira. Toda resposta aponta suas fontes.</p><a href="#" class="sdb-link">Como funciona</a></aside></div>
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Sólido · bordô</span>
+    <aside class="sdb-neutral sdb-neutral--solid" aria-label="Aviso de neutralidade" style="max-width:720px"><span class="sdb-neutral__icon"><span data-arc data-on="bordo" class="" style=""></span></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira. Toda resposta aponta suas fontes.</p><a href="#" class="sdb-link">Como funciona</a></aside></div>
+  <div class="sdb-spec"><span class="sdb-caption">Discreto · abaixo de cada resposta</span>
+    <aside class="sdb-neutral sdb-neutral--quiet" aria-label="Aviso de neutralidade"><span class="sdb-neutral__icon"><span data-arc class="" style=""></span></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira. Confira sempre as fontes citadas.</p></aside></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alerta · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage" style="gap:16px;max-width:680px">
+  <div class="sdb-alert" role="status"><span class="sdb-alert__icon"><span data-icon="info" class=""></span></span><div class="sdb-alert__content"><p class="sdb-alert__title">Esta Sala está em curadoria</p><p class="sdb-alert__body">Novos verbetes são revisados por especialistas antes de entrar no acervo. Última revisão em 12 set 2026.</p></div></div>
+  <div class="sdb-alert sdb-alert--warning" role="status"><span class="sdb-alert__icon"><span data-icon="aviso" class=""></span></span><div class="sdb-alert__content"><p class="sdb-alert__title">Atenção: tradução indireta</p><p class="sdb-alert__body">Este trecho foi traduzido da versão inglesa, não do copta. Confira a edição crítica antes de citar.</p><div class="sdb-alert__actions"><button class="sdb-btn sdb-btn--secondary sdb-btn--sm">Ver edição crítica</button></div></div></div>
+  <div class="sdb-alert sdb-alert--error" role="alert"><span class="sdb-alert__icon"><span data-icon="erro" class=""></span></span><div class="sdb-alert__content"><p class="sdb-alert__title">Erro: não foi possível carregar as fontes</p><p class="sdb-alert__body">A conexão caiu durante a consulta. Suas anotações foram mantidas.</p><div class="sdb-alert__actions"><button class="sdb-btn sdb-btn--destructive sdb-btn--sm" data-toast="Fontes carregadas.">Tentar de novo</button></div></div></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

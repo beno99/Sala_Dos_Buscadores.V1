@@ -1,0 +1,12 @@
+<!-- @dsCard group="Componentes básicos" height=330 subtitle="Menu pop-up nativo" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-grid" style="--sdb-col:230px;gap:16px 16px">
+      <div class="sdb-field"><label class="sdb-label" for="s1">Sala</label><div class="sdb-control"><select id="s1"><option>Todas as Salas</option><option>Biblioteca de Nag Hammadi</option><option selected>Corpus Hermeticum</option><option>O Caibalion</option><option>O Livro de Urântia</option><option>Apócrifos do Cristianismo Primitivo</option></select><span data-icon="chevronDuplo" class="sdb-icon--sm"></span></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="s2">Nível <small>foco</small></label><div class="sdb-control is-focus"><select id="s2"><option>Iniciante</option><option selected>Intermediário</option><option>Avançado</option></select><span data-icon="chevronDuplo" class="sdb-icon--sm"></span></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="s3">Ordenar por</label><div class="sdb-control is-error"><select id="s3" aria-invalid="true" aria-describedby="s3e"><option selected>Escolha uma ordem</option><option>Data de publicação</option><option>Período histórico</option></select><span data-icon="chevronDuplo" class="sdb-icon--sm"></span></div><p id="s3e" class="sdb-error-msg"><span data-icon="erro" class=""></span><span><b>Erro:</b> escolha uma ordem para continuar.</span></p></div>
+      <div class="sdb-field"><label class="sdb-label" for="s4">Idioma original <small>desabilitado</small></label><div class="sdb-control is-disabled"><select id="s4" disabled><option>Copta saídico</option></select><span data-icon="chevronDuplo" class="sdb-icon--sm"></span></div></div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

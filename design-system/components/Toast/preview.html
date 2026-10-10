@@ -1,0 +1,13 @@
+<!-- @dsCard group="Componentes básicos" height=320 subtitle="Confirmação que flutua embaixo" -->
+<div class="sdb-stage">
+  <div class="sdb-row">
+    <button class="sdb-btn sdb-btn--glass" data-toast="Citação copiada no formato ABNT.">Confirmação</button>
+    <button class="sdb-btn sdb-btn--glass" data-toast="Trecho removido da estante." data-toast-action="Desfazer" data-toast-icon="lixeira">Com ação</button>
+    <button class="sdb-btn sdb-btn--glass" data-toast="Verifique a conexão e tente de novo." data-toast-title="Erro: a consulta não terminou" data-toast-variant="erro">Erro</button>
+  </div>
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Estático</span>
+    <div class="sdb-toast sdb-toast--static"><span class="sdb-toast__icon"><span data-icon="check" class=""></span></span><div class="sdb-toast__msg">Trilha salva na estante</div><button class="sdb-btn sdb-btn--tinted sdb-btn--sm">Abrir</button><button class="sdb-toast__close" aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+    <div class="sdb-toast sdb-toast--static sdb-toast--error"><span class="sdb-toast__icon"><span data-icon="erro" class=""></span></span><div class="sdb-toast__msg"><strong>Erro: não foi possível copiar</strong><span class="sdb-secondary">Selecione o texto e copie manualmente.</span></div><button class="sdb-toast__close" aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

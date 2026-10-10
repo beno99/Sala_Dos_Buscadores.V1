@@ -1,0 +1,22 @@
+<!-- @dsCard group="Estrutura do portal" height=360 subtitle="Título, saudação, busca, aparência e conta" -->
+<div class="sdb-stage" style="gap:16px">
+  <header class="sdb-topbar" style="--sdb-gutter:20px">
+    <div class="sdb-topbar__titles"><h1 class="sdb-topbar__title">Portal</h1><p class="sdb-topbar__greeting">Boas-vindas de volta, Lúcia.</p></div>
+    <div class="sdb-topbar__actions">
+      <button class="sdb-topbar__search" type="button" data-shortcut-k aria-label="Buscar no acervo" aria-keyshortcuts="Meta+K Control+K"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+      <!-- TODO(notificacoes): sininho entra aqui quando houver notificações. -->
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência" data-tip="Aparência" data-tip-side="bottom"><span data-icon="tema"></span></button>
+      <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes" aria-haspopup="menu"><span class="sdb-avatar">LM</span></button>
+    </div>
+  </header>
+  <header class="sdb-topbar is-scrolled" style="--sdb-gutter:20px;position:relative">
+    <div class="sdb-topbar__titles"><h1 class="sdb-topbar__title">Biblioteca</h1><p class="sdb-topbar__greeting">Todos os conteúdos do acervo.</p></div>
+    <div class="sdb-topbar__actions">
+      <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+      <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes"><span class="sdb-avatar">LM</span></button>
+    </div>
+  </header>
+  <p class="sdb-hint">Em repouso, sobre o fundo · ao rolar (<code>.is-scrolled</code>), na camada flutuante. Abaixo de 900 px a saudação some e a busca vira só a lupa.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>

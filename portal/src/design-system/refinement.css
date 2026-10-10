@@ -1,0 +1,20 @@
+/* A linguagem aprovada: 8 px de ritmo, cards 24 px / interiores 16 px. */
+body { background: var(--ds-canvas); }
+.sdb-stage, .sdb-ambient { background-color: var(--ds-canvas); background-image: var(--ds-ambient); }
+.sdb-stage { min-height: 0; padding: 32px; gap: 32px; }
+.sdb-grid { gap: 24px; }
+.sdb-row, .sdb-col, .sdb-spec { gap: 16px; }
+.sdb-material, .sdb-card, .sdb-list, .sdb-alert, .sdb-quote, .sdb-trail, .sdb-consult, .sdb-filters, .sdb-compare__col, .sdb-gloss__item, .sdb-arcline, .sdb-table-wrap, .sdb-checklist, .sdb-stat { background: var(--ds-surface); box-shadow: inset 0 0 0 1px var(--ds-edge), var(--ds-shadow); backdrop-filter: var(--ds-backdrop); }
+.sdb-card__body { padding: 24px; gap: 16px; }.sdb-card__foot { padding: 16px 24px 24px; gap: 16px; }.sdb-card__foot::before { left:24px;right:24px; }
+.sdb-control { min-height: 48px; }.sdb-btn { --h: 48px; padding-inline:24px; }.sdb-btn--sm { --h: 40px; padding-inline:16px; }.sdb-btn--icon { padding:0; }
+.sdb-glass { border-radius:24px; }.sdb-menu { padding:8px; border-radius:24px; }.sdb-menu__item { border-radius:16px; }
+.sdb-toast { border-radius:24px; }.sdb-modal { padding:24px; }.sdb-drawer { border-radius:24px; }
+.sdb-compare__head { border-radius:16px; }.sdb-banner { border-radius:24px; }.sdb-banner__slide { border-radius:16px; }
+.sdb-table-wrap { border-radius:24px; }.sdb-control textarea { font-size:16px; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+.refined-preview { background:var(--ds-canvas); background-image:var(--ds-ambient); }
+.refined-preview>section { min-width:0; }.refined-preview .toolbar { padding-block:16px; }.refined-preview .assistant-demo { padding-top:0; }
+.refined-preview .gallery { gap:24px; }.refined-preview .variant-caption { margin-top:24px; }
+.refined-preview .assistant-demo__layout { gap:32px; }
+@media(max-width:560px){.sdb-stage{padding:24px 16px}.sdb-card__body{padding:16px}.sdb-card__foot{padding:16px}.sdb-ask,.sdb-searchbar{max-width:100%}.sdb-btn{max-width:100%}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.sdb-material,.sdb-card,.sdb-list,.sdb-alert,.sdb-quote,.sdb-trail,.sdb-consult,.sdb-filters,.sdb-compare__col,.sdb-gloss__item,.sdb-arcline,.sdb-table-wrap,.sdb-checklist,.sdb-stat{background:var(--ds-solid);backdrop-filter:none}}

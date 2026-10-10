@@ -1,0 +1,14 @@
+<!-- @dsCard group="Componentes básicos" height=520 subtitle="Texto, senha e busca" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-grid" style="--sdb-col:260px;gap:16px 16px">
+      <div class="sdb-field"><label class="sdb-label" for="f1">Nome da trilha</label><div class="sdb-control"><input id="f1" placeholder="Ex.: Introdução ao hermetismo"></div><p class="sdb-help">Aparece no topo da sua estante.</p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f2">Nome da trilha <small>foco</small></label><div class="sdb-control is-focus"><input id="f2" value="Gnose e cristianismo primitivo"></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="f3">E-mail</label><div class="sdb-control is-error"><input id="f3" value="buscador@exemplo" aria-invalid="true" aria-describedby="f3e"></div><p id="f3e" class="sdb-error-msg"><span data-icon="erro" class=""></span><span><b>Erro:</b> falta o domínio depois do @. Ex.: nome@exemplo.com</span></p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f4">Código do códice <small>desabilitado</small></label><div class="sdb-control is-disabled"><input id="f4" value="NHC II,2" disabled></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="f5">Senha</label><div class="sdb-control"><input id="f5" type="password" value="escada-de-quem-sobe" autocomplete="new-password"><button class="sdb-control__btn" type="button" data-toggle-password aria-pressed="false" aria-label="Mostrar senha"><span data-icon="olho" class=""></span></button></div><p class="sdb-help">Mínimo de 10 caracteres.</p></div>
+      <div class="sdb-field"><label class="sdb-label" for="f6">Buscar nesta Sala</label><div class="sdb-control sdb-control--search"><span data-icon="busca" class=""></span><input id="f6" type="search" value="Poimandres"><button class="sdb-control__btn" type="button" data-clear aria-label="Limpar busca"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div></div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

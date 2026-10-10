@@ -1,0 +1,24 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "biblioteca-componentes",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /private/tmp/claude-501/-Users-benonibrandao-Desktop-Portal-Sala-Buscadores/cd395698-cf76-4d66-9b30-e2afe20441ae/scratchpad/biblioteca && exec python3 -m http.server 8766"
+      ],
+      "port": 8766
+    },
+    {
+      "name": "mockups",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /private/tmp/claude-501/-Users-benonibrandao-Desktop-Portal-Sala-Buscadores/1e2d7419-3048-4737-aeef-4ec7e802cb6f/scratchpad/mockups && exec python3 -m http.server 8777 --bind 127.0.0.1"
+      ],
+      "port": 8777,
+      "url": "http://localhost:8777"
+    }
+  ]
+}

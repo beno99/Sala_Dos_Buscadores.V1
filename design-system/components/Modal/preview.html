@@ -1,0 +1,22 @@
+<!-- @dsCard group="Componentes básicos" height=460 subtitle="Alerta e sheet" -->
+<div class="sdb-stage">
+  <div class="sdb-row"><button class="sdb-btn sdb-btn--primary" data-open="m1">Propor verbete</button><button class="sdb-btn sdb-btn--destructive" data-open="m2"><span data-icon="lixeira" class=""></span>Excluir anotação</button></div>
+  <div class="sdb-spec" style="align-items:flex-start"><span class="sdb-caption">Alerta · estático</span>
+    <div class="sdb-modal sdb-modal--alert sdb-modal--static"><span class="sdb-modal__icon sdb-modal__icon--danger"><span data-icon="lixeira" class=""></span></span><h3 class="sdb-modal__title">Excluir esta anotação?</h3><p class="sdb-modal__text">A nota sobre o Poimandres sai da sua estante. Não dá para desfazer.</p><div class="sdb-modal__actions"><button class="sdb-btn sdb-btn--secondary">Manter</button><button class="sdb-btn sdb-btn--destructive">Excluir</button></div></div></div>
+
+  <div id="m1" class="sdb-overlay" aria-hidden="true"><div class="sdb-modal sdb-sheet" role="dialog" aria-modal="true" aria-labelledby="m1t">
+    <div class="sdb-sheet__bar"><button class="sdb-btn sdb-btn--plain" data-close>Cancelar</button><h2 id="m1t" class="sdb-sheet__title">Propor verbete</h2><button class="sdb-btn sdb-btn--primary sdb-btn--sm" data-close data-toast="Verbete enviado para revisão.">Enviar</button></div>
+    <div class="sdb-sheet__body">
+      <div class="sdb-field"><label class="sdb-label" for="mt">Termo</label><div class="sdb-control"><input id="mt" value="Ogdóade"></div></div>
+      <div class="sdb-field"><label class="sdb-label" for="md">Definição e fonte</label><div class="sdb-control sdb-control--area"><textarea id="md">No Corpus Hermeticum (Tratado I), a oitava esfera, acima das sete planetárias.</textarea></div></div>
+      <p class="sdb-help">Um especialista confere a fonte antes da publicação.</p>
+    </div>
+  </div></div>
+  <div id="m2" class="sdb-overlay" aria-hidden="true"><div class="sdb-modal sdb-modal--alert" role="alertdialog" aria-modal="true" aria-labelledby="m2t">
+    <span class="sdb-modal__icon sdb-modal__icon--danger"><span data-icon="lixeira" class=""></span></span>
+    <h2 id="m2t" class="sdb-modal__title">Excluir esta anotação?</h2>
+    <p class="sdb-modal__text">A nota sobre o Poimandres sai da sua estante. Não dá para desfazer.</p>
+    <div class="sdb-modal__actions"><button class="sdb-btn sdb-btn--secondary" data-close>Manter</button><button class="sdb-btn sdb-btn--destructive" data-close data-toast="Anotação excluída." data-toast-icon="lixeira">Excluir</button></div>
+  </div></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

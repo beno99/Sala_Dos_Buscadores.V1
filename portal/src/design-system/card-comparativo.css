@@ -1,0 +1,150 @@
+/* Card Comparativo · geometria compartilhada 24 / 8 / 16. */
+.comparativo {
+  --comparativo-unit: 8px;
+  --comparativo-radius: calc(var(--comparativo-unit) * 3);
+  --comparativo-head-radius: calc(var(--comparativo-unit) * 2);
+  --comparativo-surface: var(--ds-surface);
+  --comparativo-ink: var(--label);
+  --comparativo-muted: var(--ds-muted);
+  --comparativo-edge: var(--ds-edge);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--comparativo-unit);
+  border-radius: var(--comparativo-radius);
+  background: var(--comparativo-surface);
+  color: var(--comparativo-ink);
+  box-shadow: inset 0 0 0 1px var(--comparativo-edge), var(--ds-shadow);
+  -webkit-backdrop-filter: var(--ds-backdrop);
+  backdrop-filter: var(--ds-backdrop);
+  font-family: var(--font-ui);
+}
+.comparativo *, .comparativo *::before, .comparativo *::after { box-sizing: border-box; }
+.comparativo__head {
+  --plate-ink: var(--branco);
+  --plate-base: var(--bordo-rubro);
+  --plate-shade: var(--grafite-profundo);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: none;
+  min-height: 192px;
+  padding: 64px 24px 24px;
+  overflow: hidden;
+  border-radius: var(--comparativo-head-radius);
+  background: var(--plate-base);
+  color: var(--plate-ink);
+}
+.comparativo__head::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background: radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--gold-texture) 24%, transparent), transparent 65%), radial-gradient(ellipse at 0% 100%, var(--plate-shade), transparent 80%);
+  pointer-events: none;
+}
+.comparativo__head[data-plate="grafite"] { --plate-base: var(--grafite-profundo); --plate-shade: var(--bordo-rubro); }
+.comparativo__head[data-plate="bege"] { --plate-base: var(--bege-damasco); --plate-ink: var(--bordo-rubro); --plate-shade: var(--branco); }
+.comparativo__arc { position: absolute; z-index: -1; right: 16px; bottom: -8px; width: 56px; height: 80px; color: var(--plate-ink); opacity: .24; pointer-events: none; }
+.comparativo__arc svg { width: 100%; height: 100%; }
+.comparativo__arc .brand-steps { stroke: var(--plate-base); }
+.comparativo__title { max-width: 100%; margin: 0; font: 450 28px/1.08 var(--font-display-lower); letter-spacing: -.035em; text-wrap: balance; overflow-wrap: anywhere; }
+.comparativo__tradition { margin: 8px 0 0; font-size: 13px; line-height: 1.5; }
+.comparativo__remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid color-mix(in srgb, var(--plate-ink) 30%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--plate-base) 80%, transparent);
+  color: var(--plate-ink);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.comparativo__remove svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparativo__remove:focus-visible { outline: 2px solid var(--plate-ink); outline-offset: -5px; }
+.comparativo__answer { flex: 1; padding: 24px 16px 32px; }
+.comparativo__answer p { margin: 0; font: 400 21px/1.55 var(--font-display-lower); letter-spacing: -.012em; overflow-wrap: anywhere; }
+.comparativo__answer cite { font-style: italic; }
+.comparativo__answer dfn { padding-inline: 2px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-style: italic; font-weight: 550; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.comparativo__foot { display: flex; flex-direction: column; gap: 16px; margin-inline: 16px; padding-block: 24px 8px; border-top: 1px solid var(--comparativo-edge); }
+.comparativo__badges { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+.comparativo__source, .comparativo__level, .comparativo__empty-label { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1.35; }
+.comparativo__source { background: var(--accent-soft); color: var(--accent); }
+.comparativo__source svg, .comparativo__empty-label svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.comparativo__level, .comparativo__empty-label { background: var(--fill); color: var(--comparativo-muted); }
+.comparativo__steps { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+.comparativo__steps i { width: 3px; border-radius: 1px; background: currentColor; }
+.comparativo__steps i:nth-child(1) { height: 6px; }
+.comparativo__steps i:nth-child(2) { height: 10px; }
+.comparativo__steps i:nth-child(3) { height: 14px; }
+.comparativo__level[data-level="1"] i:nth-child(n+2), .comparativo__level[data-level="2"] i:nth-child(3) { opacity: .25; }
+.comparativo__reference { min-height: 40px; margin: 0; color: var(--comparativo-muted); font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
+.comparativo__action { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; margin-top: auto; color: var(--accent); font-size: 14px; font-weight: 550; line-height: 1.5; text-decoration: none; }
+.comparativo__action svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparativo__action:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
+.comparativo--empty .comparativo__answer { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.comparativo--empty .comparativo__answer p { color: var(--comparativo-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .comparativo__remove:hover { background: var(--plate-ink); color: var(--plate-base); }
+  .comparativo__action:hover { text-decoration: underline; text-underline-offset: 4px; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .comparativo { background: var(--ds-solid); }
+  .comparativo__remove { background: var(--plate-base); }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .comparativo { background: var(--ds-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .comparativo__remove { background: var(--plate-base); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) { .comparativo { outline: 1px solid var(--label); } }
+
+/* Grade comparativa · a faixa que organiza os cards. Mede o próprio contêiner (e não a janela),
+   para funcionar ao lado da navegação lateral do portal: 3 colunas, 2 até 860 px, 1 até 560 px. */
+.comparison { container-type: inline-size; padding-top: 40px; }
+.comparison__intro .eyebrow { margin: 0 0 16px; color: var(--ds-muted); font-size: 10px; font-weight: 550; letter-spacing: .14em; text-transform: uppercase; }
+.comparison__intro h2, .comparison__intro h1 { max-width: 880px; margin: 0; font: 400 clamp(32px, 3.2vw, 44px)/1.12 var(--font-display-lower); letter-spacing: -.035em; text-wrap: balance; }
+.comparison__topics { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.comparison__topics span, .comparison__topics a { display: inline-flex; align-items: center; min-height: 32px; padding: 8px 16px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 500; text-decoration: none; }
+.comparison__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 24px 0 16px; }
+.comparison__toolbar p { margin: 0; color: var(--ds-muted); font-size: 12px; }
+.comparison__controls { display: flex; gap: 8px; }
+.comparison__nav { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--ds-edge); border-radius: 50%; background: var(--ds-surface); color: var(--label); cursor: pointer; }
+.comparison__nav svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparison__nav--previous svg { transform: rotate(180deg); }
+.comparison__nav:disabled { opacity: .35; cursor: default; }
+.comparison__reset, .comparison__notice button { min-height: 48px; padding: 8px 16px; border: 0; border-radius: 8px; background: var(--ds-control); color: var(--accent); font-size: 12px; font-weight: 500; cursor: pointer; }
+.comparison__track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); align-items: stretch; gap: 24px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding: 8px 0 24px; scrollbar-width: thin; scrollbar-color: var(--ds-edge) transparent; }
+.comparison__track > .comparativo { scroll-snap-align: start; }
+.comparison__track:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
+.comparison__notice { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding: 8px 16px; border: 1px solid var(--ds-edge); border-radius: 16px; color: var(--ds-muted); background: var(--ds-surface); font-size: 13px; line-height: 1.5; }
+.comparison__note { display: flex; align-items: flex-start; gap: 8px; max-width: 760px; margin: 16px 0 0; color: var(--ds-muted); font-size: 12px; line-height: 1.6; }
+.comparison__note svg { flex: none; width: 16px; height: 16px; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+@supports (grid-template-rows: subgrid) {
+  .comparison__track { grid-template-rows: auto 1fr auto; row-gap: 0; }
+  .comparison__track > .comparativo { display: grid; grid-template-rows: subgrid; grid-row: span 3; row-gap: 0; }
+}
+@container (max-width: 860px) {
+  .comparison__track { grid-auto-columns: calc((100% - 24px) / 2); }
+}
+@container (max-width: 560px) {
+  .comparison__track { grid-auto-columns: min(360px, 100%); gap: 16px; }
+  .comparison__notice { align-items: flex-start; }
+  .comparison__reset { padding-inline: 8px; }
+}
+@media (max-width: 680px) { .comparison { padding-top: 32px; } }
+/* Portal · esqueleto enquanto as Salas são consultadas. */
+.comparativo__head.sdb-skel { background: var(--fill); }
+.comparativo__head.sdb-skel::before { display: none; }
+/* Card e trilho posicionados: elementos absolutos dentro dos cards (como o texto só para leitor de tela de
+   "Ler na Sala") ficam contidos e recortados pelo trilho. Sem isso, no celular eles escapavam da rolagem
+   horizontal e alargavam a página inteira (o Chrome reduzia o zoom para caber). */
+.comparativo, .comparison__track { position: relative; }

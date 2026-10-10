@@ -1,0 +1,28 @@
+<button class="orb-launcher" type="button" popovertarget="assistant-chat" data-assistant-open aria-label="Abrir o assistente" aria-haspopup="dialog" aria-controls="assistant-chat" aria-expanded="false">
+  <span class="orb-visual"><span class="orb-fallback-rings" aria-hidden="true"><i></i><i></i><i></i></span><canvas data-gold-orb aria-hidden="true"></canvas></span>
+  <span class="orb-launcher__label" aria-hidden="true">Pergunte ao acervo</span>
+</button>
+<section class="assistant-chat" id="assistant-chat" popover="auto" role="dialog" aria-modal="false" aria-labelledby="assistant-chat-title">
+  <header class="assistant-chat__header">
+    <div class="assistant-chat__identity"><span class="assistant-chat__spark" aria-hidden="true"></span><div><h2 id="assistant-chat-title">Assistente do acervo</h2><p>Uma conversa, novas perspectivas</p></div></div>
+    <button class="assistant-chat__icon" type="button" data-assistant-clear aria-label="Limpar conversa de exemplo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="assistant-chat__icon" type="button" data-assistant-close aria-label="Fechar assistente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+  </header>
+  <div class="assistant-chat__scroll" data-assistant-scroll>
+    <div class="assistant-chat__welcome" data-assistant-welcome>
+      <h3>Por onde começa<br>a sua busca?</h3>
+      <p>Explore ideias, encontre fontes e aproxime diferentes tradições.</p>
+      <div class="assistant-chat__suggestions" data-assistant-suggestions aria-label="Sugestões de perguntas"></div>
+    </div>
+    <div class="assistant-chat__log" data-assistant-log role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversa de exemplo"></div>
+  </div>
+  <div class="assistant-chat__bottom">
+    <form class="assistant-chat__composer">
+      <label class="sr-only" for="assistant-question">Sua pergunta ao acervo</label>
+      <textarea id="assistant-question" placeholder="Pergunte ao acervo…" maxlength="2000" rows="2" enterkeyhint="send" aria-describedby="assistant-demo-disclosure"></textarea>
+      <button class="assistant-chat__send" type="submit" data-assistant-send aria-label="Enviar pergunta" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
+    </form>
+    <p class="assistant-chat__disclosure" id="assistant-demo-disclosure">Prévia interativa · respostas de exemplo, sem IA conectada.</p>
+    <div class="assistant-chat__motion"><button class="orb-motion" type="button" data-orb-pause aria-pressed="false" aria-label="Pausar movimento do orbe"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg><span>Pausar movimento</span></button></div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+<!-- @dsCard group="Componentes do acervo" height=620 subtitle="Original, tradução e referência" -->
+<div class="sdb-stage">
+  <figure class="sdb-quote" style="margin:0">
+    <div class="sdb-quote__head"><div class="sdb-row" style="gap:16px;flex-wrap:nowrap;min-width:0"><span class="sdb-cover sdb-cover--bege sdb-cover--sm" aria-hidden="true">K</span><div class="sdb-quote__src"><b>O Caibalion</b><span>Capítulo II · O princípio do mentalismo</span></div></div><span class="sdb-seal sdb-seal--primaria"><span class="sdb-seal__icon"><span data-icon="fontePrimaria"></span></span>Fonte primária</span></div>
+    <div class="sdb-segmented" role="group" aria-label="Exibição do trecho" id="qseg">
+      <button type="button" data-toggle data-toggle-group="q1" aria-pressed="false" data-view="orig">Original</button>
+      <button type="button" data-toggle data-toggle-group="q1" aria-pressed="false" data-view="trad">Tradução</button>
+      <button type="button" data-toggle data-toggle-group="q1" aria-pressed="true" data-view="both">Lado a lado</button>
+    </div>
+    <div class="sdb-quote__views" data-view="both" id="qv">
+      <div class="sdb-quote__part" data-part="orig"><span class="sdb-caption">Original · inglês, 1908</span><blockquote class="sdb-quote__text sdb-quote__text--orig" lang="en">“The ALL is MIND; The Universe is Mental.”</blockquote></div>
+      <div class="sdb-quote__part" data-part="trad"><span class="sdb-caption">Tradução</span><blockquote class="sdb-quote__text">“O TODO é MENTE; o Universo é Mental.”</blockquote></div>
+    </div>
+    <figcaption class="sdb-quote__foot"><cite>TRÊS INICIADOS. <i>The Kybalion: a study of the hermetic philosophy of ancient Egypt and Greece</i>. Chicago: Yogi Publication Society, 1908. Cap. II.</cite>
+      <button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-copy="“O TODO é MENTE; o Universo é Mental.” TRÊS INICIADOS. The Kybalion. Chicago: Yogi Publication Society, 1908. Cap. II." data-copy-toast="Citação copiada no formato ABNT."><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar citação</button></figcaption>
+  </figure>
+  <figure class="sdb-quote" style="margin:0">
+    <div class="sdb-quote__head"><div class="sdb-row" style="gap:16px;flex-wrap:nowrap;min-width:0"><span class="sdb-cover sdb-cover--sm" aria-hidden="true">T</span><div class="sdb-quote__src"><b>Evangelho de Tomé</b><span>Dito 2 · NHC II,2</span></div></div><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Tradução editorial</span></div>
+    <div class="sdb-quote__views" data-view="trad"><div class="sdb-quote__part" data-part="trad"><span class="sdb-caption">Tradução · original copta não exibido nesta edição</span><blockquote class="sdb-quote__text">“Quem busca não pare de buscar até encontrar. Quando encontrar, ficará perturbado; e, perturbado, ficará maravilhado.”</blockquote></div></div>
+    <figcaption class="sdb-quote__foot"><cite>Tradução da equipe da Sala a partir de MEYER, Marvin (ed.). <i>The Nag Hammadi Scriptures</i>. Nova York: HarperOne, 2007.</cite><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-copy="“Quem busca não pare de buscar até encontrar.” Evangelho de Tomé, dito 2 (NHC II,2)."><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar citação</button></figcaption>
+  </figure>
+</div>
+<script>SalaBuscadores.hydrate();
+var qv = document.getElementById("qv");
+document.getElementById("qseg").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-view]"); if (!b) return;
+  setTimeout(function () { if (b.getAttribute("aria-pressed") !== "true") { b.setAttribute("aria-pressed", "true"); SalaBuscadores.syncSeg(b.parentNode); } qv.dataset.view = b.dataset.view; }, 0);
+});
+</script>

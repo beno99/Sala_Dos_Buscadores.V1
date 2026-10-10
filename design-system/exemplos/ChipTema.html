@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChipTema · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-row" style="gap:8px">
+    <button class="sdb-chip" type="button" data-toggle aria-pressed="true">Morte <span class="sdb-count">42</span></button>
+    <button class="sdb-chip" type="button" data-toggle aria-pressed="false">Meditação <span class="sdb-count">31</span></button>
+    <button class="sdb-chip" type="button" data-toggle aria-pressed="false">Origem do universo <span class="sdb-count">27</span></button>
+    <button class="sdb-chip" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">58</span></button>
+    <button class="sdb-chip is-hover" type="button" data-toggle aria-pressed="false">Conhecimento interior</button>
+    <button class="sdb-chip" type="button" disabled>Reencarnação <span class="sdb-count">0</span></button>
+  </div>
+  <div class="sdb-spec"><span class="sdb-caption">Pequeno · removível · com Sala</span>
+    <div class="sdb-row" style="gap:8px">
+      <span class="sdb-chip sdb-chip--sm sdb-chip--static" aria-pressed="true">Alma<button class="sdb-chip__x" aria-label="Remover filtro Alma" data-toast="Filtro Alma removido."><span data-icon="fechar" class="sdb-icon--sm"></span></button></span>
+      <span class="sdb-chip sdb-chip--sm sdb-chip--static">Morte<button class="sdb-chip__x" aria-label="Remover filtro Morte" data-toast="Filtro Morte removido."><span data-icon="fechar" class="sdb-icon--sm"></span></button></span>
+      <a href="#" class="sdb-chip sdb-chip--sm"><span data-arc class="" style=""></span>Corpus Hermeticum</a>
+    </div></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

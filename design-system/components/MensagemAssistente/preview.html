@@ -1,0 +1,47 @@
+<!-- @dsCard group="Assistente de IA" height=940 subtitle="Documento, interpretação e síntese distintos" -->
+<div class="sdb-stage" style="gap:24px">
+  <p class="sdb-bubble">Como o Corpus Hermeticum descreve a subida da alma após a morte?</p>
+  <article class="sdb-msg" aria-labelledby="am-who" style="max-width:760px">
+    <span class="sdb-avatar sdb-avatar--ai sdb-msg__avatar" aria-hidden="true"><span data-arc class="" style=""></span></span>
+    <div><div class="sdb-msg__who"><b id="am-who">Assistente de IA</b><span class="sdb-seal sdb-seal--ia"><span class="sdb-seal__icon"><span data-icon="ia"></span></span>Síntese por IA</span><span class="sdb-footnote">14 trechos · 1 Sala · 3,8 s</span></div></div>
+    <div class="sdb-msg__content" id="am-body">
+      <section class="sdb-seg sdb-seg--doc"><div class="sdb-seg__label"><span data-icon="fontePrimaria" class="sdb-icon--sm"></span>Trecho documental · CH I, 25</div>
+        <p>“E assim o homem sobe através da harmonia: à primeira zona entrega a força de crescer e diminuir…”<a class="sdb-ref" href="#am-s1">1</a></p></section>
+      <section class="sdb-seg sdb-seg--editorial"><div class="sdb-seg__label"><span data-icon="curado" class="sdb-icon--sm"></span>Interpretação editorial · Equipe da Sala Corpus Hermeticum</div>
+        <p>Os editores leem a passagem como um despojamento em sete etapas: cada esfera planetária recebe de volta uma paixão, até que a alma chegue à Ogdóade.<a class="sdb-ref" href="#am-s2">2</a></p></section>
+      <section class="sdb-seg sdb-seg--ai"><div class="sdb-seg__label"><span data-icon="ia" class="sdb-icon--sm"></span>Síntese da IA</div>
+        <p id="am-ai">Segundo o Tratado I, a morte começa pela dissolução do corpo. A alma então sobe pelas sete esferas e devolve a cada uma o que dela recebeu. O texto não diz que essa é a única leitura possível; Copenhaver registra outras interpretações nas notas.<a class="sdb-ref" href="#am-s3">3</a></p></section>
+      <div class="sdb-spec" style="gap:8px;margin-top:4px"><span class="sdb-caption">Fontes citadas</span>
+        <div class="sdb-list">
+          <a id="am-s1" href="#" class="sdb-source sdb-source--row" style="color:inherit;text-decoration:none"><span class="sdb-cover sdb-cover--grafite sdb-cover--sm" aria-hidden="true">H</span><div class="sdb-source__info"><h3 class="sdb-source__title">Corpus Hermeticum, Tratado I</h3><p class="sdb-source__ref">Fonte primária · §24–26</p></div><span class="sdb-source__num">1</span></a>
+          <a id="am-s2" href="#" class="sdb-source sdb-source--row" style="color:inherit;text-decoration:none"><span class="sdb-cover sdb-cover--sm" aria-hidden="true">S</span><div class="sdb-source__info"><h3 class="sdb-source__title">As sete esferas no Poimandres</h3><p class="sdb-source__ref">Editorial curado · Sala Corpus Hermeticum</p></div><span class="sdb-source__num">2</span></a>
+          <a id="am-s3" href="#" class="sdb-source sdb-source--row" style="color:inherit;text-decoration:none"><span class="sdb-cover sdb-cover--bege sdb-cover--sm" aria-hidden="true">C</span><div class="sdb-source__info"><h3 class="sdb-source__title">Hermetica</h3><p class="sdb-source__ref">Brian P. Copenhaver · Cambridge UP, 1992</p></div><span class="sdb-source__num">3</span></a>
+        </div></div>
+    </div>
+    <div class="sdb-msg__actions">
+      <button class="sdb-btn sdb-btn--icon" type="button" aria-label="Copiar resposta" data-tip="Copiar com as fontes" data-copy="#am-body" data-copy-toast="Resposta copiada com as fontes."><span data-icon="copiar" class=""></span></button>
+      <button class="sdb-btn sdb-btn--icon" type="button" aria-label="Útil" aria-pressed="false" data-tip="Útil" data-toggle data-toggle-group="rate" id="am-up"><span data-icon="util" class=""></span></button>
+      <button class="sdb-btn sdb-btn--icon" type="button" aria-label="Não útil" aria-pressed="false" data-tip="Não útil" data-toggle data-toggle-group="rate" id="am-down"><span data-icon="naoUtil" class=""></span></button>
+      <button class="sdb-btn sdb-btn--glass sdb-btn--sm" type="button" id="am-regen"><span data-icon="regenerar" class="sdb-icon--sm"></span>Gerar novamente</button>
+    </div>
+  </article>
+  <div class="sdb-neutral sdb-neutral--quiet" style="max-width:760px"><span class="sdb-neutral__icon"><span data-arc class="" style=""></span></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira. Confira sempre as fontes citadas.</p></div>
+</div>
+<script>SalaBuscadores.hydrate();
+var alt = [
+  "No Poimandres, a subida da alma é descrita como um retorno: ao deixar o corpo, ela atravessa as sete esferas e se despoja das forças que recebeu de cada uma, até chegar à Ogdóade. A tradução de Copenhaver discute outras leituras nas notas.",
+  "Segundo o Tratado I, a morte começa pela dissolução do corpo. A alma então sobe pelas sete esferas e devolve a cada uma o que dela recebeu. O texto não diz que essa é a única leitura possível; Copenhaver registra outras interpretações nas notas."
+], k = 0;
+document.getElementById("am-up").addEventListener("click", function () { if (this.getAttribute("aria-pressed") !== "true") SalaBuscadores.toast("Obrigado. A avaliação ajuda a curadoria.", { icon: "util" }); });
+document.getElementById("am-down").addEventListener("click", function () { if (this.getAttribute("aria-pressed") !== "true") SalaBuscadores.toast("Obrigado. A equipe da Sala vai revisar esta resposta.", { icon: "naoUtil" }); });
+document.getElementById("am-regen").addEventListener("click", function () {
+  var p = document.getElementById("am-ai"), btn = this, ref = '<a class="sdb-ref" href="#am-s3">3</a>';
+  btn.disabled = true; k = (k + 1) % alt.length;
+  var text = alt[k], i = 0; p.textContent = ""; p.classList.add("sdb-typing");
+  (function tick() {
+    i += 3; p.textContent = text.slice(0, i);
+    if (i < text.length) setTimeout(tick, 16);
+    else { p.classList.remove("sdb-typing"); p.innerHTML = p.textContent + ref; btn.disabled = false; }
+  })();
+});
+</script>

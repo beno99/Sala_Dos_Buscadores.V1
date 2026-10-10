@@ -1,0 +1,56 @@
+<!-- @dsCard group="Componentes básicos" height=640 subtitle="Cápsulas: primário, secundário, vidro, destrutivo, ícone" -->
+<div class="sdb-stage">
+  <div class="sdb-spec"><span class="sdb-caption">Variantes</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--primary" type="button">Entrar na Sala</button>
+      <button class="sdb-btn sdb-btn--secondary" type="button">Comparar tradições</button>
+      <button class="sdb-btn sdb-btn--glass" type="button">Ver fontes</button>
+      <button class="sdb-btn sdb-btn--tinted" type="button"><span data-icon="estante" class=""></span>Salvar na estante</button>
+      <button class="sdb-btn sdb-btn--plain" type="button">Ver todas</button>
+      <button class="sdb-btn sdb-btn--destructive" type="button"><span data-icon="lixeira" class=""></span>Remover</button>
+    </div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Com ícone</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--icon" type="button" aria-label="Copiar citação" data-tip="Copiar citação"><span data-icon="copiar" class=""></span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Compartilhar" data-tip="Compartilhar"><span data-icon="compartilhar" class=""></span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--primary" type="button" aria-label="Nova comparação" data-tip="Nova comparação"><span data-icon="mais" class=""></span></button>
+      <button class="sdb-btn sdb-btn--glass" type="button"><span data-icon="busca" class=""></span>Buscar no acervo</button>
+      <div class="sdb-plate sdb-plate--bordo sdb-media" style="margin:0;aspect-ratio:auto;min-height:0;padding:8px;border-radius:999px;display:inline-flex">
+        <button class="sdb-btn sdb-glass--clear sdb-btn--sm" type="button"><span data-icon="play" class="sdb-icon--sm"></span>Assistir</button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-glass--clear" type="button" aria-label="Salvar"><span data-icon="estante" class="sdb-icon--sm"></span></button>
+      </div>
+    </div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Estados · primário</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--primary" type="button">Padrão</button>
+      <button class="sdb-btn sdb-btn--primary is-hover" type="button">Hover</button>
+      <button class="sdb-btn sdb-btn--primary is-pressed" type="button">Pressionado</button>
+      <button class="sdb-btn sdb-btn--primary is-focus" type="button">Foco</button>
+      <button class="sdb-btn sdb-btn--primary" type="button" disabled>Desabilitado</button>
+      <button class="sdb-btn sdb-btn--primary is-loading" type="button" aria-busy="true"><span>Consultando</span><span class="sdb-spinner" aria-hidden="true"></span></button>
+      <button id="load-demo" class="sdb-btn sdb-btn--secondary" type="button"><span>Clique para carregar</span><span class="sdb-spinner" aria-hidden="true"></span></button>
+    </div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Estados · secundário, vidro, destrutivo</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--secondary is-hover" type="button">Hover</button>
+      <button class="sdb-btn sdb-btn--glass is-pressed" type="button">Pressionado</button>
+      <button class="sdb-btn sdb-btn--glass" type="button" disabled>Desabilitado</button>
+      <button class="sdb-btn sdb-btn--destructive is-hover" type="button">Hover</button>
+      <button class="sdb-btn sdb-btn--destructive" type="button" disabled>Desabilitado</button>
+    </div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Tamanhos · 34 · 44 · 54 · bloco</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--primary sdb-btn--sm" type="button">Pequeno</button>
+      <button class="sdb-btn sdb-btn--primary" type="button">Médio</button>
+      <button class="sdb-btn sdb-btn--primary sdb-btn--lg" type="button">Grande</button>
+    </div>
+    <div style="max-width:420px"><button class="sdb-btn sdb-btn--primary sdb-btn--lg sdb-btn--block" type="button">Continuar degrau III</button></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();
+document.getElementById("load-demo").addEventListener("click", function () {
+  var b = this; if (b.classList.contains("is-loading")) return;
+  b.classList.add("is-loading"); b.setAttribute("aria-busy", "true");
+  setTimeout(function () { b.classList.remove("is-loading"); b.removeAttribute("aria-busy"); SalaBuscadores.toast("Acervo atualizado."); }, 1400);
+});
+</script>

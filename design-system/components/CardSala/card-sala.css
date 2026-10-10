@@ -1,0 +1,238 @@
+/* Card Sala · v0.2. Tokens da marca + assets/themes.css; independente do catálogo. */
+.sala {
+  --sala-radius: 24px;
+  --sala-inset: 8px;
+  --sala-media-radius: calc(var(--sala-radius) - var(--sala-inset));
+  --sala-panel-radius: 16px;
+  --sala-space: 8px;
+  --sala-panel-solid: var(--ds-solid, var(--float-solid));
+  --sala-panel-glass: var(--ds-glass, var(--float-solid));
+  --sala-surface: var(--ds-surface, var(--material-regular));
+  --sala-ink: var(--label);
+  --sala-muted: var(--ds-muted, var(--label-secondary));
+  --sala-edge: var(--ds-edge, var(--glass-edge));
+  --sala-rim: var(--ds-rim, var(--glass-rim));
+  --sala-frame: var(--ds-frame, var(--glass-fill));
+  --sala-overlay: rgb(17 19 19 / 78%);
+  --sala-shadow: var(--ds-shadow, var(--shadow-card));
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--sala-inset);
+  border-radius: var(--sala-radius);
+  color: var(--sala-ink);
+  background: var(--sala-surface);
+  -webkit-backdrop-filter: var(--ds-backdrop, none);
+  backdrop-filter: var(--ds-backdrop, none);
+  box-shadow: inset 0 0 0 1px var(--sala-edge), var(--sala-shadow);
+  font-family: var(--font-ui);
+  transition: box-shadow 180ms ease;
+}
+.sala *, .sala *::before, .sala *::after { box-sizing: border-box; }
+.sala__media {
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  min-width: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--sala-media-radius);
+  background: var(--depth-fill);
+}
+.sala__image {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% 55%;
+}
+.sala__media::before {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(17 19 19 / 24%), transparent 38%);
+}
+.sala__tools {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sala-space);
+  padding: calc(var(--sala-space) * 2);
+}
+.sala__count, .sala__save {
+  border: 0;
+  background: var(--sala-overlay);
+  color: var(--branco);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 30%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.sala__count {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.sala__save {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sala__save svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; }
+.sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--bordo-rubro); }
+.sala__save[aria-pressed="true"] svg { fill: currentColor; }
+.sala__body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--sala-space) * 2);
+  min-width: 0;
+  padding: calc(var(--sala-space) * 3) calc(var(--sala-space) * 2) calc(var(--sala-space) * 2);
+}
+.sala__title {
+  margin: 0;
+  font: 450 32px/1.06 var(--font-display-lower);
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.sala__description { margin: 0; color: var(--sala-muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.sala__meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sala-space); margin-top: auto; }
+.sala__level {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sala-space);
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--sala-ink);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.2;
+}
+.sala__steps { display: flex; align-items: end; gap: 2px; height: 14px; }
+.sala__steps i { display: block; width: 3px; border-radius: 1px; background: currentColor; }
+.sala__steps i:nth-child(1) { height: 6px; }
+.sala__steps i:nth-child(2) { height: 10px; }
+.sala__steps i:nth-child(3) { height: 14px; }
+.sala__level[data-level="1"] i:nth-child(n+2), .sala__level[data-level="2"] i:nth-child(3) { opacity: .2; }
+.sala__date { color: var(--sala-muted); font-size: 12px; line-height: 1.5; }
+.sala__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--sala-space) * 2);
+  min-height: 48px;
+  max-width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--prominent-fill);
+  color: var(--on-prominent);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.sala__action svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.sala__save:focus-visible { outline: 3px solid var(--branco); outline-offset: 3px; }
+.sala__action:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.sala--normal { min-height: 552px; }
+.sala--normal .sala__action { padding-inline: 0; background: transparent; color: var(--accent); }
+
+/* Destaque: moldura → imagem → painel; o material do painel é independente do tema. */
+.sala--destaque {
+  background: var(--sala-frame);
+  box-shadow: inset 0 0 0 1px var(--sala-rim), var(--sala-shadow);
+}
+.sala--destaque .sala__media { display: flex; flex-direction: column; flex: 1; min-height: 536px; aspect-ratio: auto; }
+.sala--destaque .sala__image { object-position: 55% 50%; }
+.sala--destaque .sala__body {
+  flex: none;
+  margin: 136px 8px 8px;
+  padding: calc(var(--sala-space) * 3);
+  border-radius: var(--sala-panel-radius);
+  background: var(--sala-panel-solid);
+  box-shadow: inset 0 0 0 1px var(--sala-rim), 0 4px 24px rgb(17 19 19 / 7%);
+}
+.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
+.sala--destaque .sala__tools { margin-bottom: 128px; }
+.sala--translucido .sala__body {
+  background: var(--sala-panel-glass);
+  -webkit-backdrop-filter: blur(24px) saturate(115%);
+  backdrop-filter: blur(24px) saturate(115%);
+}
+
+/* Horizontal: metadados no canto da imagem e corpo que cresce com o texto. */
+.sala--horizontal.sala--normal { flex-direction: row; min-height: 320px; }
+.sala--horizontal.sala--normal .sala__media { width: 46%; aspect-ratio: auto; }
+.sala--horizontal.sala--normal .sala__body { padding: 24px 32px; }
+.sala--horizontal.sala--destaque .sala__media { min-height: 408px; }
+.sala--horizontal.sala--destaque .sala__tools { margin-bottom: 0; }
+.sala--horizontal.sala--destaque .sala__body { width: min(46%, 368px); margin: 8px 8px 8px; padding: 24px; }
+.sala--horizontal.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
+.sala--horizontal.sala--destaque .sala__image { object-position: 65% 55%; }
+
+@media (hover: hover) and (pointer: fine) {
+  .sala:hover { --sala-shadow: var(--ds-shadow-hover, var(--shadow-float)); }
+  .sala__save:hover { background: rgb(17 19 19 / 92%); }
+  .sala__save[aria-pressed="true"]:hover { background: var(--branco); }
+  .sala__action:hover { text-decoration: underline; text-underline-offset: 4px; }
+}
+@media (max-width: 620px) {
+  .sala--horizontal.sala--normal { flex-direction: column; min-height: 0; }
+  .sala--horizontal.sala--normal .sala__media { width: 100%; aspect-ratio: 16 / 10; }
+  .sala--horizontal.sala--normal .sala__body { padding: 24px 16px 16px; }
+  .sala--horizontal.sala--destaque .sala__media { min-height: 536px; }
+  .sala--horizontal.sala--destaque .sala__body { width: auto; margin: auto 8px 8px; }
+  .sala--horizontal.sala--destaque .sala__tools { margin-bottom: 128px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .sala { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala__count, .sala__save { background: var(--grafite-profundo); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sala { background: var(--sala-panel-solid); }
+  .sala--translucido .sala__body { background: var(--sala-panel-solid); }
+  .sala__count, .sala__save { background: var(--grafite-profundo); }
+  .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@media (prefers-contrast: more) {
+  .sala { outline: 1px solid var(--label); background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala__count, .sala__save { background: var(--grafite-profundo); box-shadow: inset 0 0 0 2px var(--branco); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@media (prefers-reduced-motion: reduce) { .sala, .sala * { transition: none; } }
+
+/* Portal · extensões 1.0.1: placa da marca quando não há foto, etiquetas sobre a imagem e progresso do membro. */
+.sala__placa { position: absolute; z-index: -2; inset: 0; display: grid; place-items: end center; }
+.sala__placa > .sdb-arc { width: 30%; max-width: 116px; height: auto; aspect-ratio: 36 / 48; margin-bottom: -1px; }
+.sala--destaque .sala__placa > .sdb-arc { width: 24%; }
+.sala__chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sala-space); min-width: 0; }
+.sala__body > .sdb-progress { align-self: stretch; margin-top: auto; }
+.sala__media.sdb-skel { background: var(--fill); }

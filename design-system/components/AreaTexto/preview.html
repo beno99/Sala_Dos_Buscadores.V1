@@ -1,0 +1,14 @@
+<!-- @dsCard group="Componentes básicos" height=400 subtitle="Texto longo com contador" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-grid" style="--sdb-col:280px;gap:16px 16px">
+      <div class="sdb-field"><label class="sdb-label" for="t1">Nota de estudo <small>opcional</small></label>
+        <div class="sdb-control sdb-control--area"><textarea id="t1" maxlength="600" placeholder="Anote o que chamou sua atenção neste trecho.">No Poimandres, a subida da alma pelas sete esferas é descrita como um despojamento: cada esfera recebe de volta aquilo que deu.</textarea></div>
+        <span class="sdb-counter" data-count-for="t1"></span></div>
+      <div class="sdb-field"><label class="sdb-label" for="t2">Justificativa da contribuição</label>
+        <div class="sdb-control sdb-control--area is-error"><textarea id="t2" maxlength="600" aria-invalid="true" aria-describedby="t2e">Achei importante.</textarea></div>
+        <p id="t2e" class="sdb-error-msg"><span data-icon="erro" class=""></span><span><b>Erro:</b> indique a fonte, com obra, autor e página ou versículo.</span></p></div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Badge · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-spec"><span class="sdb-caption">Categoria</span>
+    <div class="sdb-row" style="gap:8px"><span class="sdb-badge">Gnosticismo</span><span class="sdb-badge">Hermetismo</span><span class="sdb-badge sdb-badge--solid">Fonte primária</span><span class="sdb-badge sdb-badge--neutral">Séc. II–IV</span><span class="sdb-badge sdb-badge--neutral">Copta</span><span class="sdb-badge sdb-badge--ink">Novo</span></div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Status editorial</span>
+    <div class="sdb-row" style="gap:8px"><span class="sdb-badge"><i class="sdb-badge__dot"></i>Publicado</span><span class="sdb-badge"><i class="sdb-badge__dot sdb-badge__dot--half"></i>Em revisão</span><span class="sdb-badge sdb-badge--neutral"><i class="sdb-badge__dot sdb-badge__dot--hollow"></i>Rascunho</span><span class="sdb-badge sdb-badge--neutral"><span data-icon="cadeado" class="sdb-icon--sm"></span>Arquivado</span></div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Sobre mídia</span><div class="sdb-plate sdb-plate--grafite sdb-media" style="margin:0;aspect-ratio:auto;min-height:0;display:inline-flex;align-self:flex-start;border-radius:24px;padding:16px"><span class="sdb-badge sdb-badge--glass">148 conteúdos</span><span class="sdb-badge sdb-badge--glass">Sala</span></div></div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

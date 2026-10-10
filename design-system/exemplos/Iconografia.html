@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iconografia · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div id="icon-grid" class="sdb-material sdb-grid" style="--sdb-col:104px;gap:0;padding:8px;border-radius:24px"></div>
+  <p class="sdb-hint">Grade 24 px, traço 1,7 px, pontas e junções arredondadas. Sem cristais, mandalas, lua, velas, fumaça ou símbolos religiosos.</p>
+</div>
+<script>SalaBuscadores.hydrate();
+var g = document.getElementById("icon-grid");
+SalaBuscadores.icons.forEach(function (n) {
+  var c = document.createElement("div");
+  c.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:16px";
+  c.innerHTML = SalaBuscadores.icon(n, "sdb-icon--lg") + '<span style="font-size:11px;color:var(--label-secondary)">' + n + "</span>";
+  g.appendChild(c);
+});
+</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

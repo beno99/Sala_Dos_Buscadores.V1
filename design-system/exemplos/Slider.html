@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slider · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
+<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
+<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel" style="max-width:560px">
+    <div class="sdb-field"><label class="sdb-label" for="sl1">Período histórico <small><output data-slider-out="sl1"></output></small></label>
+      <input id="sl1" class="sdb-slider" type="range" min="-500" max="2000" step="50" value="150" data-format="até {v} d.C.">
+      <div class="sdb-slider-scale"><span>500 a.C.</span><span>0</span><span>1000</span><span>2000</span></div></div>
+    <div class="sdb-field"><label class="sdb-label" for="sl2">Tamanho do texto de leitura <small><output data-slider-out="sl2"></output></small></label>
+      <div class="sdb-row" style="flex-wrap:nowrap;gap:16px"><span style="font:500 13px var(--font-reading)">A</span><input id="sl2" class="sdb-slider" type="range" min="16" max="24" value="19" data-format="{v} px"><span style="font:500 22px var(--font-reading)">A</span></div></div>
+    <div class="sdb-field"><label class="sdb-label" for="sl3">Densidade <small>desabilitado</small></label><input id="sl3" class="sdb-slider" type="range" value="40" disabled></div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

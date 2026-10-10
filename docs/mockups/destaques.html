@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Destaques · mockup</title>
+<!--
+  Mockup de estudo da seção Destaques (item 2 de docs/prompts/correcoes-portal.md).
+  Não é código do portal. Usa as peças reais do design system (tokens, Card Vídeo,
+  Card Sala no modo destaque, lateral, barra superior) e simula em <style> as duas
+  peças que ainda vão nascer na biblioteca: o modo destaque compacto do Card de
+  conteúdo e a lista "Mais pesquisados" com miniatura no hover.
+-->
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+<link rel="stylesheet" href="../../design-system/assets/themes.css">
+<link rel="stylesheet" href="../../design-system/components/refinement.css">
+<link rel="stylesheet" href="../../design-system/components/CardSala/card-sala.css">
+<link rel="stylesheet" href="../../design-system/components/CardVideo/card-video.css">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../../design-system/components/bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg-canvas); }
+
+  /* Moldura: lateral + coluna (barra superior e conteúdo com o mesmo respiro, item 1). */
+  .app { display: flex; min-height: 100dvh; }
+  .app__lat { position: sticky; top: 0; flex: none; height: 100dvh; }
+  .app__col { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .app__main { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-9); padding: var(--space-4) var(--space-7) var(--space-9); }
+  @media (max-width: 900px) { .app__lat { display: none; } .app__main { padding-inline: var(--space-4); } }
+
+  /* Destaques: coluna larga + lista. */
+  .dest { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--space-8); }
+  .dest__principal { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+  .dest__grade { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); height: 600px; }
+  .dest__col { display: grid; gap: var(--space-5); min-height: 0; }
+  .dest__col--esq { grid-template-rows: 2fr 1fr; }
+  .dest__col--dir { grid-template-rows: 1fr 1fr; }
+
+  /* [peça nova] Modo destaque compacto do Card de conteúdo (base: sala--destaque). */
+  .cc.sala--destaque { height: 100%; min-height: 0; }
+  .cc.sala--destaque .sala__media { min-height: 0; }
+  .cc.sala--destaque .sala__tools { margin-bottom: 0; }
+  .cc.sala--destaque .sala__body { gap: var(--space-2); margin-top: auto; padding: var(--space-4) var(--space-5) var(--space-5); }
+  .cc .sala__title { font-size: 24px; line-height: 1.12; }
+  .cc--alto .sala__title { font-size: 30px; }
+  .cc.sala--horizontal.sala--destaque .sala__media { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 54%); grid-template-rows: auto 1fr; }
+  .cc.sala--horizontal.sala--destaque .sala__tools { grid-column: 1; grid-row: 1; }
+  .cc.sala--horizontal.sala--destaque .sala__body { grid-column: 2; grid-row: 1 / span 2; width: auto; margin: 8px; justify-content: flex-start; }
+  .cc.sala--horizontal .sala__title { font-size: 21px; }
+  .cc__onde { margin: 0; color: var(--label-secondary); font: 600 11px/1.3 var(--font-meta); letter-spacing: .06em; text-transform: uppercase; }
+  .cc .sdb-seal { margin-top: auto; }
+  .cc .sala__count { white-space: nowrap; }
+  .cc .sala__description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+
+  /* [peça nova] Lista "Mais pesquisados" com miniatura no hover. */
+  .mp { display: flex; flex-direction: column; gap: var(--space-4); min-height: 0; }
+  .mp__head { display: flex; flex-direction: column; gap: var(--space-1); }
+  .mp__rotulo { margin: 0; color: var(--label-secondary); font: 600 11.5px/1.3 var(--font-meta); letter-spacing: .06em; text-transform: uppercase; }
+  .mp__list { display: flex; flex: 1; flex-direction: column; min-height: 0; margin: 0; padding: 0; list-style: none; }
+  .mp__item { flex: 1 1 0; min-height: 0; overflow: hidden; border-top: 1px solid var(--separator); transition: flex-grow var(--duration-spring) var(--sdb-spring), opacity var(--duration-fast) ease; }
+  .mp__item:first-child { border-top: 0; }
+  .mp__link { display: flex; flex-direction: column; justify-content: center; gap: 0; height: 100%; padding: var(--space-3) 0; color: inherit; text-decoration: none; border-radius: var(--radius-sm); transition: gap var(--duration-spring) var(--sdb-spring); }
+  .mp__link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+  .mp__thumb { position: relative; flex: none; display: block; height: 0; overflow: hidden; border-radius: var(--radius-md); opacity: 0; transform: translateY(8px) scale(.985); transform-origin: top center; transition: height var(--duration-spring) var(--sdb-spring), opacity var(--duration-fast) ease, transform var(--duration-spring) var(--sdb-spring); }
+  .mp__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .mp__thumb .sdb-plate { position: absolute; inset: 0; display: grid; place-items: end center; }
+  .mp__thumb .sdb-arc { width: 22%; height: auto; margin-bottom: -1px; }
+  .mp__titulo { color: var(--label); font: 500 15.5px/1.3 var(--font-ui); letter-spacing: -.01em; transition: color var(--duration-fast) ease; }
+  .mp__meta { margin-top: var(--space-2); color: var(--label-secondary); font-size: 12px; line-height: 1.35; }
+  @media (hover: hover) and (pointer: fine) {
+    .mp__list:has(.mp__item:hover) .mp__item, .mp__list:has(.mp__link:focus-visible) .mp__item { flex-grow: .82; opacity: .52; }
+    .mp__list:has(.mp__item:hover) .mp__item:hover, .mp__list:has(.mp__link:focus-visible) .mp__item:has(.mp__link:focus-visible) { flex-grow: 2.6; opacity: 1; }
+    .mp__item:hover .mp__link, .mp__item:has(.mp__link:focus-visible) .mp__link { justify-content: flex-start; gap: var(--space-3); }
+    .mp__item:hover .mp__thumb, .mp__item:has(.mp__link:focus-visible) .mp__thumb { height: 132px; opacity: 1; transform: none; }
+    .mp__item:hover .mp__titulo, .mp__item:has(.mp__link:focus-visible) .mp__titulo { color: var(--accent); }
+  }
+  @media (prefers-reduced-motion: reduce) { .mp__item, .mp__link, .mp__thumb, .mp__titulo { transition: none; } }
+  .mp__pag { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+
+  /* Artigos em destaque: mosaico 1 · 2 · 1. */
+  .art { display: flex; flex-direction: column; gap: var(--space-5); }
+  .art__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+  .art__grid { display: grid; grid-template-columns: 1fr 1.7fr 1fr; grid-template-rows: auto auto; gap: var(--space-5); }
+  .art__grande { grid-column: 2; grid-row: 1 / span 2; }
+  .art__p1 { grid-column: 1; grid-row: 1; } .art__p2 { grid-column: 1; grid-row: 2; }
+  .art__p3 { grid-column: 3; grid-row: 1; } .art__p4 { grid-column: 3; grid-row: 2; }
+  .art__grande.sala--destaque .sala__media { min-height: 0; }
+  .art .sala--normal { min-height: 0; }
+  .art .sala--normal .sala__media { aspect-ratio: 4 / 3; }
+  .art .sala--normal .sala__body { gap: var(--space-2); padding: var(--space-4) var(--space-3) var(--space-3); }
+  .art .sala--normal .sala__title { font-size: 20px; line-height: 1.15; }
+
+
+  /* Larguras menores (decididas pelo espaço do container, não pela janela). */
+  @container (max-width: 1040px) {
+    .dest { grid-template-columns: 1fr; }
+    .mp__list { flex: none; }
+    .mp__item { flex: none; }
+  }
+  @container (max-width: 860px) {
+    .dest__grade { height: auto; }
+    .dest__col--esq, .dest__col--dir { grid-template-rows: none; }
+    .cc { min-height: 400px; }
+    .cc.sala--horizontal.sala--destaque .sala__media { display: flex; flex-direction: column; }
+    .cc.sala--horizontal.sala--destaque .sala__body { width: auto; margin: auto 8px 8px; }
+    .art__grid { grid-template-columns: 1fr 1fr; }
+    .art__grid > .art__p { grid-column: auto; grid-row: auto; }
+    .art__grande { grid-column: 1 / -1; grid-row: auto; order: -1; min-height: 520px; }
+  }
+  @container (max-width: 600px) {
+    .dest__grade { grid-template-columns: 1fr; height: auto; }
+    .dest__col--esq, .dest__col--dir { grid-template-rows: none; }
+    .art__grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="app__lat">
+    <nav class="sdb-sidenav sdb-sidenav--app" id="lateral" aria-label="Navegação principal">
+      <div class="sdb-sidenav__brand"><span data-arc data-on="bege"></span><a class="sdb-sidenav__name" href="#">A Sala dos Buscadores</a><button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Recolher navegação"><span data-icon="menuLateral" class="sdb-icon--sm"></span></button></div>
+      <button class="sdb-sidenav__profile" type="button" aria-haspopup="menu"><span class="sdb-avatar sdb-avatar--sm" style="--s:36px">BE</span><span class="sdb-sidenav__who"><b>Benoni</b><span>Membro desde out 2026</span></span><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+      <p class="sdb-sidenav__group">Acervo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+      <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="destaques"></span><span class="sdb-sidenav__label">Destaques</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="biblioteca"></span><span class="sdb-sidenav__label">Biblioteca</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="salas"></span><span class="sdb-sidenav__label">Salas</span></a>
+      <p class="sdb-sidenav__group">Estudo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="estante"></span><span class="sdb-sidenav__label">Estante</span></a>
+      <p class="sdb-sidenav__group">Ferramentas</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="comparar"></span><span class="sdb-sidenav__label">Comparar</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="assistente"></span><span class="sdb-sidenav__label">Assistente</span></a>
+      <p class="sdb-sidenav__group">Conta</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="ajustes"></span><span class="sdb-sidenav__label">Ajustes</span></a>
+      <button class="sdb-sidenav__item" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+      <div class="sdb-sidenav__foot">
+        <a class="sdb-sidenav__card" href="#"><span class="sdb-sidenav__card-head"><span data-icon="estante"></span><span>Salvos para depois</span><span>0</span></span><p>Nada salvo ainda. Use o marcador dos cards.</p></a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="app__col">
+    <header class="sdb-topbar">
+      <div class="sdb-topbar__titles"><h1 class="sdb-topbar__title">Destaques</h1></div>
+      <div class="sdb-topbar__actions">
+        <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+        <button class="sdb-topbar__account" type="button" aria-label="Conta de Benoni"><span class="sdb-avatar">BE</span></button>
+      </div>
+    </header>
+
+    <main class="app__main" id="conteudo">
+
+
+      <div class="dest">
+        <div class="dest__principal">
+
+          <!-- Vídeo principal (Card Vídeo, escolhido pela curadoria) -->
+          <article class="video" aria-labelledby="video-principal">
+            <div class="video__media">
+              <img class="video__image" src="../../portal/public/imagens/episodios/v-poimandres.webp" alt="" width="736" height="414" decoding="async">
+              <div class="video__blur" aria-hidden="true"><i></i><i></i><i></i></div><div class="video__shade" aria-hidden="true"></div>
+              <div class="video__top"><span class="video__duration" aria-label="Duração: 24 minutos e 10 segundos"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 5.5V10l3 2" stroke-linecap="round"/></svg>24:10</span></div>
+              <div class="video__content">
+                <div class="video__info">
+                  <p class="video__context"><span>Corpus Hermeticum</span><span>Tema: alma</span></p>
+                  <h2 class="video__title" id="video-principal">Poimandres, a mente que fala</h2>
+                  <p class="video__meta">Episódio 5 · <time datetime="2026-09-03">3 set 2026</time></p>
+                </div>
+                <a class="video__action" role="link" aria-disabled="true" tabindex="0">Assistir no YouTube <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M10 5H5v15h15v-5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Quatro cards em destaque (curadoria) -->
+          <div class="dest__grade">
+            <div class="dest__col dest__col--esq">
+              <article class="sala sala--destaque cc cc--alto">
+                <div class="sala__media">
+                  <img class="sala__image" src="../../portal/public/imagens/conteudos/sete-principios-hermeticos.webp" alt="" style="object-position:50% 45%">
+                  <div class="sala__tools"><span class="sala__count">Artigo · 12 min</span><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div>
+                  <div class="sala__body">
+                    <p class="cc__onde">O Caibalion</p>
+                    <h3 class="sala__title">Os sete princípios, em linguagem simples</h3>
+                    <p class="sala__description">Mentalismo, correspondência, vibração, polaridade, ritmo, causa e efeito e gênero, como o livro de 1908 os apresenta.</p>
+                    <span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span>
+                  </div>
+                </div>
+              </article>
+              <article class="sala sala--destaque sala--horizontal cc">
+                <div class="sala__media">
+                  <img class="sala__image" src="../../portal/public/imagens/salas/corpus-hermeticum.webp" alt="" style="object-position:30% 55%">
+                  <div class="sala__tools"><span class="sala__count">Fonte primária</span><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div>
+                  <div class="sala__body">
+                    <p class="cc__onde">Corpus Hermeticum</p>
+                    <h3 class="sala__title">Poimandres: a Mente que fala a Hermes</h3>
+                    <span class="sdb-seal sdb-seal--primaria"><span class="sdb-seal__icon"><span data-icon="fontePrimaria"></span></span>Fonte primária</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+            <div class="dest__col dest__col--dir">
+              <article class="sala sala--destaque sala--horizontal cc">
+                <div class="sala__media">
+                  <div class="sala__placa sdb-plate--grafite"><span data-arc data-on="grafite"></span></div>
+                  <div class="sala__tools"><span class="sala__count">Artigo</span><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div>
+                  <div class="sala__body">
+                    <p class="cc__onde">Biblioteca de Nag Hammadi</p>
+                    <h3 class="sala__title">O Evangelho de Tomé e os 114 ditos</h3>
+                    <span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span>
+                  </div>
+                </div>
+              </article>
+              <article class="sala sala--destaque sala--horizontal cc">
+                <div class="sala__media">
+                  <img class="sala__image" src="../../portal/public/imagens/salas/caibalion.webp" alt="" style="object-position:30% 60%">
+                  <div class="sala__tools"><span class="sala__count">Fonte primária</span><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div>
+                  <div class="sala__body">
+                    <p class="cc__onde">O Caibalion</p>
+                    <h3 class="sala__title">Capítulo II: o princípio do mentalismo</h3>
+                    <span class="sdb-seal sdb-seal--primaria"><span class="sdb-seal__icon"><span data-icon="fontePrimaria"></span></span>Fonte primária</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mais pesquisados (ranking de buscas) -->
+        <aside class="mp" aria-labelledby="mp-titulo">
+          <div class="mp__head">
+            <h2 class="mp__rotulo" id="mp-titulo">Mais pesquisados</h2>
+            <p class="sdb-footnote" style="margin:0">Mais pesquisados no acervo nos últimos 30 dias.</p>
+          </div>
+          <ol class="mp__list">
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><span class="sdb-plate sdb-plate--grafite"><span data-arc data-on="grafite"></span></span></span><span><span class="mp__titulo">O Evangelho de Tomé e os 114 ditos</span><span class="mp__meta" style="display:block">Biblioteca de Nag Hammadi · 212 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><img src="../../portal/public/imagens/conteudos/sete-principios-hermeticos.webp" alt=""></span><span><span class="mp__titulo">Os sete princípios, em linguagem simples</span><span class="mp__meta" style="display:block">O Caibalion · 187 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><img src="../../portal/public/imagens/salas/corpus-hermeticum.webp" alt=""></span><span><span class="mp__titulo">Poimandres: a Mente que fala a Hermes</span><span class="mp__meta" style="display:block">Corpus Hermeticum · 164 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><span class="sdb-plate sdb-plate--bordo"><span data-arc data-on="bordo"></span></span></span><span><span class="mp__titulo">Evangelho de Maria: a subida da alma</span><span class="mp__meta" style="display:block">Apócrifos do Cristianismo Primitivo · 141 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><span class="sdb-plate sdb-plate--grafite"><span data-arc data-on="grafite"></span></span></span><span><span class="mp__titulo">O que o livro chama de Ajustador do Pensamento</span><span class="mp__meta" style="display:block">O Livro de Urântia · 118 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><img src="../../portal/public/imagens/salas/caibalion.webp" alt=""></span><span><span class="mp__titulo">Quem foram os Três Iniciados? O debate sobre a autoria</span><span class="mp__meta" style="display:block">O Caibalion · 96 buscas</span></span></a></li>
+            <li class="mp__item"><a class="mp__link" href="#"><span class="mp__thumb"><span class="sdb-plate sdb-plate--bordo"><span data-arc data-on="bordo"></span></span></span><span><span class="mp__titulo">O Apócrifo de João e o mito de Sofia</span><span class="mp__meta" style="display:block">Biblioteca de Nag Hammadi · 83 buscas</span></span></a></li>
+          </ol>
+          <div class="mp__pag">
+            <button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Página anterior" disabled><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span></button>
+            <span class="sdb-footnote">Página 1 de 3</span>
+            <button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Próxima página"><span data-icon="chevronDireita" class="sdb-icon--sm"></span></button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Artigos em destaque (curadoria): mosaico 2 · 1 grande · 2 -->
+      <section class="art" aria-labelledby="art-titulo">
+        <div class="art__head">
+          <div><h2 class="sdb-title-2" id="art-titulo" style="margin:0">Artigos em destaque</h2><p class="sdb-footnote" style="margin:4px 0 0">Escolhidos pela curadoria.</p></div>
+          <a class="sdb-btn sdb-btn--secondary sdb-btn--sm" href="#">Ver tudo</a>
+        </div>
+        <div class="art__grid">
+          <article class="sala sala--normal art__p art__p1">
+            <div class="sala__media"><div class="sala__placa sdb-plate--bordo"><span data-arc data-on="bordo"></span></div><div class="sala__tools"><span class="sala__count">Artigo · 9 min</span></div></div>
+            <div class="sala__body"><p class="cc__onde">O Caibalion</p><h3 class="sala__title">Quem foram os Três Iniciados? O debate sobre a autoria</h3><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></div>
+          </article>
+          <article class="sala sala--normal art__p art__p2">
+            <div class="sala__media"><div class="sala__placa sdb-plate--grafite"><span data-arc data-on="grafite"></span></div><div class="sala__tools"><span class="sala__count">Artigo · 11 min</span></div></div>
+            <div class="sala__body"><p class="cc__onde">Corpus Hermeticum</p><h3 class="sala__title">Tratado XIII: renascimento e silêncio</h3><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></div>
+          </article>
+          <article class="sala sala--destaque art__grande">
+            <div class="sala__media">
+              <img class="sala__image" src="../../portal/public/imagens/banner/marca.webp" alt="" style="object-position:55% 35%">
+              <div class="sala__tools"><span class="sala__count">Artigo · 8 min</span><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div>
+              <div class="sala__body">
+                <p class="cc__onde">Apócrifos do Cristianismo Primitivo</p>
+                <h3 class="sala__title">O que é um apócrifo? Um termo com história</h3>
+                <p class="sala__description">De "escondido" a "não canônico": como a palavra mudou de sentido entre os padres da Igreja, Jerônimo e a crítica moderna.</p>
+                <span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span>
+              </div>
+            </div>
+          </article>
+          <article class="sala sala--normal art__p art__p3">
+            <div class="sala__media"><div class="sala__placa sdb-plate--bege"><span data-arc data-on="bege"></span></div><div class="sala__tools"><span class="sala__count">Artigo · 10 min</span></div></div>
+            <div class="sala__body"><p class="cc__onde">O Livro de Urântia</p><h3 class="sala__title">Documento 47: os sete mundos das mansões</h3><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></div>
+          </article>
+          <article class="sala sala--normal art__p art__p4">
+            <div class="sala__media"><div class="sala__placa sdb-plate--bordo"><span data-arc data-on="bordo"></span></div><div class="sala__tools"><span class="sala__count">Artigo · 13 min</span></div></div>
+            <div class="sala__body"><p class="cc__onde">Apócrifos do Cristianismo Primitivo</p><h3 class="sala__title">O Apocalipse de Pedro e as imagens do além</h3><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></div>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>SalaBuscadores.hydrate();</script>
+</body>
+</html>

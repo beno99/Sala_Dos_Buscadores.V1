@@ -1,0 +1,49 @@
+<!-- @dsCard group="Estrutura do portal" height=780 subtitle="Primeiro acesso em etapas, com consentimento" -->
+<div class="sdb-stage" style="align-items:center">
+  <div class="sdb-modal sdb-sheet sdb-onboarding sdb-modal--static" role="dialog" aria-modal="true" aria-labelledby="ob-t1" data-sdb-steps>
+    <div class="sdb-onboarding__top"><span class="sdb-onboarding__status" aria-live="polite">Etapa 1 de 4</span><div class="sdb-dots" aria-hidden="true"><button type="button" data-step-dot="0" tabindex="-1"></button><button type="button" data-step-dot="1" tabindex="-1"></button><button type="button" data-step-dot="2" tabindex="-1"></button><button type="button" data-step-dot="3" tabindex="-1"></button></div></div>
+
+    <section class="sdb-onboarding__step">
+      <h2 class="sdb-onboarding__title" id="ob-t1" data-step-title>Boas-vindas à Sala dos Buscadores</h2>
+      <p class="sdb-onboarding__lead">Aqui cada tradição fala com as próprias fontes, organizada em Salas. Duas perguntas rápidas ajudam a sugerir por onde começar. As duas são opcionais.</p>
+      <div class="sdb-onboarding__actions" style="padding:8px 0 0"><span></span><button class="sdb-btn sdb-btn--primary" type="button" data-step-next>Continuar</button></div>
+    </section>
+
+    <section class="sdb-onboarding__step" hidden>
+      <h2 class="sdb-onboarding__title" data-step-title>Que assuntos interessam a você?</h2>
+      <p class="sdb-onboarding__lead">Escolha quantos quiser. Isso só muda a ordem das sugestões; todo o acervo continua aberto.</p>
+      <div class="sdb-onboarding__options" role="group" aria-label="Temas"><button class="sdb-chip" type="button" data-toggle aria-pressed="false">Morte</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false">Alma</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false">Meditação</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false">Origem do universo</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false">Conhecimento interior</button></div>
+      <div class="sdb-onboarding__options" role="group" aria-label="Salas"><button class="sdb-chip" type="button" data-toggle aria-pressed="false"><span data-arc></span>Apócrifos do Cristianismo Primitivo</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false"><span data-arc></span>Biblioteca de Nag Hammadi</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false"><span data-arc></span>Corpus Hermeticum</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false"><span data-arc></span>O Caibalion</button><button class="sdb-chip" type="button" data-toggle aria-pressed="false"><span data-arc></span>O Livro de Urântia</button></div>
+      <div class="sdb-onboarding__actions" style="padding:8px 0 0"><button class="sdb-btn sdb-btn--plain" type="button" data-step-skip>Pular por agora</button><button class="sdb-btn sdb-btn--secondary" type="button" data-step-prev>Voltar</button><button class="sdb-btn sdb-btn--primary" type="button" data-step-next>Continuar</button></div>
+    </section>
+
+    <section class="sdb-onboarding__step" hidden>
+      <h2 class="sdb-onboarding__title" data-step-title>Você tem uma religião ou convicção?</h2>
+      <p class="sdb-onboarding__purpose"><span data-icon="cadeado"></span><span>Usamos só para sugerir conteúdos. Fica privado, ninguém mais vê, e você pode mudar ou apagar em Ajustes.</span></p>
+      <fieldset class="sdb-fieldset"><legend class="sdb-sr">Religião ou convicção</legend>
+        <div class="sdb-onboarding__checks">
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Não tenho religião</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Espiritualidade sem religião</label>
+          <label class="sdb-check"><input type="checkbox">Prefiro não informar</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Budismo</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Candomblé</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Catolicismo</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Esoterismo e hermetismo</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Espiritismo</label>
+          <label class="sdb-check"><input type="checkbox" data-sensitive>Outra</label>
+        </div>
+      </fieldset>
+      <div class="sdb-consent" hidden><label class="sdb-check"><input type="checkbox">Autorizo guardar esta informação para sugerir conteúdos.</label><p class="sdb-help" style="padding:0 0 0 32px">Dado sensível (LGPD, art. 11). Você pode revogar em Ajustes a qualquer momento.</p></div>
+      <div class="sdb-onboarding__actions" style="padding:8px 0 0"><button class="sdb-btn sdb-btn--plain" type="button" data-step-skip>Pular</button><button class="sdb-btn sdb-btn--secondary" type="button" data-step-prev>Voltar</button><button class="sdb-btn sdb-btn--primary" type="button" data-step-next>Continuar</button></div>
+    </section>
+
+    <section class="sdb-onboarding__step" hidden>
+      <h2 class="sdb-onboarding__title" data-step-title>Preferências salvas</h2>
+      <ul class="sdb-onboarding__summary"><li>Interesses <span>Alma, Corpus Hermeticum</span></li><li>Religião ou convicção <span>Prefiro não informar</span></li></ul>
+      <p class="sdb-onboarding__lead">Dá para mudar ou apagar tudo em Ajustes, em "Refazer preferências".</p>
+      <div class="sdb-onboarding__actions" style="padding:8px 0 0"><button class="sdb-btn sdb-btn--secondary" type="button" data-step-prev>Voltar</button><button class="sdb-btn sdb-btn--primary" type="button" data-close>Ir para o Portal</button></div>
+    </section>
+  </div>
+  <p class="sdb-hint">Navegue pelas quatro etapas. Na religião, marcar qualquer opção que não seja "Prefiro não informar" pede o consentimento antes de continuar.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>
