@@ -57,12 +57,12 @@ export function FormCadastro({ voltar }: { voltar: string }) {
   };
 
   return (
-    <form className="sdb-material sdb-panel" noValidate onSubmit={submeter} aria-labelledby="titulo-cadastro">
-      <div className="flex flex-col gap-2">
-        <h1 id="titulo-cadastro" className="sdb-title-1">
+    <form className="sdb-conta__form" noValidate onSubmit={submeter} aria-labelledby="titulo-cadastro">
+      <div className="sdb-conta__cabecalho">
+        <h1 id="titulo-cadastro" className="sdb-conta__titulo">
           Criar conta
         </h1>
-        <p className="sdb-body-sm sdb-secondary">
+        <p className="sdb-conta__lead">
           A conta é gratuita e dá acesso a todo o acervo, à busca comparativa e ao assistente. Depois do
           cadastro, duas perguntas opcionais ajudam a sugerir por onde começar.
         </p>
@@ -133,7 +133,7 @@ export function FormCadastro({ voltar }: { voltar: string }) {
       <Button type="submit" variant="primary" size="lg" block loading={enviando}>
         Criar conta
       </Button>
-      <p className="sdb-footnote">
+      <p className="sdb-footnote sdb-conta__alternativa">
         Já tem conta?{" "}
         <Link href={`/entrar${qs}` as Route} className="sdb-link">
           Entrar

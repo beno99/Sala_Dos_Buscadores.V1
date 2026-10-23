@@ -14,13 +14,14 @@ test("cadastro novo passa pelo onboarding e chega ao Portal", async ({ page, isM
   const dialogo = page.getByRole("dialog", { name: "Boas-vindas à Sala dos Buscadores" });
   await expect(dialogo).toBeVisible();
   await expect(dialogo.getByText("Etapa 1 de 4")).toBeVisible();
-  await dialogo.getByRole("button", { name: "Continuar" }).click();
+  await dialogo.getByRole("button", { name: "Começar" }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Alma", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Continuar" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
   await expect(page.getByText(/Usamos só para sugerir conteúdos/)).toBeVisible();
-  await page.getByRole("dialog").getByRole("button", { name: "Pular", exact: true }).click();
+  await page.getByRole("dialog").getByRole("radio", { name: "Prefiro não informar" }).check();
+  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
   await expect(page.getByRole("heading", { name: "Preferências salvas" })).toBeVisible();
-  await page.getByRole("button", { name: "Ir para o Portal" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page).toHaveURL("/");
   // No celular a saudação sai da barra superior para caber o título.
@@ -102,13 +103,27 @@ test("celular: barra de abas embaixo e “Mais” com o resto do menu", async ({
   await expect(abas.getByRole("button", { name: "Mais" })).toHaveAttribute("aria-current", "page");
 });
 
-test("aparência escura fica guardada", async ({ page }) => {
+test("aparência: o tema e a lateral translúcida só valem ao salvar e ficam guardados", async ({ page }) => {
   await entrarComoMembro(page);
   await page.getByRole("button", { name: "Aparência" }).click();
-  await page.getByRole("menuitemcheckbox", { name: "Escuro" }).click();
+  const dialogo = page.getByRole("dialog", { name: "Aparência" });
+  await dialogo.getByRole("radio", { name: "Escuro", exact: true }).click();
+  await dialogo.getByRole("button", { name: "Cancelar" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "solido-claro");
+
+  await page.getByRole("button", { name: "Aparência" }).click();
+  await dialogo.getByRole("radio", { name: "Escuro", exact: true }).click();
+  await dialogo.getByRole("switch", { name: /Barra lateral/ }).check();
+  await dialogo.getByRole("button", { name: "Salvar" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "solido-escuro");
+  await expect(page.locator("html")).toHaveAttribute("data-lateral", "translucida");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "solido-escuro");
+  await expect(page.locator("html")).toHaveAttribute("data-lateral", "translucida");
+
   await page.getByRole("button", { name: "Aparência" }).click();
-  await page.getByRole("menuitemcheckbox", { name: "Claro" }).click();
+  await dialogo.getByRole("radio", { name: "Areia" }).click();
+  await dialogo.getByRole("switch", { name: /Barra lateral/ }).uncheck();
+  await dialogo.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "solido-claro");
 });

@@ -25,3 +25,18 @@ Para vitrines editoriais (Destaques). Usa a anatomia do Card Sala em destaque: c
 - **Horizontal (`sala--horizontal`):** imagem à esquerda com o chip do tipo e salvar; painel à direita, na altura toda, com cerca de 54% da largura; sem resumo. Cabe em ~290 px de altura. Num container abaixo de 860 px (ou numa tela abaixo de 620 px) vira vertical, com o painel embaixo.
 - **Normal compacto (`sala--conteudo.sala--normal`):** imagem 4:3 em cima com o chip, e embaixo Sala, título e selo.
 - Título nunca truncado. Selo de proveniência obrigatório também no destaque.
+
+## Com imagem (`.sala--conteudo.sala--normal.sala--acervo`)
+Para as grades do acervo (Biblioteca). Mesma anatomia do Card Sala normal: imagem e texto separados.
+- Imagem 16:10 em cima (`<img class="sala__image" alt="">` ou a placa da marca com o arco). Sobre ela, à esquerda, `.sala__chips` com o tipo ("Artigo", "Fonte primária", "Vídeo") e, se houver, o progresso ("38%" ou "Lido"); à direita, salvar na estante.
+- Leitura em andamento: `.sala__barra` (decorativa, `aria-hidden`) na base da imagem; o chip carrega a informação.
+- Corpo: `.sala__onde` (Sala), `h3.sala__title` > `a.sala__link` (nunca truncado; o link cobre o card), `.sala__info` com o nível (`.sdb-level--plain`) e a duração (`.sala__dur`, relógio, "11 min" ou "24:10") e o Selo de proveniência. Sem resumo.
+- Vídeo: o link vai ao YouTube em nova aba só com URL específica de vídeo; sem ela, à Sala do vídeo. Vídeo não tem progresso.
+- Grade: 4 colunas, 2 abaixo de ~900 px de container, 1 abaixo de ~520 px (nunca 3); espaço `--space-5` entre colunas e `--space-7` entre linhas.
+
+## Superfície (out 2026)
+O card padrão de conteúdo fica em `card-warm` no Sólido claro (pelo seletor `.sdb-card:has(> .sdb-card__body > .sdb-content__top)`). Citação, vídeo, glossário e fontes continuam em creme.
+
+## Comunidade · Fase A
+
+Dentro de um achado, use `.sdb-community-linked.sdb-card` com `.sdb-card__body`, Sala, título como link e SeloProveniencia do próprio conteúdo. Sem prévia externa e sem estender o selo à publicação. Exemplo em CardPublicacao.

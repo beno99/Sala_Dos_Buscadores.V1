@@ -1,10 +1,12 @@
-<!-- @dsCard group="Componentes básicos" height=640 subtitle="Cápsulas: primário, secundário, vidro, destrutivo, ícone" -->
+<!-- @dsCard group="Componentes básicos" height=760 subtitle="Cápsulas: primário, secundário, vidro, destrutivo, ícone" -->
 <div class="sdb-stage">
   <div class="sdb-spec"><span class="sdb-caption">Variantes</span>
     <div class="sdb-row">
       <button class="sdb-btn sdb-btn--primary" type="button">Entrar na Sala</button>
       <button class="sdb-btn sdb-btn--secondary" type="button">Comparar tradições</button>
       <button class="sdb-btn sdb-btn--glass" type="button">Ver fontes</button>
+      <button class="sdb-btn sdb-btn--gold" type="button">Começar</button>
+      <button class="sdb-btn sdb-btn--warm" type="button">Pular e ir ao Portal</button>
       <button class="sdb-btn sdb-btn--tinted" type="button"><span data-icon="estante" class=""></span>Salvar na estante</button>
       <button class="sdb-btn sdb-btn--plain" type="button">Ver todas</button>
       <button class="sdb-btn sdb-btn--destructive" type="button"><span data-icon="lixeira" class=""></span>Remover</button>
@@ -19,6 +21,12 @@
         <button class="sdb-btn sdb-glass--clear sdb-btn--sm" type="button"><span data-icon="play" class="sdb-icon--sm"></span>Assistir</button>
         <button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-glass--clear" type="button" aria-label="Salvar"><span data-icon="estante" class="sdb-icon--sm"></span></button>
       </div>
+    </div></div>
+  <div class="sdb-spec"><span class="sdb-caption">Compartilhar · "Copiar link"; vira "Compartilhar" onde houver menu do sistema</span>
+    <div class="sdb-row">
+      <button class="sdb-btn sdb-btn--secondary sdb-btn--sm sdb-share" type="button" data-share data-share-title="Os sete princípios, em linguagem simples"><span class="sdb-share__copy"><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar link</span><span class="sdb-share__native"><span data-icon="compartilhar" class="sdb-icon--sm"></span>Compartilhar</span></button>
+      <button class="sdb-btn sdb-btn--secondary sdb-btn--sm sdb-share is-native" type="button" tabindex="-1" aria-hidden="true"><span class="sdb-share__copy"><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar link</span><span class="sdb-share__native"><span data-icon="compartilhar" class="sdb-icon--sm"></span>Compartilhar</span></button>
+      <button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" onclick="SalaBuscadores.toast('Selecione o link e copie.', {title: 'Não foi possível copiar', select: location.href, duration: 9000})">Ver o toast sem área de transferência</button>
     </div></div>
   <div class="sdb-spec"><span class="sdb-caption">Estados · primário</span>
     <div class="sdb-row">

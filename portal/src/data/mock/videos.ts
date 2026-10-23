@@ -42,6 +42,7 @@ export const VIDEOS: Video[] = [
     publicadoEm: "2026-08-28",
     url: busca("caibalion sete princípios"),
     placa: "grafite",
+    conteudos: ["sete-principios-hermeticos"],
   },
   {
     id: "v-urantia-mansoes",

@@ -23,15 +23,19 @@ Não carregue `bundle.js` ou `refined.js` sobre os componentes React: seus event
 | Tooltip | CSS `data-tip`; `Button` fornece a dica de botões só com ícone a partir de `aria-label` |
 | Breadcrumbs, paginação e alerta | `Breadcrumbs.tsx`, `Paginacao.tsx`, `Alerta.tsx` |
 | CardSala e CardVideo | `CardSala.tsx`, `CardVideo.tsx` |
-| CardConteudo, pilha, linha e vitrine | `CardConteudo.tsx`, `CardConteudoVitrine.tsx` |
+| CardConteudo, pilha, linha, vitrine e com imagem (acervo) | `CardConteudo.tsx`, `CardConteudoVitrine.tsx`, `CardAcervo.tsx` |
+| Cabeçalho e banner da Sala | `CabecalhoSala.tsx`, `BannerSala.tsx` |
 | Fontes, citações, glossário e listas de conteúdo | `CardFonte.tsx`, `BlocoCitacao.tsx`, `Glossario.tsx`, `ListaConteudos.tsx` |
 | Navegação lateral, barra superior, abas móveis e rodapé | `NavegacaoLateral.tsx`, `NavegacaoLateralApp.tsx`, `BarraSuperior.tsx`, `BarraAbasApp.tsx`, `../layout/Rodape.tsx` |
 | BannerRotativo, Carrossel e ListaDestaques | Arquivos de mesmo nome nesta pasta |
 | Progresso, conquistas e publicidade | `PainelProgresso.tsx`, `PainelIndicadores.tsx`, `Conquista.tsx`, `EspacoPublicitario.tsx` |
-| Tabela, editor, checklist e indicadores editoriais | `TabelaDados.tsx`, `EditorTextoMarcado.tsx`, `Curadoria.tsx` |
+| Tabela, editor, checklist e indicadores editoriais | `TabelaDados.tsx`, `EditorTextoMarcado.tsx`, `EditorBlocos.tsx`, `Curadoria.tsx` |
+| Barra de formatação do texto marcado | `BarraFormatacao.tsx` (botões e menu) e `marcacao.ts` (as funções puras que escrevem `**negrito**`, `*termo*`, `::obra::`, `[texto](endereço)` e `[n]`) |
 | Busca, filtros, painel de busca e comparação | `../../features/busca` |
 | CampoPerguntaIA, IndicadorConsulta e MensagemAssistente | `../../features/assistente` |
 | AvisoNeutralidade e BotaoFlutuante | `AvisoNeutralidade.tsx`, `OrbeAssistente.tsx` |
+| Estados vazios, avisos, carregamento, progresso real e ícones com volume | `EstadosInterface.tsx`, `InterfaceIcon.tsx` |
+| Diálogo de orientação | `DialogoContextual.tsx` |
 | Onboarding | `../../features/onboarding/Onboarding.tsx` |
 
 ## Controles
@@ -54,7 +58,7 @@ Switch aplica a preferência no `onChange`; Checkbox representa uma seleção. S
 
 ## Cartões
 
-`CardSala` aceita `destaque`, `horizontal`, imagem ou placa e progresso. `CardConteudo` aceita `empilhado`; `CardConteudoLinha` oferece miniatura, data e nível ou progresso e ação de retomar. `CardConteudoVitrine` mantém os formatos `alto`, `horizontal` e `normal`. Os cartões de conteúdo mantêm o Selo de proveniência.
+`CardSala` aceita `destaque`, `horizontal`, imagem ou placa e progresso. `CardConteudo` aceita `empilhado`; `CardConteudoLinha` oferece miniatura, data e nível ou progresso e ação de retomar. `CardConteudoVitrine` mantém os formatos `alto`, `horizontal` e `normal`. `CardAcervo` é o card com imagem (`sala--acervo`); com `externo` abre em nova aba e, sem `href`, não vira link e mostra a `nota`. `BarraSuperior` aceita `saudacao` ou `trilha`, nunca as duas. Os cartões de conteúdo mantêm o Selo de proveniência.
 
 O slot `acoes` de CardSala e CardConteudoVitrine recebe controles `.sala__save`; no CardConteudo, use `.sdb-over`. O consumidor implementa o estado e a persistência da Estante. O slot não grava favoritos demonstrativos da referência.
 
@@ -75,3 +79,13 @@ npm run test:e2e
 ```
 
 Os testes de controles, preferências, menus, diálogos e banner cobrem as interações; as jornadas do navegador validam a integração nas telas do portal em desktop e celular.
+
+## Estados e orientação V3
+
+O sincronizador copia `estados-interface.css`, a licença Lucide e gera os SVGs em `interface-icons.generated.ts`. Os ícones com volume preservam os materiais opacos e sombras da referência. Os eventos ficam no React; `estados-interface.js` não é carregado no portal.
+
+EstadoSecao aceita ação com `executar` ou link com `href`. ProgressoReal recebe concluídos e total reais, e pode usar `unidade` na legenda. CarregamentoSala entra no loading da rota de Salas. DialogoContextual usa o diálogo nativo para foco, Escape e fundo inerte.
+
+## Comunidade · Fase A
+
+Peças visuais e controladas: `CardPublicacao`, `CompositorComunidade`, `LinhaComentario`, `LinhaPessoa`, `CartaoLateralComunidade`, `BarraAcoesComunidade` e `PainelComentarios`. Mesma anatomia dos exemplos HTML; CSS vem da biblioteca canônica. `PessoaComunidadeVisual` aceita apenas dados públicos explícitos, nunca o registro inteiro de conta. `BarraAcoesComunidade` recebe estado e callbacks; as regras e a gravação chegam nas fases seguintes. O compositor fornece a casca de formulário; a tela monta os campos de cada tipo seguindo o exemplo. `PainelComentarios` reutiliza Sheet (foco preso e devolução). Demonstração integrada: `design-system/exemplos/Comunidade.html`.

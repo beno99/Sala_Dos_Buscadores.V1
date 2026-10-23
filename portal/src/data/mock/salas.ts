@@ -16,6 +16,8 @@ export const SALAS: Sala[] = [
     placa: "grafite",
     atualizadaEm: "2026-09-10",
     inicial: "A",
+    origem: "oficial",
+    naComparacao: true,
   },
   {
     slug: "nag-hammadi",
@@ -28,6 +30,8 @@ export const SALAS: Sala[] = [
     placa: "bordo",
     atualizadaEm: "2026-09-12",
     inicial: "N",
+    origem: "oficial",
+    naComparacao: true,
   },
   {
     slug: "corpus-hermeticum",
@@ -40,6 +44,8 @@ export const SALAS: Sala[] = [
     placa: "grafite",
     atualizadaEm: "2026-09-03",
     inicial: "H",
+    origem: "oficial",
+    naComparacao: true,
   },
   {
     slug: "caibalion",
@@ -52,6 +58,8 @@ export const SALAS: Sala[] = [
     placa: "bege",
     atualizadaEm: "2026-08-28",
     inicial: "K",
+    origem: "oficial",
+    naComparacao: true,
   },
   {
     slug: "urantia",
@@ -64,5 +72,7 @@ export const SALAS: Sala[] = [
     placa: "bordo",
     atualizadaEm: "2026-09-05",
     inicial: "U",
+    origem: "oficial",
+    naComparacao: true,
   },
 ];

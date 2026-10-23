@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biblioteca · mockup</title>
+<!--
+  Mockup de estudo da Biblioteca (item 4 de docs/prompts/correcoes-portal.md).
+  Não é código do portal. Usa as peças reais do design system e simula em <style>
+  o que ainda vai nascer na biblioteca: o painel de cabeçalho com busca e Filtros,
+  o card de conteúdo com imagem e progresso, as seções por Sala e o índice A–Z compacto.
+-->
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+<link rel="stylesheet" href="../../design-system/assets/themes.css">
+<link rel="stylesheet" href="../../design-system/components/refinement.css">
+<link rel="stylesheet" href="../../design-system/components/CardSala/card-sala.css">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../../design-system/components/bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg-canvas); }
+  .app { display: flex; min-height: 100dvh; }
+  .app__lat { position: sticky; top: 0; flex: none; height: 100dvh; }
+  .app__col { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .app__main { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-7) var(--space-9); }
+  @media (max-width: 900px) { .app__lat { display: none; } .app__main { padding-inline: var(--space-4); } }
+  [hidden] { display: none !important; }
+
+  /* [peça nova] Painel de cabeçalho: título à esquerda, vistas, busca e Filtros à direita. */
+  .cab { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "tit vis" "sub bus"; align-items: end; gap: var(--space-3) var(--space-7); padding: var(--space-7); }
+  .cab__tit { grid-area: tit; display: flex; flex-direction: column; gap: var(--space-2); }
+  .cab__vis { grid-area: vis; align-self: start; }
+  .cab__sub { grid-area: sub; max-width: 40rem; margin: 0; color: var(--label-secondary); }
+  .cab__bus { grid-area: bus; display: flex; gap: var(--space-2); }
+  .cab__eyebrow { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; color: var(--label-secondary); font: 600 11.5px/1.3 var(--font-meta); letter-spacing: .08em; text-transform: uppercase; }
+  .cab__eyebrow .sdb-icon { width: 16px; height: 16px; }
+  .cab h1 { margin: 0; font: 450 40px/1.05 var(--font-display-lower); letter-spacing: -.03em; color: var(--label); }
+  .busca { display: flex; align-items: center; gap: var(--space-2); width: 22rem; height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-pill); background: var(--fill); color: var(--label-secondary); }
+  .busca input { flex: 1; min-width: 0; border: 0; background: none; color: var(--label); font: 400 15px/1 var(--font-ui); outline: none; }
+  .busca:focus-within { box-shadow: 0 0 0 3px var(--focus-ring); }
+  .cab .sdb-segmented { min-width: 16rem; }
+
+  /* Abas de Sala e filtros ativos. */
+  .abas { display: flex; gap: var(--space-2); overflow-x: auto; padding: 2px; margin: -2px; scrollbar-width: none; }
+  .abas .sdb-chip { flex: none; }
+  .ativos { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+  /* Seções por Sala. */
+  .secoes { display: flex; flex-direction: column; gap: var(--space-9); }
+  .secao { display: flex; flex-direction: column; gap: var(--space-5); }
+  .secao__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+  .secao__head h2 { margin: 0; }
+  .secao__head p { margin: 4px 0 0; }
+  .sala-intro { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+
+  /* Grade: 4 colunas; 2 no meio; 1 no celular (nunca 3, para não sobrar órfão). */
+  .grade { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-7) var(--space-5); }
+  @container (max-width: 900px) { .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cab { grid-template-columns: 1fr; grid-template-areas: "vis" "tit" "sub" "bus"; } .busca { width: auto; flex: 1; } }
+  @container (max-width: 520px) {
+    .grade { grid-template-columns: 1fr; }
+    .cab { padding: var(--space-5) var(--space-4); }
+    .cab .sdb-segmented { min-width: 0; width: 100%; }
+    .cab h1 { font-size: 32px; }
+    .cab__bus { flex-wrap: wrap; }
+    .busca { flex: 1 1 100%; }
+    .cab__bus .sdb-btn { flex: 1; justify-content: center; }
+  }
+
+  /* [peça nova] Card de conteúdo com imagem (base: sala--normal). */
+  .bc.sala--normal { min-height: 0; }
+  .bc .sala__media { aspect-ratio: 16 / 10; }
+  .bc .sala__body { gap: var(--space-2); padding: var(--space-4) var(--space-3) var(--space-3); }
+  .bc .sala__title { font-size: 20px; line-height: 1.15; }
+  .bc__onde { margin: 0; color: var(--label-secondary); font: 600 11px/1.3 var(--font-meta); letter-spacing: .06em; text-transform: uppercase; }
+  .bc__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin-top: auto; color: var(--label-secondary); font-size: 12.5px; }
+  .bc__dur { display: inline-flex; align-items: center; gap: 4px; }
+  .bc__dur svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+  .bc__barra { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgb(255 255 255 / 28%); }
+  .bc__barra i { display: block; width: calc(var(--p) * 100%); height: 100%; background: var(--bege-damasco, var(--branco)); }
+  .bc .sala__count { white-space: nowrap; }
+
+  /* Vista Glossário. */
+  .glo { display: flex; flex-direction: column; gap: var(--space-5); }
+  .glo .sdb-gloss { max-width: 46rem; }
+  .glo__alpha { flex-wrap: nowrap; justify-content: space-between; gap: var(--space-1); overflow-x: auto; padding: 2px; margin: -2px; scrollbar-width: none; }
+  .glo__alpha button { flex: none; width: 34px; height: 34px; border-radius: var(--radius-md); font-size: 14px; }
+  .glo__letra { margin: var(--space-3) 0 0; font: 450 28px/1 var(--font-display-lower); color: var(--label); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app__lat">
+    <nav class="sdb-sidenav sdb-sidenav--app" id="lateral" aria-label="Navegação principal">
+      <div class="sdb-sidenav__brand"><span data-arc data-on="bege"></span><a class="sdb-sidenav__name" href="#">A Sala dos Buscadores</a><button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Recolher navegação"><span data-icon="menuLateral" class="sdb-icon--sm"></span></button></div>
+      <button class="sdb-sidenav__profile" type="button" aria-haspopup="menu"><span class="sdb-avatar sdb-avatar--sm" style="--s:36px">BE</span><span class="sdb-sidenav__who"><b>Benoni</b><span>Membro desde out 2026</span></span><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+      <p class="sdb-sidenav__group">Acervo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="destaques"></span><span class="sdb-sidenav__label">Destaques</span></a>
+      <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="biblioteca"></span><span class="sdb-sidenav__label">Biblioteca</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="salas"></span><span class="sdb-sidenav__label">Salas</span></a>
+      <p class="sdb-sidenav__group">Estudo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="estante"></span><span class="sdb-sidenav__label">Estante</span></a>
+      <p class="sdb-sidenav__group">Ferramentas</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="comparar"></span><span class="sdb-sidenav__label">Comparar</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="assistente"></span><span class="sdb-sidenav__label">Assistente</span></a>
+      <p class="sdb-sidenav__group">Conta</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="ajustes"></span><span class="sdb-sidenav__label">Ajustes</span></a>
+      <button class="sdb-sidenav__item" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+      <div class="sdb-sidenav__foot">
+        <a class="sdb-sidenav__card" href="#"><span class="sdb-sidenav__card-head"><span data-icon="estante"></span><span>Salvos para depois</span><span>0</span></span><p>Nada salvo ainda. Use o marcador dos cards.</p></a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="app__col">
+    <header class="sdb-topbar">
+      <div class="sdb-topbar__titles"><p class="sdb-topbar__title">Biblioteca</p></div>
+      <div class="sdb-topbar__actions">
+        <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+        <button class="sdb-topbar__account" type="button" aria-label="Conta de Benoni"><span class="sdb-avatar">BE</span></button>
+      </div>
+    </header>
+
+    <main class="app__main" id="conteudo">
+
+      <section class="sdb-card cab" aria-labelledby="titulo">
+        <div class="cab__tit">
+          <p class="cab__eyebrow"><span data-icon="biblioteca"></span>Acervo completo</p>
+          <h1 id="titulo">Todos os conteúdos</h1>
+        </div>
+        <div class="cab__vis">
+          <div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Vista" id="vistas"><button type="button" data-v="conteudos" aria-pressed="true">Conteúdos</button><button type="button" data-v="glossario" aria-pressed="false">Glossário</button></div>
+        </div>
+        <p class="cab__sub sdb-body-sm" id="sub">Textos, fontes primárias e vídeos das cinco Salas, cada um com a sua procedência.</p>
+        <div class="cab__bus">
+          <label class="busca"><span data-icon="busca"></span><span class="sdb-sr">Buscar na Biblioteca</span><input id="q" type="search" placeholder="Buscar na Biblioteca…" autocomplete="off"></label>
+          <button class="sdb-btn sdb-btn--secondary" type="button" data-open="filtros" id="bt-filtros"><span data-icon="filtro"></span><span id="bt-filtros-txt">Filtros</span></button>
+        </div>
+      </section>
+
+      <div class="abas" id="abas" role="group" aria-label="Sala"></div>
+      <div class="ativos" id="ativos" hidden></div>
+
+      <div id="vista-conteudos"></div>
+      <div id="vista-glossario" class="glo" hidden>
+        <div class="sdb-alpha glo__alpha" id="alpha" role="group" aria-label="Letra inicial"></div>
+        <div class="sdb-gloss" id="glo-lista"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="filtros" class="sdb-overlay sdb-overlay--drawer" aria-hidden="true"><aside class="sdb-drawer" role="dialog" aria-modal="true" aria-labelledby="filtros-t">
+  <span class="sdb-grabber" aria-hidden="true"></span>
+  <div class="sdb-drawer__head"><h2 id="filtros-t">Filtros</h2><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" data-close aria-label="Fechar"><span data-icon="fechar" class="sdb-icon--sm"></span></button></div>
+  <div class="sdb-drawer__body">
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Tema</span><div class="sdb-row" style="gap:8px" id="f-tema"></div></div>
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Nível</span><div class="sdb-list" id="f-nivel"></div></div>
+    <div class="sdb-spec" style="gap:8px"><span class="sdb-caption">Formato</span><div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Formato" id="f-fmt"><button type="button" data-v="" aria-pressed="true">Todos</button><button type="button" data-v="texto" aria-pressed="false">Texto</button><button type="button" data-v="video" aria-pressed="false">Vídeo</button></div></div>
+  </div>
+  <div class="sdb-drawer__foot"><button class="sdb-btn sdb-btn--secondary" type="button" id="f-limpar">Limpar</button><button class="sdb-btn sdb-btn--primary" type="button" data-close id="f-ver">Ver conteúdos</button></div>
+</aside></div>
+
+<script>
+SalaBuscadores.hydrate();
+(function () {
+  var IMG = "../../portal/public/imagens/";
+  var SALAS = [
+    { k: "apocrifos", c: "Apócrifos", n: "Apócrifos do Cristianismo Primitivo", d: "Cristianismo dos séc. I–IV · textos fora do cânone" },
+    { k: "nag-hammadi", c: "Nag Hammadi", n: "Biblioteca de Nag Hammadi", d: "Gnosticismo cristão · 13 códices coptas" },
+    { k: "corpus-hermeticum", c: "Corpus Hermeticum", n: "Corpus Hermeticum", d: "Hermetismo greco-egípcio · séc. I–III" },
+    { k: "caibalion", c: "Caibalion", n: "O Caibalion", d: "Hermetismo moderno · Chicago, 1908" },
+    { k: "urantia", c: "Urântia", n: "O Livro de Urântia", d: "Revelação do séc. XX · Chicago, 1955" }
+  ];
+  var NOME = {}; SALAS.forEach(function (s) { NOME[s.k] = s.n; });
+  var TEMAS = { morte: "Morte", alma: "Alma", meditacao: "Meditação", origem: "Origem do universo", interior: "Conhecimento interior" };
+  var NIVEIS = { "1": "Iniciante", "2": "Intermediário", "3": "Avançado" };
+  var TIPOS = { artigo: "Artigo", primaria: "Fonte primária", video: "Vídeo" };
+  var SELOS = { primaria: ["fontePrimaria", "Fonte primária"], curado: ["curado", "Editorial curado"], especialista: ["especialista", "Especialista"] };
+  var I = [
+    { t: "O Evangelho de Tomé e os 114 ditos", s: "nag-hammadi", tipo: "artigo", selo: "curado", n: 2, min: "14 min", temas: ["interior"], termos: ["Gnose"], placa: "grafite", p: .72, data: "2026-08-20" },
+    { t: "Evangelho de Tomé, ditos 1 a 3", s: "nag-hammadi", tipo: "primaria", selo: "primaria", n: 1, min: "4 min", temas: ["interior"], termos: ["Gnose"], placa: "bordo", data: "2026-08-20" },
+    { t: "O Apócrifo de João e o mito de Sofia", s: "nag-hammadi", tipo: "artigo", selo: "especialista", n: 3, min: "18 min", temas: ["origem", "alma", "morte"], termos: ["Gnose", "Sofia", "Pleroma", "Éon", "Demiurgo", "Arconte"], placa: "grafite", data: "2026-09-12" },
+    { t: "O que foi encontrado em Nag Hammadi", s: "nag-hammadi", tipo: "video", selo: "curado", n: 1, min: "18:42", temas: ["interior"], termos: ["Gnose"], placa: "bordo", data: "2026-09-12" },
+    { t: "Poimandres, §24–26: a subida pelas esferas", s: "corpus-hermeticum", tipo: "primaria", selo: "primaria", n: 2, min: "6 min", temas: ["morte", "alma"], termos: ["Nous", "Ogdóade"], placa: "bege", data: "2026-09-03" },
+    { t: "Poimandres: a Mente que fala a Hermes", s: "corpus-hermeticum", tipo: "artigo", selo: "curado", n: 1, min: "11 min", temas: ["origem", "interior"], termos: ["Nous"], img: IMG + "salas/corpus-hermeticum.webp", p: .38, data: "2026-08-30" },
+    { t: "Tratado XIII: renascimento e silêncio", s: "corpus-hermeticum", tipo: "artigo", selo: "especialista", n: 3, min: "16 min", temas: ["interior", "meditacao"], termos: ["Nous", "Ogdóade"], placa: "grafite", data: "2026-07-18" },
+    { t: "Poimandres, a mente que fala", s: "corpus-hermeticum", tipo: "video", selo: "curado", n: 2, min: "24:10", temas: ["alma"], termos: ["Nous"], img: IMG + "episodios/v-poimandres.webp", data: "2026-09-03" },
+    { t: "Capítulo II: o princípio do mentalismo", s: "caibalion", tipo: "primaria", selo: "primaria", n: 1, min: "5 min", temas: ["interior"], termos: ["Mentalismo", "TODO"], img: IMG + "salas/caibalion.webp", data: "2026-08-28" },
+    { t: "Os sete princípios, em linguagem simples", s: "caibalion", tipo: "artigo", selo: "curado", n: 1, min: "9 min", temas: ["origem", "interior"], termos: ["Mentalismo", "TODO"], img: IMG + "conteudos/sete-principios-hermeticos.webp", lido: true, data: "2026-08-12" },
+    { t: "Quem foram os Três Iniciados? O debate sobre a autoria", s: "caibalion", tipo: "artigo", selo: "especialista", n: 2, min: "12 min", temas: ["interior"], termos: ["TODO"], placa: "bordo", data: "2026-08-28" },
+    { t: "Os sete princípios do Caibalion, lidos devagar", s: "caibalion", tipo: "video", selo: "curado", n: 1, min: "15:36", temas: ["origem"], termos: ["Mentalismo"], img: IMG + "episodios/v-caibalion-principios.webp", data: "2026-08-28" },
+    { t: "O que o livro chama de Ajustador do Pensamento", s: "urantia", tipo: "artigo", selo: "curado", n: 1, min: "8 min", temas: ["alma", "interior"], termos: ["Ajustador do Pensamento"], placa: "grafite", data: "2026-09-05" },
+    { t: "Documento 47: os sete mundos das mansões", s: "urantia", tipo: "primaria", selo: "primaria", n: 2, min: "10 min", temas: ["morte", "alma"], termos: ["Mundos das mansões"], placa: "bege", data: "2026-09-05" },
+    { t: "O universo segundo o livro: Paraíso, Havona e superuniversos", s: "urantia", tipo: "artigo", selo: "especialista", n: 3, min: "15 min", temas: ["origem"], termos: ["Havona"], placa: "bordo", data: "2026-08-02" },
+    { t: "Os mundos das mansões no Livro de Urântia", s: "urantia", tipo: "video", selo: "curado", n: 2, min: "21:05", temas: ["morte"], termos: ["Mundos das mansões"], placa: "grafite", data: "2026-09-05" },
+    { t: "O que é um apócrifo? Um termo com história", s: "apocrifos", tipo: "artigo", selo: "curado", n: 1, min: "7 min", temas: ["interior"], termos: ["Apócrifo"], img: IMG + "banner/marca.webp", data: "2026-09-10" },
+    { t: "Evangelho de Maria: a subida da alma", s: "apocrifos", tipo: "primaria", selo: "primaria", n: 2, min: "6 min", temas: ["alma", "morte"], termos: ["Gnose", "Arconte", "Apócrifo"], placa: "bordo", data: "2026-09-10" },
+    { t: "O Apocalipse de Pedro e as imagens do além", s: "apocrifos", tipo: "artigo", selo: "especialista", n: 2, min: "12 min", temas: ["morte"], termos: ["Apócrifo"], placa: "grafite", data: "2026-07-30" },
+    { t: "O Evangelho de Maria e suas páginas perdidas", s: "apocrifos", tipo: "video", selo: "curado", n: 2, min: "19:48", temas: ["alma"], termos: ["Apócrifo"], placa: "bordo", data: "2026-09-10" }
+  ];
+  var G = [
+    ["Ajustador do Pensamento", "Livro de Urântia · expressão", "No Livro de Urântia, fragmento do Pai Universal que habita a mente humana e orienta a ascensão da alma.", ["urantia"]],
+    ["Apócrifo", "grego · ἀπόκρυφος · oculto", "No estudo do cristianismo antigo, texto que não entrou no cânone reconhecido pelas igrejas. O sentido original, “oculto”, mudou com o tempo.", ["apocrifos"]],
+    ["Arconte", "grego · ἄρχων · governante", "Nos textos gnósticos de Nag Hammadi, as potências que governam as esferas do mundo material e tentam reter a alma.", ["nag-hammadi", "apocrifos"]],
+    ["Demiurgo", "grego · δημιουργός · artesão", "No Apócrifo de João, Ialdabaoth é o criador do mundo material, gerado por Sofia fora do Pleroma, e ignora o que existe acima dele.", ["nag-hammadi"]],
+    ["Éon", "grego · αἰών · era, eternidade", "Na cosmologia gnóstica, cada uma das emanações divinas que compõem o Pleroma.", ["nag-hammadi"]],
+    ["Gnose", "grego · γνῶσις · conhecimento", "Nos textos de Nag Hammadi, conhecimento de ordem espiritual sobre a origem e o destino da alma, apresentado como caminho de libertação.", ["nag-hammadi"]],
+    ["Havona", "Livro de Urântia · nome próprio", "No Livro de Urântia, o universo central, perfeito e eterno, que gira em torno da Ilha do Paraíso.", ["urantia"]],
+    ["Mentalismo", "O Caibalion · princípio", "Primeiro dos sete princípios apresentados no Caibalion: “O TODO é MENTE; o Universo é Mental.”", ["caibalion"]],
+    ["Mundos das mansões", "Livro de Urântia · expressão", "No Documento 47 do Livro de Urântia, os mundos onde os mortais sobreviventes despertam após a morte e continuam a ascensão.", ["urantia"]],
+    ["Nous", "grego · νοῦς · mente, intelecto", "No Corpus Hermeticum, a Mente divina que se apresenta a Hermes como Poimandres, descrita como luz e pai de todas as coisas.", ["corpus-hermeticum"]],
+    ["Ogdóade", "grego · ὀγδοάς · o oitavo", "No Tratado I, a oitava esfera, acima das sete planetárias, que a alma alcança depois de se despojar do que recebeu de cada uma.", ["corpus-hermeticum"]],
+    ["Pleroma", "grego · πλήρωμα · plenitude", "Nos textos gnósticos de Nag Hammadi, a totalidade da esfera divina, habitada pelos éons.", ["nag-hammadi"]],
+    ["Sofia", "grego · σοφία · sabedoria", "No Apócrifo de João, o último dos éons; sua ação sem consentimento dá origem ao demiurgo.", ["nag-hammadi"]],
+    ["TODO", "O Caibalion · inglês THE ALL", "No Caibalion, a realidade última, descrita como Mente infinita da qual o universo é uma criação mental.", ["caibalion"]]
+  ];
+  var nomeTermo = function (t) { return t === "TODO" ? "O TODO" : t; };
+  var inicial = function (t) { return nomeTermo(t).replace(/^O /, "").normalize("NFD").charAt(0).toUpperCase(); };
+  var semAcento = function (s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
+  var st = { vista: location.hash === "#glossario" ? "glossario" : "conteudos", sala: "", q: "", termo: "", temas: [], niveis: [], fmt: "", letra: "G" };
+  var $ = function (id) { return document.getElementById(id); };
+  function toggle(a, v) { var i = a.indexOf(v); if (i >= 0) a.splice(i, 1); else a.push(v); }
+
+  function filtrados() {
+    var q = semAcento(st.q.trim());
+    return I.filter(function (i) {
+      return (!st.sala || i.s === st.sala) && (!st.termo || i.termos.indexOf(st.termo) >= 0) &&
+        (!st.temas.length || st.temas.some(function (t) { return i.temas.indexOf(t) >= 0; })) &&
+        (!st.niveis.length || st.niveis.indexOf(String(i.n)) >= 0) &&
+        (!st.fmt || (st.fmt === "video") === (i.tipo === "video")) &&
+        (!q || semAcento(i.t + " " + NOME[i.s] + " " + i.termos.join(" ")).indexOf(q) >= 0);
+    }).sort(function (a, b) { return b.data.localeCompare(a.data); });
+  }
+  var RELOGIO = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 5.5V10l3 2" stroke-linecap="round"/></svg>';
+  var SALVAR = '<button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button>';
+  function card(i) {
+    var midia = i.img ? '<img class="sala__image" src="' + i.img + '" alt="">' : '<div class="sala__placa sdb-plate--' + i.placa + '"><span data-arc data-on="' + i.placa + '"></span></div>';
+    var prog = i.lido ? '<span class="sala__count">Lido</span>' : (i.p ? '<span class="sala__count">' + Math.round(i.p * 100) + '%</span>' : "");
+    var barra = i.p ? '<span class="bc__barra" aria-hidden="true"><i style="--p:' + i.p + '"></i></span>' : "";
+    var sl = SELOS[i.selo];
+    return '<article class="sala sala--normal bc"><div class="sala__media">' + midia +
+      '<div class="sala__tools"><div class="sala__chips"><span class="sala__count">' + TIPOS[i.tipo] + "</span>" + prog + "</div>" + SALVAR + "</div>" + barra + "</div>" +
+      '<div class="sala__body"><p class="bc__onde">' + NOME[i.s] + '</p><h3 class="sala__title"><a class="sdb-card__link" href="#">' + i.t + "</a></h3>" +
+      '<div class="bc__meta"><span class="sdb-level sdb-level--plain" data-level="' + i.n + '"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>' + NIVEIS[i.n] + '</span><span class="bc__dur">' + RELOGIO + i.min + "</span></div>" +
+      '<span class="sdb-seal sdb-seal--' + i.selo + '"><span class="sdb-seal__icon"><span data-icon="' + sl[0] + '"></span></span>' + sl[1] + "</span></div></article>";
+  }
+  function chipAtivo(rotulo, remover) {
+    var c = document.createElement("span"); c.className = "sdb-chip sdb-chip--sm sdb-chip--static"; c.setAttribute("aria-pressed", "true");
+    c.innerHTML = rotulo + '<button class="sdb-chip__x" type="button" aria-label="Remover filtro ' + rotulo + '"><span data-icon="fechar" class="sdb-icon--sm"></span></button>';
+    c.querySelector("button").addEventListener("click", function () { remover(); render(); });
+    return c;
+  }
+
+  // Abas de Sala
+  function abas() {
+    var lista = [{ k: "", c: "Todas" }].concat(SALAS);
+    $("abas").innerHTML = "";
+    lista.forEach(function (s) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "sdb-chip"; b.setAttribute("aria-pressed", String(st.sala === s.k));
+      var n = st.vista === "glossario" ? G.filter(function (g) { return !s.k || g[3].indexOf(s.k) >= 0; }).length : I.filter(function (i) { return !s.k || i.s === s.k; }).length;
+      b.innerHTML = s.c + ' <span class="sdb-count">' + n + "</span>";
+      b.addEventListener("click", function () { st.sala = s.k; render(); });
+      $("abas").appendChild(b);
+    });
+  }
+  // Filtros
+  Object.keys(TEMAS).forEach(function (k) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "sdb-chip sdb-chip--sm"; b.dataset.v = k; b.textContent = TEMAS[k];
+    b.addEventListener("click", function () { toggle(st.temas, k); render(); }); $("f-tema").appendChild(b);
+  });
+  Object.keys(NIVEIS).forEach(function (k) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "sdb-option"; b.dataset.v = k;
+    b.innerHTML = "<span>" + NIVEIS[k] + '</span><span class="sdb-option__n">' + I.filter(function (i) { return String(i.n) === k; }).length + '</span><span data-icon="check" class="sdb-option__check"></span>';
+    b.addEventListener("click", function () { toggle(st.niveis, k); render(); }); $("f-nivel").appendChild(b);
+  });
+  $("f-fmt").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (b) { st.fmt = b.dataset.v; render(); } });
+  function limparFiltros() { st.temas = []; st.niveis = []; st.fmt = ""; st.termo = ""; st.q = ""; $("q").value = ""; render(); }
+  $("f-limpar").addEventListener("click", limparFiltros);
+  $("q").addEventListener("input", function () { st.q = this.value; render(); });
+  $("vistas").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (b) { st.vista = b.dataset.v; render(); } });
+
+  // Glossário
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (L) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = L;
+    b.disabled = !G.some(function (g) { return inicial(g[0]) === L; });
+    b.addEventListener("click", function () { st.letra = L; render(); });
+    $("alpha").appendChild(b);
+  });
+  function glossario() {
+    Array.prototype.forEach.call($("alpha").children, function (b) { b.setAttribute("aria-pressed", String(b.textContent === st.letra)); });
+    var q = semAcento(st.q.trim());
+    var lista = G.filter(function (g) {
+      return (!st.sala || g[3].indexOf(st.sala) >= 0) && (q ? semAcento(nomeTermo(g[0]) + " " + g[2]).indexOf(q) >= 0 : inicial(g[0]) === st.letra);
+    }).sort(function (a, b) { return nomeTermo(a[0]).localeCompare(nomeTermo(b[0]), "pt"); });
+    var el = $("glo-lista"); el.innerHTML = "";
+    if (!lista.length) { el.innerHTML = '<p class="sdb-body-sm">Nenhum verbete ' + (q ? "com “" + st.q + "”" : "nesta letra") + (st.sala ? " em " + NOME[st.sala] : "") + ".</p>"; return; }
+    lista.forEach(function (g, idx) {
+      var n = I.filter(function (i) { return i.termos.indexOf(g[0]) >= 0; }).length, id = "v" + idx, aberto = idx === 0;
+      var d = document.createElement("div"); d.className = "sdb-gloss__item";
+      d.innerHTML = '<button class="sdb-acc-trigger" data-acc-trigger aria-expanded="' + aberto + '" aria-controls="' + id + '"><span><span class="sdb-gloss__term">' + nomeTermo(g[0]) + '</span><span class="sdb-gloss__origin">' + g[1] + '</span></span><span data-icon="chevronDireita" class="sdb-chev"></span></button>' +
+        '<div id="' + id + '" class="sdb-acc-panel' + (aberto ? " is-open" : "") + '"><div><div class="sdb-acc-body" style="display:flex;flex-direction:column;gap:16px"><p style="margin:0">' + g[2] + '</p><div class="sdb-row" style="gap:8px">' +
+        g[3].map(function (s) { return '<span class="sdb-chip sdb-chip--sm sdb-chip--static"><span data-arc></span>' + NOME[s] + "</span>"; }).join("") +
+        '</div><div class="sdb-row" style="gap:16px;justify-content:space-between"><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-termo="' + g[0] + '">' + n + (n === 1 ? " conteúdo trata" : " conteúdos tratam") + ' deste termo</button><p class="sdb-gloss__note" style="margin:0">Redigido pela equipe editorial da Sala.</p></div></div></div></div>';
+      el.appendChild(d);
+    });
+    Array.prototype.forEach.call(el.querySelectorAll("[data-termo]"), function (b) {
+      b.addEventListener("click", function () { st.termo = b.dataset.termo; st.vista = "conteudos"; st.q = ""; $("q").value = ""; render(); });
+    });
+  }
+
+  function conteudos() {
+    var lista = filtrados(), alvo = $("vista-conteudos"), filtrando = !!(st.q || st.termo || st.temas.length || st.niveis.length || st.fmt);
+    if (!lista.length) { alvo.innerHTML = '<p class="sdb-body-sm">Nenhum conteúdo com esses filtros. Remova um filtro acima ou volte para “Todas”.</p>'; return; }
+    if (st.sala) {
+      var s = SALAS.filter(function (x) { return x.k === st.sala; })[0];
+      alvo.innerHTML = '<section class="secao"><div class="sala-intro"><div><h2 class="sdb-title-2" style="margin:0">' + s.n + '</h2><p class="sdb-footnote" style="margin:4px 0 0">' + s.d + " · " + lista.length + (lista.length === 1 ? " conteúdo" : " conteúdos") + '</p></div><a class="sdb-btn sdb-btn--secondary sdb-btn--sm" href="#">Entrar na Sala</a></div><div class="grade">' + lista.map(card).join("") + "</div></section>";
+      return;
+    }
+    var html = '<div class="secoes">';
+    SALAS.forEach(function (s) {
+      var da = lista.filter(function (i) { return i.s === s.k; });
+      if (!da.length) return;
+      var mais = !filtrando && da.length > 4 ? '<button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" data-sala="' + s.k + '">Ver os ' + da.length + "</button>" : '<button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" data-sala="' + s.k + '">Ver só esta Sala</button>';
+      html += '<section class="secao"><div class="secao__head"><div><h2 class="sdb-title-2">' + s.n + '</h2><p class="sdb-footnote">' + s.d + " · " + da.length + (da.length === 1 ? " conteúdo" : " conteúdos") + "</p></div>" + mais + '</div><div class="grade">' + da.slice(0, filtrando ? da.length : 4).map(card).join("") + "</div></section>";
+    });
+    alvo.innerHTML = html + "</div>";
+    Array.prototype.forEach.call(alvo.querySelectorAll("[data-sala]"), function (b) { b.addEventListener("click", function () { st.sala = b.dataset.sala; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }); });
+  }
+
+  function render() {
+    Array.prototype.forEach.call($("vistas").children, function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === st.vista)); });
+    if (SalaBuscadores.syncSeg) SalaBuscadores.syncSeg($("vistas"));
+    var glo = st.vista === "glossario";
+    $("titulo").textContent = glo ? "Glossário" : "Todos os conteúdos";
+    $("sub").textContent = glo ? "Termos das tradições, com a origem e a definição atribuída a cada Sala." : "Textos, fontes primárias e vídeos das cinco Salas, cada um com a sua procedência.";
+    $("q").placeholder = glo ? "Buscar um termo…" : "Buscar na Biblioteca…";
+    $("bt-filtros").hidden = glo;
+    $("vista-conteudos").hidden = glo; $("vista-glossario").hidden = !glo;
+    abas();
+
+    Array.prototype.forEach.call($("f-tema").children, function (b) { b.setAttribute("aria-pressed", String(st.temas.indexOf(b.dataset.v) >= 0)); });
+    Array.prototype.forEach.call($("f-nivel").children, function (b) { b.setAttribute("aria-pressed", String(st.niveis.indexOf(b.dataset.v) >= 0)); });
+    Array.prototype.forEach.call($("f-fmt").children, function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === st.fmt)); });
+    if (SalaBuscadores.syncSeg) SalaBuscadores.syncSeg($("f-fmt"));
+    var nf = st.temas.length + st.niveis.length + (st.fmt ? 1 : 0);
+    $("bt-filtros-txt").textContent = nf ? "Filtros (" + nf + ")" : "Filtros";
+    $("f-ver").textContent = "Ver " + filtrados().length + " conteúdos";
+
+    var at = $("ativos"); at.innerHTML = "";
+    if (!glo) {
+      if (st.termo) at.appendChild(chipAtivo("Termo: " + nomeTermo(st.termo), function () { st.termo = ""; }));
+      st.temas.forEach(function (k) { at.appendChild(chipAtivo(TEMAS[k], function () { toggle(st.temas, k); })); });
+      st.niveis.forEach(function (k) { at.appendChild(chipAtivo(NIVEIS[k], function () { toggle(st.niveis, k); })); });
+      if (st.fmt) at.appendChild(chipAtivo(st.fmt === "video" ? "Vídeo" : "Texto", function () { st.fmt = ""; }));
+      if (at.children.length) { var l = document.createElement("button"); l.type = "button"; l.className = "sdb-btn sdb-btn--plain sdb-btn--sm"; l.textContent = "Limpar filtros"; l.addEventListener("click", limparFiltros); at.appendChild(l); }
+    }
+    at.hidden = !at.children.length;
+    if (glo) glossario(); else conteudos();
+    SalaBuscadores.hydrate();
+  }
+  render();
+})();
+</script>
+</body>
+</html>

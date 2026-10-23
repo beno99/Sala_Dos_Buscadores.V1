@@ -9,3 +9,7 @@ Nível de aprofundamento como uma pequena escada de três degraus, sempre com a 
 - Nível do membro num assunto (Sala ou tema): `.sdb-levelup__head` (Selo + "em Corpus Hermeticum"), `.sdb-levelup__steps` (três segmentos, um por degrau, `--p` de 0 a 1, decorativos) e `.sdb-levelup__hint` com o que falta, em leituras: "Faltam 2 leituras para Avançado".
 - Sem pontos e sem nível global. A regra fica explicada num Modal "Como os níveis funcionam", que diz que os níveis medem só o estudo no acervo e nada sobre crença ou espiritualidade.
 - Privado: nunca aparece para outras pessoas nem em comparação entre pessoas.
+
+## Comunidade · Fase A
+
+A especificação da Comunidade permite o selo junto à autoria, sempre contextualizado por Sala/assunto (“Intermediário em Corpus Hermeticum”). Nunca nível global, ponto ou ranking. O restante do progresso e as conquistas continuam privados.

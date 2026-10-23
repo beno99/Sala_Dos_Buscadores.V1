@@ -8,3 +8,6 @@ O acervo fala em serifa; a interface e a IA falam em Inter.
 - **Interface** `ui` (Inter): `.sdb-headline` 17 semibold, `.sdb-callout` 15, `.sdb-footnote` 13. Inter é a fonte de sistema do portal (papel do SF Pro).
 - **Meta** `.sdb-meta`: 11,5 px, caixa-alta, +6%. Só para rótulos de seção e localização de fonte.
 - Hierarquia por peso + tamanho + entrelinha juntos. Campos de texto com 16 px ou mais.
+
+## Título marrom (`.sdb-brand`, out 2026)
+Na paleta areia, títulos de página que abrem uma seção de vitrine ("Destaques", o nome da Sala) podem ir em `label-brand` (marrom, AA conferido). Use só em títulos, nunca em texto corrido.

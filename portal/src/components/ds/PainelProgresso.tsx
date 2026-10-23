@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * Painel de progresso (PainelProgresso › `.sdb-panel`): um contêiner só, na
+ * Painel de progresso (PainelProgresso › `.sdb-panel--progresso`): um contêiner só, na
  * grade de quatro colunas dos indicadores. Leitura nas colunas 1–2 e anúncio
  * nas 3–4; sem anúncio, a leitura ocupa as quatro.
  */
@@ -18,7 +18,7 @@ export function PainelProgresso({
   children: ReactNode;
 }) {
   return (
-    <section className="sdb-panel sdb-material" aria-labelledby={tituloId}>
+    <section className="sdb-panel sdb-panel--progresso sdb-material" aria-labelledby={tituloId}>
       {indicadores}
       <div className="sdb-panel__main">{children}</div>
       {anuncio && <div className="sdb-panel__ad">{anuncio}</div>}

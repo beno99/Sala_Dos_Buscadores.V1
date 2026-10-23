@@ -19,6 +19,11 @@ const target = resolve(portal, "src/design-system");
 const check = process.argv.includes("--check");
 
 const FILES = [
+  ["conteudo.json", "conteudo.json"],
+  ["components/BarraFormatacao/marcacao.mjs", "marcacao.mjs"],
+  ["components/BarraFormatacao/marcacao.d.mts", "marcacao.d.mts"],
+  ["components/EstadosInterface/estados-interface.css", "estados-interface.css"],
+  ["components/Iconografia/LICENCA-PHOSPHOR.txt", "LICENCA-PHOSPHOR.txt"],
   ["tokens.css", "tokens.css"],
   ["tokens.json", "tokens.json"],
   ["components/bundle.css", "bundle.css"],
@@ -32,11 +37,15 @@ const FILES = [
   ["components/CardVideo/card-video.css", "card-video.css"],
   ["components/CardComparativo/card-comparativo.css", "card-comparativo.css"],
   ["components/AssistenteOrb/assistant-orb.css", "assistant-orb.css"],
+  // Telas de conta (Entrar, Redefinir senha, Criar conta): Figma 19537:4958.
+  ["components/Conta/conta.css", "conta.css"],
   // Renderizador WebGL do orbe do assistente: é desenho, não comportamento, então vem como está.
   ["components/AssistenteOrb/gold-orb.js", "gold-orb.js"],
   ["fonts/Gambetta-Variable.woff2", "fonts/Gambetta-Variable.woff2"],
   ["fonts/Gambetta-VariableItalic.woff2", "fonts/Gambetta-VariableItalic.woff2"],
   ["fonts/Gambetta-LICENCA-FFL.txt", "fonts/Gambetta-LICENCA-FFL.txt"],
+  ["fonts/GeneralSans-Variable.woff2", "fonts/GeneralSans-Variable.woff2"],
+  ["fonts/GeneralSans-LICENCA-FFL.txt", "fonts/GeneralSans-LICENCA-FFL.txt"],
 ];
 
 if (!existsSync(source)) {
@@ -58,6 +67,23 @@ for (const [from, to] of FILES) {
     copyFileSync(src, dest);
     console.log(`copiado  ${relative(portal, dest)}`);
   }
+}
+
+// Ícones de interface (Phosphor): reaproveita os SVGs da fonte sem depender de pacote de ícones.
+const interfaceFile = join(target, "interface-icons.generated.ts");
+const interfaceIcons = JSON.parse(
+  readFileSync(join(source, "components/EstadosInterface/icones.json"), "utf8"),
+);
+const interfaceNodes = Object.fromEntries(
+  Object.entries(interfaceIcons).map(([name, svg]) => [
+    name,
+    parseSvg(svg.slice(svg.indexOf(">") + 1, svg.lastIndexOf("</svg>"))),
+  ]),
+);
+const interfaceContent = `/* Gerado da biblioteca principal. Não edite à mão. */\nimport type { SvgNode } from "./icons.generated";\nexport const INTERFACE_ICONS = ${JSON.stringify(interfaceNodes, null, 2)} as const satisfies Record<string, SvgNode[]>;\nexport type InterfaceIconName = keyof typeof INTERFACE_ICONS;\n`;
+if (!existsSync(interfaceFile) || readFileSync(interfaceFile, "utf8") !== interfaceContent) {
+  if (check) problems.push("src/design-system/interface-icons.generated.ts está desatualizado");
+  else writeFileSync(interfaceFile, interfaceContent);
 }
 
 const iconsFile = join(target, "icons.generated.ts");
@@ -159,7 +185,7 @@ function parseSvg(markup) {
 function parseAttrs(raw) {
   const attrs = {};
   for (const [, key, value] of raw.matchAll(/([a-zA-Z-]+)="([^"]*)"/g)) {
-    attrs[key.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase())] = value;
+    attrs[key === "class" ? "className" : key.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase())] = value;
   }
   return attrs;
 }

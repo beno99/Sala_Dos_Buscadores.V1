@@ -5,8 +5,10 @@ import { Alerta } from "@/components/ds/Alerta";
 import { ButtonLink } from "@/components/ds/Button";
 import { CascaCuradoria } from "@/features/admin/ui/CascaCuradoria";
 import { TopoCuradoria } from "@/features/admin/ui/TopoCuradoria";
-import { COOKIE_TEMA } from "@/features/aparencia/tema";
-import { listarArtigos, listarFontes, listarVideos } from "@/server/admin/consultas";
+import { aparenciaDoCookie, COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie } from "@/features/aparencia/tema";
+import { listarFontes } from "@/server/admin/consultas";
+import { listarSalasAdmin } from "@/server/admin/salas";
+import { totalPendenteRevisao } from "@/server/anfitriao/consultas";
 import { acessoAtual, redirecionarParaEntrar } from "@/server/sessao";
 
 export const metadata: Metadata = {
@@ -22,10 +24,12 @@ export const metadata: Metadata = {
 export default async function LayoutCuradoria({ children }: { children: ReactNode }) {
   const acesso = await acessoAtual();
   if (acesso.tipo === "sem-sessao") await redirecionarParaEntrar();
-  const aparencia = (await cookies()).get(COOKIE_TEMA)?.value === "escuro" ? "escuro" : "claro";
+  const jar = await cookies();
+  const aparencia = aparenciaDoCookie(jar.get(COOKIE_TEMA)?.value);
+  const lateralTranslucida = lateralDoCookie(jar.get(COOKIE_LATERAL)?.value);
   return (
     <div className="flex min-h-dvh flex-col">
-      <TopoCuradoria aparencia={aparencia} />
+      <TopoCuradoria aparencia={aparencia} lateralTranslucida={lateralTranslucida} />
       <main
         id="conteudo"
         tabIndex={-1}
@@ -58,9 +62,9 @@ function AcessoRestrito() {
 
 function AreaCuradoria({ children }: { children: ReactNode }) {
   const contagens = {
-    artigos: listarArtigos().length,
-    videos: listarVideos().length,
+    salas: listarSalasAdmin().length,
     fontes: listarFontes().length,
+    revisao: totalPendenteRevisao(),
   };
   return <CascaCuradoria contagens={contagens}>{children}</CascaCuradoria>;
 }

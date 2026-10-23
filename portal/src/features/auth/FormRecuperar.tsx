@@ -29,17 +29,12 @@ export function FormRecuperar({ voltar }: { voltar: string }) {
   };
 
   return (
-    <form
-      className="sdb-material sdb-panel"
-      noValidate
-      onSubmit={submeter}
-      aria-labelledby="titulo-recuperar"
-    >
-      <div className="flex flex-col gap-2">
-        <h1 id="titulo-recuperar" className="sdb-title-1">
+    <form className="sdb-conta__form" noValidate onSubmit={submeter} aria-labelledby="titulo-recuperar">
+      <div className="sdb-conta__cabecalho">
+        <h1 id="titulo-recuperar" className="sdb-conta__titulo">
           Redefinir senha
         </h1>
-        <p className="sdb-body-sm sdb-secondary">Enviamos um link temporário para o e-mail da conta.</p>
+        <p className="sdb-conta__lead">Enviamos um link temporário para o e-mail da conta.</p>
       </div>
 
       {validade !== null ? (
@@ -67,7 +62,7 @@ export function FormRecuperar({ voltar }: { voltar: string }) {
         </>
       )}
 
-      <p className="sdb-footnote">
+      <p className="sdb-footnote sdb-conta__alternativa">
         Lembrou a senha?{" "}
         <Link href={`/entrar?voltar=${encodeURIComponent(voltar)}` as Route} className="sdb-link">
           Entrar

@@ -13,6 +13,10 @@ const TIPOS: { value: TipoItemAuditado | ""; label: string }[] = [
   { value: "fonte", label: "Fontes" },
   { value: "destaques", label: "Destaques" },
   { value: "acervo", label: "Acervo" },
+  { value: "sala", label: "Salas de anfitriões" },
+  { value: "usuario", label: "Usuários" },
+  { value: "candidatura", label: "Candidaturas" },
+  { value: "convite", label: "Convites" },
 ];
 
 const GRUPOS: { value: string; label: string; acoes: AcaoAuditada[] }[] = [
@@ -27,6 +31,16 @@ const GRUPOS: { value: string; label: string; acoes: AcaoAuditada[] }[] = [
     value: "sensivel",
     label: "Proveniência e situação jurídica",
     acoes: ["alterou-proveniencia", "alterou-situacao-juridica"],
+  },
+  {
+    value: "revisao",
+    label: "Revisão de anfitriões",
+    acoes: ["enviou-para-revisao", "aprovou", "reprovou", "incluiu-na-comparacao", "removeu-da-comparacao"],
+  },
+  {
+    value: "usuarios",
+    label: "Papéis, convites e perfis",
+    acoes: ["promoveu", "rebaixou", "convidou", "revogou-convite", "transferiu", "editou-perfil"],
   },
 ];
 

@@ -1,14 +1,15 @@
 import type { Route } from "next";
 import type { CSSProperties } from "react";
-import { Alerta } from "@/components/ds/Alerta";
 import { ButtonLink } from "@/components/ds/Button";
 import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardVideo } from "@/components/ds/CardVideo";
 import { ChipLink } from "@/components/ds/Chip";
+import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { todosOsTemas } from "@/data/catalogo";
 import { acervoPublico, alcanceDoTema } from "@/data/repositorio";
 import { escolherResposta } from "@/features/assistente/motor";
 import { AreaResultados } from "./AreaResultados";
+import { BarraBusca } from "./BarraBusca";
 import { buscar, contarFiltrosAtivos, type FiltrosBusca, filtrosAtivos, paraQueryString } from "./busca";
 import { GradeComparativa } from "./GradeComparativa";
 
@@ -33,17 +34,27 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
   const acervo = acervoPublico();
   const resultado = buscar(filtros, acervo);
   const buscou = Boolean(filtros.q.trim()) || contarFiltrosAtivos(filtros) > 0;
+  const barra = (
+    <BarraBusca key={paraQueryString(filtros)} filtros={filtros} className="sdb-journey-compare__search" />
+  );
 
   if (!buscou) {
     return (
-      <section className="flex flex-col gap-4" aria-labelledby="titulo-inicio-busca">
-        <h2 id="titulo-inicio-busca" className="sdb-title-2">
-          Escolha um tema para começar
-        </h2>
-        <p className="sdb-footnote">
-          Cada tema abre a mesma pergunta respondida por cada Sala, na sua própria voz e com a fonte indicada.
-        </p>
-        <SugestoesDeTema />
+      <section
+        className="sdb-journey-compare sdb-journey-compare--welcome"
+        aria-labelledby="titulo-inicio-busca"
+      >
+        <header className="sdb-journey-compare__intro">
+          <p className="sdb-journey-compare__eyebrow">Busca comparativa</p>
+          <h1 id="titulo-inicio-busca" className="sdb-large-title">
+            O que cada Sala diz, lado a lado
+          </h1>
+          <p className="sdb-journey-compare__description">
+            Cada tradição responde com o próprio vocabulário e a própria fonte. O portal não junta as
+            respostas numa síntese nem escolhe a mais correta.
+          </p>
+        </header>
+        {barra}
       </section>
     );
   }
@@ -52,33 +63,30 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
     const ativos = filtrosAtivos(filtros);
     const termo = filtros.q.trim();
     return (
-      <Alerta
-        title={
-          termo ? `Nenhuma Sala trata de “${termo}” no acervo atual` : "Nenhum resultado com esses filtros"
-        }
-        actions={
-          ativos.length > 0 ? (
-            <ButtonLink
-              href={
-                `/comparar${paraQueryString({ ...filtros, salas: [], temas: [], niveis: [], formato: null })}` as Route
-              }
-              variant="secondary"
-              size="sm"
-            >
-              Remover todos os filtros
-            </ButtonLink>
-          ) : undefined
-        }
-      >
-        <div className="flex flex-col gap-3">
-          <p className="m-0">
-            {ativos.length > 0
+      <div className="sdb-journey-compare sdb-journey-compare--empty">
+        <h1 className="sdb-title-1">Busca comparativa</h1>
+        {barra}
+        <EstadoSecao
+          simbolo="busca"
+          titulo={
+            termo ? `Nenhuma Sala trata de “${termo}” no acervo atual` : "Nenhum resultado com esses filtros"
+          }
+          descricao={
+            ativos.length > 0
               ? `Remova o filtro ${ativos.at(-1)?.rotulo} ou escolha um tema, como alma.`
-              : "Tente um tema que atravessa as Salas, como alma, ou escreva a pergunta com outras palavras."}
-          </p>
-          <SugestoesDeTema />
-        </div>
-      </Alerta>
+              : "Tente um tema que atravessa as Salas, como alma, ou escreva a pergunta com outras palavras."
+          }
+          acao={
+            ativos.length > 0
+              ? {
+                  rotulo: "Remover todos os filtros",
+                  href: `/comparar${paraQueryString({ ...filtros, salas: [], temas: [], niveis: [], formato: null })}` as Route,
+                }
+              : { rotulo: "Limpar busca", href: "/comparar" }
+          }
+        />
+        <SugestoesDeTema />
+      </div>
     );
   }
 
@@ -89,11 +97,13 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
 
   return (
     <div className="flex flex-col gap-8">
+      <h1 className="sdb-sr">Busca comparativa</h1>
       {comparacao && (
-        <div className="flex flex-col gap-4">
+        <div className="sdb-journey-compare">
           <GradeComparativa key={paraQueryString(filtros)} comparacao={comparacao} />
+          {barra}
           {perguntaAssistente && (
-            <div className="sdb-row">
+            <div className="sdb-journey-compare__continue">
               <ButtonLink
                 href={`/assistente?pergunta=${encodeURIComponent(perguntaAssistente)}` as Route}
                 variant="tinted"
@@ -105,6 +115,7 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
           )}
         </div>
       )}
+      {!comparacao && <div className="sdb-journey-compare">{barra}</div>}
 
       <AreaResultados key={paraQueryString(filtros)} filtros={filtros} acervo={acervo}>
         <h2 className="sdb-title-2" id="titulo-lista">
@@ -116,10 +127,12 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
             : `${conteudos} ${conteudos === 1 ? "conteúdo" : "conteúdos"}${videos ? ` e ${videos} ${videos === 1 ? "vídeo" : "vídeos"}` : ""}.`}
         </p>
         {itens.length === 0 ? (
-          <Alerta title="Nenhum conteúdo com esses filtros">
-            Remova o filtro {filtrosAtivos(filtros).at(-1)?.rotulo ?? "mais recente"} para ver mais
-            resultados. A grade acima continua valendo para a pergunta.
-          </Alerta>
+          <EstadoSecao
+            simbolo="busca"
+            compacto
+            titulo="Nenhum conteúdo com esses filtros"
+            descricao={`Remova o filtro ${filtrosAtivos(filtros).at(-1)?.rotulo ?? "mais recente"} para ver mais resultados. A grade acima continua valendo para a pergunta.`}
+          />
         ) : (
           <div className="sdb-grid" style={{ "--sdb-col": "300px" } as CSSProperties}>
             {itens.map((i) =>

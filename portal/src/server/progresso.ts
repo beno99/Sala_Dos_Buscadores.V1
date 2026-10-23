@@ -1,7 +1,8 @@
 import "server-only";
-import { todasAsSalas, todosOsTemas } from "@/data/catalogo";
+import { salasOficiais, todasAsSalas, todosOsTemas } from "@/data/catalogo";
 import { CONTA_DEMONSTRACAO } from "@/features/auth/contas";
 import { conquistasNovas } from "@/features/estudo/conquistas";
+import { alternarItem, type TipoEstante } from "@/features/estudo/estante";
 import {
   type ConquistaId,
   chaveLeitura,
@@ -87,7 +88,6 @@ export function progressoDe(email: string): ProgressoEstudo {
   return structuredClone(doMembro(email));
 }
 
-const SALAS = new Set<string>(todasAsSalas().map((s) => s.slug));
 const TEMAS = new Set<string>(todosOsTemas().map((t) => t.slug));
 
 export interface ResultadoEvento {
@@ -110,7 +110,7 @@ export function registrarEvento(
 
   switch (evento.tipo) {
     case "sala": {
-      if (!SALAS.has(evento.sala)) return null;
+      if (!todasAsSalas().some((s) => s.slug === evento.sala)) return null;
       if (p.salasVisitadas.includes(evento.sala)) mudouResumo = false;
       else p.salasVisitadas.push(evento.sala);
       break;
@@ -158,13 +158,21 @@ export function registrarEvento(
       return null;
   }
 
-  const novas = conquistasNovas(p, { acervo, totalSalas: SALAS.size });
+  const novas = conquistasNovas(p, { acervo, totalSalas: salasOficiais().length });
   for (const id of novas) p.conquistas[id] = quando;
   return { novas, mudouResumo: mudouResumo || novas.length > 0 };
 }
 
 export function dispensarContinuar(email: string, chave: string) {
   doMembro(email).continuarDispensado = chave;
+}
+
+/** Salva ou tira um item da Estante da própria conta; devolve se ficou salvo. */
+export function alternarNaEstante(email: string, tipo: TipoEstante, ref: string): boolean {
+  const p = doMembro(email);
+  const r = alternarItem(p.estante, tipo, ref, new Date().toISOString());
+  p.estante = r.estante;
+  return r.salvo;
 }
 
 export function definirMostrarNiveis(email: string, mostrar: boolean) {

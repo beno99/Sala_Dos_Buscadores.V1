@@ -39,6 +39,17 @@ export interface FiltrosVideos {
   pagina: number;
 }
 
+export type OrigemFiltro = "oficial" | "anfitriao" | "";
+
+/** Filtros da lista de Salas da curadoria (e da exportação CSV a partir dela). */
+export interface FiltrosSalas {
+  q: string;
+  origem: OrigemFiltro;
+  status: StatusEditorial | "";
+  /** Id da conta do anfitrião; só vale com a origem "anfitriao". */
+  anfitriao: string;
+}
+
 export interface FiltrosFontes {
   q: string;
   ordem: Ordem;
@@ -56,15 +67,10 @@ function ler(p: Params, k: string): string {
 const um = <T extends string>(v: string, validos: readonly T[]): T | "" =>
   validos.includes(v as T) ? (v as T) : "";
 const ORDENS = ["atualizado-desc", "atualizado-asc", "titulo-asc", "titulo-desc"] as const;
-const SALAS = [
-  "apocrifos-cristianismo-primitivo",
-  "nag-hammadi",
-  "corpus-hermeticum",
-  "caibalion",
-  "urantia",
-] as const;
+/** Salas não são fixas: o slug só precisa ter o formato de endereço. */
+const slugDeSala = (v: string): SalaSlug | "" => (/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v) ? v : "");
 const TEMAS = ["morte", "alma", "meditacao", "origem-do-universo", "conhecimento-interior"] as const;
-const STATUS = ["rascunho", "publicado", "arquivado"] as const;
+const STATUS = ["rascunho", "em_revisao", "publicado", "reprovado", "arquivado"] as const;
 const PROVENIENCIAS = ["primaria", "curado", "especialista", "comunidade", "ia"] as const;
 
 const nivel = (v: string): Nivel | 0 => (v === "1" || v === "2" || v === "3" ? (Number(v) as Nivel) : 0);
@@ -74,7 +80,7 @@ const ordem = (v: string): Ordem => um(v, ORDENS) || "atualizado-desc";
 export function lerFiltrosArtigos(p: Params): FiltrosArtigos {
   return {
     q: ler(p, "q").slice(0, 120),
-    sala: um(ler(p, "sala"), SALAS),
+    sala: slugDeSala(ler(p, "sala")),
     tipo: um(ler(p, "tipo"), ["artigo", "fonte-primaria"] as const),
     status: um(ler(p, "status"), STATUS),
     proveniencia: um(ler(p, "proveniencia"), PROVENIENCIAS),
@@ -88,13 +94,35 @@ export function lerFiltrosArtigos(p: Params): FiltrosArtigos {
 export function lerFiltrosVideos(p: Params): FiltrosVideos {
   return {
     q: ler(p, "q").slice(0, 120),
-    sala: um(ler(p, "sala"), SALAS),
+    sala: slugDeSala(ler(p, "sala")),
     tema: um(ler(p, "tema"), TEMAS),
     nivel: nivel(ler(p, "nivel")),
     status: um(ler(p, "status"), STATUS),
     ordem: ordem(ler(p, "ordem")),
     pagina: pagina(ler(p, "pagina")),
   };
+}
+
+export function lerFiltrosSalas(p: Params): FiltrosSalas {
+  const origem = um(ler(p, "origem"), ["oficial", "anfitriao"] as const);
+  return {
+    q: ler(p, "q").slice(0, 120),
+    origem,
+    status: um(ler(p, "status"), STATUS),
+    anfitriao: origem === "anfitriao" ? ler(p, "anfitriao").slice(0, 60) : "",
+  };
+}
+
+export function filtrarSalas<
+  T extends { sala: { nome: string; origem: string; status: StatusEditorial; revisao?: { donoId: string } } },
+>(itens: T[], f: FiltrosSalas): T[] {
+  return itens.filter(
+    ({ sala }) =>
+      contem(sala.nome, f.q) &&
+      (!f.origem || sala.origem === f.origem) &&
+      (!f.status || sala.status === f.status) &&
+      (!f.anfitriao || sala.revisao?.donoId === f.anfitriao),
+  );
 }
 
 export function lerFiltrosFontes(p: Params): FiltrosFontes {

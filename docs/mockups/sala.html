@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sala · mockup</title>
+<!--
+  Mockup de estudo da página da Sala (item 5 de docs/prompts/correcoes-portal.md).
+  Não é código do portal. Segue a arquitetura do frame docs/mockups/referencias/sala-frame.webp
+  com as peças reais do design system; o que ainda vai nascer está simulado no <style>, só com tokens:
+  a trilha na segunda linha da barra superior, o cabeçalho da Sala em duas colunas e o banner.
+  ?sala=tome mostra uma Sala de anfitrião (com a assinatura); sem parâmetro, a Sala oficial.
+-->
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+<link rel="stylesheet" href="../../design-system/assets/themes.css">
+<link rel="stylesheet" href="../../design-system/components/refinement.css">
+<link rel="stylesheet" href="../../design-system/components/CardSala/card-sala.css">
+<link rel="stylesheet" href="../../design-system/components/CardConteudo/card-conteudo.css">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../../design-system/components/bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg-canvas); }
+  .app { display: flex; min-height: 100dvh; }
+  .app__lat { position: sticky; top: 0; flex: none; height: 100dvh; }
+  .app__col { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .app__main { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-8); padding: var(--space-5) var(--space-7) var(--space-9); }
+  @media (max-width: 900px) { .app__lat { display: none; } .app__main { padding-inline: var(--space-4); gap: var(--space-7); } }
+  [hidden] { display: none !important; }
+
+  /* [variação nova] Barra superior com a trilha na segunda linha (no lugar da saudação do Portal). */
+  .topo-trilha { margin: 0; }
+  .topo-trilha ol { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.35; color: var(--label-secondary); white-space: nowrap; }
+  .topo-trilha a { color: inherit; text-decoration: none; border-radius: var(--radius-xs); }
+  .topo-trilha a:hover { color: var(--label); text-decoration: underline; text-underline-offset: 3px; }
+  .topo-trilha a:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+  .topo-trilha li + li::before { content: "/"; margin-right: 6px; color: var(--label-tertiary); }
+  .topo-trilha [aria-current] { color: var(--label); overflow: hidden; text-overflow: ellipsis; }
+  .volta { display: none; }
+  @media (max-width: 900px) { .topo-trilha { display: none; } .volta { display: inline-flex; align-self: flex-start; } }
+
+  /* [peça nova] Cabeçalho da Sala: título à esquerda; descrição, assinatura e dados à direita. */
+  .sh { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5) var(--space-8); }
+  .sh__tit { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+  .sh__tit h1 { overflow-wrap: anywhere; }
+  .sh__lado { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); min-width: 0; }
+  .sh__desc { margin: 0; color: var(--label); }
+  .sh__linha { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); }
+  .sh__autor { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+  .sh__autor-txt { display: flex; flex-direction: column; min-width: 0; font-size: 14px; line-height: 1.35; }
+  .sh__autor-txt b a { color: var(--label); text-decoration: none; }
+  .sh__autor-txt b a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .sh__autor-txt span { color: var(--label-secondary); font-size: 13px; }
+  .sh__meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0; font-size: 13px; line-height: 1.35; }
+  .sh__meta > div { display: flex; align-items: center; gap: var(--space-2); }
+  .sh__meta dt { color: var(--label-secondary); }
+  .sh__meta dd { margin: 0; color: var(--label); font-weight: 500; }
+  .sh__acoes { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  @container (max-width: 900px) { .sh { grid-template-columns: 1fr; } }
+
+  /* [peça nova] Banner da Sala: imagem na largura toda, ou a placa da marca com o arco. */
+  .sb { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
+  .sb__quadro { position: relative; overflow: hidden; aspect-ratio: 3 / 1; border-radius: var(--radius-lg); background: var(--depth-fill); box-shadow: var(--shadow-card); }
+  .sb__quadro > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sb__quadro > .sdb-plate { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+  .sb__quadro > .sdb-plate > .sdb-arc { position: absolute; right: 6%; bottom: -12%; width: 14%; max-width: none; opacity: .55; filter: none; }
+  .sb__credito { margin: 0; padding: 0 4px; color: var(--label-secondary); font: 400 13px/1.4 var(--font-ui); }
+  @container (max-width: 900px) { .sb__quadro { aspect-ratio: 2 / 1; } }
+  @container (max-width: 520px) { .sb__quadro { aspect-ratio: 16 / 10; } }
+
+  /* Duas colunas: conteúdos à esquerda; vídeos, trecho e comparar à direita. */
+  .sc { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: var(--space-8); align-items: start; }
+  .sc__main, .sc__lado, .bloco { display: flex; flex-direction: column; min-width: 0; }
+  .sc__main { gap: var(--space-5); }
+  .sc__lado { gap: var(--space-8); }
+  .bloco { gap: var(--space-4); }
+  .sc__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); padding-bottom: var(--space-4); border-bottom: 1px solid var(--separator); }
+  .lista { display: flex; flex-direction: column; gap: var(--space-4); }
+  .videos { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .bloco__mais { align-self: flex-start; }
+  .sc__lado .sdb-quote { min-width: 0; }
+  @container (max-width: 1040px) {
+    .sc { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    .videos { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+  }
+
+  /* Depois das colunas, na largura toda. */
+  .rodape-sala { display: flex; flex-direction: column; gap: var(--space-8); }
+  .rodape-sala .sdb-gloss { max-width: 46rem; }
+  .fontes { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: var(--space-4); }
+  @container (max-width: 520px) { .fontes { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app__lat">
+    <nav class="sdb-sidenav sdb-sidenav--app" id="lateral" aria-label="Navegação principal">
+      <div class="sdb-sidenav__brand"><span data-arc data-on="bege"></span><a class="sdb-sidenav__name" href="#">A Sala dos Buscadores</a><button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Recolher navegação"><span data-icon="menuLateral" class="sdb-icon--sm"></span></button></div>
+      <button class="sdb-sidenav__profile" type="button" aria-haspopup="menu"><span class="sdb-avatar sdb-avatar--sm" style="--s:36px">BE</span><span class="sdb-sidenav__who"><b>Benoni</b><span>Membro desde out 2026</span></span><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+      <p class="sdb-sidenav__group">Acervo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="destaques"></span><span class="sdb-sidenav__label">Destaques</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="biblioteca"></span><span class="sdb-sidenav__label">Biblioteca</span></a>
+      <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="salas"></span><span class="sdb-sidenav__label">Salas</span></a>
+      <p class="sdb-sidenav__group">Estudo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="estante"></span><span class="sdb-sidenav__label">Estante</span></a>
+      <p class="sdb-sidenav__group">Ferramentas</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="comparar"></span><span class="sdb-sidenav__label">Comparar</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="assistente"></span><span class="sdb-sidenav__label">Assistente</span></a>
+      <p class="sdb-sidenav__group">Conta</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="ajustes"></span><span class="sdb-sidenav__label">Ajustes</span></a>
+      <button class="sdb-sidenav__item" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+      <div class="sdb-sidenav__foot">
+        <a class="sdb-sidenav__card" href="#"><span class="sdb-sidenav__card-head"><span data-icon="estante"></span><span>Salvos para depois</span><span>0</span></span><p>Nada salvo ainda. Use o marcador dos cards.</p></a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="app__col">
+    <header class="sdb-topbar">
+      <div class="sdb-topbar__titles">
+        <p class="sdb-topbar__title">Salas</p>
+        <nav class="topo-trilha" aria-label="Trilha"><ol><li><a href="#">Salas</a></li><li><span aria-current="page" id="trilha-atual">Corpus Hermeticum</span></li></ol></nav>
+      </div>
+      <div class="sdb-topbar__actions">
+        <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+        <button class="sdb-topbar__account" type="button" aria-label="Conta de Benoni"><span class="sdb-avatar">BE</span></button>
+      </div>
+    </header>
+
+    <main class="app__main" id="conteudo">
+
+      <a class="sdb-btn sdb-btn--secondary sdb-btn--sm volta" href="#"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span>Salas</a>
+
+      <!-- 1. Cabeçalho da Sala -->
+      <header class="sh" aria-labelledby="titulo">
+        <div class="sh__tit">
+          <p class="sdb-meta sdb-secondary" id="eyebrow">Sala · Hermetismo greco-egípcio · séc. I–III</p>
+          <h1 class="sdb-large-title" id="titulo">Corpus Hermeticum</h1>
+        </div>
+        <div class="sh__lado">
+          <p class="sh__desc sdb-body-sm" id="descricao">Tratados em grego atribuídos a Hermes Trismegisto, compostos provavelmente entre os séculos I e III no Egito romano. O primeiro, o Poimandres, narra a origem do cosmos e a subida da alma.</p>
+          <div class="sh__linha" id="linha"></div>
+        </div>
+      </header>
+
+      <!-- 2. Banner -->
+      <figure class="sb" id="banner">
+        <div class="sb__quadro" id="banner-quadro"></div>
+        <figcaption class="sb__credito" id="banner-credito"></figcaption>
+      </figure>
+
+      <!-- 3. Duas colunas -->
+      <div class="sc">
+        <section class="sc__main" aria-labelledby="t-conteudos">
+          <div class="sc__head">
+            <h2 class="sdb-title-2" id="t-conteudos">Conteúdos</h2>
+            <div class="sdb-segmented" role="group" aria-label="Filtrar por nível" id="niveis"></div>
+          </div>
+          <p class="sdb-sr" aria-live="polite" id="contagem"></p>
+          <div class="lista" id="lista"></div>
+          <!-- TODO(trilhas): a Trilha de estudo da Sala entra aqui, depois da lista. -->
+        </section>
+
+        <div class="sc__lado">
+          <section class="bloco" aria-labelledby="t-videos" id="bloco-videos">
+            <h2 class="sdb-title-2" id="t-videos">Vídeos do assunto</h2>
+            <div class="videos" id="videos"></div>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-trecho" id="bloco-trecho">
+            <h2 class="sdb-title-2" id="t-trecho">Trecho de fonte primária</h2>
+            <figure class="sdb-quote" style="margin:0" id="trecho"></figure>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-comparar" id="bloco-comparar">
+            <h2 class="sdb-headline" id="t-comparar">Comparar um tema com as outras Salas</h2>
+            <div class="sdb-row" style="gap:8px" id="temas"></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- 4. Depois das colunas -->
+      <div class="rodape-sala">
+        <section class="bloco" aria-labelledby="t-glossario" id="glossario">
+          <h2 class="sdb-title-2" id="t-glossario">Glossário da Sala</h2>
+          <div class="sdb-gloss" id="glo"></div>
+        </section>
+        <section class="bloco" aria-labelledby="t-fontes" id="bloco-fontes">
+          <h2 class="sdb-title-2" id="t-fontes">Fontes usadas nesta Sala</h2>
+          <div class="fontes" id="fontes"></div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var IMG = "../../portal/public/imagens/";
+  var NIVEIS = { "1": "Iniciante", "2": "Intermediário", "3": "Avançado" };
+  var SELOS = { primaria: ["fontePrimaria", "Fonte primária"], curado: ["curado", "Editorial curado"], especialista: ["especialista", "Especialista"], anfitriao: ["anfitriao", "Anfitrião"] };
+  var TIPOS = { artigo: ["artigo", "Artigo"], primaria: ["fontePrimaria", "Fonte primária"] };
+  var TEMAS = { morte: "Morte", alma: "Alma", origem: "Origem do universo", interior: "Conhecimento interior", meditacao: "Meditação" };
+
+  var SALAS = {
+    hermeticum: {
+      nome: "Corpus Hermeticum", eyebrow: "Sala · Hermetismo greco-egípcio · séc. I–III", periodo: "séc. I – III",
+      desc: "Tratados em grego atribuídos a Hermes Trismegisto, compostos provavelmente entre os séculos I e III no Egito romano. O primeiro, o Poimandres, narra a origem do cosmos e a subida da alma.",
+      nivel: 2, data: "3 set 2026", assistente: true,
+      img: IMG + "salas/corpus-hermeticum.webp", foco: "45% 55%", placa: "grafite",
+      credito: "Gravura do séc. XIX, frequentemente identificada como Hiparco em Alexandria; atribuição a confirmar.",
+      conteudos: [
+        { t: "Poimandres, §24–26: a subida pelas esferas", tipo: "primaria", min: 6, r: "O trecho do Tratado I que descreve o que acontece com a alma depois da dissolução do corpo.", temas: ["morte", "alma"], n: 2, a: "Autoria atribuída a Hermes Trismegisto", c: "Texto grego anônimo", selo: "primaria" },
+        { t: "Poimandres: a Mente que fala a Hermes", tipo: "artigo", min: 11, r: "A visão que abre o Corpus Hermeticum: luz, escuridão e a palavra que ordena o cosmos.", temas: ["origem", "interior"], n: 1, a: "Equipe editorial da Sala Corpus Hermeticum", c: "Curadoria", selo: "curado" },
+        { t: "Tratado XIII: renascimento e silêncio", tipo: "artigo", min: 16, r: "O diálogo entre Hermes e Tat sobre o renascimento e o hino que termina em silêncio.", temas: ["meditacao", "interior"], n: 3, a: "Clara Menezes", c: "Doutora em Estudos Clássicos", selo: "especialista" }
+      ],
+      videos: [{ t: "Poimandres, a mente que fala", tema: "Alma", n: 2, dur: "24:10", img: IMG + "episodios/v-poimandres.webp" }],
+      trecho: { ini: "H", capa: "grafite", obra: "Poimandres", loc: "Corpus Hermeticum, Tratado I, 26", orig: "“τοῦτό ἐστι τὸ ἀγαθὸν τέλος τοῖς γνῶσιν ἐσχηκόσι, θεωθῆναι.”", lang: "grc", idioma: "grego koiné, séc. I–III", trad: "“Este é o bom fim para os que alcançaram o conhecimento: ser divinizados.”", ref: "CORPUS HERMETICUM, Tratado I, 26. Tradução da equipe da Sala, cotejada com COPENHAVER, Brian P. (trad.). <i>Hermetica</i>. Cambridge: Cambridge University Press, 1992." },
+      temas: ["morte", "alma", "origem", "interior", "meditacao"],
+      glossario: [
+        ["Gnose", "grego · γνῶσις · conhecimento", "No Corpus Hermeticum, conhecimento de Deus que o Tratado I associa ao “bom fim” da alma. O termo não designa um grupo organizado.", 2],
+        ["Nous", "grego · νοῦς · mente, intelecto", "No Poimandres, a Mente divina que se apresenta a Hermes e expõe a origem do cosmos.", 3],
+        ["Ogdóade", "grego · ὀγδοάς · o oitavo", "No Tratado I, a oitava esfera, acima das sete planetárias, para onde sobe a alma que se despoja.", 2]
+      ],
+      fontes: [
+        { ini: "H", capa: "grafite", t: "Hermetica", a: "Brian P. Copenhaver (trad.)", tags: ["Hermetismo", "Tradução comentada"], ref: "Cambridge University Press, 1992" },
+        { ini: "C", capa: "bege", t: "Corpus Hermeticum", a: "A. D. Nock e A.-J. Festugière (ed.)", tags: ["Hermetismo", "Edição crítica"], ref: "Les Belles Lettres, 1945–1954" }
+      ]
+    },
+    tome: {
+      nome: "Leituras do Evangelho de Tomé", eyebrow: "Sala de anfitrião", periodo: "composição debatida, séc. I – II · cópia copta do séc. IV",
+      desc: "Leituras comentadas dos 114 ditos atribuídos a Jesus no segundo códice de Nag Hammadi. Cada leitura parte do texto copta em tradução e indica onde os estudiosos divergem sobre datação e sentido.",
+      nivel: 1, data: "21 set 2026", assistente: false,
+      autor: { ini: "HV", nome: "Helena Varga", cred: "Pesquisadora de literatura copta · perfil fictício", site: true },
+      placa: "bordo", credito: "",
+      conteudos: [
+        { t: "Os 114 ditos e a abertura do Evangelho de Tomé", tipo: "artigo", min: 9, r: "Como o texto se apresenta, o que significa chamar os ditos de “secretos” e por que a abertura orienta a leitura do resto.", temas: ["interior"], n: 1, a: "Helena Varga", c: "Pesquisadora de literatura copta", selo: "anfitriao" },
+        { t: "O Reino dentro e fora: o dito 3", tipo: "artigo", min: 7, r: "O dito que põe o Reino “dentro de vós e fora de vós” e as leituras que a pesquisa fez dele.", temas: ["interior"], n: 2, a: "Helena Varga", c: "Pesquisadora de literatura copta", selo: "anfitriao" }
+      ],
+      videos: [],
+      trecho: { ini: "T", capa: "bordo", obra: "Evangelho de Tomé", loc: "Dito 2 · NHC II,2", trad: "“Quem busca não pare de buscar até encontrar. Quando encontrar, ficará perturbado; e, perturbado, ficará maravilhado.”", rotulo: "Tradução · original copta não exibido nesta edição", ref: "Tradução a partir de MEYER, Marvin (ed.). <i>The Nag Hammadi Scriptures</i>. Nova York: HarperOne, 2007." },
+      temas: [], glossario: [], fontes: []
+    }
+  };
+
+  var chave = new URLSearchParams(location.search).get("sala") === "tome" ? "tome" : "hermeticum";
+  var S = SALAS[chave];
+  var $ = function (id) { return document.getElementById(id); };
+  var selo = function (k) { return '<span class="sdb-seal sdb-seal--' + k + '"><span class="sdb-seal__icon"><span data-icon="' + SELOS[k][0] + '"></span></span>' + SELOS[k][1] + "</span>"; };
+  var nivel = function (n, plain) { return '<span class="sdb-level' + (plain ? " sdb-level--plain" : "") + '" data-level="' + n + '"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>' + NIVEIS[n] + "</span>"; };
+  var relogio = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 5.5V10l3 2" stroke-linecap="round"/></svg>';
+  var marcador = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg>';
+
+  /* Cabeçalho */
+  $("titulo").textContent = S.nome; $("trilha-atual").textContent = S.nome; $("eyebrow").textContent = S.eyebrow; $("descricao").textContent = S.desc;
+  document.title = S.nome + " · mockup";
+  var esquerda = S.autor
+    ? '<div class="sh__autor"><span class="sdb-avatar" style="--s:40px">' + S.autor.ini + '</span><span class="sh__autor-txt"><b><a href="#">' + S.autor.nome + "</a></b><span>" + S.autor.cred + "</span></span>" + selo("anfitriao") + "</div>"
+    : "";
+  var acoes = [];
+  if (S.assistente) acoes.push('<a class="sdb-btn sdb-btn--tinted sdb-btn--sm" href="#"><span data-icon="ia" class="sdb-icon--sm"></span>Perguntar ao assistente sobre esta Sala</a>');
+  if (S.autor && S.autor.site) acoes.push('<a class="sdb-btn sdb-btn--secondary sdb-btn--sm" href="#"><span data-icon="externo" class="sdb-icon--sm"></span>Site da Sala</a>');
+  $("linha").innerHTML = esquerda + (acoes.length && !S.autor ? '<div class="sh__acoes">' + acoes.join("") + "</div>" : "") +
+    '<dl class="sh__meta"><div><dt>Nível predominante</dt><dd>' + nivel(S.nivel, true) + "</dd></div><div><dt>Período</dt><dd>" + S.periodo + "</dd></div><div><dt>Publicada em</dt><dd>" + S.data + "</dd></div></dl>" +
+    (acoes.length && S.autor ? '<div class="sh__acoes">' + acoes.join("") + "</div>" : "");
+
+  /* Banner */
+  $("banner-quadro").innerHTML = S.img
+    ? '<img src="' + S.img + '" alt="Gravura de um astrônomo junto a uma esfera armilar num observatório egípcio, com pirâmides ao fundo" style="object-position:' + S.foco + '">'
+    : '<div class="sdb-plate sdb-plate--' + S.placa + '" aria-hidden="true"><span data-arc data-on="' + S.placa + '"></span></div>';
+  $("banner-credito").textContent = S.credito; $("banner-credito").hidden = !S.credito;
+
+  /* Conteúdos com filtro */
+  var filtro = "todos";
+  function contar(n) { return S.conteudos.filter(function (c) { return String(c.n) === n; }).length; }
+  var opts = [["todos", "Todos", S.conteudos.length], ["1", "Iniciante", contar("1")], ["2", "Intermediário", contar("2")], ["3", "Avançado", contar("3")]];
+  $("niveis").innerHTML = opts.map(function (o) { return '<button type="button" data-v="' + o[0] + '" aria-pressed="' + (o[0] === filtro) + '">' + o[1] + ' <span class="sdb-count">' + o[2] + "</span></button>"; }).join("");
+  function card(c) {
+    return '<article class="sdb-card sdb-card--interactive"><div class="sdb-card__body">' +
+      '<div class="sdb-content__top"><span class="sdb-content__type"><span data-icon="' + TIPOS[c.tipo][0] + '"></span></span><div class="sdb-content__where"><b>' + TIPOS[c.tipo][1] + " · " + c.min + " min</b><span>" + S.nome + "</span></div>" +
+      '<button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm sdb-over" type="button" data-toggle aria-pressed="false" aria-label="Salvar na estante"><span data-icon="estante" class="sdb-icon--sm"></span></button></div>' +
+      '<h3 class="sdb-content__title"><a class="sdb-card__link" href="#">' + c.t + '</a></h3><p class="sdb-content__excerpt sdb-clamp-3">' + c.r + "</p>" +
+      '<div class="sdb-row" style="gap:8px">' + c.temas.map(function (t) { return '<span class="sdb-badge sdb-badge--neutral">' + TEMAS[t] + "</span>"; }).join("") + nivel(c.n) + "</div></div>" +
+      '<div class="sdb-card__foot"><p class="sdb-author"><b>' + c.a + "</b> · " + c.c + "</p>" + selo(c.selo) + "</div></article>";
+  }
+  function lista() {
+    var vis = S.conteudos.filter(function (c) { return filtro === "todos" || String(c.n) === filtro; });
+    $("lista").innerHTML = vis.length ? vis.map(card).join("") :
+      '<div class="sdb-card" style="padding:var(--space-6)"><p class="sdb-headline" style="margin:0 0 4px">Ainda não há conteúdo ' + NIVEIS[filtro].toLowerCase() + ' publicado nesta Sala</p><p class="sdb-body-sm sdb-secondary" style="margin:0 0 16px">A curadoria publica por etapas. Escolha outro nível ou veja todos os conteúdos de ' + S.nome + '.</p><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" id="ver-todos">Ver todos os níveis</button></div>';
+    $("contagem").textContent = vis.length + (vis.length === 1 ? " conteúdo" : " conteúdos");
+    var vt = $("ver-todos"); if (vt) vt.onclick = function () { escolher("todos"); };
+    SalaBuscadores.hydrate();
+  }
+  function escolher(v) {
+    filtro = v;
+    Array.prototype.forEach.call($("niveis").children, function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === v)); });
+    SalaBuscadores.syncSeg($("niveis")); lista();
+  }
+  $("niveis").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (b) escolher(b.dataset.v); });
+
+  /* Vídeos do assunto (card de conteúdo com imagem, tipo Vídeo) */
+  $("bloco-videos").hidden = !S.videos.length;
+  $("videos").innerHTML = S.videos.map(function (v) {
+    return '<article class="sala sala--conteudo sala--normal sala--acervo"><div class="sala__media"><img class="sala__image" src="' + v.img + '" alt=""><div class="sala__tools"><div class="sala__chips"><span class="sala__count">Vídeo</span></div><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante">' + marcador + "</button></div></div>" +
+      '<div class="sala__body"><p class="sala__onde">' + S.nome + " · " + v.tema + '</p><h3 class="sala__title"><a class="sala__link" href="#" target="_blank" rel="noopener noreferrer">' + v.t + "</a></h3>" +
+      '<div class="sala__info">' + nivel(v.n, true) + '<span class="sala__dur">' + relogio + v.dur + "</span></div>" + selo("curado") + "</div></article>";
+  }).join("");
+
+  /* Trecho de fonte primária (Bloco de citação, começa em Tradução na coluna estreita) */
+  var T = S.trecho;
+  $("trecho").innerHTML =
+    '<div class="sdb-quote__head"><div class="sdb-row" style="gap:12px;flex-wrap:nowrap;min-width:0"><span class="sdb-cover sdb-cover--sm' + (T.capa !== "bordo" ? " sdb-cover--" + T.capa : "") + '" aria-hidden="true">' + T.ini + '</span><div class="sdb-quote__src"><b>' + T.obra + "</b><span>" + T.loc + "</span></div></div>" +
+    (T.orig ? selo("primaria") : selo("curado").replace("Editorial curado", "Tradução editorial")) + "</div>" +
+    (T.orig ? '<div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Exibição do trecho" id="qseg"><button type="button" data-view="orig" aria-pressed="false">Original</button><button type="button" data-view="trad" aria-pressed="true">Tradução</button><button type="button" data-view="both" aria-pressed="false">Lado a lado</button></div>' : "") +
+    '<div class="sdb-quote__views" data-view="trad" id="qv">' +
+    (T.orig ? '<div class="sdb-quote__part" data-part="orig"><span class="sdb-caption">Original · ' + T.idioma + '</span><blockquote class="sdb-quote__text sdb-quote__text--orig" lang="' + T.lang + '">' + T.orig + "</blockquote></div>" : "") +
+    '<div class="sdb-quote__part" data-part="trad"><span class="sdb-caption">' + (T.rotulo || "Tradução") + '</span><blockquote class="sdb-quote__text">' + T.trad + "</blockquote></div></div>" +
+    '<figcaption class="sdb-quote__foot"><cite>' + T.ref + '</cite><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-copy="' + T.trad.replace(/"/g, "&quot;") + '"><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar citação</button></figcaption>';
+  var qseg = $("qseg");
+  if (qseg) qseg.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-view]"); if (!b) return;
+    Array.prototype.forEach.call(qseg.children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    SalaBuscadores.syncSeg(qseg); $("qv").dataset.view = b.dataset.view;
+  });
+
+  /* Comparar */
+  $("bloco-comparar").hidden = !S.temas.length;
+  $("temas").innerHTML = S.temas.map(function (t) { return '<a class="sdb-chip" href="#">' + TEMAS[t] + "</a>"; }).join("");
+
+  /* Glossário e fontes */
+  $("glossario").hidden = !S.glossario.length;
+  $("glo").innerHTML = S.glossario.map(function (g, i) {
+    var aberto = i === 0;
+    return '<div class="sdb-gloss__item"><button class="sdb-acc-trigger" data-acc-trigger aria-expanded="' + aberto + '" aria-controls="g' + i + '"><span><span class="sdb-gloss__term">' + g[0] + '</span><span class="sdb-gloss__origin">' + g[1] + '</span></span><span data-icon="chevronDireita" class="sdb-chev"></span></button>' +
+      '<div id="g' + i + '" class="sdb-acc-panel' + (aberto ? " is-open" : "") + '"><div><div class="sdb-acc-body" style="display:flex;flex-direction:column;gap:16px"><p style="margin:0">' + g[2] + '</p><div class="sdb-row" style="gap:16px;justify-content:space-between"><a class="sdb-btn sdb-btn--secondary sdb-btn--sm" href="#">' + g[3] + ' conteúdos tratam deste termo</a><p class="sdb-gloss__note" style="margin:0">Redigido pela equipe editorial da Sala.</p></div></div></div></div></div>';
+  }).join("");
+  $("bloco-fontes").hidden = !S.fontes.length;
+  $("fontes").innerHTML = S.fontes.map(function (f) {
+    return '<a class="sdb-card sdb-card--interactive sdb-source" href="#"><span class="sdb-cover' + (f.capa !== "bordo" ? " sdb-cover--" + f.capa : "") + '" aria-hidden="true">' + f.ini + '</span><div class="sdb-source__info"><h3 class="sdb-source__title">' + f.t + '</h3><p class="sdb-source__author">' + f.a + '</p><div class="sdb-source__tags">' + f.tags.map(function (x) { return '<span class="sdb-badge sdb-badge--neutral">' + x + "</span>"; }).join("") + '</div><p class="sdb-source__ref">' + f.ref + '</p></div><span data-icon="chevronDireita" class="sdb-source__trail"></span></a>';
+  }).join("");
+
+  lista();
+  SalaBuscadores.hydrate();
+  SalaBuscadores.syncSeg($("niveis")); if (qseg) SalaBuscadores.syncSeg(qseg);
+})();
+</script>
+</body>
+</html>

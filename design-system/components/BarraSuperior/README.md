@@ -12,4 +12,15 @@ Topo da área de conteúdo do portal: título da página e saudação à esquerd
 - `data-shortcut-k` na lupa: ⌘K / Ctrl K aciona o botão. Declare `aria-keyshortcuts`.
 - A página chama-se "Portal", nunca "Home" ou "Início". Saudação sem exclamação.
 - Sem sininho por enquanto: `TODO(notificacoes)` no lugar.
-- Abaixo de 900 px: título menor, sem saudação, busca só com a lupa (rótulo em `aria-label`).
+- Abaixo de 900 px: título menor, sem saudação nem trilha, busca só com a lupa (rótulo em `aria-label`).
+
+## Com trilha (páginas de detalhe)
+Nas páginas de detalhe dentro da moldura (ex.: a página da Sala), a segunda linha mostra a trilha no lugar da saudação. Ela **substitui a cápsula de `Breadcrumbs`** nessas páginas: não use as duas.
+- `nav.sdb-topbar__trail[aria-label="Trilha"] > ol > li`: os itens anteriores são links ("Salas" → `/salas`); o último é `span[aria-current="page"]` e corta com reticências se faltar espaço.
+- 14 px, secundária; o item atual em `label`; separador "/" terciário, desenhado pelo CSS.
+- O título da barra continua sendo a seção ("Salas") e é um `p`: o `h1` é o título da página.
+- Trilha e saudação se excluem: uma página tem uma ou outra.
+- Abaixo de 900 px a trilha some. A página põe no topo do conteúdo um botão secundário pequeno "‹ Salas" (`.sdb-roomhead__back` no [Cabeçalho da Sala](../CabecalhoSala/README.md)), que só aparece nessa largura.
+
+## Paleta areia (out 2026)
+Em repouso, filete de 1 px em `topbar-edge` embaixo; a busca fica em `card-warm` com a tecla ⌘K em `kbd-warm`, e o botão de aparência também em `card-warm`. Ao rolar, a camada flutuante de sempre.

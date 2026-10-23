@@ -15,3 +15,10 @@ Card largo no topo do Portal que alterna o slide de marca, episódios do canal e
 - Slide de anúncio (`--ad`): Badge "Publicidade" sempre visível, nome do anunciante, link "Por que estou vendo isto?" (abre a política num Modal) e `rel="sponsored"`. Sem selo de proveniência, sem contorno tracejado de IA, sem contagem regressiva ou urgência. Nenhuma marca real nos exemplos.
 - O nome "A Sala dos Buscadores" em `display-caps` aparece uma vez por tela.
 - `SalaBuscadores.showSlide(banner, i)` troca por código.
+
+## Cheio (`.sdb-banner--cheio`, out 2026)
+Layout do Figma "Jornada do buscador": a imagem (ou a placa) ocupa o card inteiro, com véu `veil-media` e desfoque progressivo à esquerda; rótulo, título e subtítulo em `on-media`; botões de 48 px com canto de 12 px; setas em bege e ponto atual dourado. Abaixo de 760 px, o véu vem de baixo e o texto encosta na base. O véu garante o AA do texto branco sobre qualquer imagem (conferido em `contraste.mjs`, pior caso sobre bege). Padrão no Portal.
+
+O frame `19537:21623` usa 1088 × 496 px no desktop. O texto começa a 48 px do topo, com 72 px reservados embaixo para os controles; a altura pode crescer com textos maiores. O desfoque e o véu ocupam camadas distintas para não escurecer a imagem duas vezes. O véu mantém sua intensidade em toda a largura do texto. A composição estreita responde à largura do próprio banner (container `sdb-banner`, até 760 px), inclusive em tablets com a lateral aberta.
+
+No banner cheio, a ação discreta “Por que estou vendo isto?” usa `on-media`, como os demais textos sobre a imagem.

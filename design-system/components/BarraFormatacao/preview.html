@@ -1,0 +1,61 @@
+<!-- @dsCard group="Curadoria" height=820 subtitle="Estilo, ênfase, listas e alinhamento em blocos, sem HTML do autor" -->
+<div class="sdb-stage"><div class="sdb-fmt-demo">
+<h2 class="sdb-title-2">Barra de formatação</h2><p class="sdb-help">Os sinais ficam no texto; estilo, lista e alinhamento ficam no bloco. Tab entra na barra; setas laterais percorrem os controles. Ctrl ou ⌘ com B, I, U e K formatam o trecho.</p>
+<section class="sdb-field"><label class="sdb-label" for="fmt-vazio">Vazio</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do vazio" data-fmt-alvo="vazio" data-fmt-for="fmt-vazio" data-fmt-bloco='{&quot;tipo&quot;: &quot;paragrafo&quot;, &quot;texto&quot;: &quot;&quot;}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-vazio" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-vazio-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-vazio-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-vazio"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-vazio"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-foco">Em foco · selecione e use a barra</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do em foco · selecione e use a barra" data-fmt-alvo="em foco · selecione e use a barra" data-fmt-for="fmt-foco" data-fmt-bloco='{&quot;tipo&quot;: &quot;paragrafo&quot;, &quot;texto&quot;: &quot;Segundo o ::Poimandres::, o estudo começa pela pergunta.&quot;}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-foco" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-foco-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-foco-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-foco"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-foco"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-selecao">Com seleção · negrito aceso</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do com seleção · negrito aceso" data-fmt-alvo="com seleção · negrito aceso" data-fmt-for="fmt-selecao" data-fmt-bloco='{&quot;tipo&quot;: &quot;paragrafo&quot;, &quot;texto&quot;: &quot;Segundo o texto, **conhecer** exige investigação.&quot;}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-selecao" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-selecao-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-selecao-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-selecao"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-selecao"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-erro">Com erro</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt is-error">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do com erro" data-fmt-alvo="com erro" data-fmt-for="fmt-erro" data-fmt-bloco='{&quot;tipo&quot;: &quot;destaque&quot;, &quot;texto&quot;: &quot;O que está em cima é como o que está embaixo.&quot;, &quot;atribuicao&quot;: &quot;&quot;}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-erro" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-erro-ajuda fmt-erro-erro" aria-invalid="true"></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-erro-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-erro"></span></div>
+<p class="sdb-error-msg" id="fmt-erro-erro"><span data-icon="erro"></span><span><b>Erro:</b> informe a atribuição da citação no editor.</span></p>
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-erro"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-centro">Bloco centralizado</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do bloco centralizado" data-fmt-alvo="bloco centralizado" data-fmt-for="fmt-centro" data-fmt-bloco='{&quot;tipo&quot;: &quot;paragrafo&quot;, &quot;texto&quot;: &quot;Uma pergunta abre o caminho.&quot;, &quot;alinhamento&quot;: &quot;centro&quot;}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-centro" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-centro-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-centro-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-centro"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-centro"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-lista">Bloco em lista</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do bloco em lista" data-fmt-alvo="bloco em lista" data-fmt-for="fmt-lista" data-fmt-bloco='{&quot;tipo&quot;: &quot;lista&quot;, &quot;itens&quot;: [&quot;Leia o tratado.&quot;, &quot;Compare as traduções.&quot;, &quot;Confira as fontes.&quot;], &quot;ordenada&quot;: false}'><button type="button" data-fmt-ref="1">[1] Hermetica</button><button type="button" data-fmt-ref="2">[2] The Nag Hammadi Library in English</button></div>
+<textarea id="fmt-lista" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-lista-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-lista-ajuda">Uma linha por item. Voltar a Parágrafo preserva as linhas.</p><span class="sdb-counter" data-fmt-count-for="fmt-lista"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-lista"></div></section>
+<section class="sdb-field"><label class="sdb-label" for="fmt-sem-fontes">Sem obras escolhidas</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação do sem obras escolhidas" data-fmt-alvo="sem obras escolhidas" data-fmt-for="fmt-sem-fontes" data-fmt-bloco='{&quot;tipo&quot;: &quot;paragrafo&quot;, &quot;texto&quot;: &quot;A seleção de fontes fica no formulário do artigo.&quot;}'></div>
+<textarea id="fmt-sem-fontes" rows="3" placeholder="Escreva o texto do bloco…" aria-describedby="fmt-sem-fontes-ajuda" ></textarea></div>
+<div class="sdb-field__foot"><p class="sdb-help" id="fmt-sem-fontes-ajuda">Selecione um trecho para formatar. A prévia usa a mesma gramática do portal.</p><span class="sdb-counter" data-fmt-count-for="fmt-sem-fontes"></span></div>
+
+<div class="sdb-editor__preview" data-fmt-preview-for="fmt-sem-fontes"></div></section>
+</div></div>
+<script>
+SalaBuscadores.hydrate();
+const selecionado = document.getElementById('fmt-selecao');
+const inicio = selecionado.value.indexOf('conhecer');
+selecionado.setSelectionRange(inicio,inicio+'conhecer'.length);
+selecionado.dispatchEvent(new Event('select'));
+document.getElementById('fmt-foco').focus({preventScroll:true});
+</script>

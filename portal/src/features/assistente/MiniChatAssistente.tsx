@@ -121,8 +121,8 @@ export function MiniChatAssistente({
           aria-label="Fechar assistente"
           onClick={onFechar}
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m6 6 12 12M18 6 6 18" />
+          <svg viewBox="0 0 256 256" aria-hidden="true">
+            <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" />
           </svg>
         </button>
       </header>
@@ -149,8 +149,8 @@ export function MiniChatAssistente({
                   }}
                 >
                   {s}
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 12h15m-6-6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg viewBox="0 0 256 256" aria-hidden="true">
+                    <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
                   </svg>
                 </button>
               ))}
@@ -218,8 +218,8 @@ export function MiniChatAssistente({
               aria-label="Interromper a consulta"
               onClick={interromper}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="7" y="7" width="10" height="10" fill="currentColor" stroke="none" />
+              <svg viewBox="0 0 256 256" aria-hidden="true">
+                <path d="M216,56V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40H200A16,16,0,0,1,216,56Z" />
               </svg>
             </button>
           ) : (
@@ -229,8 +229,8 @@ export function MiniChatAssistente({
               aria-label="Enviar pergunta"
               disabled={!valor.trim()}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 19V5m-6 6 6-6 6 6" />
+              <svg viewBox="0 0 256 256" aria-hidden="true">
+                <path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z" />
               </svg>
             </button>
           )}

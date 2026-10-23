@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Alerta } from "@/components/ds/Alerta";
 import { BannerRotativo, type SlideBanner } from "@/components/ds/BannerRotativo";
 import { Button, ButtonLink } from "@/components/ds/Button";
 import { CardSala } from "@/components/ds/CardSala";
 import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
+import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { ItemCompacto, LinhaConteudo, LinhaMais, ListaLinhas } from "@/components/ds/ListaConteudos";
 import { PainelIndicadores } from "@/components/ds/PainelIndicadores";
@@ -16,12 +16,13 @@ import { abrirNaMoldura } from "@/components/layout/aberturas";
 import { salaPorSlug } from "@/data/catalogo";
 import { TIPO_ROTULO } from "@/data/rotulos";
 import type { TemaSlug } from "@/data/types";
+import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { intercalarSlides } from "@/features/estudo/banner";
 import { formatarData } from "@/lib/texto";
 import type { ModeloPortal } from "@/server/estudo";
 import { ModalPoliticaAnuncios } from "./ModalPoliticaAnuncios";
 
-/** Portal: a página inicial do membro, na grade do wireframe. */
+/** Portal: a página inicial do membro, conforme o frame Figma 19537:21623. */
 export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [politica, setPolitica] = useState(false);
@@ -69,12 +70,13 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
         titulo="Salas recomendadas"
         legenda={`Acesso rápido às Salas · ${modelo.salas.length} abertas`}
         rotuloItens="Salas"
-        larguraItem={320}
+        larguraItem={392}
         filtros={
           <div className="sdb-row" style={{ gap: 8 }} role="group" aria-label="Filtrar Salas por tema">
             {modelo.temas.map((t) => (
               <Chip
                 key={t.slug}
+                areia
                 pressed={tema === t.slug}
                 count={t.contagem}
                 onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
@@ -97,9 +99,12 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
         }
       >
         {salas.length > 0 ? (
-          salas.map((s) => (
+          salas.map((s, i) => (
             <CardSala
               key={s.sala.slug}
+              destaque={i === 0}
+              acaoAreia
+              acoes={<BotaoSalvar tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
               sala={s.sala}
               progresso={s.progresso}
               ampliar={s.motivo === "ampliar"}
@@ -107,16 +112,13 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
             />
           ))
         ) : (
-          <Alerta
-            title={`Nenhuma Sala trata de ${temaEscolhido?.nome.toLowerCase()} ainda.`}
-            actions={
-              <Button variant="secondary" size="sm" onClick={() => setTema(null)}>
-                Tirar o filtro
-              </Button>
-            }
-          >
-            Tire o filtro de tema para ver todas as Salas.
-          </Alerta>
+          <EstadoSecao
+            simbolo="busca"
+            compacto
+            titulo={`Nenhuma Sala trata de ${temaEscolhido?.nome.toLowerCase()} ainda.`}
+            descricao="Tire o filtro de tema para ver todas as Salas."
+            acao={{ rotulo: "Tirar o filtro", executar: () => setTema(null) }}
+          />
         )}
       </Carrossel>
 
@@ -133,12 +135,7 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
               <Button variant="plain" size="sm" onClick={() => abrirNaMoldura("niveis")}>
                 Como os níveis funcionam
               </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                icon="trilha"
-                onClick={() => abrirNaMoldura("conquistas")}
-              >
+              <Button variant="gold" size="sm" icon="trilha" onClick={() => abrirNaMoldura("conquistas")}>
                 Ver conquistas
               </Button>
             </div>

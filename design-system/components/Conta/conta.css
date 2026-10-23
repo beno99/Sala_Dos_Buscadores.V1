@@ -1,0 +1,172 @@
+/* Conta e onboarding · Figma 19537:4958. Composição das páginas de acesso. */
+.sdb-conta {
+  min-height: 100dvh;
+  color: var(--label);
+  background: var(--nav-fill);
+}
+
+.sdb-conta--entrada {
+  display: grid;
+  grid-template-columns: minmax(0, 744fr) minmax(0, 432fr);
+  align-items: center;
+  gap: clamp(var(--space-5), 6.67vw, 96px);
+  padding: var(--space-4) clamp(var(--space-4), 8.6vw, 124px) var(--space-4) clamp(var(--space-4), 3vw, 48px);
+}
+
+.sdb-conta__imagem {
+  align-self: stretch;
+  position: relative;
+  min-height: 600px;
+  overflow: hidden;
+  border: 6px solid var(--material-thin);
+  border-radius: var(--radius-xl);
+}
+
+.sdb-conta__imagem img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 17%;
+}
+
+.sdb-conta__conteudo {
+  width: 100%;
+  max-width: 480px;
+  padding-block: var(--space-5);
+}
+
+.sdb-conta__marca {
+  max-width: 360px;
+  margin: 0 0 var(--space-5);
+  color: var(--label-brand);
+  font: 500 clamp(36px, 3.34vw, 48px)/1.2 var(--font-display-lower);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.sdb-conta__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.sdb-conta__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sdb-conta__titulo {
+  margin: 0;
+  color: var(--label-brand);
+  font: 500 34px/1.15 var(--font-display-lower);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.sdb-conta__lead {
+  margin: 0;
+  color: var(--label-secondary);
+  font: 400 16px/1.45 var(--font-reading);
+}
+
+.sdb-conta__form--entrar .sdb-conta__titulo {
+  font: 600 32px/1.2 var(--font-ui);
+}
+
+.sdb-conta__form--entrar .sdb-conta__lead {
+  font-size: 24px;
+  line-height: 1.55;
+}
+
+.sdb-conta .sdb-control {
+  background: var(--card-warm);
+}
+
+.sdb-conta .sdb-control:focus-within {
+  background: var(--material-thick);
+}
+
+.sdb-conta .sdb-btn--block {
+  --h: 48px;
+  border-radius: var(--radius-sm);
+}
+
+.sdb-conta__alternativa {
+  margin: var(--space-2) 0 0;
+  color: var(--label-secondary);
+}
+
+.sdb-conta__dica {
+  margin-top: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.sdb-conta--cadastro {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  padding: var(--space-7) var(--space-4);
+}
+
+.sdb-conta__fundo {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sdb-conta__cadastro {
+  width: min(480px, 100%);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--nav-fill);
+  box-shadow: var(--shadow-card);
+}
+
+.sdb-conta__cadastro .sdb-label {
+  color: var(--accent);
+}
+
+.sdb-conta__cadastro .sdb-conta__alternativa {
+  margin-bottom: var(--space-2);
+}
+
+@media (min-width: 1600px) {
+  .sdb-conta--entrada {
+    grid-template-columns: minmax(0, 1fr) 480px;
+    padding-inline: max(var(--space-6), calc((100vw - 1536px) / 2));
+  }
+}
+
+@media (max-width: 899px) {
+  .sdb-conta--entrada {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .sdb-conta__imagem {
+    width: min(480px, 100%);
+    min-height: 0;
+    height: clamp(160px, 26dvh, 240px);
+    justify-self: center;
+  }
+
+  .sdb-conta__imagem img { object-position: 50% 27%; }
+  .sdb-conta__conteudo { justify-self: center; padding-block: 0 var(--space-4); }
+  .sdb-conta__marca { max-width: none; font-size: 36px; margin-bottom: var(--space-4); }
+  .sdb-conta__form--entrar .sdb-conta__lead { font-size: 20px; }
+  .sdb-conta--cadastro { padding: var(--space-5) var(--space-3); }
+}
+
+@media (max-width: 479px) {
+  .sdb-conta--entrada { padding-inline: var(--space-3); }
+  .sdb-conta__cadastro { padding: var(--space-4) var(--space-3); }
+  .sdb-conta__titulo { font-size: 30px; }
+}

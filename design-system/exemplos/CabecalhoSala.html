@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CabecalhoSala · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage" style="container-type:inline-size;gap:48px">
+  <a class="sdb-btn sdb-btn--secondary sdb-btn--sm sdb-roomhead__back" href="#"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span>Salas</a>
+  <header class="sdb-roomhead">
+    <div class="sdb-roomhead__titles">
+      <p class="sdb-meta">Sala · Hermetismo greco-egípcio · séc. I–III</p>
+      <h1 class="sdb-large-title sdb-roomhead__title" id="ch-titulo">Corpus Hermeticum</h1>
+    </div>
+    <div class="sdb-roomhead__side">
+      <p class="sdb-body-sm sdb-roomhead__desc">Tratados em grego atribuídos a Hermes Trismegisto, compostos provavelmente entre os séculos I e III no Egito romano. O primeiro, o Poimandres, narra a origem do cosmos e a subida da alma.</p>
+      <div class="sdb-roomhead__line">
+        <div class="sdb-roomhead__actions"><a class="sdb-btn sdb-btn--tinted sdb-btn--sm" href="#"><span data-icon="ia" class="sdb-icon--sm"></span>Perguntar ao assistente sobre esta Sala</a></div>
+        <dl class="sdb-roomhead__meta">
+          <div><dt>Nível predominante</dt><dd><span class="sdb-level sdb-level--plain" data-level="2"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span></dd></div>
+          <div><dt>Período</dt><dd>séc. I – III</dd></div>
+          <div><dt>Publicada em</dt><dd>3 set 2026</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+  <header class="sdb-roomhead">
+    <div class="sdb-roomhead__titles">
+      <p class="sdb-meta">Sala de anfitrião</p>
+      <h2 class="sdb-large-title sdb-roomhead__title" id="ch-titulo-2">Leituras do Evangelho de Tomé</h2>
+    </div>
+    <div class="sdb-roomhead__side">
+      <p class="sdb-body-sm sdb-roomhead__desc">Leituras comentadas dos 114 ditos atribuídos a Jesus no segundo códice de Nag Hammadi. Cada leitura parte do texto copta em tradução e indica onde os estudiosos divergem sobre datação e sentido.</p>
+      <div class="sdb-roomhead__line">
+        <div class="sdb-roomhead__author">
+          <span class="sdb-avatar" aria-hidden="true">HV</span>
+          <span class="sdb-roomhead__who"><a class="sdb-roomhead__name" href="#">Helena Varga</a><span class="sdb-footnote">Pesquisadora de literatura copta · perfil fictício</span></span>
+          <span class="sdb-seal sdb-seal--anfitriao"><span class="sdb-seal__icon"><span data-icon="anfitriao"></span></span>Anfitrião</span>
+        </div>
+        <dl class="sdb-roomhead__meta">
+          <div><dt>Nível predominante</dt><dd><span class="sdb-level sdb-level--plain" data-level="1"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Iniciante</span></dd></div>
+          <div><dt>Período</dt><dd>composição debatida, séc. I – II · cópia copta do séc. IV</dd></div>
+          <div><dt>Publicada em</dt><dd>21 set 2026</dd></div>
+        </dl>
+        <div class="sdb-roomhead__actions"><a class="sdb-btn sdb-btn--secondary sdb-btn--sm" href="#" target="_blank" rel="noopener noreferrer"><span data-icon="externo" class="sdb-icon--sm"></span>Site da Sala</a></div>
+      </div>
+    </div>
+  </header>
+  <p class="sdb-hint">Abaixo de 900 px de container, empilha: rótulo, título, descrição, assinatura e dados. Abaixo de 900 px de janela aparece "‹ Salas" no topo, porque a barra superior esconde a trilha.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PainelCabecalho · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage" style="container-type:inline-size">
+  <section class="sdb-pagehead sdb-card" aria-labelledby="ph-titulo">
+    <div class="sdb-pagehead__titles">
+      <p class="sdb-pagehead__eyebrow"><span data-icon="biblioteca"></span>Acervo completo</p>
+      <h1 class="sdb-pagehead__title" id="ph-titulo">Todos os conteúdos</h1>
+    </div>
+    <p class="sdb-pagehead__sub">Textos, fontes primárias e vídeos das cinco Salas, cada um com a sua procedência.</p>
+    <div class="sdb-pagehead__top"><div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Vista"><button type="button" aria-pressed="true">Conteúdos</button><button type="button" aria-pressed="false">Glossário</button></div></div>
+    <div class="sdb-pagehead__bottom">
+      <label class="sdb-searchfield"><span data-icon="busca"></span><span class="sdb-sr">Buscar na Biblioteca</span><input type="search" placeholder="Buscar na Biblioteca…" autocomplete="off"></label>
+      <button class="sdb-btn sdb-btn--secondary" type="button"><span data-icon="filtro"></span>Filtros (2)</button>
+    </div>
+  </section>
+  <section class="sdb-pagehead sdb-card" aria-labelledby="ph-titulo-2">
+    <div class="sdb-pagehead__titles">
+      <p class="sdb-pagehead__eyebrow"><span data-icon="biblioteca"></span>Acervo completo</p>
+      <h1 class="sdb-pagehead__title" id="ph-titulo-2">Glossário</h1>
+    </div>
+    <p class="sdb-pagehead__sub">Termos das tradições, com a origem e a definição atribuída a cada Sala.</p>
+    <div class="sdb-pagehead__top"><div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Vista"><button type="button" aria-pressed="false">Conteúdos</button><button type="button" aria-pressed="true">Glossário</button></div></div>
+    <div class="sdb-pagehead__bottom">
+      <label class="sdb-searchfield"><span data-icon="busca"></span><span class="sdb-sr">Buscar um termo</span><input type="search" placeholder="Buscar um termo…" autocomplete="off"></label>
+    </div>
+  </section>
+  <p class="sdb-hint">Abaixo de 900 px de container, empilha: vistas na largura toda, rótulo, título, subtítulo, busca e Filtros.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

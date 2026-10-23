@@ -14,7 +14,7 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { Segmented } from "@/components/ds/Segmented";
 import { SeloNivel } from "@/components/ds/Selos";
 import { useToast } from "@/components/ds/Toast";
-import { salaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
+import { todosOsTemas } from "@/data/catalogo";
 import { NIVEL_AJUDA } from "@/data/rotulos";
 import type { Nivel, Placa, SalaSlug, StatusEditorial, TemaSlug } from "@/data/types";
 import { salvarVideoAcao } from "@/server/admin/acoes";
@@ -29,6 +29,7 @@ import {
 import { extrairIdYoutube } from "../regras/youtube";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { PLACAS } from "./CamposFonte";
+import type { SalaDoItem } from "./EditorArtigo";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
 
@@ -43,12 +44,15 @@ interface EditorVideoProps {
   inicial: FormVideo;
   status: StatusEditorial;
   atualizadoEm: string | null;
+  /** Artigos da mesma Sala que o vídeo pode acompanhar. */
   artigos: ArtigoLigavel[];
+  /** A Sala vem da rota: o vídeo nasce dentro dela. */
+  sala: SalaDoItem;
   historico?: ReactNode;
 }
 
 /** Formulário de vídeo do canal (RF-16): URL do YouTube, duração, tema, nível e artigos ligados. */
-export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico }: EditorVideoProps) {
+export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, historico }: EditorVideoProps) {
   const toast = useToast();
   const [aba, setAba] = useState<"edicao" | "historico">("edicao");
   const [confirmar, setConfirmar] = useState(false);
@@ -57,7 +61,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
     inicial,
     status,
     atualizadoEm,
-    base: "/admin/videos",
+    base: `/admin/salas/${sala.slug}/videos`,
     salvar: salvarVideoAcao,
     podeSalvar: (f) => Boolean(f.sala && f.titulo.trim()),
   });
@@ -68,7 +72,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
   const publicado = status === "publicado";
   const arquivado = status === "arquivado";
   const url = extrairIdYoutube(form.url);
-  const doMesmoSala = artigos.filter((a) => a.sala === form.sala && a.status !== "arquivado");
+  const doMesmoSala = artigos.filter((a) => a.sala === sala.slug && a.status !== "arquivado");
 
   const mostrarErros = (novos: Record<string, string>, mensagem: string) => {
     setErros(novos);
@@ -90,7 +94,8 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
         return;
       }
     }
-    if (edicao.id.current) pedir({ id: edicao.id.current, titulo: form.titulo, sala: form.sala }, "publicar");
+    if (edicao.id.current)
+      pedir({ id: edicao.id.current, titulo: form.titulo, sala: form.sala, salaNome: sala.nome }, "publicar");
   };
 
   const salvarAlteracoes = () => {
@@ -103,14 +108,14 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
   };
 
   const titulo = form.titulo.trim() || (form.id ? "Sem título" : "Novo vídeo");
-  const alvo = { id: form.id ?? "", titulo: form.titulo, sala: form.sala };
+  const alvo = { id: form.id ?? "", titulo: form.titulo, sala: form.sala, salaNome: sala.nome };
 
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         itens={[
-          { href: "/admin" as Route, rotulo: "Curadoria" },
-          { href: "/admin/videos" as Route, rotulo: "Vídeos" },
+          { href: "/admin/salas" as Route, rotulo: "Salas" },
+          { href: `/admin/salas/${sala.slug}/videos` as Route, rotulo: sala.nome },
         ]}
         atual={titulo}
       />
@@ -125,6 +130,10 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
           )}
         </div>
         <h1 className="sdb-title-1">{titulo}</h1>
+        <p className="sdb-footnote">
+          Sala: <b>{sala.nome}</b>
+          {form.artigos.length === 0 && " · Só na Sala: aparece na página da Sala"}
+        </p>
       </header>
 
       {form.id && (
@@ -164,17 +173,14 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
                 <h2 id="sec-video" className="sdb-headline">
                   Vídeo
                 </h2>
-                <Select
-                  id="campo-sala"
-                  label="Sala"
-                  value={form.sala}
-                  error={erros["campo-sala"]}
-                  opcoes={[
-                    { value: "", label: "Escolha a Sala" },
-                    ...todasAsSalas().map((s) => ({ value: s.slug, label: s.nome })),
-                  ]}
-                  onChange={(e) => mudar({ sala: e.target.value as SalaSlug, artigos: [] }, "campo-sala")}
-                />
+                {erros["campo-sala"] && (
+                  <p id="campo-sala" className="sdb-error-msg">
+                    <Icon name="erro" />
+                    <span>
+                      <b>Erro:</b> {erros["campo-sala"]}
+                    </span>
+                  </p>
+                )}
                 <CampoTexto
                   id="campo-titulo"
                   label="Título"
@@ -271,13 +277,13 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
                 <p className="sdb-help">
                   O vídeo aparece em “Vídeos relacionados” na página de cada artigo publicado escolhido.
                 </p>
-                {!form.sala ? (
-                  <p className="sdb-hint">Escolha a Sala para ver os artigos dela.</p>
-                ) : doMesmoSala.length === 0 ? (
-                  <p className="sdb-hint">Esta Sala ainda não tem artigos ativos.</p>
+                {doMesmoSala.length === 0 ? (
+                  <p className="sdb-hint">
+                    Esta Sala ainda não tem artigos ativos. Sem artigo, o vídeo fica só na Sala.
+                  </p>
                 ) : (
                   <fieldset className="sdb-fieldset">
-                    <legend className="sdb-caption">Artigos da Sala {salaPorSlug(form.sala)?.nome}</legend>
+                    <legend className="sdb-caption">Artigos da Sala {sala.nome}</legend>
                     <div className="sdb-list">
                       {doMesmoSala.map((a) => {
                         const marcado = form.artigos.includes(a.id);
@@ -318,7 +324,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, historico 
                   <CardVideo
                     video={{
                       id: form.id ?? "previa",
-                      sala: (form.sala || "nag-hammadi") as SalaSlug,
+                      sala: sala.slug as SalaSlug,
                       titulo: form.titulo || "Título do vídeo",
                       duracao: form.duracao || "00:00",
                       tema: (form.tema || "alma") as TemaSlug,

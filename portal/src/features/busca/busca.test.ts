@@ -79,6 +79,7 @@ describe("contarFacetas", () => {
   it("conta cada opção considerando os outros filtros", () => {
     const f = contarFacetas(filtros({ formato: "video" }));
     const totalPorSala = [...f.salas.values()].reduce((a, b) => a + b, 0);
-    expect(totalPorSala).toBe(5);
+    // 5 vídeos do canal, um por Sala oficial, e o artigo em vídeo da Sala de anfitrião de demonstração.
+    expect(totalPorSala).toBe(6);
   });
 });

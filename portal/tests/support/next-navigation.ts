@@ -32,6 +32,9 @@ export const navigationMock = {
   redirect: (href: string) => {
     throw new Error(`NEXT_REDIRECT ${href}`);
   },
+  permanentRedirect: (href: string) => {
+    throw new Error(`NEXT_REDIRECT 308 ${href}`);
+  },
   setPath(href: string) {
     url = new URL(href, "http://localhost");
   },

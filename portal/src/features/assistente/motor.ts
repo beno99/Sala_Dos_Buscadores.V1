@@ -1,6 +1,7 @@
-import { salaPorSlug, todasAsSalas } from "@/data/catalogo";
+import { salaPorSlug, salasNaComparacao } from "@/data/catalogo";
 import { RESPOSTAS } from "@/data/mock/assistente";
-import type { RespostaAssistente, SalaSlug, TrechoResposta } from "@/data/types";
+import type { RespostaAssistente, SalaSlug, TemaSlug, TrechoResposta } from "@/data/types";
+import { detectarTemas } from "@/features/busca/busca";
 import { normalizar } from "@/lib/texto";
 
 /*
@@ -11,6 +12,36 @@ import { normalizar } from "@/lib/texto";
  */
 
 export type Escopo = "todo" | SalaSlug;
+
+// ---------- leituras de anfitriões no acervo do assistente (§7) ----------
+
+/** Artigo publicado de uma Sala de anfitrião que a curadoria incluiu na comparação. */
+export interface LeituraParaAssistente {
+  sala: SalaSlug;
+  salaNome: string;
+  slug: string;
+  titulo: string;
+  resumo: string;
+  temas: TemaSlug[];
+  /** "Nome · credencial" de quem assina. */
+  autoria: string;
+}
+
+const CHAVE_LEITURAS = Symbol.for("sala-dos-buscadores.leituras-do-assistente");
+type ComLeituras = typeof globalThis & { [CHAVE_LEITURAS]?: () => LeituraParaAssistente[] };
+
+/**
+ * Como o registro de Salas do catálogo: no servidor, o store instala a fonte;
+ * no navegador, o layout raiz manda a lista. Sem registro, não há leituras.
+ */
+export function instalarLeiturasDoAssistente(fonte: () => LeituraParaAssistente[]): void {
+  (globalThis as ComLeituras)[CHAVE_LEITURAS] = fonte;
+}
+
+function leiturasDeAnfitrioes(): LeituraParaAssistente[] {
+  const naComparacao = new Set(salasNaComparacao().map((s) => s.slug));
+  return ((globalThis as ComLeituras)[CHAVE_LEITURAS]?.() ?? []).filter((l) => naComparacao.has(l.sala));
+}
 
 export interface Resposta {
   id: string;
@@ -104,7 +135,28 @@ function restringir(
 }
 
 function semResposta(pergunta: string, escopo: Escopo): Omit<Resposta, "id" | "pergunta" | "escopo"> {
-  const onde = escopo === "todo" ? "nas cinco Salas do acervo" : `na Sala ${salaPorSlug(escopo)?.nome ?? ""}`;
+  const onde = escopo === "todo" ? "nas Salas do acervo" : `na Sala ${salaPorSlug(escopo)?.nome ?? ""}`;
+  // Sala oficial nova, sem nenhuma leitura curada para o assistente: diz isso, sem completar a lacuna.
+  const semCuradoria =
+    escopo !== "todo" &&
+    salaPorSlug(escopo)?.origem === "oficial" &&
+    !RESPOSTAS.some((r) => r.salas.includes(escopo));
+  if (semCuradoria) {
+    return {
+      trechos: [
+        {
+          tipo: "ai",
+          rotulo: "Síntese da IA · sem leitura curada",
+          texto: `A Sala ${salaPorSlug(escopo)?.nome ?? ""} ainda não tem leituras curadas para o assistente. Prefiro não completar a lacuna com suposições: entre na Sala para ler os artigos dela ou amplie o escopo para “Todo o acervo”.`,
+          refs: [],
+        },
+      ],
+      fontes: [],
+      salasConsultadas: 1,
+      trechosLidos: 0,
+      semFonte: true,
+    };
+  }
   return {
     trechos: [
       {
@@ -115,9 +167,76 @@ function semResposta(pergunta: string, escopo: Escopo): Omit<Resposta, "id" | "p
       },
     ],
     fontes: [],
-    salasConsultadas: escopo === "todo" ? todasAsSalas().length : 1,
+    salasConsultadas: escopo === "todo" ? salasNaComparacao().length : 1,
     trechosLidos: 0,
     semFonte: true,
+  };
+}
+
+/**
+ * Acrescenta as leituras de anfitriões sobre o tema da pergunta, como trechos
+ * de interpretação, cada uma com fonte numerada e o selo de anfitrião. A
+ * síntese da IA continua por último; quando o acervo da curadoria não tinha
+ * trecho, a síntese diz que só há leituras de anfitriões.
+ */
+function comLeiturasDeAnfitrioes(
+  r: Omit<Resposta, "id" | "pergunta" | "escopo">,
+  pergunta: string,
+  escopo: Escopo,
+  arbitragem: boolean,
+): Omit<Resposta, "id" | "pergunta" | "escopo"> {
+  if (arbitragem) return r;
+  const temas = detectarTemas(pergunta);
+  if (!temas.length) return r;
+  const vistas = new Set<string>();
+  const relevantes = leiturasDeAnfitrioes().filter((l) => {
+    if (escopo !== "todo" && l.sala !== escopo) return false;
+    if (!l.temas.some((t) => temas.includes(t)) || vistas.has(l.sala)) return false;
+    vistas.add(l.sala);
+    return true;
+  });
+  if (!relevantes.length) return r;
+
+  const fontes = r.semFonte ? [] : [...r.fontes];
+  const anteriores = r.semFonte ? [] : r.trechos;
+  const ultima = anteriores.at(-1);
+  const sintese = ultima?.tipo === "ai" ? ultima : undefined;
+  const trechos: TrechoResposta[] = sintese ? anteriores.slice(0, -1) : [...anteriores];
+  const novas: number[] = [];
+  for (const l of relevantes) {
+    fontes.push({
+      titulo: l.titulo,
+      referencia: `${l.autoria} · Sala ${l.salaNome}`,
+      capa: "grafite",
+      inicial: (l.titulo[0] ?? "?").toUpperCase(),
+      href: `/salas/${l.sala}/${l.slug}`,
+      proveniencia: "anfitriao",
+    });
+    const n = fontes.length;
+    novas.push(n);
+    trechos.push({
+      tipo: "editorial",
+      rotulo: `Leitura de anfitrião · ${l.salaNome}`,
+      texto: `Segundo ${l.autoria.split(" · ")[0]}, na Sala ${l.salaNome}: ${l.resumo} [${n}]`,
+      refs: [n],
+      sala: l.sala,
+    });
+  }
+  if (sintese) trechos.push(sintese);
+  else {
+    trechos.push({
+      tipo: "ai",
+      rotulo: "Síntese da IA",
+      texto: `O acervo da curadoria não tem trecho direto sobre a pergunta; as leituras acima são de anfitriões, revisadas pela curadoria antes de irem ao ar. Confira as fontes antes de concluir. ${novas.map((n) => `[${n}]`).join("")}`,
+      refs: novas,
+    });
+  }
+  return {
+    trechos,
+    fontes,
+    salasConsultadas: r.salasConsultadas + (escopo === "todo" ? relevantes.length : 0),
+    trechosLidos: r.trechosLidos + relevantes.length,
+    semFonte: false,
   };
 }
 
@@ -129,19 +248,22 @@ export function responder(pergunta: string, escopo: Escopo = "todo"): Resposta {
     escopo,
   };
   const escolhida = escolherResposta(pergunta);
-  if (!escolhida) return { ...base, ...semResposta(pergunta, escopo) };
-  if (escopo !== "todo" && escolhida.salas.length > 0) {
-    const restrita = restringir(escolhida, escopo);
-    return { ...base, ...(restrita ?? semResposta(pergunta, escopo)) };
-  }
-  return {
+  const arbitragem = escolhida?.id === "qual-e-verdadeira";
+  const completar = (r: Omit<Resposta, "id" | "pergunta" | "escopo">) => ({
     ...base,
+    ...comLeiturasDeAnfitrioes(r, pergunta, escopo, arbitragem),
+  });
+  if (!escolhida) return completar(semResposta(pergunta, escopo));
+  if (escopo !== "todo" && escolhida.salas.length > 0) {
+    return completar(restringir(escolhida, escopo) ?? semResposta(pergunta, escopo));
+  }
+  return completar({
     trechos: escolhida.trechos,
     fontes: escolhida.fontes,
-    salasConsultadas: escolhida.salas.length || todasAsSalas().length,
+    salasConsultadas: escolhida.salas.length || salasNaComparacao().length,
     trechosLidos: escolhida.trechosLidos,
     semFonte: escolhida.fontes.length === 0,
-  };
+  });
 }
 
 export interface OpcoesConsulta {

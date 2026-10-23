@@ -27,12 +27,9 @@ test("jornada completa do membro", async ({ page, isMobile }) => {
     await page.getByRole("link", { name: "Biblioteca de Nag Hammadi" }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Biblioteca de Nag Hammadi" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Trecho de fonte primária" })).toBeVisible();
-    // O episódio ainda tem link provisório (busca): o botão fica desativado até a curadoria cadastrar o vídeo.
+    // O episódio ainda tem link provisório (busca): o card não vira link até a curadoria cadastrar o vídeo.
     const video = page.getByRole("article", { name: "O que foi encontrado em Nag Hammadi" });
-    await expect(video.getByRole("link", { name: /Assistir no YouTube/ })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
+    await expect(video.getByRole("link")).toHaveCount(0);
     await expect(
       video.getByText("O link deste episódio ainda não foi cadastrado pela curadoria."),
     ).toBeVisible();
@@ -40,7 +37,7 @@ test("jornada completa do membro", async ({ page, isMobile }) => {
 
   await test.step("lê um conteúdo com a fonte indicada", async () => {
     await page.getByRole("link", { name: "O Evangelho de Tomé e os 114 ditos" }).click();
-    const meta = page.getByRole("region", { name: "Sobre este conteúdo" });
+    const meta = page.getByRole("region", { name: "Autoria e dados" });
     await expect(meta.getByText("Editorial curado")).toBeVisible();
   });
 

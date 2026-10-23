@@ -1,0 +1,25 @@
+<!-- @dsCard group="Componentes básicos" height=650 subtitle="Diálogo nativo com ícone em camadas, foco e Escape" -->
+<div class="sdb-stage">
+  <div class="sdb-ui-demo">
+    <button type="button" class="sdb-ui-primary" data-ui-open="dialog-example">Abrir diálogo interativo<span data-ui-icon="seta"></span></button>
+    <p class="sdb-hint">Use Tab para navegar e Escape para fechar. O foco retorna ao botão de abertura.</p>
+    <div class="sdb-ui-dialog sdb-ui-dialog--static">
+      <span data-ui-volume="livro"></span>
+      <p class="sdb-ui-eyebrow">UMA NOVA PERSPECTIVA</p>
+      <h2>Conheça Nag Hammadi</h2>
+      <p>Uma sala para ler, ouvir e comparar ideias. A mesma linguagem visual dos estados e avisos.</p>
+      <div class="sdb-ui-dialog-actions"><button type="button" class="sdb-ui-secondary" data-ui-open="dialog-example">Ver interação</button></div>
+    </div>
+  </div>
+  <dialog id="dialog-example" class="sdb-ui-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+    <button type="button" class="sdb-ui-dialog-close" aria-label="Fechar diálogo" data-ui-close><span data-ui-icon="fechar"></span></button>
+    <span data-ui-volume="livro"></span>
+    <p class="sdb-ui-eyebrow">UMA NOVA PERSPECTIVA</p>
+    <h2 id="dialog-title">Conheça Nag Hammadi</h2>
+    <p id="dialog-desc">Uma sala para ler, ouvir e comparar ideias. Esta é uma demonstração do componente da biblioteca.</p>
+    <div class="sdb-ui-dialog-actions">
+      <button type="button" class="sdb-ui-secondary" data-ui-close><span data-ui-icon="voltar"></span>Voltar</button>
+      <button type="button" class="sdb-ui-primary" data-ui-close>Concluir exemplo<span data-ui-icon="sucesso"></span></button>
+    </div>
+  </dialog>
+</div>

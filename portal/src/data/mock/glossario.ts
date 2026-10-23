@@ -48,12 +48,12 @@ export const GLOSSARIO: Verbete[] = [
       {
         sala: "nag-hammadi",
         texto:
-          "No _Apócrifo de João_, Ialdabaoth é o criador do mundo material, gerado por Sofia fora do Pleroma, e ignora o que existe acima dele.",
+          "No ::Apócrifo de João::, Ialdabaoth é o criador do mundo material, gerado por Sofia fora do Pleroma, e ignora o que existe acima dele.",
       },
       {
         sala: "corpus-hermeticum",
         texto:
-          "No _Poimandres_, a Mente gera uma segunda Mente, artífice, que forma os sete governadores. Aqui o artífice não é apresentado como ignorante nem como adversário.",
+          "No ::Poimandres::, a Mente gera uma segunda Mente, artífice, que forma os sete governadores. Aqui o artífice não é apresentado como ignorante nem como adversário.",
       },
     ],
     redigidoPor: "Equipe editorial das Salas Nag Hammadi e Corpus Hermeticum",
@@ -162,7 +162,7 @@ export const GLOSSARIO: Verbete[] = [
       {
         sala: "nag-hammadi",
         texto:
-          "Nos textos gnósticos de Nag Hammadi, a totalidade da esfera divina, habitada pelos éons. Segundo o _Apócrifo de João_, a queda de Sofia ocorre fora dele e dá origem ao mundo material.",
+          "Nos textos gnósticos de Nag Hammadi, a totalidade da esfera divina, habitada pelos éons. Segundo o ::Apócrifo de João::, a queda de Sofia ocorre fora dele e dá origem ao mundo material.",
       },
     ],
     redigidoPor: "Equipe editorial da Sala Nag Hammadi",
@@ -173,7 +173,8 @@ export const GLOSSARIO: Verbete[] = [
     definicoes: [
       {
         sala: "nag-hammadi",
-        texto: "No _Apócrifo de João_, o último dos éons; sua ação sem consentimento dá origem ao demiurgo.",
+        texto:
+          "No ::Apócrifo de João::, o último dos éons; sua ação sem consentimento dá origem ao demiurgo.",
       },
     ],
     redigidoPor: "Equipe editorial da Sala Nag Hammadi",

@@ -15,7 +15,11 @@ interface Opcoes<F extends { id: string | null }> {
   status: StatusEditorial;
   atualizadoEm: string | null;
   /** Caminho base do item, para trocar /novo pelo id sem recarregar a tela. */
-  base: "/admin/artigos" | "/admin/videos";
+  base: string;
+  /** Salva sozinho? Padrão: só em rascunho. O anfitrião também salva sozinho o reprovado e o arquivado. */
+  automatico?: boolean;
+  /** Endereço do item depois de salvo; padrão: `${base}/${id}`. Trocado sem recarregar quando muda. */
+  caminho?: (salvo: { id: string; slug?: string }) => string;
   salvar: (f: F, modo: ModoSalvar) => Promise<ResultadoAcao<{ id: string; salvoEm: string; slug?: string }>>;
   /** O mínimo para existir como rascunho (Sala e título). */
   podeSalvar: (f: F) => boolean;
@@ -33,6 +37,8 @@ export function useEdicao<F extends { id: string | null }>({
   base,
   salvar,
   podeSalvar,
+  automatico: salvaSozinho,
+  caminho,
 }: Opcoes<F>) {
   const [form, setForm] = useState(inicial);
   const [sujo, setSujo] = useState(false);
@@ -44,7 +50,7 @@ export function useEdicao<F extends { id: string | null }>({
   const emVoo = useRef(false);
   formRef.current = form;
 
-  const automatico = status === "rascunho";
+  const automatico = salvaSozinho ?? status === "rascunho";
 
   /** Altera campos do formulário; `campos` são os ids de erro que a alteração resolve. */
   const mudar = useCallback((parcial: Partial<F>, ...campos: string[]) => {
@@ -73,7 +79,10 @@ export function useEdicao<F extends { id: string | null }>({
           const novo = !idRef.current;
           idRef.current = r.valor.id;
           setForm((f) => ({ ...f, id: r.valor.id, ...(r.valor.slug ? { slug: r.valor.slug } : {}) }));
-          if (novo) window.history.replaceState(null, "", `${base}/${r.valor.id}`);
+          const destino = caminho ? caminho(r.valor) : `${base}/${r.valor.id}`;
+          if ((novo || caminho) && window.location.pathname !== destino) {
+            window.history.replaceState(null, "", destino);
+          }
           if (JSON.stringify({ ...formRef.current, id: null }) === JSON.stringify({ ...enviado, id: null })) {
             setSujo(false);
           }
@@ -91,7 +100,7 @@ export function useEdicao<F extends { id: string | null }>({
         emVoo.current = false;
       }
     },
-    [salvar, base],
+    [salvar, base, caminho],
   );
 
   // Rascunho: salva 1,2 s depois da última alteração, se já tiver o mínimo.

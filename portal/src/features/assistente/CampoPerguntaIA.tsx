@@ -4,7 +4,7 @@ import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef } from "re
 import { Chip } from "@/components/ds/Chip";
 import { Icon } from "@/components/ds/Icon";
 import { Menu } from "@/components/ds/Menu";
-import { todasAsSalas } from "@/data/catalogo";
+import { salasNaComparacao } from "@/data/catalogo";
 import { cx } from "@/lib/cx";
 import type { Escopo } from "./motor";
 
@@ -65,7 +65,8 @@ export function CampoPerguntaIA({
     }
   };
 
-  const salas = todasAsSalas();
+  // O assistente consulta só as Salas que estão no acervo dele (as de anfitrião, quando a curadoria inclui).
+  const salas = salasNaComparacao();
   const nomeEscopo =
     escopo === "todo" ? "Todo o acervo" : (salas.find((s) => s.slug === escopo)?.nome ?? "Todo o acervo");
 

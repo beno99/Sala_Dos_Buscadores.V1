@@ -44,12 +44,17 @@ export function FormEntrar({ voltar, dica }: { voltar: string; dica?: { email: s
   };
 
   return (
-    <form className="sdb-material sdb-panel" noValidate onSubmit={submeter} aria-labelledby="titulo-entrar">
-      <div className="flex flex-col gap-2">
-        <h1 id="titulo-entrar" className="sdb-title-1">
+    <form
+      className="sdb-conta__form sdb-conta__form--entrar"
+      noValidate
+      onSubmit={submeter}
+      aria-labelledby="titulo-entrar"
+    >
+      <div className="sdb-conta__cabecalho">
+        <h1 id="titulo-entrar" className="sdb-conta__titulo">
           Entrar
         </h1>
-        <p className="sdb-body-sm sdb-secondary">
+        <p className="sdb-conta__lead">
           Entre para estudar no acervo. A conta é gratuita e guarda seu progresso só para você.
         </p>
       </div>
@@ -86,14 +91,14 @@ export function FormEntrar({ voltar, dica }: { voltar: string; dica?: { email: s
       <Button type="submit" variant="primary" size="lg" block loading={enviando}>
         Entrar
       </Button>
-      <p className="sdb-footnote">
+      <p className="sdb-footnote sdb-conta__alternativa">
         Ainda não tem conta?{" "}
         <Link href={`/cadastro${qs}` as Route} className="sdb-link">
           Criar conta
         </Link>
       </p>
       {dica && (
-        <p className="sdb-help">
+        <p className="sdb-help sdb-conta__dica">
           Protótipo: use {dica.email} e a senha {dica.senha}, ou crie uma conta. As contas ficam na memória do
           servidor e somem quando ele reinicia.
         </p>

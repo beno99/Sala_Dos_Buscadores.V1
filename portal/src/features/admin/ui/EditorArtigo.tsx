@@ -7,22 +7,24 @@ import { BlocoCitacao } from "@/components/ds/BlocoCitacao";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { Button } from "@/components/ds/Button";
 import { CampoTexto, Checkbox } from "@/components/ds/Campos";
-import { AreaTexto, RadioGrupo, Select } from "@/components/ds/CamposExtras";
+import { AreaTexto, RadioGrupo } from "@/components/ds/CamposExtras";
 import { Chip } from "@/components/ds/Chip";
 import { ChecklistPublicacao, IndicadorSalvamento, SeloStatus } from "@/components/ds/Curadoria";
 import { Drawer } from "@/components/ds/Drawer";
-import { EditorTextoMarcado } from "@/components/ds/EditorTextoMarcado";
+import { EditorBlocos } from "@/components/ds/EditorBlocos";
 import { Icon } from "@/components/ds/Icon";
+import { Menu } from "@/components/ds/Menu";
 import { ModalConfirmacao } from "@/components/ds/Modal";
 import { Segmented } from "@/components/ds/Segmented";
 import { SeloNivel, SeloProveniencia } from "@/components/ds/Selos";
 import { useToast } from "@/components/ds/Toast";
-import { salaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
+import { todosOsTemas } from "@/data/catalogo";
 import { NIVEL_AJUDA, PROVENIENCIA_AJUDA, PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type {
   Citacao,
   Fonte,
   Nivel,
+  Placa,
   Proveniencia,
   SalaSlug,
   SituacaoJuridica,
@@ -34,6 +36,7 @@ import { type FormArtigo, type FormFonte, fonteVazia, type TipoArtigo } from "..
 import {
   checklistArtigo,
   errosDePublicacaoArtigo,
+  errosDoCorpoResolvidos,
   ORDEM_CAMPOS_ARTIGO,
   primeiroCampoComErro,
   tamanhoReproduzido,
@@ -48,8 +51,10 @@ import {
 import { gerarSlug } from "../regras/slug";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { CamposFonte } from "./CamposFonte";
+import { MoverParaSala } from "./MoverParaSala";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
+import { type VideoResumo, VideosDoArtigo } from "./VideosDoArtigo";
 
 type TipoSituacao = SituacaoJuridica["tipo"];
 
@@ -76,16 +81,29 @@ const SITUACOES: { value: TipoSituacao; label: string; help: string }[] = [
   },
 ];
 
+/** A Sala vem da rota: o artigo nasce dentro dela e não muda pelo formulário. */
+export interface SalaDoItem {
+  slug: string;
+  nome: string;
+  placa: Placa;
+}
+
 interface EditorArtigoProps {
   inicial: FormArtigo;
   status: StatusEditorial;
   atualizadoEm: string | null;
   slugTravado: boolean;
   fontes: Fonte[];
+  sala: SalaDoItem;
+  /** Outras Salas oficiais ativas, para "Mover para outra Sala". */
+  salasDestino?: { slug: string; nome: string }[];
+  /** Vídeos da Sala: os ligados a este artigo e os que podem ser ligados. */
+  videos?: { ligados: VideoResumo[]; disponiveis: VideoResumo[] };
   historico?: ReactNode;
 }
 
-const PROVENIENCIAS = Object.keys(PROVENIENCIA_ROTULO) as Proveniencia[];
+// "Anfitrião" é só dos artigos de anfitrião: a curadoria não a atribui.
+const PROVENIENCIAS = (Object.keys(PROVENIENCIA_ROTULO) as Proveniencia[]).filter((p) => p !== "anfitriao");
 
 /** Formulário de artigo e fonte primária (RF-11 a RF-13, RF-15, RNF-DOM-01, RNF-DOM-03, RNF-DOM-04). */
 export function EditorArtigo({
@@ -94,6 +112,9 @@ export function EditorArtigo({
   atualizadoEm,
   slugTravado,
   fontes: fontesIniciais,
+  sala,
+  salasDestino = [],
+  videos,
   historico,
 }: EditorArtigoProps) {
   const toast = useToast();
@@ -106,12 +127,13 @@ export function EditorArtigo({
   const [salvandoFonte, setSalvandoFonte] = useState(false);
   const [confirmarAlteracoes, setConfirmarAlteracoes] = useState(false);
   const [avisoPublicar, setAvisoPublicar] = useState(false);
+  const [mover, setMover] = useState(false);
 
   const edicao = useEdicao<FormArtigo>({
     inicial,
     status,
     atualizadoEm,
-    base: "/admin/artigos",
+    base: `/admin/salas/${sala.slug}/artigos`,
     salvar: salvarArtigoAcao,
     podeSalvar: (f) => Boolean(f.sala && f.titulo.trim()),
   });
@@ -120,7 +142,8 @@ export function EditorArtigo({
 
   const checklist = checklistArtigo(form);
   const bloqueado = temPendencia(checklist);
-  const salaNome = form.sala ? (salaPorSlug(form.sala)?.nome ?? "") : "";
+  const salaNome = sala.nome;
+  const alvo = (id: string) => ({ id, titulo: form.titulo, sala: form.sala, salaNome });
   const publicado = status === "publicado";
   const arquivado = status === "arquivado";
 
@@ -145,7 +168,7 @@ export function EditorArtigo({
         return;
       }
     }
-    if (edicao.id.current) pedir({ id: edicao.id.current, titulo: form.titulo, sala: form.sala }, "publicar");
+    if (edicao.id.current) pedir(alvo(edicao.id.current), "publicar");
   };
 
   const salvarAlteracoes = () => {
@@ -203,13 +226,13 @@ export function EditorArtigo({
     form.temCitacao && (form.citacao.traducao.trim() || form.citacao.obra.trim())
       ? {
           id: "previa",
-          sala: (form.sala || "nag-hammadi") as SalaSlug,
+          sala: sala.slug as SalaSlug,
           obra: form.citacao.obra || "Obra",
           localizacao: form.citacao.localizacao || "Localização",
           proveniencia: "primaria",
           traducao: form.citacao.traducao || "Tradução do trecho",
           referencia: form.citacao.referencia || "Referência completa",
-          capa: form.sala ? (salaPorSlug(form.sala)?.placa ?? "bordo") : "bordo",
+          capa: sala.placa,
           inicial: (form.citacao.obra.trim()[0] ?? "?").toUpperCase(),
           ...(form.citacao.rotuloTraducao.trim() ? { rotuloTraducao: form.citacao.rotuloTraducao } : {}),
           ...(form.citacao.originalTexto.trim()
@@ -253,8 +276,8 @@ export function EditorArtigo({
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         itens={[
-          { href: "/admin" as Route, rotulo: "Curadoria" },
-          { href: "/admin/artigos" as Route, rotulo: "Artigos" },
+          { href: "/admin/salas" as Route, rotulo: "Salas" },
+          { href: `/admin/salas/${sala.slug}` as Route, rotulo: sala.nome },
         ]}
         atual={titulo}
       />
@@ -263,9 +286,7 @@ export function EditorArtigo({
           <SeloStatus status={status} />
           <IndicadorSalvamento estado={estado} hora={hora} />
           {edicao.automatico && !form.id && (
-            <span className="sdb-footnote">
-              O rascunho é salvo sozinho depois que você escolhe a Sala e escreve o título.
-            </span>
+            <span className="sdb-footnote">O rascunho é salvo sozinho depois que você escreve o título.</span>
           )}
           {publicado && (
             <span className="sdb-footnote">
@@ -274,6 +295,9 @@ export function EditorArtigo({
           )}
         </div>
         <h1 className="sdb-title-1">{titulo}</h1>
+        <p className="sdb-footnote">
+          Sala: <b>{sala.nome}</b>
+        </p>
       </header>
 
       {form.id && (
@@ -314,19 +338,7 @@ export function EditorArtigo({
                 <h2 id="sec-identificacao" className="sdb-headline">
                   Identificação
                 </h2>
-                <Select
-                  id="campo-sala"
-                  label="Sala"
-                  value={form.sala}
-                  error={erros["campo-sala"]}
-                  disabled={slugTravado}
-                  help={slugTravado ? "Depois de publicado, o conteúdo não muda de Sala." : undefined}
-                  opcoes={[
-                    { value: "", label: "Escolha a Sala" },
-                    ...todasAsSalas().map((s) => ({ value: s.slug, label: s.nome })),
-                  ]}
-                  onChange={(e) => mudar({ sala: e.target.value as SalaSlug }, "campo-sala")}
-                />
+                {erros["campo-sala"] && <ErroCampo id="campo-sala" texto={erros["campo-sala"]} />}
                 <RadioGrupo<TipoArtigo>
                   id="campo-tipo"
                   legenda="Tipo"
@@ -553,15 +565,22 @@ export function EditorArtigo({
                   Corpo do texto
                 </h2>
                 <p className="sdb-help">
-                  Um parágrafo por bloco. <b>Termo</b> marca vocabulário próprio da tradição (vira definição);{" "}
-                  <b>Obra</b> marca título de obra. Atribua cada afirmação: “Segundo o Poimandres…”.
+                  O primeiro parágrafo abre o texto (lead). Entre os blocos, “Adicionar” insere parágrafo,
+                  intertítulo, destaque ou imagem. <b>Termo</b> marca vocabulário próprio da tradição (vira
+                  definição); <b>Obra</b> marca título de obra. Atribua cada afirmação: “Segundo o
+                  Poimandres…”.
                 </p>
                 <div id="campo-corpo">
-                  <EditorTextoMarcado
+                  <EditorBlocos
                     idBase="campo-corpo"
-                    paragrafos={form.corpo}
+                    blocos={form.corpo}
+                    erros={erros}
+                    fontes={form.fontes.map((fid, i) => ({
+                      n: i + 1,
+                      titulo: fontes.find((f) => f.id === fid)?.titulo ?? "Obra escolhida",
+                    }))}
                     somenteLeitura={arquivado}
-                    onChange={(corpo) => mudar({ corpo })}
+                    onChange={(corpo) => mudar({ corpo }, ...errosDoCorpoResolvidos(erros, corpo))}
                   />
                 </div>
               </section>
@@ -876,6 +895,14 @@ export function EditorArtigo({
                 )}
               </section>
             </fieldset>
+            {form.id && videos && (
+              <VideosDoArtigo
+                salaSlug={sala.slug}
+                artigoId={form.id}
+                ligados={videos.ligados}
+                disponiveis={videos.disponiveis}
+              />
+            )}
           </form>
           <aside className="flex flex-col gap-4 xl:sticky xl:top-6" aria-label="Publicação">
             {avisoPublicar && bloqueado && (
@@ -906,7 +933,7 @@ export function EditorArtigo({
                 {form.id && (
                   <a
                     className="sdb-btn sdb-btn--secondary sdb-btn--block no-underline"
-                    href={`/admin/artigos/${form.id}/previa`}
+                    href={`/admin/salas/${sala.slug}/artigos/${form.id}/previa`}
                     target="_blank"
                     rel="noopener"
                   >
@@ -928,9 +955,7 @@ export function EditorArtigo({
                   <Button
                     variant="secondary"
                     block
-                    onClick={() =>
-                      pedir({ id: form.id as string, titulo: form.titulo, sala: form.sala }, "despublicar")
-                    }
+                    onClick={() => pedir(alvo(form.id as string), "despublicar")}
                   >
                     Despublicar
                   </Button>
@@ -940,9 +965,7 @@ export function EditorArtigo({
                     variant="destructive"
                     block
                     icon="cadeado"
-                    onClick={() =>
-                      pedir({ id: form.id as string, titulo: form.titulo, sala: form.sala }, "arquivar")
-                    }
+                    onClick={() => pedir(alvo(form.id as string), "arquivar")}
                   >
                     Arquivar
                   </Button>
@@ -952,15 +975,27 @@ export function EditorArtigo({
                     variant="primary"
                     block
                     icon="regenerar"
-                    onClick={() =>
-                      pedir({ id: form.id as string, titulo: form.titulo, sala: form.sala }, "restaurar")
-                    }
+                    onClick={() => pedir(alvo(form.id as string), "restaurar")}
                   >
                     Restaurar como rascunho
                   </Button>
                 )}
               </div>
-              {salaNome && <p className="sdb-footnote">Sala: {salaNome}</p>}
+              {form.id && !slugTravado && !arquivado && salasDestino.length > 0 && (
+                <Menu
+                  titulo="Mais ações"
+                  triggerLabel="Mais ações do artigo"
+                  triggerClassName="sdb-btn sdb-btn--secondary sdb-btn--block"
+                  trigger={
+                    <>
+                      <Icon name="reticencias" />
+                      Mais ações
+                    </>
+                  }
+                  items={[{ label: "Mover para outra Sala", icon: "seta", onSelect: () => setMover(true) }]}
+                />
+              )}
+              <p className="sdb-footnote">Sala: {salaNome}</p>
             </div>
           </aside>
         </div>
@@ -1019,6 +1054,21 @@ export function EditorArtigo({
         <br />O conteúdo está publicado: as alterações aparecem na mesma hora na Sala {salaNome}, na página do
         conteúdo e na busca.
       </ModalConfirmacao>
+      {form.id && (
+        <MoverParaSala
+          aberto={mover}
+          onFechar={() => setMover(false)}
+          artigoId={form.id}
+          titulo={form.titulo}
+          salaAtual={sala.nome}
+          destinos={salasDestino}
+          antesDeMover={async () => {
+            if (!sujo) return true;
+            const r = await salvarAgora("automatico");
+            return Boolean(r?.ok);
+          }}
+        />
+      )}
       {modal}
       <AvisoSaida sujo={sujo && estado !== "salvando"} onDescartar={() => setSujo(false)} />
     </div>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artigo · mockup</title>
+<!--
+  Mockup de estudo da página do artigo (item 6 de docs/prompts/correcoes-portal.md).
+  Não é código do portal. Segue a arquitetura do frame docs/mockups/referencias/artigo-frame.jpg
+  com as peças reais do design system; o que ainda vai nascer está simulado no <style>, só com tokens:
+  a trilha na barra superior (item 5), o banner (item 5), a coluna de autoria e dados,
+  o lead, o destaque no texto, a imagem no texto e o intertítulo.
+  O texto do artigo é uma versão ampliada de "Os sete princípios, em linguagem simples" (Sala O Caibalion).
+-->
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+<link rel="stylesheet" href="../../design-system/assets/themes.css">
+<link rel="stylesheet" href="../../design-system/components/refinement.css">
+<link rel="stylesheet" href="../../design-system/components/CardSala/card-sala.css">
+<link rel="stylesheet" href="../../design-system/components/CardConteudo/card-conteudo.css">
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../../design-system/components/bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg-canvas); }
+  .app { display: flex; min-height: 100dvh; }
+  .app__lat { position: sticky; top: 0; flex: none; height: 100dvh; }
+  .app__col { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .app__main { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-8); padding: var(--space-5) var(--space-7) var(--space-9); }
+  @media (max-width: 900px) { .app__lat { display: none; } .app__main { padding-inline: var(--space-4); gap: var(--space-7); } }
+  [hidden] { display: none !important; }
+
+  /* [item 5] Barra superior com a trilha na segunda linha. */
+  .topo-trilha { margin: 0; min-width: 0; }
+  .topo-trilha ol { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.35; color: var(--label-secondary); white-space: nowrap; min-width: 0; }
+  .topo-trilha li { flex: none; }
+  .topo-trilha li:last-child { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .topo-trilha a { color: inherit; text-decoration: none; }
+  .topo-trilha a:hover { color: var(--label); text-decoration: underline; text-underline-offset: 3px; }
+  .topo-trilha li + li::before { content: "/"; margin-right: 6px; color: var(--label-tertiary); }
+  .topo-trilha [aria-current] { color: var(--label); }
+  .sdb-topbar__titles { min-width: 0; }
+  .volta { display: none; }
+  @media (max-width: 900px) { .topo-trilha { display: none; } .volta { display: inline-flex; align-self: flex-start; } }
+
+  /* [item 5] Banner, aqui com a imagem do artigo. */
+  .sb { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
+  .sb__quadro { position: relative; overflow: hidden; aspect-ratio: 3 / 1; border-radius: var(--radius-lg); background: var(--depth-fill); box-shadow: var(--shadow-card); }
+  .sb__quadro > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sb__credito { margin: 0; padding: 0 4px; color: var(--label-secondary); font: 400 13px/1.4 var(--font-ui); }
+  @container (max-width: 900px) { .sb__quadro { aspect-ratio: 2 / 1; } }
+  @container (max-width: 520px) { .sb__quadro { aspect-ratio: 16 / 10; } }
+
+  /* Leitura em duas colunas: autoria e extras à esquerda (20rem), título e texto à direita.
+     Ordem no HTML: título, autoria, texto, extras (é a ordem do leitor de tela e do celular). */
+  .art { display: grid; grid-template-columns: 20rem minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "autor titulo" "autor texto" "extras texto"; gap: var(--space-5) var(--space-8); align-items: start; }
+  .art__titulo { grid-area: titulo; max-width: 46rem; margin: 0; }
+  .art__autor { grid-area: autor; }
+  .art__texto { grid-area: texto; max-width: 46rem; min-width: 0; }
+  .art__extras { grid-area: extras; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; padding-top: var(--space-5); }
+  @container (max-width: 900px) {
+    .art { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "titulo" "autor" "texto" "extras"; }
+    .art__extras { padding-top: 0; }
+  }
+
+  /* [peça nova] Autoria e dados do artigo. */
+  .autor { display: flex; flex-direction: column; gap: var(--space-4); }
+  .autor__quem { display: flex; align-items: center; gap: var(--space-3); padding-bottom: var(--space-4); border-bottom: 1px solid var(--separator); }
+  .autor__nome { margin: 0; font: 600 17px/1.25 var(--font-ui); letter-spacing: -.012em; color: var(--label); }
+  .autor__cred { margin: 2px 0 0; font-size: 13px; line-height: 1.35; color: var(--label-secondary); }
+  .dados { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; font-size: 13px; line-height: 1.35; }
+  .dados > div { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .dados dt { flex: none; font-weight: 600; color: var(--label); }
+  .dados dd { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin: 0; color: var(--label-secondary); text-align: right; }
+  .dados .ajuda { margin: -4px 0 0; font-size: 12px; line-height: 1.4; color: var(--label-secondary); }
+
+  /* Corpo em blocos. */
+  .corpo { display: flex; flex-direction: column; gap: var(--space-5); }
+  .corpo > p { margin: 0; }
+  /* [peça nova] Lead: o primeiro parágrafo. */
+  .lead { margin: 0; font: 500 22px/1.5 var(--font-reading); color: var(--label); }
+  /* [peça nova] Intertítulo. */
+  .corpo > h2 { margin: var(--space-4) 0 0; }
+  /* [peça nova] Destaque no texto: frase do próprio artigo, entre filetes, com atribuição. */
+  .destaque { margin: var(--space-3) 0; padding: var(--space-6) 0; border-top: 1px solid var(--separator); border-bottom: 1px solid var(--separator); display: flex; gap: var(--space-4); }
+  .destaque__aspa { flex: none; font: 400 64px/0.9 var(--font-display-lower); color: var(--label-tertiary); }
+  .destaque blockquote { margin: 0; font: 400 30px/1.22 var(--font-display-lower); letter-spacing: -.015em; color: var(--label); text-wrap: balance; }
+  .destaque figcaption { margin-top: var(--space-3); font: 400 13px/1.4 var(--font-ui); color: var(--label-secondary); }
+  /* [peça nova] Imagem no texto, com crédito. */
+  .fig { display: flex; flex-direction: column; gap: var(--space-2); margin: var(--space-3) 0; }
+  .fig img { display: block; width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+  .fig figcaption { padding: 0 4px; font: 400 13px/1.45 var(--font-ui); color: var(--label-secondary); }
+  @container (max-width: 520px) { .lead { font-size: 19px; } .destaque blockquote { font-size: 24px; } .destaque__aspa { font-size: 48px; } }
+
+  .bloco { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+  .fontes { display: flex; flex-direction: column; gap: var(--space-3); }
+  @container (max-width: 900px) { .videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: var(--space-4); } }
+
+  /* Continuar a busca: filete, carrossel com Comparar e assistente entre o cabeçalho e o trilho. */
+  .continuar { padding-top: var(--space-8); border-top: 1px solid var(--separator); }
+  .continuar .sdb-carousel__nav { align-items: center; }
+  .continuar__acoes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app__lat">
+    <nav class="sdb-sidenav sdb-sidenav--app" aria-label="Navegação principal">
+      <div class="sdb-sidenav__brand"><span data-arc data-on="bege"></span><a class="sdb-sidenav__name" href="#">A Sala dos Buscadores</a><button class="sdb-btn sdb-btn--icon sdb-btn--sm sdb-btn--secondary" type="button" aria-label="Recolher navegação"><span data-icon="menuLateral" class="sdb-icon--sm"></span></button></div>
+      <button class="sdb-sidenav__profile" type="button" aria-haspopup="menu"><span class="sdb-avatar sdb-avatar--sm" style="--s:36px">BE</span><span class="sdb-sidenav__who"><b>Benoni</b><span>Membro desde out 2026</span></span><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+      <p class="sdb-sidenav__group">Acervo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="destaques"></span><span class="sdb-sidenav__label">Destaques</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="biblioteca"></span><span class="sdb-sidenav__label">Biblioteca</span></a>
+      <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="salas"></span><span class="sdb-sidenav__label">Salas</span></a>
+      <p class="sdb-sidenav__group">Estudo</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="estante"></span><span class="sdb-sidenav__label">Estante</span></a>
+      <p class="sdb-sidenav__group">Ferramentas</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="comparar"></span><span class="sdb-sidenav__label">Comparar</span></a>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="assistente"></span><span class="sdb-sidenav__label">Assistente</span></a>
+      <p class="sdb-sidenav__group">Conta</p>
+      <a class="sdb-sidenav__item" href="#"><span data-icon="ajustes"></span><span class="sdb-sidenav__label">Ajustes</span></a>
+      <button class="sdb-sidenav__item" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+      <div class="sdb-sidenav__foot">
+        <a class="sdb-sidenav__card" href="#"><span class="sdb-sidenav__card-head"><span data-icon="estante"></span><span>Salvos para depois</span><span>0</span></span><p>Nada salvo ainda. Use o marcador dos cards.</p></a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="app__col">
+    <header class="sdb-topbar">
+      <div class="sdb-topbar__titles">
+        <p class="sdb-topbar__title">Artigo</p>
+        <nav class="topo-trilha" aria-label="Trilha"><ol><li><a href="#">Salas</a></li><li><a href="#">O Caibalion</a></li><li><span aria-current="page">Os sete princípios, em linguagem simples</span></li></ol></nav>
+      </div>
+      <div class="sdb-topbar__actions">
+        <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+        <button class="sdb-topbar__account" type="button" aria-label="Conta de Benoni"><span class="sdb-avatar">BE</span></button>
+      </div>
+    </header>
+
+    <main class="app__main" id="conteudo">
+
+      <a class="sdb-btn sdb-btn--secondary sdb-btn--sm volta" href="#"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span>O Caibalion</a>
+
+      <!-- 1. Banner -->
+      <figure class="sb">
+        <div class="sb__quadro"><img src="../../portal/public/imagens/conteudos/sete-principios-hermeticos.webp" alt="Gravura de uma figura coroada e seu reflexo invertido na água, dentro de uma serpente que morde a própria cauda" style="object-position:50% 45%"></div>
+        <figcaption class="sb__credito">Éliphas Lévi, “O grande símbolo de Salomão”, em <i>Dogme et rituel de la haute magie</i> (1854–1856), domínio público; a coloração é posterior, autoria a confirmar.</figcaption>
+      </figure>
+
+      <!-- 2. Leitura -->
+      <article class="art" aria-labelledby="titulo-conteudo">
+        <h1 class="sdb-large-title art__titulo" id="titulo-conteudo">Os sete princípios, em linguagem simples</h1>
+
+        <section class="art__autor autor" aria-label="Autoria e dados">
+          <div class="autor__quem">
+            <span class="sdb-avatar" style="--s:48px">EE</span>
+            <div><p class="autor__nome">Equipe editorial da Sala O Caibalion</p><p class="autor__cred">Curadoria</p></div>
+          </div>
+          <dl class="dados">
+            <div><dt>Publicado em</dt><dd><time datetime="2026-08-12">12 ago 2026</time></dd></div>
+            <div><dt>Leitura</dt><dd>9 min</dd></div>
+            <div><dt>Período</dt><dd>1908</dd></div>
+            <div><dt>Nível</dt><dd><span class="sdb-level sdb-level--plain" data-level="1"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Iniciante</span></dd></div>
+            <div><dt>Temas</dt><dd><span class="sdb-badge sdb-badge--neutral">Conhecimento interior</span><span class="sdb-badge sdb-badge--neutral">Origem do universo</span></dd></div>
+            <div><dt>Proveniência</dt><dd><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></dd></div>
+            <p class="ajuda">Texto da equipe editorial, revisado pela curadoria a partir das fontes indicadas.</p>
+            <div><dt>Compartilhar</dt><dd><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-toast="Link copiado."><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar link</button></dd></div>
+          </dl>
+        </section>
+
+        <div class="art__texto corpo">
+          <p class="lead">O Caibalion, publicado em Chicago em 1908 por autores que assinam apenas como “Três Iniciados”, organiza seu ensinamento em sete princípios: mentalismo, correspondência, vibração, polaridade, ritmo, causa e efeito e gênero.</p>
+          <p class="sdb-body">O primeiro deles, o <dfn>mentalismo</dfn>, é resumido na fórmula “O TODO é MENTE; o Universo é Mental”. Segundo o livro, tudo o que existe seria uma criação mental de um princípio único, que o texto chama de <dfn>O TODO</dfn>, e compreender esse princípio seria a chave para os demais.</p>
+          <p class="sdb-body">O segundo, a <dfn>correspondência</dfn>, aparece na fórmula “o que está em cima é como o que está embaixo”. O livro a apresenta como herança de Hermes Trismegisto e a usa para ligar os planos físico, mental e espiritual.</p>
+          <figure class="destaque">
+            <span class="destaque__aspa" aria-hidden="true">“</span>
+            <div><blockquote>O que está em cima é como o que está embaixo, e o que está embaixo é como o que está em cima.</blockquote><figcaption><cite>O Caibalion</cite>, cap. II (1908), em tradução da equipe</figcaption></div>
+          </figure>
+          <p class="sdb-body">Os princípios seguintes descrevem um mundo em movimento. A vibração afirma que nada está parado; a polaridade, que os opostos seriam graus de uma mesma coisa; o ritmo, que tudo oscila como um pêndulo. Causa e efeito negam o acaso, e o gênero descreve um par de forças que, segundo o livro, age em todos os planos.</p>
+          <figure class="fig">
+            <img src="../../portal/public/imagens/salas/caibalion.webp" alt="Pintura de um templo no alto de sete degraus, cada um com o nome de uma operação alquímica" style="aspect-ratio:4/3;object-fit:cover;object-position:50% 60%">
+            <figcaption>Templo no alto de sete degraus, cada um com o nome de uma operação alquímica. Pintura provavelmente do séc. XVII; acervo e autoria a confirmar. Imagem de época, não pertence ao Caibalion.</figcaption>
+          </figure>
+          <h2 class="sdb-title-2">O que a pesquisa diz</h2>
+          <p class="sdb-body">Os editores registram que a relação entre esses princípios e os tratados herméticos antigos é contestada: vários termos do livro, como “O TODO” e o princípio de gênero, não aparecem no Corpus Hermeticum.</p>
+          <p class="sdb-body">Philip Deslippe, na edição crítica de 2011, relaciona o livro ao movimento do Novo Pensamento nos Estados Unidos e discute a hipótese de que William Walker Atkinson esteja por trás da assinatura coletiva. A Sala apresenta a autoria como hipótese, sem confirmação documental.</p>
+          <div class="sdb-alert sdb-alert--warning" role="note"><span class="sdb-alert__icon"><span data-icon="aviso"></span></span><div class="sdb-alert__content"><p class="sdb-alert__title">Atenção: este tema tem leituras divergentes</p><p class="sdb-alert__body">A ligação do Caibalion com o hermetismo antigo é afirmada pelo livro e contestada pela pesquisa. Veja as leituras das outras Salas em “Continuar a busca”, abaixo, antes de concluir.</p></div></div>
+          <!-- TODO(comunidade): comentários do conteúdo entram aqui, no fim da coluna do texto. -->
+        </div>
+
+        <aside class="art__extras" aria-label="Para acompanhar a leitura">
+          <section class="bloco" aria-labelledby="t-videos">
+            <h2 class="sdb-title-2" id="t-videos">Vídeos do assunto</h2>
+            <div class="videos">
+              <article class="sala sala--conteudo sala--normal sala--acervo"><div class="sala__media"><img class="sala__image" src="../../portal/public/imagens/episodios/v-caibalion-principios.webp" alt=""><div class="sala__tools"><div class="sala__chips"><span class="sala__count">Vídeo</span></div><button class="sala__save" type="button" aria-pressed="false" aria-label="Salvar na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button></div></div>
+                <div class="sala__body"><p class="sala__onde">O Caibalion · Origem do universo</p><h3 class="sala__title"><a class="sala__link" href="#" target="_blank" rel="noopener noreferrer">Os sete princípios do Caibalion, lidos devagar</a></h3><div class="sala__info"><span class="sdb-level sdb-level--plain" data-level="1"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Iniciante</span><span class="sala__dur"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 5.5V10l3 2" stroke-linecap="round"/></svg>15:36</span></div><span class="sdb-seal sdb-seal--curado"><span class="sdb-seal__icon"><span data-icon="curado"></span></span>Editorial curado</span></div></article>
+            </div>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-trecho">
+            <h2 class="sdb-title-2" id="t-trecho">Trecho de fonte primária</h2>
+            <figure class="sdb-quote" style="margin:0">
+              <div class="sdb-quote__head"><div class="sdb-row" style="gap:12px;flex-wrap:nowrap;min-width:0"><span class="sdb-cover sdb-cover--bege sdb-cover--sm" aria-hidden="true">K</span><div class="sdb-quote__src"><b>O Caibalion</b><span>Capítulo II · O princípio do mentalismo</span></div></div><span class="sdb-seal sdb-seal--primaria"><span class="sdb-seal__icon"><span data-icon="fontePrimaria"></span></span>Fonte primária</span></div>
+              <div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Exibição do trecho" id="qseg"><button type="button" data-view="orig" aria-pressed="false">Original</button><button type="button" data-view="trad" aria-pressed="true">Tradução</button><button type="button" data-view="both" aria-pressed="false">Lado a lado</button></div>
+              <div class="sdb-quote__views" data-view="trad" id="qv">
+                <div class="sdb-quote__part" data-part="orig"><span class="sdb-caption">Original · inglês, 1908</span><blockquote class="sdb-quote__text sdb-quote__text--orig" lang="en">“The ALL is MIND; The Universe is Mental.”</blockquote></div>
+                <div class="sdb-quote__part" data-part="trad"><span class="sdb-caption">Tradução</span><blockquote class="sdb-quote__text">“O TODO é MENTE; o Universo é Mental.”</blockquote></div>
+              </div>
+              <figcaption class="sdb-quote__foot"><cite>TRÊS INICIADOS. <i>The Kybalion</i>. Chicago: Yogi Publication Society, 1908. Cap. II.</cite><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-copy="“O TODO é MENTE; o Universo é Mental.” TRÊS INICIADOS. The Kybalion. Chicago: Yogi Publication Society, 1908. Cap. II."><span data-icon="copiar" class="sdb-icon--sm"></span>Copiar citação</button></figcaption>
+            </figure>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-fontes">
+            <h2 class="sdb-title-2" id="t-fontes">Fontes</h2>
+            <div class="fontes">
+              <a class="sdb-card sdb-card--interactive sdb-source" href="#"><span class="sdb-cover sdb-cover--bege" aria-hidden="true">K</span><div class="sdb-source__info"><h3 class="sdb-source__title">The Kybalion</h3><p class="sdb-source__author">Três Iniciados (autoria declarada)</p><div class="sdb-source__tags"><span class="sdb-badge sdb-badge--solid">Fonte primária</span></div><p class="sdb-source__ref">Yogi Publication Society, Chicago, 1908</p></div><span data-icon="chevronDireita" class="sdb-source__trail"></span></a>
+              <a class="sdb-card sdb-card--interactive sdb-source" href="#"><span class="sdb-cover sdb-cover--grafite" aria-hidden="true">D</span><div class="sdb-source__info"><h3 class="sdb-source__title">The Kybalion: The Definitive Edition</h3><p class="sdb-source__author">Philip Deslippe (ed.)</p><div class="sdb-source__tags"><span class="sdb-badge sdb-badge--neutral">Edição crítica</span></div><p class="sdb-source__ref">Tarcher/Penguin, 2011</p></div><span data-icon="chevronDireita" class="sdb-source__trail"></span></a>
+            </div>
+          </section>
+        </aside>
+      </article>
+
+      <!-- 3. Continuar a busca -->
+      <section class="sdb-carousel continuar" data-sdb-carousel aria-labelledby="t-continuar" style="--sdb-item:300px">
+        <div class="sdb-carousel__head">
+          <div class="sdb-carousel__titles"><h2 id="t-continuar" class="sdb-title-1">Continuar a busca</h2><p class="sdb-carousel__caption">Outros conteúdos sobre Conhecimento interior e Origem do universo · primeiro das outras Salas</p></div>
+          <div class="sdb-carousel__nav"><a class="sdb-btn sdb-btn--plain sdb-btn--sm" href="#">Ver todos<span data-icon="chevronDireita" class="sdb-icon--sm"></span></a><button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" data-carousel-prev aria-label="Ver conteúdos anteriores"><span data-icon="chevronEsquerda"></span></button><button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" data-carousel-next aria-label="Ver mais conteúdos"><span data-icon="chevronDireita"></span></button></div>
+        </div>
+        <div class="continuar__acoes" role="group" aria-label="Comparar e perguntar">
+          <a class="sdb-chip" href="#">Comparar: Conhecimento interior</a>
+          <a class="sdb-chip" href="#">Comparar: Origem do universo</a>
+          <a class="sdb-btn sdb-btn--tinted sdb-btn--sm" href="#"><span data-icon="ia" class="sdb-icon--sm"></span>Perguntar ao assistente</a>
+        </div>
+        <div class="sdb-carousel__track" tabindex="0" aria-label="Conteúdos relacionados" id="trilho"></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var NIV = { 1: "Iniciante", 2: "Intermediário", 3: "Avançado" };
+  var SELO = { curado: ["curado", "Editorial curado"], especialista: ["especialista", "Especialista"], primaria: ["fontePrimaria", "Fonte primária"] };
+  var REL = [
+    ["artigo", "Artigo · 11 min", "Corpus Hermeticum", "Poimandres: a Mente que fala a Hermes", "A visão que abre o Corpus Hermeticum: luz, escuridão e a palavra que ordena o cosmos.", ["Origem do universo", "Conhecimento interior"], 1, "Equipe editorial da Sala Corpus Hermeticum", "Curadoria", "curado"],
+    ["artigo", "Artigo · 14 min", "Biblioteca de Nag Hammadi", "O Evangelho de Tomé e os 114 ditos", "Uma leitura dos ditos atribuídos a Jesus preservados no Códice II e do debate sobre sua datação entre os séculos I e II.", ["Conhecimento interior"], 2, "Equipe editorial da Sala Nag Hammadi", "Curadoria", "curado"],
+    ["artigo", "Artigo · 8 min", "O Livro de Urântia", "O que o livro chama de Ajustador do Pensamento", "O termo do Livro de Urântia para a presença divina que, segundo a obra, habita a mente humana.", ["Alma", "Conhecimento interior"], 1, "Equipe editorial da Sala O Livro de Urântia", "Curadoria", "curado"],
+    ["artigo", "Artigo · 16 min", "Corpus Hermeticum", "Tratado XIII: renascimento e silêncio", "O diálogo entre Hermes e Tat sobre o renascimento e o hino que termina em silêncio.", ["Meditação", "Conhecimento interior"], 3, "Clara Menezes", "Doutora em Estudos Clássicos", "especialista"],
+    ["fontePrimaria", "Fonte primária · 5 min", "O Caibalion", "Capítulo II: o princípio do mentalismo", "O primeiro dos sete princípios apresentados no livro, com original em inglês e tradução.", ["Origem do universo"], 1, "Três Iniciados", "Autoria declarada, 1908", "primaria"]
+  ];
+  document.getElementById("trilho").innerHTML = REL.map(function (r) {
+    return '<article class="sdb-card sdb-card--interactive"><div class="sdb-card__body"><div class="sdb-content__top"><span class="sdb-content__type"><span data-icon="' + r[0] + '"></span></span><div class="sdb-content__where"><b>' + r[1] + "</b><span>" + r[2] + '</span></div><button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm sdb-over" type="button" data-toggle aria-pressed="false" aria-label="Salvar na estante"><span data-icon="estante" class="sdb-icon--sm"></span></button></div>' +
+      '<h3 class="sdb-content__title"><a class="sdb-card__link" href="#">' + r[3] + '</a></h3><p class="sdb-content__excerpt sdb-clamp-3">' + r[4] + '</p><div class="sdb-row" style="gap:8px">' + r[5].map(function (t) { return '<span class="sdb-badge sdb-badge--neutral">' + t + "</span>"; }).join("") +
+      '<span class="sdb-level" data-level="' + r[6] + '"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>' + NIV[r[6]] + '</span></div></div><div class="sdb-card__foot"><p class="sdb-author"><b>' + r[7] + "</b> · " + r[8] + '</p><span class="sdb-seal sdb-seal--' + r[9] + '"><span class="sdb-seal__icon"><span data-icon="' + SELO[r[9]][0] + '"></span></span>' + SELO[r[9]][1] + "</span></div></article>";
+  }).join("");
+  SalaBuscadores.hydrate();
+  var qseg = document.getElementById("qseg");
+  qseg.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-view]"); if (!b) return;
+    Array.prototype.forEach.call(qseg.children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    SalaBuscadores.syncSeg(qseg); document.getElementById("qv").dataset.view = b.dataset.view;
+  });
+  SalaBuscadores.syncSeg(qseg);
+})();
+</script>
+</body>
+</html>

@@ -52,7 +52,7 @@ function razao(a, b) {
   return (l1 + 0.05) / (l2 + 0.05);
 }
 
-const FUNDOS = ["bg-canvas", "material-thin", "material-regular", "material-thick", "float-fill"];
+const FUNDOS = ["bg-canvas", "material-thin", "material-regular", "material-thick", "float-fill", "nav-fill", "card-warm", "nav-card", "overlay-from", "overlay-to"];
 const TEXTOS = ["label", "label-secondary", "accent", "critical"];
 const PARES = [
   ["on-accent", "accent-fill"],
@@ -60,14 +60,42 @@ const PARES = [
   ["on-depth", "depth-fill"],
   ["on-critical", "critical-fill"],
 ];
+// Rótulos em cápsula translúcida (Badge, Selo de proveniência) dentro de um card: compostos sobre material-regular.
+const PARES_EM_CARD = [
+  ["accent", "accent-soft"],
+  ["critical", "critical-soft"],
+  ["label", "fill"],
+  ["label-secondary", "fill"],
+];
 const VEUS = ["veil-media", "veil-media-deep"];
+// Pares da paleta areia (Figma 2026-10-20): [texto, camada, base sobre o canvas].
+const PARES_AREIA = [
+  ["nav-active-label", "nav-active-fill", "nav-fill"],
+  ["positive", "positive-soft", "nav-fill"],
+  ["danger", "nav-fill", "bg-canvas"],
+  ["on-chip-warm", "chip-warm", "bg-canvas"],
+  ["label-brand", "bg-canvas", "bg-canvas"],
+  ["label-brand", "nav-card", "nav-fill"],
+  ["label-secondary", "kbd-warm", "card-warm"],
+  ["on-action-warm", "action-warm", "card-warm"],
+  ["on-gold-action", "gold-action-to", "overlay-to"],
+  ["on-gold-action", "gold-action-from", "overlay-from"],
+  ["label-secondary", "overlay-to", "overlay-to"],
+  ["label", "overlay-panel", "overlay-to"],
+  ["label-secondary", "overlay-panel", "overlay-to"],
+  // Trecho selecionado no campo em foco (barra de formatação), sobre o material espesso.
+  ["label", "text-selection", "material-thick"],
+  ["label", "text-selection", "material-regular"],
+  ["label", "fill", "material-regular"],
+  ["accent", "thumb", "material-regular"],
+  ["accent", "text-selection", "material-thick"],
+];
 
 let falhas = 0;
 for (const { id } of tokens.color.themes) {
   const canvas = rgba(bruto("bg-canvas", id));
   const linhas = [];
   for (const fundo of FUNDOS) {
-    if (!todos.some((t) => t.name === fundo)) continue;
     const f = sobre(rgba(bruto(fundo, id)), canvas);
     for (const texto of [...TEXTOS, "label-tertiary"]) {
       const r = razao(sobre(rgba(bruto(texto, id)), f), f);
@@ -83,6 +111,13 @@ for (const { id } of tokens.color.themes) {
     if (r < 4.5) falhas++;
     linhas.push(`${r >= 4.5 ? "  " : "✗ "}${texto.padEnd(16)} sobre ${fundo.padEnd(16)} ${r.toFixed(2)}`);
   }
+  const card = sobre(rgba(bruto("material-regular", id)), canvas);
+  for (const [texto, fundo] of PARES_EM_CARD) {
+    const f = sobre(rgba(bruto(fundo, id)), card);
+    const r = razao(sobre(rgba(bruto(texto, id)), f), f);
+    if (r < 4.5) falhas++;
+    linhas.push(`${r >= 4.5 ? "  " : "✗ "}${texto.padEnd(16)} sobre ${fundo} (em card) ${r.toFixed(2)}`);
+  }
   // Véu sobre imagem: composto sobre a luz mais clara do duotone (bege), o pior caso.
   for (const veu of VEUS) {
     if (!todos.some((t) => t.name === veu)) continue;
@@ -90,6 +125,13 @@ for (const { id } of tokens.color.themes) {
     const r = razao(sobre(rgba(bruto("on-media", id)), f), f);
     if (r < 4.5) falhas++;
     linhas.push(`${r >= 4.5 ? "  " : "✗ "}${"on-media".padEnd(16)} sobre ${veu} (sobre bege) ${r.toFixed(2)}`);
+  }
+  for (const [texto, camada, base] of PARES_AREIA) {
+    const b = sobre(rgba(bruto(base, id)), canvas);
+    const f = sobre(rgba(bruto(camada, id)), b);
+    const r = razao(sobre(rgba(bruto(texto, id)), f), f);
+    if (r < 4.5) falhas++;
+    linhas.push(`${r >= 4.5 ? "  " : "✗ "}${texto.padEnd(16)} sobre ${camada} (em ${base}) ${r.toFixed(2)}`);
   }
   console.log(`\n${id}\n${linhas.join("\n")}`);
 }

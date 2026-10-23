@@ -22,8 +22,8 @@ export type ConquistaId =
   | "degrau-iii";
 
 export interface ItemEstante {
-  tipo: "sala" | "conteudo";
-  /** Slug da Sala ou "sala/slug" do conteúdo. */
+  tipo: "sala" | "conteudo" | "video";
+  /** Slug da Sala, "sala/slug" do conteúdo ou o id do vídeo. */
   ref: string;
   em: string;
 }

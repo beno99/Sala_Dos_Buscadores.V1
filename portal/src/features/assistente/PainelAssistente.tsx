@@ -56,7 +56,7 @@ export function PainelAssistente({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="sdb-journey-assistant__conversation">
       {turnos.length === 0 && (
         <Alerta title="Como o assistente responde">
           Ele consulta só o acervo das Salas. Cada resposta separa o trecho documental, a interpretação da
@@ -65,11 +65,11 @@ export function PainelAssistente({
         </Alerta>
       )}
 
-      <div className="flex flex-col gap-6" aria-live="off">
+      <div className="sdb-journey-assistant__turns" aria-live="off">
         {turnos.map((t) => {
           const previa = responder(t.pergunta, t.escopo);
           return (
-            <div key={t.id} className="flex flex-col gap-5">
+            <div key={t.id} className="sdb-journey-assistant__turn">
               <p className="sdb-bubble">{t.pergunta}</p>
               {t.estado === "concluida" && t.resposta ? (
                 <MensagemAssistente
@@ -109,7 +109,7 @@ export function PainelAssistente({
         estado={textoEstado(ultimo)}
       />
 
-      <div className="sticky bottom-tabbar md:bottom-3 z-10">
+      <div className="sdb-journey-assistant__neutrality">
         <AvisoNeutralidade />
       </div>
     </div>

@@ -10,10 +10,13 @@ import { useCopiar } from "./Toast";
 
 type Vista = "orig" | "trad" | "both";
 
-/** Trecho de fonte primária com original, tradução, referência e ação de copiar (BlocoCitacao, RF-15). */
-export function BlocoCitacao({ citacao }: { citacao: Citacao }) {
+/**
+ * Trecho de fonte primária com original, tradução, referência e ação de copiar (BlocoCitacao, RF-15).
+ * `estreito`: numa coluna lateral, começa em "Tradução" (lado a lado empilharia) e o segmentado ocupa a largura.
+ */
+export function BlocoCitacao({ citacao, estreito }: { citacao: Citacao; estreito?: boolean }) {
   const temOriginal = Boolean(citacao.original);
-  const [vista, setVista] = useState<Vista>(temOriginal ? "both" : "trad");
+  const [vista, setVista] = useState<Vista>(temOriginal && !estreito ? "both" : "trad");
   const copiar = useCopiar();
 
   return (
@@ -40,6 +43,7 @@ export function BlocoCitacao({ citacao }: { citacao: Citacao }) {
       {citacao.original && (
         <Segmented<Vista>
           label="Exibição do trecho"
+          block={estreito}
           value={vista}
           onChange={setVista}
           options={[

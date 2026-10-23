@@ -33,7 +33,6 @@ export function CardConteudo({
   const sala = salaPorSlug(conteudo.sala);
   const card = (
     <article className="sdb-card sdb-card--interactive">
-      {acoes}
       <div className="sdb-card__body">
         <div className="sdb-content__top">
           <span className="sdb-content__type">
@@ -45,6 +44,7 @@ export function CardConteudo({
             </b>
             <span>{sala?.nome}</span>
           </div>
+          {acoes}
         </div>
         <Titulo className="sdb-content__title">
           <Link className="sdb-card__link" href={`/salas/${conteudo.sala}/${conteudo.slug}` as Route}>

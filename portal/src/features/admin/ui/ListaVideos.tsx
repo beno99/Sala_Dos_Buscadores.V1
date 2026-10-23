@@ -9,34 +9,42 @@ import { Icon } from "@/components/ds/Icon";
 import { Menu } from "@/components/ds/Menu";
 import { Paginacao } from "@/components/ds/Paginacao";
 import { type ColunaTabela, TabelaDados } from "@/components/ds/TabelaDados";
-import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
+import { temaPorSlug } from "@/data/catalogo";
 import type { VideoEditorial } from "@/data/types";
 import { formatarData } from "@/lib/texto";
 import { type FiltrosVideos, paraQuery } from "../listas";
 import { CampoBuscaLista, PainelFiltros, useFiltrosNaUrl } from "./BarraFiltros";
-import { OPCOES_NIVEL, OPCOES_SALA, OPCOES_STATUS, OPCOES_TEMA } from "./opcoes";
+import { OPCOES_NIVEL, OPCOES_STATUS, OPCOES_TEMA } from "./opcoes";
 import { useAcaoStatus } from "./useAcaoStatus";
 
 export interface LinhaVideo extends VideoEditorial {
   pendencias: number;
 }
 
-/** Lista de vídeos do canal na curadoria (RF-16). */
+/** Vídeos do canal dentro de uma Sala (RF-16, curadoria a partir da Sala), com os artigos a que se ligam. */
 export function ListaVideos({
   itens,
   total,
   pagina,
   totalPaginas,
   filtros,
+  sala,
+  titulosDosArtigos,
 }: {
   itens: LinhaVideo[];
   total: number;
   pagina: number;
   totalPaginas: number;
   filtros: FiltrosVideos;
+  sala: { slug: string; nome: string };
+  /** Título de cada artigo da Sala, para a coluna "Ligado a". */
+  titulosDosArtigos: Record<string, string>;
 }) {
-  const { aplicar, pendente } = useFiltrosNaUrl("/admin/videos", filtros, paraQuery);
-  const { pedir, modal } = useAcaoStatus("video");
+  const base = `/admin/salas/${sala.slug}/videos`;
+  const { aplicar, pendente } = useFiltrosNaUrl(base, filtros, paraQuery);
+  const { pedir: pedirStatus, modal } = useAcaoStatus("video");
+  const pedir = (v: LinhaVideo, acao: Parameters<typeof pedirStatus>[1]) =>
+    pedirStatus({ ...v, salaNome: sala.nome }, acao);
 
   const colunas: ColunaTabela<LinhaVideo>[] = [
     {
@@ -46,16 +54,28 @@ export function ListaVideos({
       celula: (v) => (
         <>
           <span className="sdb-table__title">
-            <Link href={`/admin/videos/${v.id}` as Route}>{v.titulo || "Sem título"}</Link>
+            <Link href={`${base}/${v.id}` as Route}>{v.titulo || "Sem título"}</Link>
           </span>
           <span className="sdb-table__sub">
-            {salaPorSlug(v.sala)?.nome} · {temaPorSlug(v.tema)?.nome} · {v.duracao || "sem duração"}
+            {temaPorSlug(v.tema)?.nome} · {v.duracao || "sem duração"}
             {v.pendencias > 0 && ` · ${v.pendencias} ${v.pendencias === 1 ? "pendência" : "pendências"}`}
           </span>
         </>
       ),
     },
     { id: "status", cabecalho: "Status", celula: (v) => <SeloStatus status={v.status} /> },
+    {
+      id: "ligado",
+      cabecalho: "Ligado a",
+      celula: (v) => {
+        const titulos = v.artigos.map((id) => titulosDosArtigos[id]).filter(Boolean);
+        return titulos.length ? (
+          <span className="sdb-footnote">{titulos.join(" · ")}</span>
+        ) : (
+          <span className="sdb-badge sdb-badge--neutral">Só na Sala</span>
+        );
+      },
+    },
     {
       id: "atualizado",
       cabecalho: "Atualizado",
@@ -71,7 +91,7 @@ export function ListaVideos({
       celula: (v) => (
         <>
           <ButtonLink
-            href={`/admin/videos/${v.id}` as Route}
+            href={`${base}/${v.id}` as Route}
             variant="secondary"
             size="sm"
             aria-label={`Editar ${v.titulo}`}
@@ -128,12 +148,6 @@ export function ListaVideos({
       <PainelFiltros>
         <CampoBuscaLista rotulo="Buscar por título" valor={filtros.q} onBuscar={(q) => aplicar({ q })} />
         <Select
-          label="Sala"
-          value={filtros.sala}
-          opcoes={OPCOES_SALA}
-          onChange={(e) => aplicar({ sala: e.target.value as FiltrosVideos["sala"] })}
-        />
-        <Select
           label="Tema"
           value={filtros.tema}
           opcoes={OPCOES_TEMA}
@@ -152,27 +166,17 @@ export function ListaVideos({
           onChange={(e) => aplicar({ status: e.target.value as FiltrosVideos["status"] })}
         />
       </PainelFiltros>
-      <div className="sdb-row sdb-row--between">
-        <p className="sdb-footnote" aria-live="polite">
-          {pendente
-            ? "Atualizando a lista…"
-            : `${total} ${total === 1 ? "vídeo" : "vídeos"} com estes filtros.`}
-        </p>
-        <a
-          className="sdb-btn sdb-btn--secondary sdb-btn--sm no-underline"
-          href={`/admin/exportar/videos${paraQuery(filtros, ["pagina"])}`}
-          download
-        >
-          <Icon name="compartilhar" size="sm" />
-          Exportar CSV
-        </a>
-      </div>
+      <p className="sdb-footnote" aria-live="polite">
+        {pendente
+          ? "Atualizando a lista…"
+          : `${total} ${total === 1 ? "vídeo" : "vídeos"} com estes filtros.`}
+      </p>
       <div
         aria-busy={pendente || undefined}
         className={pendente ? "opacity-60 transition-opacity" : "transition-opacity"}
       >
         <TabelaDados
-          legenda={`Vídeos · página ${pagina} de ${totalPaginas}`}
+          legenda={`Vídeos da Sala ${sala.nome} · página ${pagina} de ${totalPaginas}`}
           colunas={colunas}
           itens={itens}
           chave={(v) => v.id}
@@ -193,7 +197,7 @@ export function ListaVideos({
           vazio={
             <>
               Nenhum vídeo com estes filtros.{" "}
-              <Link className="sdb-link" href={"/admin/videos" as Route}>
+              <Link className="sdb-link" href={base as Route}>
                 Limpar filtros
               </Link>
               .
@@ -206,7 +210,7 @@ export function ListaVideos({
           pagina={pagina}
           total={totalPaginas}
           rotulo="Páginas da lista de vídeos"
-          href={(p) => `/admin/videos${paraQuery({ ...filtros, pagina: p })}`}
+          href={(p) => `${base}${paraQuery({ ...filtros, pagina: p })}`}
         />
       </div>
       {modal}

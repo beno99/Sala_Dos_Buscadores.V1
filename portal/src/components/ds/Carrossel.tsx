@@ -1,6 +1,15 @@
 "use client";
 
-import { type CSSProperties, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Children,
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { cx } from "@/lib/cx";
 import { Button } from "./Button";
 
 /**
@@ -15,18 +24,28 @@ export function Carrossel({
   filtros,
   rodape,
   larguraItem = 280,
+  tituloGrande,
+  acoes,
+  className,
   children,
 }: {
   id: string;
   titulo: string;
+  /** Título em title-1 (ex.: "Continuar a busca", na página do conteúdo). */
+  tituloGrande?: boolean;
+  /** Antes das setas: um botão plain pequeno para a lista completa ("Ver todos"). */
+  acoes?: ReactNode;
+  className?: string;
   legenda?: string;
   /** Nome do que passa no trilho, para as setas e o leitor de tela ("Salas"). */
   rotuloItens: string;
   filtros?: ReactNode;
   rodape?: ReactNode;
   larguraItem?: number;
-  children: ReactNode;
+  /** Sem itens, o trilho e as setas somem; ficam o cabeçalho, os filtros e o rodapé. */
+  children?: ReactNode;
 }) {
+  const temItens = Children.count(children) > 0;
   const trilho = useRef<HTMLDivElement>(null);
   const [inicio, setInicio] = useState(true);
   const [fim, setFim] = useState(true);
@@ -56,49 +75,59 @@ export function Carrossel({
   };
 
   return (
-    <section className="sdb-carousel" aria-labelledby={`${id}-titulo`}>
+    <section className={cx("sdb-carousel", className)} aria-labelledby={`${id}-titulo`}>
       <div className="sdb-carousel__head">
         <div className="sdb-carousel__titles">
-          <h2 id={`${id}-titulo`} className="sdb-title-2">
+          <h2 id={`${id}-titulo`} className={tituloGrande ? "sdb-title-1" : "sdb-title-2"}>
             {titulo}
           </h2>
           {legenda && <p className="sdb-carousel__caption">{legenda}</p>}
         </div>
-        <div className="sdb-carousel__nav">
-          <Button
-            variant="secondary"
-            iconOnly
-            icon="chevronEsquerda"
-            aria-label={`Ver ${rotuloItens} anteriores`}
-            aria-controls={`${id}-trilho`}
-            disabled={inicio}
-            onClick={() => mover(-1)}
-          />
-          <Button
-            variant="secondary"
-            iconOnly
-            icon="chevronDireita"
-            aria-label={`Ver mais ${rotuloItens}`}
-            aria-controls={`${id}-trilho`}
-            disabled={fim}
-            onClick={() => mover(1)}
-          />
-        </div>
+        {(acoes || temItens) && (
+          <div className="sdb-carousel__nav">
+            {acoes}
+            {temItens && (
+              <>
+                <Button
+                  variant="secondary"
+                  iconOnly
+                  icon="chevronEsquerda"
+                  aria-label={`Ver ${rotuloItens} anteriores`}
+                  aria-controls={`${id}-trilho`}
+                  disabled={inicio}
+                  onClick={() => mover(-1)}
+                />
+                <Button
+                  variant="secondary"
+                  iconOnly
+                  icon="chevronDireita"
+                  aria-label={`Ver mais ${rotuloItens}`}
+                  data-tip-align="end"
+                  aria-controls={`${id}-trilho`}
+                  disabled={fim}
+                  onClick={() => mover(1)}
+                />
+              </>
+            )}
+          </div>
+        )}
       </div>
       {filtros}
-      <div
-        ref={trilho}
-        id={`${id}-trilho`}
-        className="sdb-carousel__track"
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: região rolável precisa do foco para rolar pelo teclado (WCAG 2.1.1).
-        tabIndex={0}
-        role="region"
-        aria-label={rotuloItens}
-        style={{ "--sdb-item": `${larguraItem}px` } as CSSProperties}
-        onScroll={medir}
-      >
-        {children}
-      </div>
+      {temItens && (
+        <div
+          ref={trilho}
+          id={`${id}-trilho`}
+          className="sdb-carousel__track"
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: região rolável precisa do foco para rolar pelo teclado (WCAG 2.1.1).
+          tabIndex={0}
+          role="region"
+          aria-label={rotuloItens}
+          style={{ "--sdb-item": `${larguraItem}px` } as CSSProperties}
+          onScroll={medir}
+        >
+          {children}
+        </div>
+      )}
       {rodape}
     </section>
   );

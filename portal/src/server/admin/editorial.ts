@@ -1,8 +1,9 @@
 import "server-only";
-import { salaPorSlug } from "@/data/catalogo";
+import { limparCorpo } from "@/data/corpo";
 import { PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type {
   AcaoAuditada,
+  BlocoCorpo,
   Citacao,
   ConteudoEditorial,
   FonteEditorial,
@@ -28,10 +29,15 @@ import {
 import { rotuloSituacao } from "@/features/admin/regras/csv";
 import { gerarSlug, slugUnico, validarSlug } from "@/features/admin/regras/slug";
 import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtube";
+import { CONTA_DEMONSTRACAO, contaPorEmail, restaurarContasDemonstracao } from "@/features/auth/contas";
+import { plural } from "@/lib/texto";
+import { restaurarPerfilDemonstracao } from "@/server/perfilBuscador";
 import { restaurarProgressoDemonstracao } from "@/server/progresso";
 import { registrar } from "../auditoria";
+import { conferirImagensDoCorpo } from "../midia";
 import { AUTOR_IMPORTACAO, acervo, auditoriaBruta, restaurarAcervoInicial } from "../store";
 import { podarDestaques } from "./destaques";
+import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
 
 /*
  * Regras de escrita da curadoria (RF-13, RF-16). Recebem quem executa a ação
@@ -52,6 +58,25 @@ const novoId = (prefixo: string) =>
   `${prefixo}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 const falha = (mensagem: string, erros?: Record<string, string>, pendencias?: ItemChecklist[]) =>
   ({ ok: false, mensagem, erros, pendencias }) as const;
+
+/**
+ * Nada se cria fora de uma Sala: o item nasce numa Sala oficial que existe e
+ * não está arquivada, e não muda de Sala pelo formulário (para isso existe
+ * "Mover para outra Sala", só para o que nunca foi publicado).
+ */
+function conferirSala(sala: string, salaAnterior: string | undefined) {
+  if (salaAnterior !== undefined && sala !== salaAnterior) {
+    const m =
+      "o item não muda de Sala ao salvar. Use “Mover para outra Sala” (só para o que nunca foi publicado).";
+    return falha(`Erro: ${m}`, { "campo-sala": m });
+  }
+  const erro = erroDaSalaParaConteudo(sala);
+  return erro ? falha(`Erro: ${erro}`, { "campo-sala": erro }) : null;
+}
+
+/** A curadoria só julga o conteúdo de anfitrião (aprova ou reprova); nunca o edita. */
+const ERRO_ITEM_DE_ANFITRIAO =
+  "Erro: este conteúdo é de um anfitrião. A curadoria aprova ou reprova em Revisão de anfitriões, sem editar.";
 
 const STATUS_DESTINO: Record<
   AcaoStatus,
@@ -102,7 +127,6 @@ function slugsOcupados(sala: string, exceto: string | null): string[] {
 /** Validações que valem para qualquer salvamento, inclusive o rascunho automático. */
 function validarArtigoParaSalvar(f: FormArtigo, anterior?: ConteudoEditorial): Record<string, string> {
   const erros: Record<string, string> = {};
-  if (!f.sala || !salaPorSlug(f.sala)) erros["campo-sala"] = "escolha a Sala do conteúdo.";
   if (!f.titulo.trim()) erros["campo-titulo"] = "escreva o título para salvar o rascunho.";
   const erroIA = erroProvenienciaIA(f);
   if (erroIA) erros["campo-proveniencia"] = erroIA;
@@ -115,9 +139,6 @@ function validarArtigoParaSalvar(f: FormArtigo, anterior?: ConteudoEditorial): R
         "já existe um conteúdo com este endereço nesta Sala. Mude o final, por exemplo com -2.";
     }
   }
-  if (anterior && slugTravado && f.sala !== anterior.sala) {
-    erros["campo-sala"] = "depois de publicado, o conteúdo não muda de Sala, para não quebrar links.";
-  }
   return erros;
 }
 
@@ -125,6 +146,7 @@ function montarArtigo(
   f: FormArtigo,
   anterior: ConteudoEditorial | undefined,
   quem: string,
+  corpo: BlocoCorpo[],
 ): ConteudoEditorial {
   const id = anterior?.id ?? f.id ?? novoId("c");
   const sala = f.sala as ConteudoEditorial["sala"];
@@ -147,7 +169,7 @@ function montarArtigo(
       proveniencia: "primaria",
       traducao: c.traducao.trim(),
       referencia: c.referencia.trim(),
-      capa: salaPorSlug(sala)?.placa ?? "bordo",
+      capa: salaPorSlugNoStore(sala)?.placa ?? "bordo",
       inicial: (c.obra.trim()[0] ?? "?").toUpperCase(),
     };
     if (c.rotuloTraducao.trim()) registro.rotuloTraducao = c.rotuloTraducao.trim();
@@ -180,7 +202,7 @@ function montarArtigo(
     duracaoMin: Math.max(1, Math.round(f.duracaoMin ?? 1)),
     autoria,
     publicadoEm: anterior?.publicadoEm ?? "",
-    corpo: f.corpo.map((p) => p.trim()).filter(Boolean),
+    corpo: limparCorpo(corpo),
     fontes: [...new Set(fontesValidas)],
     status: anterior?.status ?? "rascunho",
     criadoEm: anterior?.criadoEm ?? agora(),
@@ -204,15 +226,26 @@ export function salvarArtigo(
   f: FormArtigo,
   quem: string,
   modo: ModoSalvar,
+  /** Id da conta que salva: as imagens enviadas para o corpo precisam ser dela. */
+  donoId?: string,
 ): ResultadoAcao<{ id: string; slug: string; salvoEm: string; status: StatusEditorial }> {
   const anterior = f.id ? acervo().conteudos.get(f.id) : undefined;
   if (f.id && !anterior)
     return falha("Erro: este conteúdo não existe mais. Atualize a lista e tente de novo.");
+  if (anterior?.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  const erroSala = conferirSala(f.sala, anterior?.sala);
+  if (erroSala) return erroSala;
+  if (f.proveniencia === "anfitriao") {
+    return falha("Erro: confira os campos indicados.", {
+      "campo-proveniencia": "a proveniência Anfitrião é só dos artigos de anfitrião.",
+    });
+  }
   if (anterior?.status === "arquivado") {
     return falha("Erro: conteúdo arquivado não é editado. Restaure-o para rascunho antes de editar.");
   }
 
-  const erros = validarArtigoParaSalvar(f, anterior);
+  const imagens = conferirImagensDoCorpo(f.corpo, donoId, anterior?.corpo);
+  const erros = { ...validarArtigoParaSalvar(f, anterior), ...imagens.erros };
   if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
 
   // Item publicado só aceita alterações que mantêm o checklist completo.
@@ -223,7 +256,7 @@ export function salvarArtigo(
     }
   }
 
-  const artigo = montarArtigo(f, anterior, quem);
+  const artigo = montarArtigo(f, anterior, quem, imagens.corpo);
   acervo().conteudos.set(artigo.id, artigo);
 
   if (!anterior) {
@@ -240,8 +273,8 @@ export function salvarArtigo(
     if (JSON.stringify(anterior.corpo) !== JSON.stringify(artigo.corpo)) {
       mudancas.push({
         campo: "Corpo",
-        antes: `${anterior.corpo.length} parágrafos`,
-        depois: `${artigo.corpo.length} parágrafos`,
+        antes: plural(anterior.corpo.length, "bloco", "blocos"),
+        depois: plural(artigo.corpo.length, "bloco", "blocos"),
       });
     }
     if (deveRegistrarEdicao(artigo.id, quem, modo) || mudancas.length) {
@@ -302,6 +335,11 @@ export function mudarStatusArtigo(
 ): ResultadoAcao<StatusEditorial> {
   const artigo = acervo().conteudos.get(id);
   if (!artigo) return falha("Erro: este conteúdo não existe mais.");
+  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  if (acao === "publicar") {
+    const erroSala = conferirSala(artigo.sala, undefined);
+    if (erroSala) return erroSala;
+  }
   const regra = STATUS_DESTINO[acao];
   if (!regra.de.includes(artigo.status)) {
     return falha(`Erro: não é possível ${acao} um conteúdo com status “${artigo.status}”.`);
@@ -337,7 +375,7 @@ export function mudarStatusArtigo(
     itemTitulo: artigo.titulo,
     mudancas: [{ campo: "Status", antes: artigo.status, depois: regra.para }],
   });
-  const sala = salaPorSlug(artigo.sala)?.nome ?? "Sala";
+  const sala = salaPorSlugNoStore(artigo.sala)?.nome ?? "Sala";
   const mensagens: Record<AcaoStatus, string> = {
     publicar: `Publicado na Sala ${sala}.`,
     despublicar: "Voltou a rascunho e saiu do portal.",
@@ -350,6 +388,9 @@ export function mudarStatusArtigo(
 export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: string }> {
   const original = acervo().conteudos.get(id);
   if (!original) return falha("Erro: este conteúdo não existe mais.");
+  if (original.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  const erroSala = conferirSala(original.sala, undefined);
+  if (erroSala) return erroSala;
   const form = artigoParaForm(original, citacaoDe(original));
   const titulo = `Cópia de ${original.titulo}`.slice(0, 120);
   const copia = montarArtigo(
@@ -361,6 +402,7 @@ export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: st
     },
     undefined,
     quem,
+    form.corpo,
   );
   acervo().conteudos.set(copia.id, copia);
   registrar({
@@ -372,6 +414,81 @@ export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: st
     mudancas: [{ campo: "Origem", antes: original.titulo, depois: copia.titulo }],
   });
   return { ok: true, valor: { id: copia.id }, mensagem: "Cópia criada como rascunho." };
+}
+
+/**
+ * "Mover para outra Sala": só para artigo que nunca foi publicado (o endereço
+ * público inclui a Sala) e só entre Salas oficiais ativas. O endereço é
+ * refeito se colidir na Sala de destino; vídeos da Sala antiga deixam de se
+ * ligar a ele.
+ */
+export function moverArtigo(
+  id: string,
+  destino: string,
+  quem: string,
+): ResultadoAcao<{ sala: string; slug: string }> {
+  const artigo = acervo().conteudos.get(id);
+  if (!artigo) return falha("Erro: este conteúdo não existe mais.");
+  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  if (artigo.publicadoEm) {
+    return falha("Erro: artigo já publicado não muda de Sala, porque o endereço público inclui a Sala.");
+  }
+  if (destino === artigo.sala) return falha("Erro: o artigo já está nesta Sala.");
+  const erro = erroDaSalaParaConteudo(destino);
+  if (erro) return falha(`Erro: ${erro}`);
+  const slug = slugUnico(artigo.slug, slugsOcupados(destino, id));
+  const origem = salaPorSlugNoStore(artigo.sala)?.nome ?? artigo.sala;
+  const nomeDestino = salaPorSlugNoStore(destino)?.nome ?? destino;
+  acervo().conteudos.set(id, { ...artigo, sala: destino, slug, atualizadoEm: agora(), atualizadoPor: quem });
+  if (artigo.citacao) {
+    const c = acervo().citacoes.get(artigo.citacao);
+    if (c) acervo().citacoes.set(c.id, { ...c, sala: destino });
+  }
+  for (const v of acervo().videos.values()) {
+    if (v.artigos.includes(id))
+      acervo().videos.set(v.id, { ...v, artigos: v.artigos.filter((a) => a !== id) });
+  }
+  registrar({
+    quem,
+    acao: "editou",
+    tipoItem: "artigo",
+    itemId: id,
+    itemTitulo: artigo.titulo,
+    mudancas: [{ campo: "Sala", antes: origem, depois: nomeDestino }],
+  });
+  return { ok: true, valor: { sala: destino, slug }, mensagem: `Artigo movido para a Sala ${nomeDestino}.` };
+}
+
+/**
+ * Liga (ou desliga) um vídeo a um artigo da mesma Sala, a partir do editor do
+ * artigo ("Ligar vídeo existente da Sala"). Vídeo publicado muda o portal na hora.
+ */
+export function ligarVideo(videoId: string, artigoId: string, ligar: boolean, quem: string): ResultadoAcao {
+  const video = acervo().videos.get(videoId);
+  const artigo = acervo().conteudos.get(artigoId);
+  if (!video || !artigo) return falha("Erro: o vídeo ou o artigo não existe mais.");
+  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  if (video.sala !== artigo.sala) return falha("Erro: o vídeo só se liga a artigos da mesma Sala.");
+  if (video.status === "arquivado") return falha("Erro: vídeo arquivado não é ligado. Restaure-o antes.");
+  const ja = video.artigos.includes(artigoId);
+  if (ja === ligar) return { ok: true, valor: undefined, mensagem: "" };
+  const artigos = ligar ? [...video.artigos, artigoId] : video.artigos.filter((a) => a !== artigoId);
+  acervo().videos.set(videoId, { ...video, artigos, atualizadoEm: agora(), atualizadoPor: quem });
+  registrar({
+    quem,
+    acao: "editou",
+    tipoItem: "video",
+    itemId: videoId,
+    itemTitulo: video.titulo,
+    mudancas: [
+      { campo: "Artigos ligados", antes: ligar ? "" : artigo.titulo, depois: ligar ? artigo.titulo : "" },
+    ],
+  });
+  return {
+    ok: true,
+    valor: undefined,
+    mensagem: ligar ? "Vídeo ligado ao artigo." : "Vídeo desligado do artigo.",
+  };
 }
 
 // ---------- vídeos ----------
@@ -411,8 +528,9 @@ export function salvarVideo(
   if (f.id && !anterior) return falha("Erro: este vídeo não existe mais.");
   if (anterior?.status === "arquivado")
     return falha("Erro: vídeo arquivado não é editado. Restaure-o antes.");
+  const erroSala = conferirSala(f.sala, anterior?.sala);
+  if (erroSala) return erroSala;
   const erros: Record<string, string> = {};
-  if (!f.sala || !salaPorSlug(f.sala)) erros["campo-sala"] = "escolha a Sala do vídeo.";
   if (!f.titulo.trim()) erros["campo-titulo"] = "escreva o título para salvar o rascunho.";
   if (f.url.trim()) {
     const url = extrairIdYoutube(f.url);
@@ -454,6 +572,10 @@ export function salvarVideo(
 export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): ResultadoAcao<StatusEditorial> {
   const video = acervo().videos.get(id);
   if (!video) return falha("Erro: este vídeo não existe mais.");
+  if (acao === "publicar") {
+    const erroSala = conferirSala(video.sala, undefined);
+    if (erroSala) return erroSala;
+  }
   const regra = STATUS_DESTINO[acao];
   if (!regra.de.includes(video.status)) {
     return falha(`Erro: não é possível ${acao} um vídeo com status “${video.status}”.`);
@@ -473,7 +595,7 @@ export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): Re
     itemTitulo: video.titulo,
     mudancas: [{ campo: "Status", antes: video.status, depois: regra.para }],
   });
-  const sala = salaPorSlug(video.sala)?.nome ?? "Sala";
+  const sala = salaPorSlugNoStore(video.sala)?.nome ?? "Sala";
   const mensagens: Record<AcaoStatus, string> = {
     publicar: `Vídeo publicado na Sala ${sala}.`,
     despublicar: "Vídeo voltou a rascunho e saiu do portal.",
@@ -485,11 +607,15 @@ export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): Re
 
 // ---------- fontes ----------
 
+const ERRO_FONTE_PROPOSTA =
+  "Erro: esta fonte foi proposta por um anfitrião e ainda está em revisão com o artigo que a usa.";
+
 const TIPOS_FONTE = ["Fonte primária", "Tradução comentada", "Estudo acadêmico", "Edição crítica"] as const;
 
 export function salvarFonte(f: FormFonte, quem: string): ResultadoAcao<{ id: string }> {
   const anterior = f.id ? acervo().fontes.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: esta fonte não existe mais.");
+  if (anterior?.proposta?.pendente) return falha(ERRO_FONTE_PROPOSTA);
   const erros: Record<string, string> = {};
   if (!f.titulo.trim()) erros["campo-fonte-titulo"] = "escreva o título da obra.";
   if (!f.autor.trim())
@@ -539,6 +665,7 @@ export function salvarFonte(f: FormFonte, quem: string): ResultadoAcao<{ id: str
 export function excluirFonte(id: string, quem: string): ResultadoAcao {
   const fonte = acervo().fontes.get(id);
   if (!fonte) return falha("Erro: esta fonte não existe mais.");
+  if (fonte.proposta?.pendente) return falha(ERRO_FONTE_PROPOSTA);
   const conteudos = [...acervo().conteudos.values()].filter((c) => c.fontes.includes(id));
   const publicados = conteudos.filter((c) => c.status === "publicado");
   if (publicados.length) {
@@ -572,8 +699,12 @@ export function excluirFonte(id: string, quem: string): ResultadoAcao {
 
 export function restaurarAcervo(quem: string): ResultadoAcao {
   restaurarAcervoInicial();
-  // A conta de demonstração de membro volta ao histórico inicial; contas reais não são tocadas.
+  // As contas de demonstração (membro, curadoria, anfitriã e candidato) voltam ao papel e ao
+  // histórico iniciais, junto com Salas, candidaturas e convites; contas reais não são tocadas.
+  restaurarContasDemonstracao();
   restaurarProgressoDemonstracao();
+  const demo = contaPorEmail(CONTA_DEMONSTRACAO.email);
+  if (demo) restaurarPerfilDemonstracao(demo.id);
   registrar({
     quem,
     acao: "restaurou-acervo",

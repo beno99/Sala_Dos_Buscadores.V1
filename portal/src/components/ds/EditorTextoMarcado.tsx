@@ -1,41 +1,32 @@
 "use client";
 
 import { useRef } from "react";
+import { BarraFormatacao, type FonteCitavel } from "./BarraFormatacao";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
 import { TextoMarcado } from "./TextoMarcado";
-
-/** Envolve a seleção (ou insere um modelo) com o marcador, sem aceitar HTML. */
-export function aplicarMarcacao(
-  texto: string,
-  inicio: number,
-  fim: number,
-  marca: "*" | "_",
-): { texto: string; cursorInicio: number; cursorFim: number } {
-  const selecionado = texto.slice(inicio, fim);
-  const miolo = selecionado || (marca === "*" ? "termo" : "obra");
-  const novo = `${texto.slice(0, inicio)}${marca}${miolo}${marca}${texto.slice(fim)}`;
-  return { texto: novo, cursorInicio: inicio + 1, cursorFim: inicio + 1 + miolo.length };
-}
 
 interface EditorTextoMarcadoProps {
   idBase: string;
   paragrafos: string[];
   onChange: (paragrafos: string[]) => void;
   erro?: string;
+  /** Obras já escolhidas, para a barra citar ([1], [2]…). */
+  fontes?: readonly FonteCitavel[];
   somenteLeitura?: boolean;
 }
 
 /**
- * Editor de texto marcado (EditorTextoMarcado): um parágrafo por bloco, com
- * as marcações *termo* e _obra_ e pré-visualização renderizada pelo mesmo
- * TextoMarcado das páginas públicas. Não é editor rico: não aceita HTML.
+ * Editor de texto marcado (EditorTextoMarcado): um parágrafo por bloco, com a
+ * Barra de formatação e pré-visualização renderizada pelo mesmo TextoMarcado
+ * das páginas públicas. Não é editor rico: não aceita HTML.
  */
 export function EditorTextoMarcado({
   idBase,
   paragrafos,
   onChange,
   erro,
+  fontes,
   somenteLeitura,
 }: EditorTextoMarcadoProps) {
   const areas = useRef<(HTMLTextAreaElement | null)[]>([]);
@@ -54,21 +45,6 @@ export function EditorTextoMarcado({
     onChange(nova.length ? nova : [""]);
     requestAnimationFrame(() => areas.current[Math.max(0, i - 1)]?.focus());
   };
-  const marcar = (i: number, marca: "*" | "_") => {
-    const area = areas.current[i];
-    const texto = paragrafos[i] ?? "";
-    const r = aplicarMarcacao(
-      texto,
-      area?.selectionStart ?? texto.length,
-      area?.selectionEnd ?? texto.length,
-      marca,
-    );
-    alterar(i, r.texto);
-    requestAnimationFrame(() => {
-      area?.focus();
-      area?.setSelectionRange(r.cursorInicio, r.cursorFim);
-    });
-  };
 
   return (
     <div className="sdb-editor">
@@ -82,35 +58,28 @@ export function EditorTextoMarcado({
               {n}
             </span>
             <div className="sdb-editor__main">
-              <div className="sdb-editor__bar" role="toolbar" aria-label={`Marcações do parágrafo ${n}`}>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  disabled={somenteLeitura}
-                  aria-label={`Marcar termo da tradição no parágrafo ${n}`}
-                  onClick={() => marcar(i, "*")}
-                >
-                  <dfn>Termo</dfn>
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  disabled={somenteLeitura}
-                  aria-label={`Marcar título de obra no parágrafo ${n}`}
-                  onClick={() => marcar(i, "_")}
-                >
-                  <cite>Obra</cite>
-                </Button>
-                {i === 0 && <span className="sdb-footnote">Selecione o trecho e escolha a marcação.</span>}
-              </div>
               <label className="sdb-sr" htmlFor={id}>
                 Parágrafo {n}
               </label>
               <div
                 className={
-                  erro && i === 0 ? "sdb-control sdb-control--area is-error" : "sdb-control sdb-control--area"
+                  erro && i === 0
+                    ? "sdb-control sdb-control--area sdb-control--fmt is-error"
+                    : "sdb-control sdb-control--area sdb-control--fmt"
                 }
               >
+                <BarraFormatacao
+                  area={{
+                    get current() {
+                      return areas.current[i] ?? null;
+                    },
+                  }}
+                  valor={p}
+                  onChange={(texto) => alterar(i, texto)}
+                  alvo={`parágrafo ${n}`}
+                  fontes={fontes}
+                  desabilitada={somenteLeitura}
+                />
                 <textarea
                   id={id}
                   ref={(el) => {
@@ -122,6 +91,10 @@ export function EditorTextoMarcado({
                   aria-describedby={erro && i === 0 ? `${idBase}-erro` : `${id}-previa`}
                   onChange={(e) => alterar(i, e.target.value)}
                 />
+              </div>
+              <div className="sdb-field__foot">
+                <p className="sdb-help">Selecione um trecho para formatar.</p>
+                <span className="sdb-counter">{p.length.toLocaleString("pt-BR")} caracteres</span>
               </div>
               <p id={`${id}-previa`} className="sdb-editor__preview">
                 {p.trim() ? <TextoMarcado texto={p} /> : null}

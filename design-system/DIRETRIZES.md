@@ -21,8 +21,9 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 
 ### Tema padrão: Sólido claro
 - `data-theme="solido-claro"` é o padrão; `solido-escuro` é a opção escura. Os temas de vidro continuam disponíveis na biblioteca.
-- Fundo bege chapado (grafite no escuro), sem brilho ambiente nem gradiente.
-- Contraste leve: cards e painéis em creme um passo acima do bege (`material-regular`), contorno sutil (`glass-edge`) e sombra curta (`shadow-card`). Limpo, sem moldura pesada.
+- Paleta areia (desde out 2026, do Figma "Jornada do buscador"): fundo areia chapado `bg-canvas` #EBDCC1 (grafite no escuro), sem brilho ambiente nem gradiente. Lateral em caramelo (`nav-fill` #DABC86), com cartões em `nav-card` e contorno `nav-edge`; barra superior com filete `topbar-edge` e busca em `card-warm`.
+- Cards de Sala e de conteúdo na superfície quente `card-warm` (#E3C998); citação, vídeo, glossário, fontes e painéis continuam em creme (`material-regular`). Contorno sutil (`glass-edge`) e sombra curta (`shadow-card`). Limpo, sem moldura pesada.
+- Chips de filtro por tema com contagem em areia dourada (`.sdb-chip--sand`, `chip-warm` com texto `on-chip-warm`).
 - Layout de painel: tudo preso à mesma grade, com a mesma borda esquerda, as mesmas larguras de coluna e o mesmo ritmo vertical. Texto alinhado à esquerda; nunca `text-align: justify`.
 
 ### Camada flutuante
@@ -41,10 +42,11 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 ### Cor
 - 60% `bg-canvas` (bege no claro, grafite no escuro), 25% `depth-fill` (bordô), 10% texto, 5% `gold`.
 - Texto: `label`, `label-secondary`, `label-tertiary` (vibrantes, legíveis sobre todos os materiais). Destaque e links em `accent`.
-- Pares de texto permitidos: grafite sobre bege ou branco, bordô sobre bege, branco sobre grafite, bege sobre bordô. Os tokens `on-accent`, `on-prominent`, `on-depth` e `on-critical` garantem isso nos quatro temas.
+- Pares de texto permitidos: grafite sobre bege, areia, caramelo ou branco; bordô sobre bege ou areia; branco sobre grafite; bege sobre bordô. Os tokens `on-accent`, `on-prominent`, `on-depth` e `on-critical` garantem isso nos quatro temas.
+- Cores de texto da paleta areia, sempre com AA conferido por `scripts/contraste.mjs`: marrom `label-brand` (títulos de destaque, como o nome da Sala e "Salvos para depois"), dourado escuro `nav-active-label` (item ativo da lateral), verde `positive` (selo "nova") e vermelho `danger` (só a ação de sair). Os tons do Figma foram escurecidos o mínimo para passar 4,5:1.
 - Botão primário em `prominent-fill` (grafite no claro, branco no escuro); seleção em `accent-fill` (bordô no claro, bege no escuro).
-- Ouro é emblema (disco ou selo com glifo preto em `on-gold`), filete ou progresso sobre placa escura. Nunca texto, nunca fundo de leitura.
-- Erro é bordô com ícone e a palavra "Erro", nunca vermelho puro, nunca só cor.
+- Ouro puro (`gold` #D3C759) é emblema (disco ou selo com glifo preto em `on-gold`), filete ou progresso sobre placa escura. Nunca texto, nunca fundo de leitura. Os tons areia e caramelo da paleta clara não são o ouro da marca: são superfícies, com texto nos pares acima.
+- Erro é bordô com ícone e a palavra "Erro", nunca só cor. O vermelho `danger` é só para a ação de sair.
 
 ### Forma
 - Grid estrutural de 8 pontos: espaços de 8, 16, 24, 32, 48 e 64 px. 4 px é reservado para ajustes ópticos pequenos.
@@ -70,14 +72,14 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 ### Imagem
 Acervos reais, livros, manuscritos, gravuras, arquitetura de biblioteca, mãos e gestos de estudo. Sem fotos disponíveis, use as placas da marca (bordô, grafite, bege) com o arco. Nunca cristais, mandalas, lua, velas, fumaça ou gradiente roxo.
 
-No portal, as fotos ficam em `portal/public/imagens/{banner,salas,episodios,anuncios,conteudos}` (nomes e proporções no `LEIA-ME.md` da pasta). Toda peça com imagem aceita `<img alt="">` e cai na placa da marca quando o arquivo não existe. Só imagens com direito de uso registrado.
+No portal, as fotos ficam em `portal/public/imagens/{banner,salas,episodios,anuncios,conteudos}` (nomes e proporções no `LEIA-ME.md` da pasta). Toda peça com imagem aceita `<img alt="">` e cai na placa da marca quando o arquivo não existe. Só imagens com direito de uso registrado. Imagens enviadas por anfitriões entram pelo Campo de imagem, com o aceite de responsabilidade registrado no envio.
 
 ## Iconografia
 
-- Conjunto próprio de ícones de traço 1,7 px em grade de 24 px, pontas arredondadas, no espírito dos SF Symbols e neutros entre tradições. `SalaBuscadores.icon(nome)` ou `<span data-icon="nome">`.
+- Ícones do [Phosphor](https://phosphoricons.com) (licença MIT), peso **Regular** em toda a interface e **Fill** no controle ativo (item da lateral e da barra de abas com `aria-current="page"`, aba com `aria-selected`, botão alternado com `aria-pressed`, como salvar na Estante). Neutros entre tradições. `SalaBuscadores.icon(nome)` ou `<span data-icon="nome">`; o mapa nome → Phosphor fica em `components/Iconografia/phosphor.json`.
 - O símbolo é o arco com escada de degraus, com cor invertida conforme o fundo: branco sobre grafite, bordô sobre bege, bege sobre bordô, preto sobre ouro (`SalaBuscadores.arc({on})`). Aparece em discos bordô, emblemas de ouro e placas.
 - Não há logotipo em vetor neste sistema: o logotipo vertical "SALA / DOS / Buscadores" usa glifos alternativos ainda não entregues. Até lá, escreva o nome em `display-lower` e use o arco como marca.
-- Ícones reservados à proveniência: `fontePrimaria`, `curado`, `especialista`, `comunidade`, `ia`.
+- Ícones reservados à proveniência: `fontePrimaria`, `curado`, `especialista`, `comunidade`, `ia`, `anfitriao`.
 
 ## Uso dos componentes
 

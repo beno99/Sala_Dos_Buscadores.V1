@@ -1,0 +1,164 @@
+"use client";
+import { useId, useState } from "react";
+import { Avatar } from "@/components/ds/Avatar";
+import { Button, ButtonLink } from "@/components/ds/Button";
+import { Icon } from "@/components/ds/Icon";
+import { Segmented } from "@/components/ds/Segmented";
+import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
+import type { ModeloComunidade } from "@/server/comunidade/consultas";
+import { LateralComunidade } from "./LateralComunidade";
+import { ListaPublicacoes } from "./ListaPublicacoes";
+import { TIPOS_PUBLICACAO } from "./PublicacaoLeitura";
+
+export function FeedComunidade({
+  modelo: m,
+  sala,
+  tema,
+}: {
+  modelo: ModeloComunidade;
+  sala?: string;
+  tema?: string;
+}) {
+  const [aba, setAba] = useState<"para-voce" | "seguindo">("para-voce");
+  const [buscar, setBuscar] = useState(false);
+  const [busca, setBusca] = useState("");
+  const [aviso, setAviso] = useState(true);
+  const id = useId();
+  const filtrar = (lista: ModeloComunidade["publicacoes"]) =>
+    lista.filter(
+      (p) =>
+        (!sala || p.salaSlug === sala) &&
+        (!tema || p.temas.some((t) => t === tema)) &&
+        `${p.texto} ${p.autor.nome} ${p.citacao?.obra ?? ""}`
+          .toLocaleLowerCase("pt-BR")
+          .includes(busca.toLocaleLowerCase("pt-BR")),
+    );
+  return (
+    <div className="sdb-community sdb-community--in-app">
+      <header className="sdb-community__head">
+        <div>
+          <p className="sdb-meta">Estudar em companhia</p>
+          <h1 className="sdb-title-1">Comunidade</h1>
+          <p className="sdb-body-sm">Um caderno de estudos em voz alta.</p>
+        </div>
+      </header>
+      <div className="sdb-community__layout">
+        <div className="sdb-community__feed">
+          <div className="sdb-community__toolbar">
+            <Segmented
+              abas={id}
+              label="Feed da comunidade"
+              value={aba}
+              onChange={setAba}
+              options={[
+                { value: "para-voce", label: "Para você" },
+                { value: "seguindo", label: "Seguindo" },
+              ]}
+            />
+            <Button
+              variant="secondary"
+              icon="busca"
+              iconOnly
+              aria-label="Buscar na comunidade"
+              aria-expanded={buscar}
+              aria-controls={`${id}-busca`}
+              onClick={() => setBuscar(!buscar)}
+            />
+          </div>
+          <label id={`${id}-busca`} hidden={!buscar} className="sdb-searchfield">
+            <Icon name="busca" />
+            <span className="sdb-sr">Buscar publicações</span>
+            <input
+              type="search"
+              placeholder="Buscar nas publicações…"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </label>
+          {(sala || tema) && (
+            <div className="sdb-post__tags">
+              <span className="sdb-chip">
+                {[sala && (salaPorSlug(sala)?.nome ?? sala), tema && (temaPorSlug(tema)?.nome ?? tema)]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+              <ButtonLink href="/comunidade" variant="plain">
+                Limpar filtros
+              </ButtonLink>
+            </div>
+          )}
+          {aviso && (
+            <aside className="sdb-neutral sdb-neutral--community" aria-label="Aviso de neutralidade">
+              <span className="sdb-neutral__icon">
+                <Icon name="comunidade" />
+              </span>
+              <p>
+                Compartilhamos estudos, não verdades sobre crenças. Atribua afirmações às fontes e acolha
+                leituras diferentes.
+              </p>
+              <Button
+                variant="plain"
+                icon="fechar"
+                iconOnly
+                aria-label="Dispensar aviso de neutralidade"
+                onClick={() => setAviso(false)}
+              />
+            </aside>
+          )}
+          <section className="sdb-composer" aria-label="Publicações em leitura">
+            <div className="sdb-composer__prompt">
+              <Avatar iniciais={m.pessoa.iniciais} foto={m.pessoa.foto} />
+              <p className="sdb-headline">O que você está estudando?</p>
+            </div>
+            <div className="sdb-composer__types">
+              {Object.values(TIPOS_PUBLICACAO).map((tipo) => (
+                <span className="sdb-chip" key={tipo}>
+                  {tipo}
+                </span>
+              ))}
+            </div>
+            <p className="sdb-footnote">
+              Por enquanto, explore os estudos e as conversas. Novas publicações e respostas serão habilitadas
+              em breve.
+            </p>
+          </section>
+          <p className="sdb-footnote" role="status">
+            {filtrar(aba === "para-voce" ? m.publicacoes : m.seguindo).length} publicações
+            {aba === "para-voce"
+              ? " · Recentes, com prioridade leve às Salas, anfitriões acompanhados e trilhas."
+              : " de pessoas que você acompanha."}
+          </p>
+          {(["para-voce", "seguindo"] as const).map((valor) => (
+            <section
+              key={valor}
+              id={`${id}-painel-${valor}`}
+              role="tabpanel"
+              aria-labelledby={`${id}-aba-${valor}`}
+              hidden={aba !== valor}
+            >
+              <ListaPublicacoes
+                publicacoes={filtrar(valor === "para-voce" ? m.publicacoes : m.seguindo)}
+                agora={m.agora}
+                curtidas={m.curtidas}
+                salvos={m.salvos.map((p) => p.id)}
+                vazio={
+                  busca || sala || tema
+                    ? "Nenhuma publicação encontrada"
+                    : valor === "seguindo"
+                      ? "Seu caderno de acompanhamentos está vazio"
+                      : "Ainda sem estudos compartilhados"
+                }
+                descricao={
+                  valor === "seguindo"
+                    ? "Explore Salas e anfitriões para conhecer quem compartilha estudos. As publicações de quem você seguir aparecerão aqui."
+                    : "Experimente outro termo ou remova os filtros para encontrar outras leituras."
+                }
+              />
+            </section>
+          ))}
+        </div>
+        <LateralComunidade modelo={m} />
+      </div>
+    </div>
+  );
+}

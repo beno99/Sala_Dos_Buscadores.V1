@@ -1,0 +1,425 @@
+/* Estados e orientação · 1.1. Fonte compartilhada entre HTML e React. */
+:where(.sdb-ui-empty, .sdb-ui-loading-panel, .sdb-ui-notice, .sdb-ui-progress, .sdb-ui-dialog) {
+  color: var(--label);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+:where(.sdb-ui-empty, .sdb-ui-loading-panel, .sdb-ui-notice, .sdb-ui-progress, .sdb-ui-dialog) :where(h2, h3, p) { margin: 0; }
+:where([class^="sdb-ui-"]), :where([class^="sdb-ui-"]) * { box-sizing: border-box; }
+.sdb-ui-primary, .sdb-ui-secondary, .sdb-ui-dialog-close { font-family: var(--font-ui); cursor: pointer; }
+.sdb-ui-primary:focus-visible, .sdb-ui-secondary:focus-visible, .sdb-ui-dialog-close:focus-visible {
+  outline: 2px solid var(--focus-ring); outline-offset: 4px;
+}
+.sdb-ui-primary svg, .sdb-ui-secondary svg { width: 16px; height: 16px; flex-shrink: 0; }
+.sdb-ui-secondary, .sdb-ui-dialog-close { color: var(--label); }
+.sdb-ui-interface-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.sdb-ui-interface-icon { display: inline-flex; vertical-align: middle; }
+.sdb-ui-interface-icon > svg { width: 100%; height: 100%; }
+[data-ui-volume] { display: inline-flex; }
+.sdb-ui-empty {
+  min-height: 322px;
+  padding: 38px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-lg);
+  background: var(--material-regular);
+  box-shadow: 0 1px 2px var(--separator);
+}
+.sdb-ui-empty h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 22px;
+}
+.sdb-ui-empty p {
+  max-width: 395px;
+  color: var(--label-secondary);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 9px 0 20px;
+}
+.sdb-ui-primary,
+.sdb-ui-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-pill);
+  min-height: 44px;
+  padding: 9px 15px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: filter var(--duration-press);
+}
+.sdb-ui-primary {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 1px 0 var(--separator),
+    0 2px 3px var(--separator);
+}
+.sdb-ui-primary:hover {
+  filter: brightness(1.2);
+}
+.sdb-ui-secondary {
+  background: var(--material-regular);
+  border: 1px solid var(--separator);
+}
+.sdb-ui-empty-compact {
+  min-height: 220px;
+}
+.sdb-ui-volume {
+  position: relative;
+  display: inline-block;
+  width: 78px;
+  height: 72px;
+  flex-shrink: 0;
+  isolation: isolate;
+  filter: drop-shadow(0 7px 5px rgb(0 0 0 / 12%));
+  transform: rotate(-3deg);
+}
+.sdb-ui-volume-back {
+  position: absolute;
+  left: 9px;
+  right: 3px;
+  top: 7px;
+  bottom: 8px;
+  background: linear-gradient(150deg, #efeeea, #c9cac7);
+  border: 1px solid #a9aba780;
+  border-radius: 8px;
+  transform: rotate(8deg);
+  box-shadow: inset 0 1px 1px white;
+}
+.sdb-ui-volume-sheet {
+  position: absolute;
+  left: 14px;
+  right: 10px;
+  top: 1px;
+  height: 52px;
+  background: linear-gradient(135deg, #fff, #e2e3e0);
+  border: 1px solid #dddeda;
+  border-radius: 5px;
+  transform: rotate(-3deg);
+  padding: 10px;
+  box-shadow: 0 1px 2px #00000012;
+}
+.sdb-ui-volume-sheet i {
+  display: block;
+  height: 3px;
+  width: 70%;
+  background: #c3c6c2;
+  border-radius: 2px;
+  margin: 5px 0;
+}
+.sdb-ui-volume-sheet i + i {
+  width: 46%;
+}
+.sdb-ui-volume-front {
+  position: absolute;
+  left: 4px;
+  right: 6px;
+  bottom: 5px;
+  height: 49px;
+  background: linear-gradient(165deg, #f9faf7 0%, #dedfda 58%, #c7cac4 100%);
+  border: 1px solid #c1c4bc;
+  border-radius: 5px 6px 9px 9px;
+  display: grid;
+  place-items: center;
+  color: #61665e;
+  box-shadow:
+    inset 0 2px 1px #ffffff,
+    0 2px 2px #00000018;
+}
+.sdb-ui-volume-front svg {
+  width: 27px;
+  height: 27px;
+  filter: drop-shadow(0 1px 0 #fff);
+}
+.sdb-ui-volume-seal {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(150deg, #fff, #e8e5dc);
+  border: 1px solid #d0cec5;
+  border-radius: 50%;
+  box-shadow: 0 2px 3px #00000020;
+  display: grid;
+  place-items: center;
+}
+.sdb-ui-volume-seal span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bordo-rubro);
+  box-shadow: inset 0 1px 1px #ffffff40;
+}
+.sdb-ui-volume[data-symbol="livro"] .sdb-ui-volume-front {
+  border-radius: 3px 9px 9px 3px;
+  border-left: 5px solid #adb2aa;
+}
+.sdb-ui-volume[data-symbol="busca"] .sdb-ui-volume-front {
+  border-radius: 50%;
+  left: 12px;
+  right: 12px;
+  height: 54px;
+}
+.sdb-ui-volume[data-symbol="alerta"] .sdb-ui-volume-seal span {
+  background: #95621f;
+}
+.sdb-ui-volume[data-symbol="sucesso"] .sdb-ui-volume-seal span {
+  background: #436944;
+}
+.sdb-ui-volume-small {
+  width: 52px;
+  height: 50px;
+  filter: drop-shadow(0 4px 3px #00000012);
+}
+.sdb-ui-volume-small .sdb-ui-volume-front {
+  height: 34px;
+  left: 2px;
+  right: 4px;
+  bottom: 3px;
+  border-radius: 5px;
+}
+.sdb-ui-volume-small .sdb-ui-volume-front svg {
+  width: 20px;
+  height: 20px;
+}
+.sdb-ui-volume-small .sdb-ui-volume-sheet {
+  left: 9px;
+  right: 8px;
+  height: 36px;
+  padding: 4px;
+}
+.sdb-ui-volume-small .sdb-ui-volume-back {
+  left: 6px;
+  right: 1px;
+  bottom: 6px;
+}
+.sdb-ui-volume-small .sdb-ui-volume-seal {
+  width: 14px;
+  height: 14px;
+  right: 0;
+  bottom: 0;
+}
+.sdb-ui-volume-small .sdb-ui-volume-seal span {
+  width: 5px;
+  height: 5px;
+}
+.sdb-ui-volume-small[data-symbol="busca"] .sdb-ui-volume-front {
+  left: 5px;
+  right: 4px;
+  height: 38px;
+  border-radius: 50%;
+}
+.sdb-ui-progress {
+  margin: 26px 0 17px;
+}
+.sdb-ui-progress > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 10px;
+  color: var(--label-secondary);
+}
+.sdb-ui-progress strong {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 550;
+}
+.sdb-ui-progress progress {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 7px;
+  border: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--fill-strong);
+}
+.sdb-ui-progress progress::-webkit-progress-bar {
+  background: var(--fill-strong);
+  border-radius: 4px;
+}
+.sdb-ui-progress progress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--accent-fill), var(--accent-soft), var(--bg-canvas));
+  border-radius: 4px;
+}
+.sdb-ui-progress progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--accent-fill), var(--accent-soft), var(--bg-canvas));
+  border-radius: 4px;
+}
+.sdb-ui-progress small {
+  display: block;
+  font-size: 10px;
+  color: var(--label-secondary);
+  margin-top: 8px;
+}
+.sdb-ui-progress progress[hidden] { display: none; }
+.sdb-ui-notice {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 28px 0 24px;
+}
+.sdb-ui-notice strong {
+  font-weight: 500;
+  font-size: 13px;
+}
+.sdb-ui-notice p {
+  font-size: 12px;
+  color: var(--label-secondary);
+  line-height: 1.8;
+  margin-top: 8px;
+}
+.sdb-ui-loading-panel {
+  padding: 30px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-lg);
+  background: var(--material-regular);
+}
+.sdb-ui-loading p {
+  font-size: 11px;
+  color: var(--label-secondary);
+  margin-top: 20px;
+}
+.sdb-ui-skeleton-hero,
+.sdb-ui-skeleton-title,
+.sdb-ui-skeleton-line,
+.sdb-ui-skeleton-grid span,
+.sdb-ui-skeleton-grid i {
+  display: block;
+  background: var(--fill);
+  border-radius: 5px;
+  animation: sdb-ui-breathe 1.8s ease-in-out infinite;
+}
+.sdb-ui-skeleton-hero {
+  height: 100px;
+  margin-bottom: 20px;
+}
+.sdb-ui-skeleton-title {
+  width: 35%;
+  height: 18px;
+  margin-bottom: 12px;
+}
+.sdb-ui-skeleton-line {
+  width: 62%;
+  height: 9px;
+}
+.sdb-ui-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 26px;
+}
+.sdb-ui-skeleton-grid span {
+  height: 62px;
+}
+.sdb-ui-skeleton-grid i {
+  height: 7px;
+  width: 80%;
+  margin-top: 10px;
+}
+.sdb-ui-skeleton-grid i:last-child {
+  width: 55%;
+}
+@keyframes sdb-ui-breathe {
+  50% {
+    opacity: 0.42;
+  }
+}
+.sdb-ui-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  background: var(--material-regular);
+  color: var(--label);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-lg);
+  padding: 42px 35px 28px;
+  max-width: 450px;
+  width: calc(100vw - 36px);
+  box-shadow: var(--shadow-float);
+  text-align: center;
+}
+.sdb-ui-dialog::backdrop {
+  background: var(--material-thick);
+  backdrop-filter: blur(var(--blur-glass));
+}
+.sdb-ui-dialog > .sdb-ui-volume,
+.sdb-ui-dialog > [data-ui-volume] {
+  margin-bottom: 28px;
+}
+.sdb-ui-dialog h2 {
+  font:
+    400 29px var(--font-display-lower),
+    Georgia,
+    serif;
+  margin: 12px 0;
+}
+.sdb-ui-dialog > p:not(.sdb-ui-eyebrow),
+.sdb-ui-dialog-description {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--label-secondary);
+}
+.sdb-ui-dialog-close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  border: 0;
+  background: none;
+  padding: 6px;
+}
+.sdb-ui-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+.sdb-ui-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  font-weight: 550;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.sdb-ui-dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.sdb-ui-primary:disabled { cursor: not-allowed; opacity: 0.55; filter: none; }
+.sdb-ui-dialog-close { display: grid; place-items: center; width: 44px; height: 44px; }
+.sdb-ui-dialog-close svg { width: 19px; height: 19px; }
+.sdb-ui-dialog--static { display: block; position: relative; inset: auto; }
+.sdb-ui-empty[hidden], .sdb-ui-demo [hidden] { display: none; }
+.sdb-ui-demo { width: 100%; max-width: 1100px; margin-inline: auto; }
+.sdb-ui-demo-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.sdb-ui-demo-tabs [aria-pressed="true"] { background: var(--accent-fill); color: var(--on-accent); }
+.sdb-ui-demo-icons { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; padding: 24px 0; }
+.sdb-ui-demo-icons figure { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 0; min-width: 90px; }
+.sdb-ui-demo-icons figcaption { font: 12px var(--font-ui); color: var(--label-secondary); }
+.sdb-ui-demo-checklist { display: flex; flex-direction: column; gap: 12px; }
+.sdb-ui-demo-checklist label { display: flex; align-items: center; gap: 10px; }
+@media (max-width: 800px) {
+  .sdb-ui-empty { padding: 32px 20px; min-height: 340px; }
+  .sdb-ui-empty h3 { font-size: 17px; max-width: 260px; line-height: 1.4; }
+  .sdb-ui-dialog { padding: 36px 24px 25px; }
+  .sdb-ui-dialog-actions { flex-wrap: wrap; }
+  .sdb-ui-skeleton-grid { gap: 10px; }
+  .sdb-ui-empty-compact { min-height: 220px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sdb-ui-loading *, .sdb-ui-dialog, .sdb-ui-primary, .sdb-ui-secondary { animation: none; transition: none; }
+}
+
+/* Shared surfaces follow the principal library typography and focus tokens. */
+.sdb-ui-empty p, .sdb-ui-notice p, .sdb-ui-dialog-description, .sdb-ui-dialog > p:not(.sdb-ui-eyebrow) { font-size: 15px; }
+.sdb-ui-progress small, .sdb-ui-loading p, .sdb-ui-demo-icons figcaption { font-size: 13px; }
+.sdb-ui-primary:focus-visible, .sdb-ui-secondary:focus-visible, .sdb-ui-dialog-close:focus-visible { outline-width: 3px; }

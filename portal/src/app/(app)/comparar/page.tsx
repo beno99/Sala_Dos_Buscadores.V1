@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { BarraBusca } from "@/features/busca/BarraBusca";
 import { detectarTemas, lerFiltros, paraQueryString } from "@/features/busca/busca";
 import { GradeComparativaEsqueleto } from "@/features/busca/GradeComparativa";
 import { Resultados } from "@/features/busca/Resultados";
@@ -21,18 +20,14 @@ export default async function CompararPage(props: PageProps<"/comparar">) {
   return (
     <>
       {tema && <RegistrarEstudo evento={{ tipo: "comparacao", tema }} />}
-      <header className="flex max-w-read flex-col gap-3">
-        <p className="sdb-meta sdb-secondary">Busca comparativa</p>
-        <h1 className="sdb-title-1">O que cada Sala diz, lado a lado</h1>
-        <p className="sdb-body-sm sdb-secondary">
-          Cada tradição responde com o próprio vocabulário e a própria fonte. O portal não junta as respostas
-          numa síntese nem escolhe a mais correta.
-        </p>
-      </header>
-
-      <BarraBusca key={`barra${chave}`} filtros={filtros} className="max-w-read" />
-
-      <Suspense key={chave} fallback={<GradeComparativaEsqueleto />}>
+      <Suspense
+        key={chave}
+        fallback={
+          <div className="sdb-journey-compare">
+            <GradeComparativaEsqueleto />
+          </div>
+        }
+      >
         <Resultados filtros={filtros} />
       </Suspense>
     </>

@@ -2,11 +2,11 @@
 
 Biblioteca de componentes do portal: tokens, estilos, comportamentos e exemplos, na linguagem de design da Apple (Liquid Glass) com as cores, as fontes e o arco da marca. HTML + CSS + JavaScript puro, sem dependências, então funciona com qualquer tecnologia.
 
-Versão 1.0: evolução local baseada nos componentes aprovados no estudo v0.6. A biblioteca reúne 60 componentes, mantém HTML/CSS/JavaScript puro e abre tanto por arquivo local quanto por HTTP.
+Versão 1.0: evolução local baseada nos componentes aprovados no estudo v0.6. A biblioteca reúne componentes do acervo, do portal e da Comunidade, mantém HTML/CSS/JavaScript puro e abre tanto por arquivo local quanto por HTTP.
 
 ## Ver a biblioteca
 
-Abra `catalogo.html` no navegador (no VS Code: botão direito › *Reveal in Finder* e dois cliques, ou a extensão Live Server › *Open with Live Server*). Use a busca por nome ou descrição (atalho `/`), navegue pelas sete famílias e expanda um componente para carregar sua prévia. O tema é propagado sem recarregar os exemplos nem perder seus estados. "Guia" abre a documentação e "Abrir exemplo" mostra a peça sozinha.
+Abra `catalogo.html` no navegador (no VS Code: botão direito › *Reveal in Finder* e dois cliques, ou a extensão Live Server › *Open with Live Server*). Use a busca por nome ou descrição (atalho `/`), navegue pelas famílias e expanda um componente para carregar sua prévia. O tema é propagado sem recarregar os exemplos nem perder seus estados. "Guia" abre a documentação e "Abrir exemplo" mostra a peça sozinha.
 
 ## Usar numa página
 
@@ -29,7 +29,7 @@ Abra `catalogo.html` no navegador (no VS Code: botão direito › *Reveal in Fin
 - **Fundo**: nos temas sólidos o fundo é bege (ou grafite) chapado, sem brilho. `.sdb-ambient` no contêiner só acende o brilho que o vidro refrata nos temas de vidro.
 - **Camada flutuante**: `.sdb-float` (e as peças que flutuam: barra de abas, botão flutuante, barra superior ao rolar) mantém translucidez e desfoque em todos os temas; fica opaca com `prefers-reduced-transparency`.
 - **Classes**: tudo começa com `sdb-`. Copie a estrutura HTML do exemplo da peça (`exemplos/<Nome>.html`) e siga o guia (`components/<Nome>/README.md`).
-- **Comportamentos por atributo**: `data-open="id"` / `data-close` (modal, drawer), `data-menu-trigger`, `data-acc-trigger`, `data-sdb-tabs`, `data-toggle` + `data-toggle-group`, `data-copy`, `data-toast`, `data-tip`.
+- **Comportamentos por atributo**: `data-open="id"` / `data-close` (modal, drawer), `data-menu-trigger`, `data-acc-trigger`, `data-sdb-tabs`, `data-toggle` + `data-toggle-group`, `data-copy`, `data-share`, `data-toast`, `data-tip`.
 - **JavaScript**: `SalaBuscadores.toast("Mensagem")`, `.openOverlay(id)`, `.closeOverlay(id)`, `.icon(nome)`, `.arc({on})`, `.hydrate(elemento)` (chame depois de inserir HTML dinâmico), `.syncSeg(segmentado)`.
 - **Fontes**: Gambetta vem em `fonts/` (licença ITF Free Font License, uso comercial permitido, arquivo ao lado). Fraunces, Source Serif 4 e Inter vêm do Google Fonts pelo `bundle.css`.
 
@@ -79,6 +79,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 
 | Peça | Para quê |
 | --- | --- |
+| [IconeVolume](components/IconeVolume/README.md) · [exemplo](exemplos/IconeVolume.html) | Ícones neutros em camadas, com sombra e detalhes da marca, para orientar em estados e diálogos. |
 | [Arco](components/Arco/README.md) · [exemplo](exemplos/Arco.html) | O arco com escada de degraus é o símbolo da marca: a porta aberta e a escada que cada pessoa sobe sozinha. |
 | [Iconografia](components/Iconografia/README.md) · [exemplo](exemplos/Iconografia.html) | Conjunto próprio de ícones de traço, no espírito dos SF Symbols: peso único, pontas arredondadas, neutros entre tradições. |
 | [Materiais](components/Materiais/README.md) · [exemplo](exemplos/Materiais.html) | Duas camadas, como no Liquid Glass da Apple: a camada de conteúdo usa materiais (fino, regular, espesso); a camada funcional, que flutua sobre o conteúdo, usa vidro. |
@@ -90,6 +91,11 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 
 | Peça | Para quê |
 | --- | --- |
+| [EstadoSecao](components/EstadoSecao/README.md) · [exemplo](exemplos/EstadoSecao.html) | Container padrão para seção vazia, nenhum resultado e erro, com ação contextual. |
+| [CarregamentoSala](components/CarregamentoSala/README.md) · [exemplo](exemplos/CarregamentoSala.html) | Esqueleto da página enquanto o conteúdo carrega; sem porcentagem simulada. |
+| [ProgressoReal](components/ProgressoReal/README.md) · [exemplo](exemplos/ProgressoReal.html) | Progresso acessível em degradê, calculado por etapas concluídas e total conhecido. |
+| [AvisoContextual](components/AvisoContextual/README.md) · [exemplo](exemplos/AvisoContextual.html) | Orientação com título, texto e ícone em volume compacto. |
+| [DialogoContextual](components/DialogoContextual/README.md) · [exemplo](exemplos/DialogoContextual.html) | Diálogo de orientação com ícone em volume, ações, foco e Escape. |
 | [Accordion](components/Accordion/README.md) · [exemplo](exemplos/Accordion.html) | Revela conteúdo por partes dentro de uma lista agrupada (inset grouped). |
 | [Alerta](components/Alerta/README.md) · [exemplo](exemplos/Alerta.html) | Mensagem persistente na página, ligada ao conteúdo ao redor. |
 | [AreaTexto](components/AreaTexto/README.md) · [exemplo](exemplos/AreaTexto.html) | Várias linhas para notas, contribuições e justificativas. |
@@ -98,6 +104,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | [Botao](components/Botao/README.md) · [exemplo](exemplos/Botao.html) | Ação em forma de cápsula; o rótulo diz exatamente o que acontece. |
 | [Breadcrumbs](components/Breadcrumbs/README.md) · [exemplo](exemplos/Breadcrumbs.html) | Mostra o caminho até a página atual (Acervo › Sala › Coleção › Conteúdo) numa cápsula de vidro. |
 | [CampoTexto](components/CampoTexto/README.md) · [exemplo](exemplos/CampoTexto.html) | Entrada de uma linha, com rótulo sempre visível acima. |
+| [CampoImagem](components/CampoImagem/README.md) · [exemplo](exemplos/CampoImagem.html) | Envio de uma imagem com prévia, troca, remoção e erro de tipo ou tamanho. |
 | [Checkbox](components/Checkbox/README.md) · [exemplo](exemplos/Checkbox.html) | Seleciona zero ou mais opções independentes. |
 | [Drawer](components/Drawer/README.md) · [exemplo](exemplos/Drawer.html) | Painel para filtros, detalhes de fonte ou navegação secundária, sem sair da página. |
 | [Menu](components/Menu/README.md) · [exemplo](exemplos/Menu.html) | Lista de ações ligada a um botão, em material espesso. |
@@ -116,7 +123,9 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | Peça | Para quê |
 | --- | --- |
 | [BlocoCitacao](components/BlocoCitacao/README.md) · [exemplo](exemplos/BlocoCitacao.html) | Trecho de fonte primária com original, tradução, referência e ação de copiar. |
-| [CardConteudo](components/CardConteudo/README.md) · [exemplo](exemplos/CardConteudo.html) | Resumo de um artigo, vídeo ou verbete: tipo, Sala de origem, título, tema, nível, autoria e procedência. Em linha, e em modo destaque compacto para vitrines. |
+| [CardConteudo](components/CardConteudo/README.md) · [exemplo](exemplos/CardConteudo.html) | Resumo de um artigo, vídeo ou verbete: tipo, Sala de origem, título, tema, nível, autoria e procedência. Em linha, em modo destaque compacto para vitrines e com imagem para as grades do acervo. |
+| [AutoriaConteudo](components/AutoriaConteudo/README.md) · [exemplo](exemplos/AutoriaConteudo.html) | Coluna da página de leitura: avatar, nome e credencial, filete e dados em linhas (data, leitura, nível, temas, proveniência, compartilhar). |
+| [CorpoArtigo](components/CorpoArtigo/README.md) · [exemplo](exemplos/CorpoArtigo.html) | Texto em blocos (lead, parágrafo, intertítulo, destaque e imagem) e a leitura em duas colunas com autoria e extras. |
 | [CardFonte](components/CardFonte/README.md) · [exemplo](exemplos/CardFonte.html) | Uma obra usada pelo acervo ou pelo assistente, apresentada como um livro: capa, título, autor, tradição, tipo e referência. |
 | [CardSala](components/CardSala/README.md) · [exemplo](exemplos/CardSala.html) | Porta de entrada de uma Sala: placa com o arco, nome, tradição, volume, nível predominante e última atualização. |
 | [CardVideo](components/CardVideo/README.md) · [exemplo](exemplos/CardVideo.html) | Vídeo do canal com miniatura, duração, Sala ou tema e a ação de assistir (abre o YouTube em nova aba). |
@@ -151,24 +160,55 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | Peça | Para quê |
 | --- | --- |
 | [NavegacaoLateral](components/NavegacaoLateral/README.md) · [exemplo](exemplos/NavegacaoLateral.html) | Navegação principal do portal e da curadoria: perfil, "Continuar", itens em grupos e rodapé; recolhível para só ícones. |
-| [BarraSuperior](components/BarraSuperior/README.md) · [exemplo](exemplos/BarraSuperior.html) | Título da página e saudação; busca, aparência e conta. Entra na camada flutuante ao rolar. |
+| [BarraSuperior](components/BarraSuperior/README.md) · [exemplo](exemplos/BarraSuperior.html) | Título da página e saudação ou trilha; busca, aparência e conta. Entra na camada flutuante ao rolar. |
 | [BannerRotativo](components/BannerRotativo/README.md) · [exemplo](exemplos/BannerRotativo.html) | Card largo no topo do Portal que alterna marca, episódios e anúncios, com pausa. |
 | [Carrossel](components/Carrossel/README.md) · [exemplo](exemplos/Carrossel.html) | Faixa horizontal de cards com cabeçalho, setas e scroll-snap. |
 | [PainelBusca](components/PainelBusca/README.md) · [exemplo](exemplos/PainelBusca.html) | Busca no topo da tela (lupa ou ⌘K) com sugestões de Salas, temas, conteúdos e o assistente. |
 | [BotaoFlutuante](components/BotaoFlutuante/README.md) · [exemplo](exemplos/BotaoFlutuante.html) | Atalho de vidro para o assistente sobre qualquer página. |
 | [Onboarding](components/Onboarding/README.md) · [exemplo](exemplos/Onboarding.html) | Primeiro acesso em etapas: boas-vindas, interesses, religião ou convicção (opcional) e resumo. |
 | [ListaDestaques](components/ListaDestaques/README.md) · [exemplo](exemplos/ListaDestaques.html) | Ranking curto ("Mais pesquisados") em que o item apontado cresce e abre a miniatura. |
+| [CabecalhoPerfil](components/CabecalhoPerfil/README.md) · [exemplo](exemplos/CabecalhoPerfil.html) | Abre o Perfil do buscador: capa, foto, papel, números de estudo e ações. |
+| [SeletorTema](components/SeletorTema/README.md) · [exemplo](exemplos/SeletorTema.html) | Quatro temas em miniatura para o diálogo de Aparência, com a opção de lateral translúcida. |
+| [CabecalhoSala](components/CabecalhoSala/README.md) · [exemplo](exemplos/CabecalhoSala.html) | Abre a página da Sala: nome à esquerda; descrição, assinatura do anfitrião (ou o assistente) e dados à direita. |
+| [BannerSala](components/BannerSala/README.md) · [exemplo](exemplos/BannerSala.html) | Imagem da Sala na largura toda (3:1, 2:1, 16:10 pelo container) ou a placa com o arco, com crédito. |
+| [PainelCabecalho](components/PainelCabecalho/README.md) · [exemplo](exemplos/PainelCabecalho.html) | Abre uma seção grande: rótulo, título e subtítulo, com vistas, busca e filtros à direita. |
 | [PainelProgresso](components/PainelProgresso/README.md) · [exemplo](exemplos/PainelProgresso.html) | Indicadores, leitura e anúncio num contêiner só, na grade de quatro colunas dos indicadores. |
 | [Conquista](components/Conquista/README.md) · [exemplo](exemplos/Conquista.html) | Marco de estudo privado: emblema de ouro obtido ou bloqueado com o critério. |
 | [EspacoPublicitario](components/EspacoPublicitario/README.md) · [exemplo](exemplos/EspacoPublicitario.html) | Anúncio identificado, no painel, em coluna ou banner, distinto do acervo. |
 | [Rodape](components/Rodape/README.md) · [exemplo](exemplos/Rodape.html) | Marca e frase, colunas de links e linha final. |
+
+### Comunidade
+
+| Peça | Para quê |
+| --- | --- |
+| [Comunidade](components/Comunidade/README.md) · [exemplo](exemplos/Comunidade.html) | Comunidade — montagem de referência. |
+| [CardPublicacao](components/CardPublicacao/README.md) · [exemplo](exemplos/CardPublicacao.html) | Cartão de publicação. |
+| [CompositorComunidade](components/CompositorComunidade/README.md) · [exemplo](exemplos/CompositorComunidade.html) | Compositor da comunidade. |
+| [LinhaComentario](components/LinhaComentario/README.md) · [exemplo](exemplos/LinhaComentario.html) | Linha de comentário. |
+| [LinhaPessoa](components/LinhaPessoa/README.md) · [exemplo](exemplos/LinhaPessoa.html) | Linha de pessoa. |
+| [CartaoLateralComunidade](components/CartaoLateralComunidade/README.md) · [exemplo](exemplos/CartaoLateralComunidade.html) | Cartão lateral de comunidade. |
+| [BarraAcoesComunidade](components/BarraAcoesComunidade/README.md) · [exemplo](exemplos/BarraAcoesComunidade.html) | Barra de ações da comunidade. |
+| [PainelComentarios](components/PainelComentarios/README.md) · [exemplo](exemplos/PainelComentarios.html) | Painel de comentários. |
 
 ### Curadoria
 
 | Peça | Para quê |
 | --- | --- |
 | [TabelaDados](components/TabelaDados/README.md) · [exemplo](exemplos/TabelaDados.html) | Lista editorial com colunas, ordenação e seleção; vira lista no celular. |
-| [EditorTextoMarcado](components/EditorTextoMarcado/README.md) · [exemplo](exemplos/EditorTextoMarcado.html) | Edita o corpo parágrafo por parágrafo, com as marcações *termo* e _obra_ e pré-visualização. |
+| [BarraFormatacao](components/BarraFormatacao/README.md) · [exemplo](exemplos/BarraFormatacao.html) | Barra no topo do campo de texto longo: ênfase, termo, obra, chamada de fonte e limpar formatação, sem HTML. |
+| [EditorTextoMarcado](components/EditorTextoMarcado/README.md) · [exemplo](exemplos/EditorTextoMarcado.html) | Edita o corpo parágrafo por parágrafo, com estilos, listas, alinhamento, marcações de trecho e pré-visualização. |
 | [ChecklistPublicacao](components/ChecklistPublicacao/README.md) · [exemplo](exemplos/ChecklistPublicacao.html) | O que falta para um item ir ao ar; pendências bloqueiam a publicação, alertas de voz só avisam. |
 | [IndicadorSalvamento](components/IndicadorSalvamento/README.md) · [exemplo](exemplos/IndicadorSalvamento.html) | Cápsula discreta que diz se o rascunho está salvo. |
 | [IndicadorNumerico](components/IndicadorNumerico/README.md) · [exemplo](exemplos/IndicadorNumerico.html) | Um total do acervo e como ele se divide, para o painel da curadoria. |
+
+## Estados e orientação importados da V3
+
+As seis peças novas usam `components/EstadosInterface/estados-interface.css` e `components/EstadosInterface/estados-interface.js`, carregados automaticamente nos exemplos. Em páginas consumidoras, carregue os dois depois do bundle. Para conteúdo dinâmico, use `SalaInterface.hydrate(elemento)`. O runtime é gerado de `runtime.modelo.js` e `icones.json`; os glifos são do Phosphor (licença MIT em `components/Iconografia/LICENCA-PHOSPHOR.txt`).
+
+Origem: https://github.com/gustavoffca-code/Sala_BuscadoresV3, commit `479e989df5ec99d6e15078b8da6ff92a640b045d`. A integração adiciona peças ausentes, preservando os componentes locais existentes. Os exemplos HTML estão disponíveis no catálogo; os componentes React correspondentes estão em `portal/src/components/ds/EstadosInterface.tsx` e `DialogoContextual.tsx`.
+
+Verificação dos novos exemplos e limites de progresso: `node design-system/scripts/test-estados-interface.cjs` a partir da raiz (usa o jsdom já instalado em `portal/node_modules`).
+
+## Formatação de texto longo
+
+A Barra de formatação usa `components/BarraFormatacao/marcacao.mjs` como gramática única. O gerador inclui essa fonte e `runtime.js` no bundle; o sincronizador leva o módulo puro para o portal. `conteudo.json` define o limite real do resumo do lead, usado pela regra do portal e pelo exemplo gerado. A atualização da barra requer republicar a biblioteca.

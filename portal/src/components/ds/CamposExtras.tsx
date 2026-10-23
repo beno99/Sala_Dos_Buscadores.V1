@@ -11,7 +11,9 @@ import {
   useState,
 } from "react";
 import { cx } from "@/lib/cx";
+import { BarraFormatacao } from "./BarraFormatacao";
 import { Icon } from "./Icon";
+import { TextoMarcado } from "./TextoMarcado";
 
 function MensagemErro({ id, erro }: { id: string; erro?: string }) {
   if (!erro) return null;
@@ -33,6 +35,8 @@ interface AreaTextoProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement
   error?: string;
   /** Mostra o contador "n / limite" a partir do maxLength. */
   contador?: boolean;
+  /** Parágrafo com marcações de trecho e prévia; estrutura fixa. */
+  formatacao?: boolean;
 }
 
 /** Área de texto (AreaTexto): várias linhas, texto em serifa de leitura, contador opcional. */
@@ -42,6 +46,7 @@ export function AreaTexto({
   help,
   error,
   contador,
+  formatacao,
   maxLength,
   value,
   defaultValue,
@@ -55,18 +60,23 @@ export function AreaTexto({
   const gerado = useId();
   const campo = id ?? gerado;
   const area = useRef<HTMLTextAreaElement | null>(null);
+  const [textoLocal, setTextoLocal] = useState(String(defaultValue ?? ""));
   const [tamanhoLocal, setTamanhoLocal] = useState(String(defaultValue ?? "").length);
   useEffect(() => {
     const formulario = area.current?.form;
-    const reset = () => setTamanhoLocal(String(area.current?.defaultValue ?? "").length);
+    const reset = () => {
+      const inicial = String(area.current?.defaultValue ?? "");
+      setTamanhoLocal(inicial.length);
+      setTextoLocal(inicial);
+    };
     formulario?.addEventListener("reset", reset);
     return () => formulario?.removeEventListener("reset", reset);
   }, []);
   const descritores = [
     describedBy,
-    help && `${campo}-ajuda`,
+    (help || formatacao) && `${campo}-ajuda`,
     error && `${campo}-erro`,
-    contador && `${campo}-contador`,
+    (contador || formatacao) && `${campo}-contador`,
   ]
     .filter(Boolean)
     .join(" ");
@@ -76,7 +86,26 @@ export function AreaTexto({
       <label className="sdb-label" htmlFor={campo}>
         {label}
       </label>
-      <div className={cx("sdb-control sdb-control--area", error && "is-error", disabled && "is-disabled")}>
+      <div
+        className={cx(
+          "sdb-control sdb-control--area",
+          formatacao && "sdb-control--fmt",
+          error && "is-error",
+          disabled && "is-disabled",
+        )}
+      >
+        {formatacao && (
+          <BarraFormatacao
+            area={area}
+            valor={String(value ?? textoLocal)}
+            onChange={(texto) => {
+              setTextoLocal(texto);
+              setTamanhoLocal(texto.length);
+            }}
+            alvo={typeof label === "string" ? label.toLowerCase() : "campo de texto"}
+            desabilitada={disabled || rest.readOnly}
+          />
+        )}
         <textarea
           ref={(el) => {
             area.current = el;
@@ -90,6 +119,7 @@ export function AreaTexto({
           disabled={disabled}
           onChange={(e) => {
             setTamanhoLocal(e.target.value.length);
+            setTextoLocal(e.target.value);
             onChange?.(e);
           }}
           aria-invalid={error ? true : undefined}
@@ -97,15 +127,26 @@ export function AreaTexto({
           {...rest}
         />
       </div>
-      {contador && (
-        <span id={`${campo}-contador`} className="sdb-counter">
-          {tamanho.toLocaleString("pt-BR")} /{" "}
-          {maxLength !== undefined && maxLength >= 0 ? maxLength.toLocaleString("pt-BR") : "∞"}
-        </span>
-      )}
-      {help && (
-        <p id={`${campo}-ajuda`} className="sdb-help">
-          {help}
+      <div className="sdb-field__foot">
+        {(help || formatacao) && (
+          <p id={`${campo}-ajuda`} className="sdb-help">
+            {help ?? "Selecione um trecho para formatar."}
+          </p>
+        )}
+        {(contador || formatacao) && (
+          <span id={`${campo}-contador`} className="sdb-counter">
+            {tamanho.toLocaleString("pt-BR")}
+            {maxLength !== undefined && maxLength >= 0
+              ? ` / ${maxLength.toLocaleString("pt-BR")}`
+              : formatacao
+                ? " caracteres"
+                : " / ∞"}
+          </span>
+        )}
+      </div>
+      {formatacao && (
+        <p className="sdb-editor__preview">
+          <TextoMarcado texto={String(value ?? textoLocal)} />
         </p>
       )}
       <MensagemErro id={`${campo}-erro`} erro={error} />

@@ -11,11 +11,14 @@ import "@/design-system/card-video.css";
 import "@/design-system/card-comparativo.css";
 import "@/design-system/assistant-orb.css";
 import "@/design-system/refinement.css";
+import "@/design-system/conta.css";
+import "@/design-system/estados-interface.css";
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";
-import { COOKIE_TEMA, temaDoCookie } from "@/features/aparencia/tema";
+import { COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie, temaDoCookie } from "@/features/aparencia/tema";
 import { membroAtual } from "@/server/sessao";
+import { leiturasParaAssistente, salasVisiveis } from "@/server/store";
 
 export const metadata: Metadata = {
   title: { default: "A Sala dos Buscadores", template: "%s · A Sala dos Buscadores" },
@@ -35,7 +38,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   // A sessão e o tema vêm de cookies; por isso as páginas são renderizadas a cada pedido.
   const [membro, jar] = await Promise.all([membroAtual(), cookies()]);
   return (
-    <html lang="pt-BR" data-theme={temaDoCookie(jar.get(COOKIE_TEMA)?.value)}>
+    <html
+      lang="pt-BR"
+      data-theme={temaDoCookie(jar.get(COOKIE_TEMA)?.value)}
+      data-lateral={lateralDoCookie(jar.get(COOKIE_LATERAL)?.value) ? "translucida" : undefined}
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -48,7 +55,15 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           <span className="sdb-btn sdb-btn--primary sdb-btn--sm">Pular para o conteúdo</span>
         </a>
-        <Providers membro={membro}>{children}</Providers>
+        <Providers
+          membro={membro}
+          salas={salasVisiveis()}
+          leituras={leiturasParaAssistente().filter((l) =>
+            salasVisiveis().some((s) => s.slug === l.sala && s.naComparacao),
+          )}
+        >
+          {children}
+        </Providers>
       </body>
     </html>
   );

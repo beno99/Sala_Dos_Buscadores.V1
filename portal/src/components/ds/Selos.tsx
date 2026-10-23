@@ -10,6 +10,7 @@ export const ICONE_PROVENIENCIA: Record<Proveniencia, IconName> = {
   especialista: "especialista",
   comunidade: "comunidade",
   ia: "ia",
+  anfitriao: "anfitriao",
 };
 
 /** Selo de proveniência (RF-12): obrigatório em cards, citações, grade e respostas da IA. */
@@ -24,11 +25,15 @@ export function SeloProveniencia({
   compacto?: boolean;
 }) {
   return (
-    <span className={cx("sdb-seal", compacto && "sdb-seal--sm", `sdb-seal--${tipo}`)}>
+    <span
+      className={cx("sdb-seal", compacto && "sdb-seal--sm", `sdb-seal--${tipo}`)}
+      title={tipo === "anfitriao" && compacto ? "Anfitrião · revisado pela curadoria" : undefined}
+    >
       <span className="sdb-seal__icon">
         <Icon name={ICONE_PROVENIENCIA[tipo]} />
       </span>
       {rotulo ?? PROVENIENCIA_ROTULO[tipo]}
+      {tipo === "anfitriao" && !compacto && <span className="sdb-seal__note">Revisado pela curadoria</span>}
     </span>
   );
 }
@@ -47,7 +52,7 @@ export function SeloNivel({ nivel, plain }: { nivel: Nivel; plain?: boolean }) {
   );
 }
 
-type BadgeVariant = "neutral" | "solid" | "ink" | "glass";
+type BadgeVariant = "neutral" | "solid" | "ink" | "critical" | "glass";
 
 /** Rótulo curto, não clicável. */
 export function Badge({

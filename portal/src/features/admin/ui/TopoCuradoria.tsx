@@ -9,7 +9,13 @@ import type { Aparencia } from "@/features/aparencia/tema";
 import { useSessao } from "@/features/auth/SessaoProvider";
 
 /** Topo da curadoria: a mesma Barra superior do app, sem busca e com o caminho de volta ao Portal. */
-export function TopoCuradoria({ aparencia }: { aparencia: Aparencia }) {
+export function TopoCuradoria({
+  aparencia,
+  lateralTranslucida,
+}: {
+  aparencia: Aparencia;
+  lateralTranslucida?: boolean;
+}) {
   const { membro, sair } = useSessao();
   return (
     <BarraSuperior
@@ -19,7 +25,7 @@ export function TopoCuradoria({ aparencia }: { aparencia: Aparencia }) {
           <ButtonLink href="/" variant="secondary" size="sm" icon="inicio">
             Ir para o Portal
           </ButtonLink>
-          <MenuAparencia inicial={aparencia} />
+          <MenuAparencia inicial={aparencia} lateralInicial={lateralTranslucida} />
           {membro && (
             <Menu
               right

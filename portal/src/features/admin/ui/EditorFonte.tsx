@@ -141,7 +141,7 @@ export function EditorFonte({
                 <ul className="m-0 flex list-none flex-col gap-3 p-0">
                   {usos.map((u) => (
                     <li key={u.id} className="flex flex-col gap-1">
-                      <Link className="sdb-link" href={`/admin/artigos/${u.id}` as Route}>
+                      <Link className="sdb-link" href={`/admin/salas/${u.sala}/artigos/${u.id}` as Route}>
                         {u.titulo || "Sem título"}
                       </Link>
                       <span className="sdb-row">

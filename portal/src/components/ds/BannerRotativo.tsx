@@ -146,7 +146,7 @@ export function BannerRotativo({ slides, onPorQue }: { slides: SlideBanner[]; on
   return (
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover e foco só pausam a rotação; as ações ficam nos botões.
     <section
-      className={cx("sdb-banner", parado && "is-paused")}
+      className={cx("sdb-banner sdb-banner--cheio", parado && "is-paused")}
       aria-roledescription="carrossel"
       aria-label="Destaques do Portal"
       onMouseEnter={() => setHover(true)}

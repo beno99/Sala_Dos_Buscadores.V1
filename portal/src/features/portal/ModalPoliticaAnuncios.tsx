@@ -2,25 +2,19 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useId } from "react";
-import { Button } from "@/components/ds/Button";
-import { Sheet } from "@/components/ds/Sheet";
+import { DialogoContextual } from "@/components/ds/DialogoContextual";
 
 /** "Por que estou vendo isto?": a política de publicidade, em linguagem simples. */
 export function ModalPoliticaAnuncios({ aberto, onFechar }: { aberto: boolean; onFechar: () => void }) {
-  const id = useId();
   return (
-    <Sheet aberto={aberto} onFechar={onFechar} rotuloId={`${id}-titulo`}>
-      <div className="sdb-sheet__bar">
-        <span />
-        <h2 id={`${id}-titulo`} className="sdb-sheet__title">
-          Por que estou vendo isto?
-        </h2>
-        <Button variant="plain" onClick={onFechar}>
-          Fechar
-        </Button>
-      </div>
-      <div className="sdb-sheet__body">
+    <DialogoContextual
+      aberto={aberto}
+      onFechar={onFechar}
+      titulo="Por que estou vendo isto?"
+      simbolo="escudo"
+      rotuloVoltar="Fechar"
+    >
+      <div className="flex flex-col gap-4">
         <p className="sdb-body-sm m-0">
           Os anúncios ajudam a manter o acervo aberto. Cada anunciante passa por curadoria editorial antes de
           entrar.
@@ -37,6 +31,6 @@ export function ModalPoliticaAnuncios({ aberto, onFechar }: { aberto: boolean; o
           Ler a política de publicidade
         </Link>
       </div>
-    </Sheet>
+    </DialogoContextual>
   );
 }

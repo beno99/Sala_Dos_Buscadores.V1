@@ -33,6 +33,12 @@ O comando é rodado de dentro de `portal/` e precisa de Python 3 com Pillow. Os 
 | `salas/caibalion.webp` | `templo-alquimico-sete-degraus-pintura.webp` | Templo alquímico no alto de sete degraus com os nomes das operações (calcinação, sublimação, solução, putrefação, destilação, coagulação, tintura) | "Pintura de um templo no alto de sete degraus, cada um com o nome de uma operação alquímica" | `50% 60%` | Pintura alquímica, provavelmente séc. XVII; acervo e autoria a confirmar |
 | `salas/urantia.webp` | `figura-subindo-escada-estrela.webp` | Figura de manto subindo uma longa escada entre rochedos, sob um céu estrelado | "Ilustração de uma figura de manto que sobe uma longa escada entre rochedos, sob um céu estrelado" | `50% 70%` | Ilustração contemporânea de autoria desconhecida, possivelmente gerada por IA. **Direitos a confirmar antes de publicar** |
 
+## Recebida com o layout do Figma (20 out 2026)
+
+| Arquivo no portal | Original | O que mostra | Texto alternativo | Foco | Origem e direitos |
+| --- | --- | --- | --- | --- | --- |
+| `banner/marca-colunata.webp` (slide de marca do Portal) | `colunata-gravura-figma.png` | Colunata monumental vista entre colunas em primeiro plano, com figuras pequenas num pátio | "Gravura de uma colunata monumental vista entre colunas em primeiro plano, com figuras pequenas no pátio" | `60% 50%` | Gravura arquitetônica tirada do arquivo do Figma, provavelmente séc. XVIII–XIX. **Autoria e direitos a confirmar antes de publicar.** A anterior (`banner/marca.webp`) fica como reserva. |
+
 ## Ainda faltam
 
 - `salas/nag-hammadi.webp` e `salas/apocrifos-cristianismo-primitivo.webp`

@@ -19,6 +19,15 @@
       ],
       "port": 8777,
       "url": "http://localhost:8777"
+    },
+    {
+      "name": "portal",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/benonibrandao/Desktop/Portal_Sala_Buscadores/portal && exec npm run dev"
+      ],
+      "port": 3000
     }
   ]
 }

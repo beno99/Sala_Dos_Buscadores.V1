@@ -1,5 +1,7 @@
+import { textoDoCorpo } from "@/data/corpo";
 import type { FormArtigo, FormCitacao, FormVideo } from "../formularios";
 import { LIMITE_TRECHO_PERMITIDO } from "./config";
+import { errosDoCorpo, rotuloDoErroDoCorpo } from "./corpo";
 import { revisarVoz } from "./voz";
 import { extrairIdYoutube, validarDuracao } from "./youtube";
 
@@ -150,10 +152,39 @@ export function regraSituacaoJuridica(f: FormArtigo): ItemChecklist {
   );
 }
 
-/** Total de caracteres reproduzidos: corpo e citação. */
+/** Total de caracteres reproduzidos: o texto do corpo (sem as imagens) e a citação. */
 export function tamanhoReproduzido(f: FormArtigo): number {
   const citacao = f.temCitacao ? f.citacao.originalTexto.length + f.citacao.traducao.length : 0;
-  return f.corpo.join("").length + citacao;
+  return textoDoCorpo(f.corpo).join("").length + citacao;
+}
+
+/**
+ * Blocos do texto: o primeiro é um parágrafo; destaque com texto e atribuição;
+ * imagem com texto alternativo e crédito. Um item por falta, cada um levando
+ * ao bloco certo; sem faltas, um item só, cumprido.
+ */
+export function regrasDoCorpo(f: Pick<FormArtigo, "corpo">, requisito = "Corpo do artigo"): ItemChecklist[] {
+  const erros = Object.entries(errosDoCorpo(f.corpo));
+  if (!erros.length) {
+    return [
+      item(
+        "corpo",
+        true,
+        "Blocos do texto completos",
+        "campo-corpo",
+        requisito,
+        "O texto começa pelo lead; destaques têm atribuição; imagens têm texto alternativo e crédito.",
+      ),
+    ];
+  }
+  return erros.map(([campo, mensagem], i) => ({
+    id: `corpo-${i}`,
+    rotulo: rotuloDoErroDoCorpo(f.corpo, campo),
+    estado: "pendente" as const,
+    campo,
+    requisito,
+    ajuda: `${mensagem.charAt(0).toUpperCase()}${mensagem.slice(1)}`,
+  }));
 }
 
 /** RF-15: trecho permitido acima do limite recebe aviso (não bloqueia). */
@@ -186,18 +217,37 @@ export function regraDivergencia(f: FormArtigo): ItemChecklist | null {
 
 /** Revisão de voz: alerta, não bloqueia. */
 export function regrasDeVoz(f: FormArtigo): ItemChecklist[] {
+  const campos = new Map<string, string>([
+    ["título", "campo-titulo"],
+    ["resumo", "campo-resumo"],
+  ]);
+  const blocos = f.corpo.flatMap((b, i) => {
+    const texto =
+      typeof b === "string"
+        ? b
+        : b.tipo === "imagem"
+          ? null
+          : b.tipo === "lista"
+            ? b.itens.join("\n")
+            : b.texto;
+    if (texto === null) return [];
+    const onde =
+      typeof b === "string"
+        ? `parágrafo ${i + 1}`
+        : `${b.tipo === "destaque" ? "destaque" : "intertítulo"} ${i + 1}`;
+    campos.set(onde, `campo-corpo-${i}`);
+    return [{ onde, texto }];
+  });
   const achados = revisarVoz([
     { onde: "título", texto: f.titulo },
     { onde: "resumo", texto: f.resumo },
-    ...f.corpo.map((texto, i) => ({ onde: `parágrafo ${i + 1}`, texto })),
+    ...blocos,
   ]);
   return achados.map((a, i) => ({
     id: `voz-${i}`,
     rotulo: `Revisão de voz: “${a.expressao}” no ${a.onde}`,
     estado: "alerta" as const,
-    campo: a.onde.startsWith("parágrafo")
-      ? `campo-corpo-${Number(a.onde.split(" ")[1]) - 1}`
-      : `campo-${a.onde === "título" ? "titulo" : "resumo"}`,
+    campo: campos.get(a.onde) ?? "campo-corpo",
     requisito: "Tom de voz",
     ajuda: a.sugestao,
   }));
@@ -208,6 +258,7 @@ export function checklistArtigo(f: FormArtigo): ItemChecklist[] {
     regraIdentificacao(f),
     regraProveniencia(f),
     regraAutoria(f),
+    ...regrasDoCorpo(f),
     regraCitacao(f),
     regraFontes(f),
     regraSituacaoJuridica(f),
@@ -293,8 +344,17 @@ export const ORDEM_CAMPOS_VIDEO = [
   "campo-nivel",
 ];
 
+/** O primeiro campo com erro na ordem do formulário; os blocos do corpo (campo-corpo-n…) contam como "campo-corpo". */
 export function primeiroCampoComErro(erros: Record<string, string>, ordem: string[]): string | undefined {
-  return ordem.find((c) => erros[c]) ?? Object.keys(erros)[0];
+  const posicao = (c: string) => {
+    const i = ordem.indexOf(c.startsWith("campo-corpo-") ? "campo-corpo" : c);
+    return i === -1 ? ordem.length : i;
+  };
+  const chaves = Object.keys(erros);
+  return chaves.reduce<string | undefined>(
+    (melhor, c) => (melhor === undefined || posicao(c) < posicao(melhor) ? c : melhor),
+    undefined,
+  );
 }
 
 /** Mensagem de cada campo que impede a publicação (sem o prefixo "Erro:"). */
@@ -330,6 +390,7 @@ export function errosDePublicacaoArtigo(f: FormArtigo): Record<string, string> {
         e["campo-citacao-referencia"] = "escreva a referência completa, no padrão ABNT.";
     }
   }
+  Object.assign(e, errosDoCorpo(f.corpo));
   if (regraFontes(f).estado === "pendente")
     e["campo-fontes"] = "escolha ao menos uma fonte ou cadastre uma nova.";
   const s = f.situacaoJuridica;
@@ -342,6 +403,12 @@ export function errosDePublicacaoArtigo(f: FormArtigo): Record<string, string> {
     e["campo-nota-divergencia"] = "apresente as leituras divergentes em ao menos 20 caracteres.";
   }
   return e;
+}
+
+/** Erros do corpo que deixaram de valer depois de uma edição dos blocos (para limpar no formulário). */
+export function errosDoCorpoResolvidos(erros: Record<string, string>, corpo: FormArtigo["corpo"]): string[] {
+  const ainda = errosDoCorpo(corpo);
+  return Object.keys(erros).filter((c) => c.startsWith("campo-corpo") && !(c in ainda));
 }
 
 export function errosDePublicacaoVideo(f: FormVideo): Record<string, string> {

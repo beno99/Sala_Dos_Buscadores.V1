@@ -9,3 +9,22 @@ O arquivo `preview.html` é a fonte do exemplo. Execute `node scripts/build.mjs`
 Sem miniatura, use `<div class="video__placa sdb-plate--grafite|bordo">` com o arco em traço fino dentro, no lugar de `.video__image`. O botão só vira link com uma URL específica de vídeo do YouTube (`youtube.com/watch`, `youtu.be`, `shorts`); links de busca não contam e o botão fica com `aria-disabled="true"` e uma nota dizendo que o link do episódio ainda não foi cadastrado.
 
 O card mede a própria largura (container queries em 700 e 430 px), e não a janela: funciona numa coluna estreita ao lado da navegação lateral e em grades.
+
+## Player embutido (1.0.2)
+
+Só no artigo de anfitrião com link do YouTube: o vídeo toca na própria página, acima do texto. Em qualquer outro lugar vale a regra do card (abre o YouTube em nova aba).
+
+```html
+<figure class="video-embed">
+  <div class="video-embed__frame">
+    <iframe src="https://www.youtube-nocookie.com/embed/ID" title="Vídeo: título do artigo" loading="lazy"
+      allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+  <figcaption class="video-embed__legenda">Vídeo indicado pelo anfitrião, no YouTube.</figcaption>
+</figure>
+```
+
+- Use o domínio `youtube-nocookie.com` e o ID validado (`youtube-link.mjs` ou `extrairIdYoutube` no portal).
+- Moldura com `radius-lg`, fundo `depth-fill` enquanto carrega e `shadow-card`. A legenda diz de onde vem o vídeo.
+- Sem o player (por exemplo na prévia do catálogo), a moldura recebe a placa da marca (`.sdb-plate`).
+- A mesma moldura (`.video-embed__frame` com `<img alt="">`) mostra a imagem de topo do artigo de anfitrião quando não há vídeo; sem imagem, a placa da marca.

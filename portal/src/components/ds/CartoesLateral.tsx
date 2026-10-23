@@ -67,8 +67,11 @@ export function CartaoLateral({
   rotulo,
   numero,
   href,
+  nivel,
   children,
 }: {
+  /** Cartão de nível: fica no material creme. */
+  nivel?: boolean;
   icone?: IconName;
   rotulo?: string;
   numero?: number;
@@ -89,7 +92,7 @@ export function CartaoLateral({
       {children}
     </Link>
   ) : (
-    <div className="sdb-sidenav__card">
+    <div className={nivel ? "sdb-sidenav__card sdb-sidenav__card--nivel" : "sdb-sidenav__card"}>
       {cabecalho}
       {children}
     </div>

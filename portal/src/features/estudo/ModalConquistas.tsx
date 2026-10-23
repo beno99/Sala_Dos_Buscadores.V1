@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import { Button } from "@/components/ds/Button";
 import { ConquistaLinha, type ConquistaVisual } from "@/components/ds/Conquista";
+import { ProgressoReal } from "@/components/ds/EstadosInterface";
 import { Sheet } from "@/components/ds/Sheet";
 
 /**
@@ -52,6 +53,12 @@ export function ModalConquistas({
               {obtidas.length} de {conquistas.length} obtidas. Só você vê: não há placar nem comparação entre
               pessoas.
             </p>
+            <ProgressoReal
+              concluidos={obtidas.length}
+              total={conquistas.length}
+              rotulo="Conquistas obtidas"
+              unidade="conquistas obtidas"
+            />
             {obtidas.length > 0 && (
               <section aria-labelledby={`${id}-obtidas`} className="flex flex-col gap-2">
                 <h3 id={`${id}-obtidas`} className="sdb-caption">

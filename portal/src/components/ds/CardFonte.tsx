@@ -1,9 +1,9 @@
 import type { Route } from "next";
 import Link from "next/link";
-import type { Fonte, Placa } from "@/data/types";
+import type { Fonte, Placa, Proveniencia } from "@/data/types";
 import { cx } from "@/lib/cx";
 import { Icon } from "./Icon";
-import { Badge } from "./Selos";
+import { Badge, SeloProveniencia } from "./Selos";
 
 function Capa({ capa, inicial, small }: { capa: Placa; inicial: string; small?: boolean }) {
   return (
@@ -58,6 +58,7 @@ export function LinhaFonte({
   capa,
   inicial,
   href,
+  proveniencia,
 }: {
   id?: string;
   numero: number;
@@ -66,6 +67,8 @@ export function LinhaFonte({
   capa: Placa;
   inicial: string;
   href?: string;
+  /** Leitura de anfitrião citada pelo assistente: o selo vai junto. */
+  proveniencia?: Proveniencia;
 }) {
   const miolo = (
     <>
@@ -73,6 +76,7 @@ export function LinhaFonte({
       <div className="sdb-source__info">
         <h3 className="sdb-source__title">{titulo}</h3>
         <p className="sdb-source__ref">{referencia}</p>
+        {proveniencia && <SeloProveniencia tipo={proveniencia} compacto />}
       </div>
       <span className="sdb-source__num">{numero}</span>
     </>

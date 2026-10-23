@@ -113,3 +113,41 @@ describe("controles conforme a biblioteca", () => {
     expect(screen.getByText("10 / 20")).toBeInTheDocument();
   });
 });
+
+it("área marcada controlada entrega a edição ao formulário e à prévia", async () => {
+  function Exemplo() {
+    const [texto, setTexto] = useState("Uma descrição");
+    return (
+      <AreaTexto
+        label="Descrição"
+        formatacao
+        contador
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
+      />
+    );
+  }
+  render(<Exemplo />);
+  const campo = screen.getByRole("textbox") as HTMLTextAreaElement;
+  campo.focus();
+  campo.setSelectionRange(0, 3);
+  await userEvent.setup().click(screen.getByRole("button", { name: "Negrito no descrição" }));
+  expect(campo).toHaveValue("**Uma** descrição");
+  expect(document.querySelector(".sdb-editor__preview strong")).toHaveTextContent("Uma");
+});
+
+it("reset restaura a prévia junto com o textarea marcado não controlado", async () => {
+  render(
+    <form>
+      <AreaTexto label="Apresentação" formatacao defaultValue="Inicial" />
+      <button type="reset">Restaurar</button>
+    </form>,
+  );
+  const user = userEvent.setup();
+  const campo = screen.getByRole("textbox");
+  await user.clear(campo);
+  await user.type(campo, "Alterado");
+  await user.click(screen.getByRole("button", { name: "Restaurar" }));
+  expect(campo).toHaveValue("Inicial");
+  expect(document.querySelector(".sdb-editor__preview")).toHaveTextContent("Inicial");
+});

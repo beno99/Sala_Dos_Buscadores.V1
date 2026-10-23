@@ -15,6 +15,8 @@ export interface AlvoStatus {
   id: string;
   titulo: string;
   sala: SalaSlug | "";
+  /** Nome da Sala para o resumo do impacto (uma Sala nova ainda não está no catálogo público). */
+  salaNome?: string;
 }
 
 const TITULO: Record<AcaoStatus, (t: TipoItem) => string> = {
@@ -94,7 +96,7 @@ export function useAcaoStatus(tipo: TipoItem, aoConcluir?: (acao: AcaoStatus) =>
           {impactoDaAcao(
             pedido.acao,
             tipo,
-            pedido.alvo.sala ? (salaPorSlug(pedido.alvo.sala)?.nome ?? "") : "",
+            pedido.alvo.salaNome ?? (pedido.alvo.sala ? (salaPorSlug(pedido.alvo.sala)?.nome ?? "") : ""),
           )}
         </>
       )}

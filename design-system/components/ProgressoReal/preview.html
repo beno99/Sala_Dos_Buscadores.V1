@@ -1,0 +1,23 @@
+<!-- @dsCard group="Componentes básicos" height=360 subtitle="Degradê e valor calculado a partir de etapas reais" -->
+<div class="sdb-stage">
+  <section class="sdb-ui-demo" aria-labelledby="progress-heading">
+    <h2 id="progress-heading" class="sdb-title-2">Uma descoberta de cada vez</h2>
+    <div id="progress-example" class="sdb-ui-progress">
+      <div><span>Sua trilha de introdução</span><strong data-ui-percent>33%</strong></div>
+      <progress value="1" max="3" aria-label="Sua trilha de introdução">33%</progress>
+      <small data-ui-progress-label>1 de 3 etapas concluídas</small>
+    </div>
+    <div class="sdb-ui-demo-checklist">
+      <label><input type="checkbox" checked>Conhecer a proposta do portal</label>
+      <label><input type="checkbox">Explorar uma sala</label>
+      <label><input type="checkbox">Escolher uma primeira leitura</label>
+    </div>
+    <p class="sdb-hint">As etapas desta prévia são demonstrativas. A porcentagem é calculada pelas caixas marcadas; nenhum temporizador inventa progresso.</p>
+  </section>
+</div>
+<script>
+document.querySelectorAll(".sdb-ui-demo-checklist input").forEach(input => input.addEventListener("change", () => {
+  const all = [...document.querySelectorAll(".sdb-ui-demo-checklist input")];
+  SalaInterface.atualizarProgresso(document.getElementById("progress-example"), all.filter(item => item.checked).length, all.length);
+}));
+</script>

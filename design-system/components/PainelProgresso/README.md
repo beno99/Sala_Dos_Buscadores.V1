@@ -4,7 +4,7 @@ O progresso do membro, a leitura e o anúncio num contêiner só, na grade de qu
 
 ## Anatomia
 - Cabeçalho fora do contêiner: `h2` "Seu progresso" (`title-2`), a nota "Só você vê estes números." e as ações "Como os níveis funcionam" e "Ver conquistas" (só com níveis ligados).
-- `section.sdb-panel.sdb-material` com `aria-labelledby` apontando para o `h2`. Raio `radius-xl`, borda fina e sombra de card vêm do material.
+- `section.sdb-panel.sdb-panel--progresso.sdb-material` com `aria-labelledby` apontando para o `h2`. O modificador `--progresso` liga a grade de quatro colunas; `.sdb-panel` sozinho é o painel simples (padding de 24 px, coluna com espaço de 16 px) usado em formulários. Raio `radius-xl`, borda fina e sombra de card vêm do material.
 - **Linha 1:** `div.sdb-stats` (`role="group"`, `aria-label="Seu progresso no acervo"`) com as quatro células `.sdb-stat` do Indicador numérico. Dentro do painel, o grupo perde o fundo e a sombra próprios; as divisórias continuam.
 - **Linha 2, colunas 1–2:** `.sdb-panel__main`, com um `.sdb-panel__block` por assunto. Cada bloco tem `.sdb-panel__head` com `h3.sdb-panel__title` e `.sdb-panel__sub`, seguido de uma Lista de conteúdos. Uma divisória separa os blocos.
 - **Linha 2, colunas 3–4:** `.sdb-panel__ad` com o Espaço publicitário `--painel`, na altura toda da linha, encostado nas bordas.
@@ -26,4 +26,5 @@ O progresso do membro, a leitura e o anúncio num contêiner só, na grade de qu
 - O número e o texto dos indicadores carregam a informação; barras só complementam.
 - Os conteúdos editoriais do painel são sempre linhas ou itens compactos, nunca cards. Só o anúncio tem imagem cheia, o que o separa do acervo à primeira vista.
 - Progresso privado: sem ranking, pontos, nível global nem comparação entre pessoas. Sem "Continue assim!" ou exclamações.
+- A superfície do conjunto é `card-warm` (areia quente no tema claro), conforme o Portal no Figma `19537:21623`. Os indicadores mantêm o fundo transparente para formar um painel contínuo.
 - Carregando: o mesmo contêiner com esqueletos (`.sdb-skel`) nos indicadores, nas linhas e na célula do anúncio.

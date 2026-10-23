@@ -18,17 +18,13 @@ interface IconProps {
   className?: string;
 }
 
-/** Ícone de traço da biblioteca (Iconografia). Sempre decorativo: nomeie o controle, não o ícone. */
+/** Ícone Phosphor da biblioteca (Iconografia); o peso preenchido aparece sozinho no controle ativo. Sempre decorativo: nomeie o controle, não o ícone. */
 export function Icon({ name, size, className }: IconProps) {
   return (
     <svg
       className={cx("sdb-icon", size && `sdb-icon--${size}`, className)}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 0 256 256"
+      fill="currentColor"
       aria-hidden="true"
       focusable="false"
     >

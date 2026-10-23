@@ -1,18 +1,21 @@
 import {
   filtrarArtigos,
   filtrarFontes,
+  filtrarSalas,
   filtrarVideos,
   lerFiltrosArtigos,
   lerFiltrosFontes,
+  lerFiltrosSalas,
   lerFiltrosVideos,
 } from "@/features/admin/listas";
 import { COLUNAS_ARTIGOS, COLUNAS_FONTES, COLUNAS_VIDEOS, gerarCsv } from "@/features/admin/regras/csv";
-import { listarArtigos, listarFontes, listarVideos, usosDaFonte } from "@/server/admin/consultas";
+import { listarFontes, listarTodosOsArtigos, listarVideos, usosDaFonte } from "@/server/admin/consultas";
+import { listarSalasAdmin } from "@/server/admin/salas";
 import { AcessoNegado, exigirAdmin } from "@/server/sessao";
 
 /**
- * Exportação CSV (RF-38), respeitando os filtros da lista (e a seleção, em
- * artigos). Só metadados do acervo: nenhum dado pessoal de membros
+ * Exportação CSV (RF-38), respeitando os filtros da lista de Salas (origem,
+ * status, nome, anfitrião) e os filtros de item (e a seleção, em artigos). Só metadados do acervo: nenhum dado pessoal de membros
  * (RNF-LEG-01/02).
  */
 export async function GET(request: Request, ctx: RouteContext<"/admin/exportar/[tipo]">) {
@@ -25,15 +28,18 @@ export async function GET(request: Request, ctx: RouteContext<"/admin/exportar/[
   const { tipo } = await ctx.params;
   const params = new URL(request.url).searchParams;
   const hoje = new Date().toISOString().slice(0, 10);
+  // As Salas que passam pelos filtros da lista de Salas (sem filtro, todas).
+  const salas = new Set(filtrarSalas(listarSalasAdmin(), lerFiltrosSalas(params)).map((r) => r.sala.slug));
   let csv: string;
   if (tipo === "artigos") {
     const ids = params.get("ids")?.split(",").filter(Boolean);
-    const itens = filtrarArtigos(listarArtigos(), lerFiltrosArtigos(params)).filter(
-      (a) => !ids?.length || ids.includes(a.id),
+    const itens = filtrarArtigos(listarTodosOsArtigos(), lerFiltrosArtigos(params)).filter(
+      (a) => salas.has(a.sala) && (!ids?.length || ids.includes(a.id)),
     );
     csv = gerarCsv(COLUNAS_ARTIGOS, itens);
   } else if (tipo === "videos") {
-    csv = gerarCsv(COLUNAS_VIDEOS, filtrarVideos(listarVideos(), lerFiltrosVideos(params)));
+    const itens = filtrarVideos(listarVideos(), lerFiltrosVideos(params)).filter((v) => salas.has(v.sala));
+    csv = gerarCsv(COLUNAS_VIDEOS, itens);
   } else if (tipo === "fontes") {
     const itens = filtrarFontes(listarFontes(), lerFiltrosFontes(params)).map((f) => ({
       ...f,

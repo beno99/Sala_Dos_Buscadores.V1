@@ -1,0 +1,28 @@
+<!-- @dsCard group="Estrutura do portal" height=760 subtitle="Rótulo, título e subtítulo; vistas, busca e Filtros à direita" -->
+<div class="sdb-stage" style="container-type:inline-size">
+  <section class="sdb-pagehead sdb-card" aria-labelledby="ph-titulo">
+    <div class="sdb-pagehead__titles">
+      <p class="sdb-pagehead__eyebrow"><span data-icon="biblioteca"></span>Acervo completo</p>
+      <h1 class="sdb-pagehead__title" id="ph-titulo">Todos os conteúdos</h1>
+    </div>
+    <p class="sdb-pagehead__sub">Textos, fontes primárias e vídeos das cinco Salas, cada um com a sua procedência.</p>
+    <div class="sdb-pagehead__top"><div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Vista"><button type="button" aria-pressed="true">Conteúdos</button><button type="button" aria-pressed="false">Glossário</button></div></div>
+    <div class="sdb-pagehead__bottom">
+      <label class="sdb-searchfield"><span data-icon="busca"></span><span class="sdb-sr">Buscar na Biblioteca</span><input type="search" placeholder="Buscar na Biblioteca…" autocomplete="off"></label>
+      <button class="sdb-btn sdb-btn--secondary" type="button"><span data-icon="filtro"></span>Filtros (2)</button>
+    </div>
+  </section>
+  <section class="sdb-pagehead sdb-card" aria-labelledby="ph-titulo-2">
+    <div class="sdb-pagehead__titles">
+      <p class="sdb-pagehead__eyebrow"><span data-icon="biblioteca"></span>Acervo completo</p>
+      <h1 class="sdb-pagehead__title" id="ph-titulo-2">Glossário</h1>
+    </div>
+    <p class="sdb-pagehead__sub">Termos das tradições, com a origem e a definição atribuída a cada Sala.</p>
+    <div class="sdb-pagehead__top"><div class="sdb-segmented sdb-segmented--block" role="group" aria-label="Vista"><button type="button" aria-pressed="false">Conteúdos</button><button type="button" aria-pressed="true">Glossário</button></div></div>
+    <div class="sdb-pagehead__bottom">
+      <label class="sdb-searchfield"><span data-icon="busca"></span><span class="sdb-sr">Buscar um termo</span><input type="search" placeholder="Buscar um termo…" autocomplete="off"></label>
+    </div>
+  </section>
+  <p class="sdb-hint">Abaixo de 900 px de container, empilha: vistas na largura toda, rótulo, título, subtítulo, busca e Filtros.</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>

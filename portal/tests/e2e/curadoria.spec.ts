@@ -38,7 +38,7 @@ test.describe("curadoria", () => {
         .getByRole("textbox", { name: "Nome", exact: true })
         .fill("Equipe editorial da Sala Corpus Hermeticum");
       await page
-        .getByRole("textbox", { name: "Parágrafo 1" })
+        .getByRole("textbox", { name: "Bloco 1, parágrafo de abertura (lead)" })
         .fill("Segundo o _Tratado X_, o conhecimento de Deus é *silêncio divino* e suspensão dos sentidos.");
       await page.getByRole("button", { name: /^Hermetica/ }).click();
       await page.getByRole("radio", { name: /Trecho permitido com referência/ }).check();

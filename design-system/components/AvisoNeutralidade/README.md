@@ -6,3 +6,7 @@ Lembrete permanente de que a IA não determina qual crença é verdadeira e de q
 - **Sólido** `--solid`: cápsula bordô com texto bege, para os temas sólidos ou fundos muito movimentados.
 - **Discreto** `--quiet`: abaixo de cada resposta, em `label-secondary`.
 - Texto fixo, revisado pela curadoria. Não reescreva por tela nem transforme em aviso de risco.
+
+## Comunidade · Fase A
+
+A variação `.sdb-neutral--community` usa o texto: “Compartilhamos estudos, não verdades sobre crenças. Atribua afirmações às fontes e acolha leituras diferentes.” Aparece uma vez no feed (dispensável por botão nomeado) e no compositor (sempre visível). Não menciona IA, pois a publicação é da pessoa. Exemplo em Comunidade.

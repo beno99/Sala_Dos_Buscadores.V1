@@ -1,5 +1,7 @@
+import { corpoParaForm } from "@/data/corpo";
 import type {
   Autoria,
+  BlocoCorpo,
   Citacao,
   ConteudoEditorial,
   FonteEditorial,
@@ -46,7 +48,7 @@ export interface FormArtigo {
   producaoIA: boolean;
   autoriaNaoIdentificada: boolean;
   autoria: Autoria;
-  corpo: string[];
+  corpo: BlocoCorpo[];
   temCitacao: boolean;
   citacao: FormCitacao;
   fontes: string[];
@@ -168,7 +170,7 @@ export function artigoParaForm(c: ConteudoEditorial, citacao?: Citacao): FormArt
     producaoIA: c.producaoIA,
     autoriaNaoIdentificada: c.autoria.nome === AUTORIA_NAO_IDENTIFICADA,
     autoria: { ...c.autoria },
-    corpo: c.corpo.length ? [...c.corpo] : [""],
+    corpo: corpoParaForm(c.corpo),
     temCitacao: Boolean(citacao),
     citacao: citacao
       ? {

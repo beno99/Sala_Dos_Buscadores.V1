@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { acervoPublico, conteudosDaSala, listarSalas, obterConteudo, videosDaSala } from "@/data/repositorio";
+import { artigoParaForm } from "@/features/admin/formularios";
 import { artigoCompleto, videoCompleto } from "@/features/admin/regras/fixtures";
 import { buscar, FILTROS_VAZIOS } from "@/features/busca/busca";
 import { listarAuditoria } from "../auditoria";
+import { guardarImagem } from "../midia";
 import { acervo, restaurarAcervoInicial } from "../store";
 import { excluirFonte, mudarStatusArtigo, mudarStatusVideo, salvarArtigo, salvarVideo } from "./editorial";
 
@@ -128,5 +130,61 @@ describe("curadoria no servidor", () => {
       { campo: "Proveniência", antes: "Editorial curado", depois: "Especialista" },
     ]);
     expect(prov?.quem).toBe(QUEM);
+  });
+
+  it("corpo em blocos: destaque e imagem enviada pela curadoria chegam à página publicada", async () => {
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
+    const img = guardarImagem(png, "admin-1");
+    if (!img.ok) throw new Error(img.erro);
+    const corpo = [
+      "Segundo o _Tratado X_, o conhecimento de Deus é *silêncio divino*.",
+      { tipo: "destaque" as const, texto: "O conhecimento é silêncio.", atribuicao: "_Tratado X_, 6" },
+      {
+        tipo: "imagem" as const,
+        src: "",
+        alt: "Gravura de Hermes",
+        credito: "Domínio público",
+        midia: img.id,
+      },
+    ];
+    const r = salvarArtigo(artigoCompleto({ corpo }), QUEM, "manual", "admin-1");
+    if (!r.ok) throw new Error(r.mensagem);
+    expect(mudarStatusArtigo(r.valor.id, "publicar", QUEM).ok).toBe(true);
+    const publico = await obterConteudo("corpus-hermeticum", r.valor.slug);
+    expect(publico?.corpo).toEqual([
+      corpo[0],
+      corpo[1],
+      { tipo: "imagem", src: img.url, alt: "Gravura de Hermes", credito: "Domínio público", midia: img.id },
+    ]);
+    const acoes = listarAuditoria()
+      .filter((e) => e.itemId === r.valor.id)
+      .map((e) => e.acao);
+    expect(acoes).toEqual(expect.arrayContaining(["criou", "publicou"]));
+  });
+
+  it("imagem enviada por outra conta é recusada; a imagem do acervo que o item já tinha continua", () => {
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
+    const alheia = guardarImagem(png, "outra-conta");
+    if (!alheia.ok) throw new Error(alheia.erro);
+    const imagem = {
+      tipo: "imagem" as const,
+      src: "",
+      alt: "Gravura",
+      credito: "Domínio público",
+      midia: alheia.id,
+    };
+    expect(
+      salvarArtigo(artigoCompleto({ corpo: ["Lead.", imagem] }), QUEM, "manual", "admin-1"),
+    ).toMatchObject({
+      ok: false,
+      erros: { "campo-corpo-1": expect.any(String) },
+    });
+
+    const original = acervo().conteudos.get("c-sete-principios-hermeticos");
+    if (!original) throw new Error("artigo de demonstração");
+    const form = artigoParaForm(original);
+    const r = salvarArtigo({ ...form, titulo: `${form.titulo} (revisado)` }, QUEM, "manual", "admin-1");
+    expect(r.ok).toBe(true);
+    expect(acervo().conteudos.get("c-sete-principios-hermeticos")?.corpo).toEqual(original.corpo);
   });
 });

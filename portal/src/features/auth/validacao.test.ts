@@ -52,6 +52,7 @@ describe("contas simuladas", () => {
   it("conta nova começa sem preferências (vai para o onboarding) e nunca devolve a senha (RF-01, RF-07)", () => {
     const r = registrar({ pseudonimo: "Nova", email: "Nova@Exemplo.com", senha: "1234567890" });
     expect(r.ok && r.valor).toEqual({
+      id: expect.stringMatching(/^u-/),
       pseudonimo: "Nova",
       email: "nova@exemplo.com",
       papel: "membro",

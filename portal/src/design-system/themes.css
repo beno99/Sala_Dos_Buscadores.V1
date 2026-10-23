@@ -2,10 +2,10 @@
    Sólido e translúcido são materiais; claro e escuro definem a luminosidade.
    --ds-solid é sempre opaco, inclusive nos temas de vidro. */
 :root, [data-theme="solido-claro"] {
-  --ds-canvas: #f6f2e9;
+  --ds-canvas: var(--bg-canvas);
   --ds-ambient: none;
-  --ds-muted: #5c5a54;
-  --ds-subtle: #6b665e;
+  --ds-muted: #484642;
+  --ds-subtle: #4c4843;
   --ds-control: #e9e5dc;
   --ds-control-solid: #e9e5dc;
   --ds-control-selected: #fffcf6;

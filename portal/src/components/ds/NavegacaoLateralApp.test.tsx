@@ -12,7 +12,13 @@ const grupos: GrupoNavegacaoApp[] = [
     ],
   },
 ];
-const perfil = { iniciais: "BU", pseudonimo: "Buscador", descricao: "Membro desde set 2026", menu: [] };
+const perfil = {
+  iniciais: "BU",
+  pseudonimo: "Lúcia",
+  papel: "Buscador",
+  descricao: "Membro desde set 2026",
+  menu: [],
+};
 
 function Lateral() {
   const [recolhida, alternar] = useLateralRecolhida("teste-lateral");
@@ -59,9 +65,6 @@ describe("NavegacaoLateralApp", () => {
 
   it("perfil abre o menu da conta", () => {
     render(<Lateral />);
-    expect(screen.getByRole("button", { name: "Conta de Buscador" })).toHaveAttribute(
-      "aria-haspopup",
-      "menu",
-    );
+    expect(screen.getByRole("button", { name: "Conta de Lúcia" })).toHaveAttribute("aria-haspopup", "menu");
   });
 });

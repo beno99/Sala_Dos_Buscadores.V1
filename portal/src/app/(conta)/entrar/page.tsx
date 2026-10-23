@@ -1,5 +1,6 @@
 import type { Metadata, Route } from "next";
 import { redirect } from "next/navigation";
+import { CenarioConta } from "@/components/ds/CenarioConta";
 import { CONTA_DEMONSTRACAO } from "@/features/auth/contas";
 import { FormEntrar } from "@/features/auth/FormEntrar";
 import { destinoSeguro } from "@/features/auth/validacao";
@@ -12,11 +13,11 @@ export default async function Pagina(props: PageProps<"/entrar">) {
   // Quem já está na conta não precisa entrar de novo.
   if (await membroAtual()) redirect(destinoSeguro(typeof voltar === "string" ? voltar : null) as Route);
   return (
-    <div className="w-full">
+    <CenarioConta>
       <FormEntrar
         voltar={destinoSeguro(typeof voltar === "string" ? voltar : null)}
         dica={{ email: CONTA_DEMONSTRACAO.email, senha: CONTA_DEMONSTRACAO.senha }}
       />
-    </div>
+    </CenarioConta>
   );
 }

@@ -1,11 +1,13 @@
 import "server-only";
+import { escolherRelacionados } from "@/features/acervo/relacionados";
 import type { ConteudoBuscavel } from "@/features/busca/sugestoes";
 import { ordenarRanking } from "@/features/destaques/ranking";
 import { type Candidato, type GrupoVaga, montarVagas } from "@/features/destaques/vagas";
 import type { ItemAcervo } from "@/features/estudo/tipos";
-import { imagem } from "@/server/imagens";
+import { imagem, imagemDoCard } from "@/server/imagens";
 import { acervo } from "@/server/store";
 import { salaPorSlug, todasAsSalas } from "./catalogo";
+import { copiarCorpo } from "./corpo";
 import { BUSCAS_30_DIAS } from "./mock/buscas";
 import type {
   Citacao,
@@ -34,6 +36,8 @@ import type {
 export interface SalaResumo extends Sala {
   totalConteudos: number;
   nivelPredominante: Nivel;
+  /** Data (AAAA-MM-DD) da primeira publicação: a da Sala editorial nas oficiais; a da primeira aprovação nas de anfitrião. */
+  publicadaEm?: string;
 }
 
 /** O acervo publicado, no formato que a busca comparativa consome. */
@@ -59,10 +63,14 @@ function paraPublico(c: ConteudoEditorial): Conteudo {
     duracaoMin: c.duracaoMin,
     autoria: { ...c.autoria },
     publicadoEm: c.publicadoEm,
-    corpo: [...c.corpo],
+    corpo: copiarCorpo(c.corpo),
     fontes: [...c.fontes],
   };
   if (c.citacao) publico.citacao = c.citacao;
+  if (c.link) publico.link = { ...c.link };
+  if (c.imagem) publico.imagem = c.imagem;
+  if (c.thumb) publico.thumb = c.thumb;
+  if (c.anfitriao) publico.anfitriao = { ...c.anfitriao };
   // RNF-DOM-03: a divergência entre leituras aparece de forma explícita na página pública.
   if (c.temaDivergente && c.notaDivergencia.trim()) publico.divergencia = c.notaDivergencia.trim();
   return publico;
@@ -93,8 +101,20 @@ export function videoParaPublico(v: VideoEditorial): Video {
   };
 }
 
-const publicados = () => [...acervo().conteudos.values()].filter((c) => c.status === "publicado");
-const videosPublicados = () => [...acervo().videos.values()].filter((v) => v.status === "publicado");
+/**
+ * Conteúdo no ar: publicado e numa Sala visível. Um artigo de anfitrião
+ * publicado some junto quando a Sala dele sai do ar (editada, retirada ou
+ * arquivada), sem perder o próprio status.
+ */
+const publicados = () => {
+  const visiveis = new Set(todasAsSalas().map((s) => s.slug));
+  return [...acervo().conteudos.values()].filter((c) => c.status === "publicado" && visiveis.has(c.sala));
+};
+/** Vídeo no ar: publicado e numa Sala visível (Sala arquivada leva os vídeos dela junto). */
+const videosPublicados = () => {
+  const visiveis = new Set(todasAsSalas().map((s) => s.slug));
+  return [...acervo().videos.values()].filter((v) => v.status === "publicado" && visiveis.has(v.sala));
+};
 
 // ---------- leitura pública ----------
 
@@ -115,9 +135,29 @@ function nivelPredominante(conteudos: Conteudo[]): Nivel {
   return ordenados[Math.floor((ordenados.length - 1) / 2)] ?? 1;
 }
 
+/** Só a data da primeira publicação sai do registro editorial; os outros campos editoriais ficam no servidor. */
+function dataDePublicacao(slug: SalaSlug): string | undefined {
+  const editorial = [...acervo().salas.values()].find((s) => s.slug === slug);
+  if (!editorial) return undefined;
+  const data = editorial.revisao
+    ? editorial.revisao.decisoes
+        .filter((d) => d.decisao === "aprovado")
+        .map((d) => d.quando)
+        .sort()[0]
+    : editorial.publicadaEm;
+  return data?.slice(0, 10);
+}
+
 export function resumirSala(sala: Sala): SalaResumo {
   const conteudos = conteudosDaSala(sala.slug);
-  return { ...sala, totalConteudos: conteudos.length, nivelPredominante: nivelPredominante(conteudos) };
+  const resumo: SalaResumo = {
+    ...sala,
+    totalConteudos: conteudos.length,
+    nivelPredominante: nivelPredominante(conteudos),
+  };
+  const publicadaEm = dataDePublicacao(sala.slug);
+  if (publicadaEm) resumo.publicadaEm = publicadaEm;
+  return resumo;
 }
 
 export function citacaoPorId(id: string): Citacao | undefined {
@@ -142,11 +182,12 @@ export function videosDoConteudo(sala: SalaSlug, slug: string): Video[] {
   return videosDaSala(sala).filter((v) => v.conteudos?.includes(slug));
 }
 
+/** Fontes do catálogo público. As propostas por anfitriões só aparecem depois da aprovação do artigo. */
 export function fontesPorId(ids: string[]): Fonte[] {
   return ids
     .map((id) => acervo().fontes.get(id))
-    .filter((f): f is NonNullable<typeof f> => Boolean(f))
-    .map(({ criadoEm: _a, atualizadoEm: _b, criadoPor: _c, atualizadoPor: _d, ...f }) => f);
+    .filter((f): f is NonNullable<typeof f> => Boolean(f) && !f?.proposta?.pendente)
+    .map(({ criadoEm: _a, atualizadoEm: _b, criadoPor: _c, atualizadoPor: _d, proposta: _e, ...f }) => f);
 }
 
 export function fontesDaSala(sala: SalaSlug): Fonte[] {
@@ -204,6 +245,13 @@ export async function obterSala(slug: string): Promise<SalaResumo | undefined> {
   return sala ? resumirSala(sala) : undefined;
 }
 
+/** "Continuar a busca": publicados com tema em comum, das outras Salas primeiro (até 8). */
+export function relacionadosDoConteudo(
+  c: Pick<Conteudo, "sala" | "slug" | "temas" | "publicadoEm">,
+): Conteudo[] {
+  return escolherRelacionados(c, publicados()).map(paraPublico);
+}
+
 export async function obterConteudo(sala: string, slug: string): Promise<Conteudo | undefined> {
   const c = publicados().find((x) => x.sala === sala && x.slug === slug);
   return c ? paraPublico(c) : undefined;
@@ -231,13 +279,13 @@ export interface ItemMaisPesquisado extends ConteudoVitrine {
 }
 
 function imagemDoConteudo(c: { slug: string; sala: SalaSlug; tipo: Conteudo["tipo"] }): string | undefined {
-  return imagem("conteudos", c.slug) ?? (c.tipo === "fonte-primaria" ? imagem("salas", c.sala) : undefined);
+  return imagemDoCard(c) ?? (c.tipo === "fonte-primaria" ? imagem("salas", c.sala) : undefined);
 }
 
 function paraVitrine(c: ConteudoEditorial): ConteudoVitrine {
   return {
     conteudo: paraPublico(c),
-    imagem: imagemDoConteudo(c),
+    imagem: c.imagem ?? imagemDoConteudo(c),
     placa: salaPorSlug(c.sala)?.placa ?? "bordo",
   };
 }
@@ -293,3 +341,11 @@ export async function listarMaisPesquisados(): Promise<ItemMaisPesquisado[]> {
     })),
   ).map(({ titulo: _t, ...item }) => item);
 }
+
+// Comunidade: contrato público separado do conteúdo editorial; só registros visíveis.
+export {
+  pessoaPublicaComunidade,
+  pessoasPublicasComunidade,
+  publicacaoComunidadePorId,
+  publicacoesVisiveisComunidade,
+} from "./repositorio-comunidade";

@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BarraSuperior · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
-<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
-<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
 
 
 <link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
 </head>
 <body>
 <div class="sdb-stage" style="gap:16px">
@@ -32,7 +34,15 @@
       <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes"><span class="sdb-avatar">LM</span></button>
     </div>
   </header>
-  <p class="sdb-hint">Em repouso, sobre o fundo · ao rolar (<code>.is-scrolled</code>), na camada flutuante. Abaixo de 900 px a saudação some e a busca vira só a lupa.</p>
+  <header class="sdb-topbar" style="--sdb-gutter:20px;position:relative">
+    <div class="sdb-topbar__titles"><p class="sdb-topbar__title">Salas</p><nav class="sdb-topbar__trail" aria-label="Trilha"><ol><li><a href="#">Salas</a></li><li><span aria-current="page">Corpus Hermeticum</span></li></ol></nav></div>
+    <div class="sdb-topbar__actions">
+      <button class="sdb-topbar__search" type="button" aria-label="Buscar no acervo"><span data-icon="busca"></span><span>Buscar no acervo</span><span class="sdb-kbd">⌘K</span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary" type="button" aria-label="Aparência"><span data-icon="tema"></span></button>
+      <button class="sdb-topbar__account" type="button" aria-label="Conta de Lúcia Mendes"><span class="sdb-avatar">LM</span></button>
+    </div>
+  </header>
+  <p class="sdb-hint">Em repouso, sobre o fundo · ao rolar (<code>.is-scrolled</code>), na camada flutuante. Com trilha (terceira), nas páginas de detalhe, no lugar da saudação e da cápsula de Breadcrumbs. Abaixo de 900 px a saudação e a trilha somem e a busca vira só a lupa.</p>
 </div>
 <script>SalaBuscadores.hydrate();</script>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>

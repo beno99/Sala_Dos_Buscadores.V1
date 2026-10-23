@@ -1,0 +1,29 @@
+<!-- @dsCard {"group":"Estrutura do portal","height":690,"caption":"Comparar: introdução, busca e respostas por Sala na mesma superfície areia."} -->
+<section class="sdb-journey-compare sdb-journey-compare--welcome" aria-labelledby="jornada-comparar-titulo">
+  <header class="sdb-journey-compare__intro">
+    <p class="sdb-journey-compare__eyebrow">Busca comparativa</p>
+    <h1 id="jornada-comparar-titulo" class="sdb-large-title">O que cada Sala diz, lado a lado</h1>
+    <p class="sdb-journey-compare__description">Cada tradição responde com o próprio vocabulário e a própria fonte. O portal não junta as respostas numa síntese nem escolhe a mais correta.</p>
+  </header>
+  <div class="sdb-journey-compare__search">
+    <form class="sdb-searchbar" role="search" action="/comparar">
+      <div class="sdb-segmented" data-sdb-seg role="group" aria-label="Modo de busca">
+        <button type="button" aria-pressed="false">Por Sala</button>
+        <button type="button" aria-pressed="true">Por tema ou pergunta</button>
+      </div>
+      <div class="sdb-searchbar__row">
+        <span data-icon="busca" aria-hidden="true"></span>
+        <label class="sdb-sr" for="jornada-pergunta">Tema ou pergunta</label>
+        <input id="jornada-pergunta" type="search" name="q" placeholder="O que acontece com a alma após a morte?">
+        <button class="sdb-btn sdb-btn--primary" type="submit">Comparar</button>
+      </div>
+      <div class="sdb-searchbar__foot">
+        <a class="sdb-chip sdb-chip--sm" href="/comparar?tema=morte">Morte</a>
+        <a class="sdb-chip sdb-chip--sm" href="/comparar?tema=alma">Alma</a>
+        <a class="sdb-chip sdb-chip--sm" href="/comparar?tema=meditacao">Meditação</a>
+        <a class="sdb-chip sdb-chip--sm" href="/comparar?tema=origem-universo">Origem do universo</a>
+      </div>
+    </form>
+    <p class="sdb-hint">Escreva uma pergunta ou escolha um tema para ver a resposta de cada Sala lado a lado.</p>
+  </div>
+</section>

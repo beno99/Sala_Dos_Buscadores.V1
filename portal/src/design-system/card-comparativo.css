@@ -69,7 +69,7 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.comparativo__remove svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparativo__remove svg { width: 20px; height: 20px; fill: currentColor; }
 .comparativo__remove:focus-visible { outline: 2px solid var(--plate-ink); outline-offset: -5px; }
 .comparativo__answer { flex: 1; padding: 24px 16px 32px; }
 .comparativo__answer p { margin: 0; font: 400 21px/1.55 var(--font-display-lower); letter-spacing: -.012em; overflow-wrap: anywhere; }
@@ -79,7 +79,7 @@
 .comparativo__badges { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
 .comparativo__source, .comparativo__level, .comparativo__empty-label { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1.35; }
 .comparativo__source { background: var(--accent-soft); color: var(--accent); }
-.comparativo__source svg, .comparativo__empty-label svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.comparativo__source svg, .comparativo__empty-label svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
 .comparativo__level, .comparativo__empty-label { background: var(--fill); color: var(--comparativo-muted); }
 .comparativo__steps { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
 .comparativo__steps i { width: 3px; border-radius: 1px; background: currentColor; }
@@ -89,7 +89,7 @@
 .comparativo__level[data-level="1"] i:nth-child(n+2), .comparativo__level[data-level="2"] i:nth-child(3) { opacity: .25; }
 .comparativo__reference { min-height: 40px; margin: 0; color: var(--comparativo-muted); font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
 .comparativo__action { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; margin-top: auto; color: var(--accent); font-size: 14px; font-weight: 550; line-height: 1.5; text-decoration: none; }
-.comparativo__action svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparativo__action svg { flex: none; width: 20px; height: 20px; fill: currentColor; }
 .comparativo__action:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
 .comparativo--empty .comparativo__answer { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
 .comparativo--empty .comparativo__answer p { color: var(--comparativo-muted); }
@@ -118,7 +118,7 @@
 .comparison__toolbar p { margin: 0; color: var(--ds-muted); font-size: 12px; }
 .comparison__controls { display: flex; gap: 8px; }
 .comparison__nav { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--ds-edge); border-radius: 50%; background: var(--ds-surface); color: var(--label); cursor: pointer; }
-.comparison__nav svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.comparison__nav svg { width: 20px; height: 20px; fill: currentColor; }
 .comparison__nav--previous svg { transform: rotate(180deg); }
 .comparison__nav:disabled { opacity: .35; cursor: default; }
 .comparison__reset, .comparison__notice button { min-height: 48px; padding: 8px 16px; border: 0; border-radius: 8px; background: var(--ds-control); color: var(--accent); font-size: 12px; font-weight: 500; cursor: pointer; }
@@ -127,7 +127,7 @@
 .comparison__track:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
 .comparison__notice { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding: 8px 16px; border: 1px solid var(--ds-edge); border-radius: 16px; color: var(--ds-muted); background: var(--ds-surface); font-size: 13px; line-height: 1.5; }
 .comparison__note { display: flex; align-items: flex-start; gap: 8px; max-width: 760px; margin: 16px 0 0; color: var(--ds-muted); font-size: 12px; line-height: 1.6; }
-.comparison__note svg { flex: none; width: 16px; height: 16px; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.comparison__note svg { flex: none; width: 16px; height: 16px; margin-top: 2px; fill: currentColor; }
 @supports (grid-template-rows: subgrid) {
   .comparison__track { grid-template-rows: auto 1fr auto; row-gap: 0; }
   .comparison__track > .comparativo { display: grid; grid-template-rows: subgrid; grid-row: span 3; row-gap: 0; }

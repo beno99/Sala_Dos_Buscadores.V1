@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { salaPorSlug } from "@/data/catalogo";
+import { Avatar } from "@/components/ds/Avatar";
+import { comparacaoDoTema, salaPorSlug, temaPorSlug, todosOsTemas } from "@/data/catalogo";
 import type { SalaSlug } from "@/data/types";
 import { PainelAssistente } from "@/features/assistente/PainelAssistente";
 
@@ -15,24 +16,32 @@ export default async function AssistentePage(props: PageProps<"/assistente">) {
   const pergunta = typeof params.pergunta === "string" ? params.pergunta.slice(0, 2000) : "";
   const escopoParam = typeof params.escopo === "string" ? params.escopo : "";
   const sala = salaPorSlug(escopoParam);
+  const comparacao = todosOsTemas()
+    .map((tema) => comparacaoDoTema(tema.slug))
+    .find((item) => item?.pergunta === pergunta);
 
   return (
-    <div className="flex max-w-read flex-col gap-6">
-      <header className="flex flex-col gap-3">
-        <p className="sdb-meta sdb-secondary">Assistente de IA</p>
-        <h1 className="sdb-title-1">Pergunte ao acervo</h1>
-        <p className="sdb-body-sm sdb-secondary">
-          O assistente é uma inteligência artificial. Ele consulta só as Salas do portal, mostra de onde vem
-          cada trecho e não se coloca como autoridade espiritual.
-          {sala &&
-            ` Esta conversa começa restrita à Sala ${sala.nome}; você pode ampliar o escopo no campo abaixo.`}
-        </p>
+    <section className="sdb-journey-assistant" aria-labelledby="titulo-assistente">
+      <header className="sdb-journey-assistant__header">
+        <Avatar ai />
+        <div>
+          <h1 id="titulo-assistente" className="sdb-headline">
+            {comparacao ? "Assistente do acervo · continua desta comparação" : "Assistente do acervo"}
+          </h1>
+          <p className="sdb-footnote">
+            {comparacao
+              ? `Tema: ${comparacao.temasLigados.map((tema) => temaPorSlug(tema)?.nome ?? tema).join(" e ")} · as fontes numeradas levam aos textos do acervo.`
+              : sala
+                ? `Conversa restrita à Sala ${sala.nome}. Você pode ampliar o escopo no campo abaixo.`
+                : "Pergunte às Salas do portal. Cada resposta identifica a síntese da IA e aponta suas fontes."}
+          </p>
+        </div>
       </header>
       <PainelAssistente
         key={`${pergunta}|${escopoParam}`}
         perguntaInicial={pergunta}
         escopoInicial={sala ? (sala.slug as SalaSlug) : "todo"}
       />
-    </div>
+    </section>
   );
 }

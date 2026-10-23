@@ -5,7 +5,6 @@ import { Alerta } from "@/components/ds/Alerta";
 import { Button } from "@/components/ds/Button";
 import { CampoTexto, Checkbox } from "@/components/ds/Campos";
 import { Chip } from "@/components/ds/Chip";
-import { Icon } from "@/components/ds/Icon";
 import { Sheet } from "@/components/ds/Sheet";
 import { salaPorSlug, temaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
 import type { SalaSlug, TemaSlug } from "@/data/types";
@@ -22,6 +21,13 @@ import {
 } from "./preferencias";
 
 const TOTAL = 4;
+const ETAPAS = ["boas-vindas", "interesses", "conviccao", "salvas"] as const;
+const CAPAS = [
+  "/imagens/onboarding/boas-vindas.webp",
+  "/imagens/onboarding/interesses.webp",
+  "/imagens/onboarding/conviccao.webp",
+  "/imagens/onboarding/preferencias-salvas.webp",
+] as const;
 
 const alternar = <T,>(lista: T[], v: T) => (lista.includes(v) ? lista.filter((x) => x !== v) : [...lista, v]);
 
@@ -46,10 +52,11 @@ export function Onboarding({
   const [etapa, setEtapa] = useState(0);
   const [temas, setTemas] = useState<TemaSlug[]>(inicial?.temas ?? []);
   const [salas, setSalas] = useState<SalaSlug[]>(inicial?.salas ?? []);
-  const [conviccao, setConviccao] = useState<ValorConviccao[]>(() => {
+  // Escolha única (Figma): guarda uma opção; o servidor continua recebendo uma lista.
+  const [conviccao, setConviccao] = useState<ValorConviccao | null>(() => {
     const c = inicial?.conviccao;
-    if (c?.tipo === "nao-informar") return ["nao-informar"];
-    return c?.tipo === "informada" ? [...c.opcoes] : [];
+    if (c?.tipo === "nao-informar") return "nao-informar";
+    return c?.tipo === "informada" ? (c.opcoes[0] ?? null) : null;
   });
   const [outra, setOutra] = useState(
     inicial?.conviccao.tipo === "informada" ? (inicial.conviccao.outra ?? "") : "",
@@ -69,20 +76,13 @@ export function Onboarding({
     return () => clearTimeout(t);
   }, [etapa, aberto]);
 
-  const informada = conviccao.some((c) => c !== "nao-informar");
+  const informada = conviccao !== null && conviccao !== "nao-informar";
   const faltaConsentimento = informada && !consentimento;
 
-  const marcarConviccao = (v: ValorConviccao, marcado: boolean) => {
+  const escolherConviccao = (v: ValorConviccao) => {
     setErro(null);
-    if (v === "nao-informar") {
-      setConviccao(marcado ? ["nao-informar"] : []);
-      setConsentimento(false);
-      return;
-    }
-    setConviccao((atual) => {
-      const sem = atual.filter((x) => x !== "nao-informar");
-      return marcado ? [...sem, v] : sem.filter((x) => x !== v);
-    });
+    setConviccao(v);
+    if (v === "nao-informar") setConsentimento(false);
   };
 
   const salvar = async (entrada: EntradaPreferencias, depois: () => void) => {
@@ -104,13 +104,8 @@ export function Onboarding({
       setErro("marque a autorização para guardar esta informação, ou escolha «Prefiro não informar».");
       return;
     }
-    void salvar({ temas, salas, conviccao, outra, consentimento }, () => setEtapa(3));
-  };
-
-  const pularConviccao = () => {
-    setConviccao([]);
-    setConsentimento(false);
-    void salvar({ temas, salas, conviccao: [], consentimento: false }, () => setEtapa(3));
+    const lista = conviccao ? [conviccao] : [];
+    void salvar({ temas, salas, conviccao: lista, outra, consentimento }, () => setEtapa(3));
   };
 
   // Esc vale como "Pular" de todas as etapas restantes: guarda os interesses já escolhidos.
@@ -119,28 +114,60 @@ export function Onboarding({
     void salvar({ temas, salas, conviccao: [], consentimento: false }, onConcluir);
   };
 
+  // Todas as etapas trazem as mesmas duas ações do Figma: seguir e pular direto ao Portal.
+  const acoes = (comecar: () => void, bloqueado = false) => (
+    <div className="sdb-onboarding__actions">
+      <Button variant="gold" aria-disabled={bloqueado} loading={salvando} onClick={comecar}>
+        Começar
+      </Button>
+      <Button variant="warm" onClick={pularTudo} disabled={salvando}>
+        Pular e ir ao Portal
+      </Button>
+    </div>
+  );
+
   const tituloEtapa = (texto: string) => (
-    <h2 ref={titulo} id={`${id}-titulo`} className="sdb-onboarding__title" tabIndex={-1}>
-      {texto}
-    </h2>
+    <header className="sdb-onboarding__heading">
+      <h2 ref={titulo} id={`${id}-titulo`} className="sdb-onboarding__title" tabIndex={-1}>
+        {texto}
+      </h2>
+      <span className="sdb-onboarding__status" aria-live="polite">
+        Etapa {etapa + 1} de {TOTAL}
+      </span>
+    </header>
   );
 
   return (
-    <Sheet aberto={aberto} onFechar={pularTudo} rotuloId={`${id}-titulo`} className="sdb-onboarding">
-      <div className="sdb-onboarding__top">
-        <span className="sdb-onboarding__status" aria-live="polite">
-          Etapa {etapa + 1} de {TOTAL}
-        </span>
-        <div className="sdb-dots" aria-hidden="true">
+    <Sheet
+      aberto={aberto}
+      onFechar={pularTudo}
+      rotuloId={`${id}-titulo`}
+      className={`sdb-onboarding sdb-onboarding--${ETAPAS[etapa]}`}
+    >
+      <div className="sdb-onboarding__hero">
+        {/* biome-ignore lint/performance/noImgElement: capa decorativa servida de public/imagens. */}
+        <img className="sdb-onboarding__image" src={CAPAS[etapa]} alt="" />
+        {etapa > 0 && (
+          <Button
+            variant="clear"
+            icon="voltar"
+            className="sdb-onboarding__back"
+            onClick={() => setEtapa(etapa - 1)}
+            disabled={salvando}
+          >
+            Voltar
+          </Button>
+        )}
+        <div className="sdb-dots sdb-onboarding__dots" aria-hidden="true">
           {Array.from({ length: TOTAL }, (_, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: os pontos são fixos, um por etapa.
-            <button key={i} type="button" tabIndex={-1} aria-current={i === etapa} />
+            <span key={i} aria-current={i === etapa} />
           ))}
         </div>
       </div>
 
       {erro && (
-        <div className="px-6 pt-3">
+        <div className="sdb-onboarding__error">
           <Alerta variant="error" title={`Erro: ${erro}`} />
         </div>
       )}
@@ -152,12 +179,7 @@ export function Onboarding({
             Aqui cada tradição fala com as próprias fontes, organizada em Salas. Duas perguntas rápidas ajudam
             a sugerir por onde começar. As duas são opcionais e todo o acervo continua aberto.
           </p>
-          <div className="sdb-onboarding__actions" style={{ padding: "8px 0 0" }}>
-            <span />
-            <Button variant="primary" onClick={() => setEtapa(1)}>
-              Continuar
-            </Button>
-          </div>
+          {acoes(() => setEtapa(1))}
         </section>
       )}
 
@@ -167,71 +189,60 @@ export function Onboarding({
           <p className="sdb-onboarding__lead">
             Escolha quantos quiser. Isso só muda a ordem das sugestões; nada do acervo fica escondido.
           </p>
-          <div className="sdb-onboarding__options" role="group" aria-label="Temas">
-            {todosOsTemas().map((t) => (
-              <Chip
-                key={t.slug}
-                pressed={temas.includes(t.slug)}
-                onClick={() => setTemas((x) => alternar(x, t.slug))}
-              >
-                {t.nome}
-              </Chip>
-            ))}
+          <div className="sdb-onboarding__choices">
+            <h3 id={`${id}-temas`} className="sdb-onboarding__label">
+              Temas
+            </h3>
+            <div className="sdb-onboarding__options" role="group" aria-labelledby={`${id}-temas`}>
+              {todosOsTemas().map((t) => (
+                <Chip
+                  key={t.slug}
+                  pressed={temas.includes(t.slug)}
+                  onClick={() => setTemas((x) => alternar(x, t.slug))}
+                >
+                  {t.nome}
+                </Chip>
+              ))}
+            </div>
+            <h3 id={`${id}-salas`} className="sdb-onboarding__label">
+              Salas
+            </h3>
+            <div className="sdb-onboarding__options" role="group" aria-labelledby={`${id}-salas`}>
+              {todasAsSalas().map((s) => (
+                <Chip
+                  key={s.slug}
+                  pressed={salas.includes(s.slug)}
+                  onClick={() => setSalas((x) => alternar(x, s.slug))}
+                >
+                  {s.nome}
+                </Chip>
+              ))}
+            </div>
           </div>
-          <div className="sdb-onboarding__options" role="group" aria-label="Salas">
-            {todasAsSalas().map((s) => (
-              <Chip
-                key={s.slug}
-                arc
-                pressed={salas.includes(s.slug)}
-                onClick={() => setSalas((x) => alternar(x, s.slug))}
-              >
-                {s.nome}
-              </Chip>
-            ))}
-          </div>
-          <div className="sdb-onboarding__actions" style={{ padding: "8px 0 0" }}>
-            <Button
-              variant="plain"
-              onClick={() => {
-                setTemas([]);
-                setSalas([]);
-                setEtapa(2);
-              }}
-            >
-              Pular por agora
-            </Button>
-            <Button variant="secondary" onClick={() => setEtapa(0)}>
-              Voltar
-            </Button>
-            <Button variant="primary" onClick={() => setEtapa(2)}>
-              Continuar
-            </Button>
-          </div>
+          {acoes(() => setEtapa(2))}
         </section>
       )}
 
       {etapa === 2 && (
         <section className="sdb-onboarding__step">
           {tituloEtapa("Você tem uma religião ou convicção?")}
-          <p className="sdb-onboarding__purpose">
-            <Icon name="cadeado" />
-            <span>{FINALIDADE_CONVICCAO}</span>
-          </p>
-          <fieldset className="sdb-fieldset">
+          <p className="sdb-onboarding__lead">{FINALIDADE_CONVICCAO}</p>
+          <fieldset className="sdb-onboarding__radios">
             <legend className="sdb-sr">Religião ou convicção</legend>
-            <div className="sdb-onboarding__checks">
-              {OPCOES_CONVICCAO.map((o) => (
-                <Checkbox
-                  key={o.valor}
-                  label={o.rotulo}
-                  checked={conviccao.includes(o.valor)}
-                  onChange={(e) => marcarConviccao(o.valor, e.target.checked)}
+            {OPCOES_CONVICCAO.map((o) => (
+              <label key={o.valor} className="sdb-onboarding__option">
+                <input
+                  type="radio"
+                  name={`${id}-conviccao`}
+                  value={o.valor}
+                  checked={conviccao === o.valor}
+                  onChange={() => escolherConviccao(o.valor)}
                 />
-              ))}
-            </div>
+                {o.rotulo}
+              </label>
+            ))}
           </fieldset>
-          {conviccao.includes("outra") && (
+          {conviccao === "outra" && (
             <CampoTexto
               label="Qual?"
               maxLength={OUTRA_MAXIMO}
@@ -252,33 +263,21 @@ export function Onboarding({
                   setErro(null);
                 }}
               />
-              <p className="sdb-help" style={{ paddingLeft: 34 }}>
+              <p className="sdb-help sdb-onboarding__consent-help">
                 Dado sensível (LGPD, art. 11). Você pode revogar em Ajustes a qualquer momento.
               </p>
             </div>
           )}
-          <div className="sdb-onboarding__actions" style={{ padding: "8px 0 0" }}>
-            <Button variant="plain" onClick={pularConviccao} disabled={salvando}>
-              Pular
-            </Button>
-            <Button variant="secondary" onClick={() => setEtapa(1)}>
-              Voltar
-            </Button>
-            <Button
-              variant="primary"
-              aria-disabled={faltaConsentimento}
-              loading={salvando}
-              onClick={continuarConviccao}
-            >
-              Continuar
-            </Button>
-          </div>
+          {acoes(continuarConviccao, faltaConsentimento)}
         </section>
       )}
 
       {etapa === 3 && salvo && (
         <section className="sdb-onboarding__step">
           {tituloEtapa("Preferências salvas")}
+          <p className="sdb-onboarding__lead">
+            Pronto. As sugestões do Portal já seguem o que você escolheu.
+          </p>
           <ul className="sdb-onboarding__summary">
             <li>
               Interesses
@@ -295,17 +294,10 @@ export function Onboarding({
               Religião ou convicção <span>{resumoConviccao(salvo.conviccao)}</span>
             </li>
           </ul>
-          <p className="sdb-onboarding__lead">
+          <p className="sdb-onboarding__note">
             Dá para mudar ou apagar tudo em Ajustes, em "Refazer preferências".
           </p>
-          <div className="sdb-onboarding__actions" style={{ padding: "8px 0 0" }}>
-            <Button variant="secondary" onClick={() => setEtapa(2)}>
-              Voltar
-            </Button>
-            <Button variant="primary" onClick={onConcluir}>
-              Ir para o Portal
-            </Button>
-          </div>
+          {acoes(onConcluir)}
         </section>
       )}
     </Sheet>

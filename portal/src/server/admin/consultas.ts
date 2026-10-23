@@ -1,5 +1,4 @@
 import "server-only";
-import { todasAsSalas } from "@/data/catalogo";
 import type {
   Citacao,
   ConteudoEditorial,
@@ -23,8 +22,18 @@ import { acervo } from "../store";
 
 const clone = <T>(v: T): T => structuredClone(v);
 
-/** Artigos e fontes primárias: os tipos que a curadoria edita nesta etapa. */
+/**
+ * Artigos e fontes primárias da curadoria: os tipos que ela edita nesta etapa.
+ * Os artigos de anfitrião ficam de fora: a curadoria só os julga, em /admin/anfitrioes.
+ */
 export function listarArtigos(): ConteudoEditorial[] {
+  return [...acervo().conteudos.values()]
+    .filter((c) => !c.revisao && (c.tipo === "artigo" || c.tipo === "fonte-primaria"))
+    .map(clone);
+}
+
+/** Artigos e fontes primárias de todas as Salas, inclusive de anfitriões (exportação CSV). */
+export function listarTodosOsArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
     .filter((c) => c.tipo === "artigo" || c.tipo === "fonte-primaria")
     .map(clone);
@@ -46,8 +55,9 @@ export function obterVideo(id: string): VideoEditorial | undefined {
   return v ? clone(v) : undefined;
 }
 
+/** Catálogo de fontes: as propostas por anfitriões só entram quando o artigo que as usa é aprovado. */
 export function listarFontes(): FonteEditorial[] {
-  return [...acervo().fontes.values()].map(clone);
+  return [...acervo().fontes.values()].filter((f) => !f.proposta?.pendente).map(clone);
 }
 
 export function obterFonte(id: string): FonteEditorial | undefined {
@@ -97,16 +107,26 @@ export interface ResumoPainel {
   ultimasAcoes: RegistroAuditoria[];
 }
 
-const zerado = (): Record<StatusEditorial, number> => ({ rascunho: 0, publicado: 0, arquivado: 0 });
+const zerado = (): Record<StatusEditorial, number> => ({
+  rascunho: 0,
+  em_revisao: 0,
+  publicado: 0,
+  reprovado: 0,
+  arquivado: 0,
+});
 
 export function resumoPainel(agora = new Date()): ResumoPainel {
   const artigos = listarArtigos();
   const videos = listarVideos();
-  const totais = { artigos: zerado(), videos: zerado(), fontes: acervo().fontes.size };
+  const totais = { artigos: zerado(), videos: zerado(), fontes: listarFontes().length };
   for (const a of artigos) totais.artigos[a.status] += 1;
   for (const v of videos) totais.videos[v.status] += 1;
 
-  const porSala = todasAsSalas().map((s) => {
+  // Todas as Salas oficiais, inclusive as que ainda não estão no portal (rascunho, sem artigo).
+  const oficiais = [...acervo().salas.values()]
+    .filter((s) => s.origem === "oficial")
+    .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  const porSala = oficiais.map((s) => {
     const daSala = artigos.filter((a) => a.sala === s.slug);
     const contagem = zerado();
     for (const a of daSala) contagem[a.status] += 1;
@@ -124,6 +144,7 @@ export function resumoPainel(agora = new Date()): ResumoPainel {
     especialista: 0,
     comunidade: 0,
     ia: 0,
+    anfitriao: 0,
   };
   for (const a of artigos) if (a.status !== "arquivado") porProveniencia[a.proveniencia] += 1;
 

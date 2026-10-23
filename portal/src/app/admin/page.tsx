@@ -3,22 +3,28 @@ import Link from "next/link";
 import { Alerta } from "@/components/ds/Alerta";
 import { ButtonLink } from "@/components/ds/Button";
 import { IndicadorNumerico, ListaHistorico } from "@/components/ds/Curadoria";
+import { Icon } from "@/components/ds/Icon";
 import { PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type { Proveniencia } from "@/data/types";
 import { DIAS_RASCUNHO_PARADO } from "@/features/admin/regras/config";
 import { RestaurarAcervo } from "@/features/admin/ui/RestaurarAcervo";
 import { resumoPainel } from "@/server/admin/consultas";
+import { rotaDoArtigo, rotaDoVideo } from "@/server/admin/rotas";
+import { listarCandidaturas, totalPendenteRevisao } from "@/server/anfitriao/consultas";
 
 export const metadata: Metadata = { title: "Painel" };
 
+/** Artigos e vídeos vivem dentro da Sala: o link vai direto ao editor dentro dela. */
 const hrefItem = (tipo: "artigo" | "video", id: string) =>
-  (tipo === "artigo" ? `/admin/artigos/${id}` : `/admin/videos/${id}`) as Route;
+  ((tipo === "artigo" ? rotaDoArtigo(id) : rotaDoVideo(id)) ?? "/admin/salas") as Route;
 
 /** Visão geral da curadoria (RF-37): só dados do acervo, nunca indicadores de pessoas (RNF-DOM-05). */
 export default function PainelCuradoria() {
   const r = resumoPainel();
   const artigos = r.totais.artigos;
   const videos = r.totais.videos;
+  const revisao = totalPendenteRevisao();
+  const candidaturas = listarCandidaturas().filter((c) => c.status === "pendente").length;
 
   return (
     <>
@@ -26,11 +32,8 @@ export default function PainelCuradoria() {
         <p className="sdb-meta sdb-secondary">Curadoria</p>
         <h1 className="sdb-title-1">Painel do acervo</h1>
         <div className="sdb-row">
-          <ButtonLink href={"/admin/artigos/novo" as Route} variant="primary" icon="mais">
-            Novo artigo
-          </ButtonLink>
-          <ButtonLink href={"/admin/videos/novo" as Route} variant="secondary" icon="video">
-            Novo vídeo
+          <ButtonLink href={"/admin/salas/nova" as Route} variant="primary" icon="mais">
+            Nova Sala
           </ButtonLink>
           <ButtonLink href={"/admin/fontes/novo" as Route} variant="secondary" icon="fontePrimaria">
             Nova fonte
@@ -38,33 +41,83 @@ export default function PainelCuradoria() {
         </div>
       </header>
 
+      <section className="sdb-material sdb-panel" aria-labelledby="titulo-revisao-anfitrioes">
+        <div className="sdb-row sdb-row--between">
+          <h2 id="titulo-revisao-anfitrioes" className="sdb-headline">
+            Revisão de anfitriões
+          </h2>
+          <span className={revisao ? "sdb-badge" : "sdb-badge sdb-badge--neutral"}>
+            <i
+              className={
+                revisao ? "sdb-badge__dot sdb-badge__dot--half" : "sdb-badge__dot sdb-badge__dot--hollow"
+              }
+            />
+            {revisao ? `${revisao} em revisão` : "Nada pendente"}
+          </span>
+        </div>
+        <p className="sdb-body-sm">
+          {revisao
+            ? `${revisao} ${revisao === 1 ? "item espera" : "itens esperam"} a sua decisão (Salas e artigos de anfitriões).`
+            : "Nenhuma Sala ou artigo de anfitrião espera decisão agora."}
+          {candidaturas > 0 &&
+            ` ${candidaturas} ${candidaturas === 1 ? "candidatura espera" : "candidaturas esperam"} resposta em Usuários.`}
+        </p>
+        <div className="sdb-row">
+          <ButtonLink
+            href={"/admin/anfitrioes" as Route}
+            variant={revisao ? "primary" : "secondary"}
+            icon="anfitriao"
+          >
+            Abrir a revisão
+          </ButtonLink>
+          {candidaturas > 0 && (
+            <ButtonLink href={"/admin/usuarios?aba=candidaturas" as Route} variant="secondary">
+              Ver candidaturas
+            </ButtonLink>
+          )}
+        </div>
+      </section>
+
       <Alerta title="Grade comparativa e assistente ainda não recebem conteúdos novos">
         O que você publica aparece na Sala, na página do conteúdo e na busca por tema. A grade comparativa e
-        as respostas do assistente continuam curadas à parte nesta etapa.
+        as respostas do assistente continuam curadas à parte nesta etapa. As Salas de anfitrião entram nelas
+        quando você liga “Incluir na comparação e no assistente” na revisão.
       </Alerta>
 
       <section
         className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))]"
         aria-label="Totais"
       >
-        <IndicadorNumerico
-          rotulo="Artigos"
-          valor={artigos.publicado + artigos.rascunho + artigos.arquivado}
-          partes={[
-            { rotulo: "Publicados", valor: artigos.publicado },
-            { rotulo: "Rascunhos", valor: artigos.rascunho },
-            { rotulo: "Arquivados", valor: artigos.arquivado },
-          ]}
-        />
-        <IndicadorNumerico
-          rotulo="Vídeos"
-          valor={videos.publicado + videos.rascunho + videos.arquivado}
-          partes={[
-            { rotulo: "Publicados", valor: videos.publicado },
-            { rotulo: "Rascunhos", valor: videos.rascunho },
-            { rotulo: "Arquivados", valor: videos.arquivado },
-          ]}
-        />
+        <Link
+          href={"/admin/salas" as Route}
+          className="text-inherit no-underline"
+          aria-label="Artigos: ver nas Salas"
+        >
+          <IndicadorNumerico
+            rotulo="Artigos"
+            valor={artigos.publicado + artigos.rascunho + artigos.arquivado}
+            partes={[
+              { rotulo: "Publicados", valor: artigos.publicado },
+              { rotulo: "Rascunhos", valor: artigos.rascunho },
+              { rotulo: "Arquivados", valor: artigos.arquivado },
+            ]}
+          />
+        </Link>
+        <Link
+          href={"/admin/salas" as Route}
+          className="text-inherit no-underline"
+          aria-label="Vídeos: ver nas Salas"
+        >
+          <IndicadorNumerico
+            rotulo="Vídeos"
+            valor={videos.publicado + videos.rascunho + videos.arquivado}
+            partes={[
+              { rotulo: "Publicados", valor: videos.publicado },
+              { rotulo: "Rascunhos", valor: videos.rascunho },
+              { rotulo: "Arquivados", valor: videos.arquivado },
+            ]}
+          />
+        </Link>
         <IndicadorNumerico rotulo="Fontes" valor={r.totais.fontes} dica="Obras que o acervo pode citar." />
         <IndicadorNumerico
           rotulo="Com pendência"
@@ -78,8 +131,8 @@ export default function PainelCuradoria() {
           Por Sala
         </h2>
         <div className="sdb-table-wrap">
-          <table className="sdb-table">
-            <caption>Artigos por status e vídeos ativos em cada Sala</caption>
+          <table className="sdb-table sdb-table--nav">
+            <caption>Artigos por status e vídeos ativos em cada Sala oficial</caption>
             <thead>
               <tr>
                 <th scope="col">Sala</th>
@@ -95,6 +148,9 @@ export default function PainelCuradoria() {
                 <th scope="col" className="sdb-table__num">
                   Vídeos
                 </th>
+                <th scope="col">
+                  <span className="sdb-sr">Abrir</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -102,7 +158,7 @@ export default function PainelCuradoria() {
                 <tr key={s.sala}>
                   <td data-label="Sala">
                     <span className="sdb-table__title">
-                      <Link href={`/admin/artigos?sala=${s.sala}` as Route}>{s.nome}</Link>
+                      <Link href={`/admin/salas/${s.sala}` as Route}>{s.nome}</Link>
                     </span>
                   </td>
                   <td data-label="Publicados" className="sdb-table__num">
@@ -116,6 +172,9 @@ export default function PainelCuradoria() {
                   </td>
                   <td data-label="Vídeos" className="sdb-table__num">
                     {s.videos}
+                  </td>
+                  <td className="sdb-table__go" aria-hidden="true">
+                    <Icon name="chevronDireita" />
                   </td>
                 </tr>
               ))}
@@ -142,11 +201,7 @@ export default function PainelCuradoria() {
             <tbody>
               {(Object.keys(r.porProveniencia) as Proveniencia[]).map((p) => (
                 <tr key={p}>
-                  <td data-label="Proveniência">
-                    <Link className="sdb-link" href={`/admin/artigos?proveniencia=${p}` as Route}>
-                      {PROVENIENCIA_ROTULO[p]}
-                    </Link>
-                  </td>
+                  <td data-label="Proveniência">{PROVENIENCIA_ROTULO[p]}</td>
                   <td data-label="Artigos" className="sdb-table__num">
                     {r.porProveniencia[p]}
                   </td>

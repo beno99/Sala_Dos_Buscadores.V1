@@ -19,6 +19,7 @@ const check = process.argv.includes("--check");
 const ler = (p) => readFileSync(join(root, p), "utf8");
 
 const tokens = JSON.parse(ler("tokens.json"));
+const conteudo = JSON.parse(ler("conteudo.json"));
 const temaPadrao = tokens.color.default ?? "vidro-claro";
 const temaPadraoEscuro = tokens.color.defaultDark ?? "vidro-escuro";
 
@@ -30,10 +31,16 @@ const IDS_GRUPO = {
   "Assistente de IA": "ia",
   "Estrutura do portal": "estrutura",
   Curadoria: "curadoria",
+  Comunidade: "comunidade",
 };
 
 const saidas = new Map();
+const marcacao = ler("components/BarraFormatacao/marcacao.mjs").replace(/^export /gm, "");
+const formatacao = "  /* FORMATACAO:INICIO Gerado de BarraFormatacao/marcacao.mjs e runtime.js. */\n" + marcacao + "\n" + ler("components/BarraFormatacao/runtime.js") + "\n  /* FORMATACAO:FIM */";
+saidas.set("components/bundle.js", ler("components/bundle.js").replace(/  \/\* FORMATACAO:INICIO[\s\S]*?\/\* FORMATACAO:FIM \*\//, () => formatacao));
 saidas.set("tokens.css", gerarTokens());
+saidas.set("components/EstadosInterface/estados-interface.js",
+  ler("components/EstadosInterface/runtime.modelo.js").replace("/* ICONES */ {}", ler("components/EstadosInterface/icones.json").trim()));
 saidas.set("components/refined.js", gerarRuntime());
 const pecas = lerPecas();
 for (const p of pecas) saidas.set(`exemplos/${p.nome}.html`, gerarExemplo(p));
@@ -104,6 +111,8 @@ function gerarTokens() {
     ...tokens.blur.tokens,
     ...tokens.duration.tokens,
     ...tokens.easing.tokens,
+    ...tokens.formatacao.tokens,
+    ...(tokens.community?.tokens ?? []),
   ].map((t) => `  --${t.name}: ${valorCss(t.value)};`);
   for (const [familia, pilha] of Object.entries(tokens.type.families)) fixos.push(`  --font-${familia}: ${pilha};`);
   partes.push(`:root {\n${fixos.join("\n")}\n}`);
@@ -123,7 +132,7 @@ function lerPecas() {
     const p = /^\| \[([A-Za-z]+)\]\(components\//.exec(linha);
     if (p && grupo) {
       const nome = p[1];
-      const preview = ler(`components/${nome}/preview.html`);
+      const preview = ler(`components/${nome}/preview.html`).replaceAll("{{LIMITE_RESUMO_LEAD}}", String(conteudo.limiteResumoLead));
       const [cab, ...resto] = preview.split("\n");
       const m = /@dsCard group="([^"]+)" height=(\d+) subtitle="([^"]+)"/.exec(cab);
       if (!m) throw new Error(`components/${nome}/preview.html sem cabeçalho @dsCard`);
@@ -155,8 +164,11 @@ function gerarExemplo(p) {
 <link rel="stylesheet" href="../${asset('components/bundle.css')}">
 <link rel="stylesheet" href="../${asset('assets/themes.css')}">
 ${['CardSala','CardVideo','GradeComparativa','BotaoFlutuante'].includes(p.nome) ? ['components/refined-layout.css','components/CardSala/card-sala.css','components/CardVideo/card-video.css','components/CardComparativo/card-comparativo.css','components/AssistenteOrb/assistant-orb.css'].map(path=>`<link rel="stylesheet" href="../${asset(path)}">`).join('\n') : ''}
-${p.nome === 'CardConteudo' ? ['components/CardSala/card-sala.css','components/CardConteudo/card-conteudo.css'].map(path=>`<link rel="stylesheet" href="../${asset(path)}">`).join('\n') : ''}
+${['BannerSala','CorpoArtigo'].includes(p.nome) ? `<link rel="stylesheet" href="../${asset('components/CardVideo/card-video.css')}">` : ''}
+${['CardConteudo','CorpoArtigo'].includes(p.nome) ? ['components/CardSala/card-sala.css','components/CardConteudo/card-conteudo.css'].map(path=>`<link rel="stylesheet" href="../${asset(path)}">`).join('\n') : ''}
 <link rel="stylesheet" href="../${asset('components/refinement.css')}">
+${["IconeVolume","EstadoSecao","CarregamentoSala","ProgressoReal","AvisoContextual","DialogoContextual","Comunidade","CompositorComunidade","PainelComentarios"].includes(p.nome) ? `<link rel="stylesheet" href="../${asset('components/EstadosInterface/estados-interface.css')}">
+<script src="../${asset('components/EstadosInterface/estados-interface.js')}"></script>` : ""}
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <script src="../${asset('components/bundle.js')}"></script>
 </head>
@@ -190,7 +202,7 @@ function gerarRuntime() {
 function gerarCatalogo(pecas) {
   const grupos=[];
   for(const p of pecas){let g=grupos.find(g=>g.nome===p.grupo);if(!g){g={nome:p.grupo,id:IDS_GRUPO[p.grupo],pecas:[]};grupos.push(g);}g.pecas.push(p);}
-  const updated=['CardSala','CardVideo','GradeComparativa','BotaoFlutuante'];
+  const updated=['CardSala','CardVideo','GradeComparativa','BotaoFlutuante','IconeVolume','EstadoSecao','CarregamentoSala','ProgressoReal','AvisoContextual','DialogoContextual'];
   const esc=s=>s.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
   const navigation=grupos.map(g=>`<a href="#${g.id}">${g.nome}<span>${g.pecas.length}</span></a>`).join('');
   const sections=grupos.map(g=>`<section class="cat-group" id="${g.id}"><div class="cat-group__head"><h2>${g.nome}</h2><span>${g.pecas.length} componentes</span></div>${g.pecas.map(p=>`<details class="cat-item" id="${p.nome}" data-search="${esc(p.nome+' '+p.subtitulo+' '+p.grupo)}"><summary><span class="cat-item__number">${String(pecas.indexOf(p)+1).padStart(2,'0')}</span><div><h3>${p.nome.replace(/([a-z])([A-Z])/g,'$1 $2')}</h3><p>${p.subtitulo}</p></div>${updated.includes(p.nome)?'<span class="cat-item__tag">NOVO DESIGN</span>':''}</summary><div class="cat-item__actions"><a href="components/${p.nome}/README.md" target="_blank" rel="noopener">Guia ↗</a><a href="exemplos/${p.nome}.html" data-example-link="exemplos/${p.nome}.html" target="_blank" rel="noopener">Abrir exemplo ↗</a></div><iframe class="cat-frame" title="${p.nome}" data-src="exemplos/${p.nome}.html" style="height:${p.altura}px"></iframe></details>`).join('')}</section>`).join('');

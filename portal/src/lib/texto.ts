@@ -36,9 +36,17 @@ export function truncar(texto: string, max: number): string {
   return `${(espaco > max * 0.6 ? corte.slice(0, espaco) : corte).trimEnd()}…`;
 }
 
-/** Iniciais para o Avatar: "Três Iniciados" → "TI". */
+/**
+ * Iniciais para o Avatar: "Três Iniciados" → "TI". O que vem entre parênteses
+ * ("Helena Varga (demonstração)") e o que não é letra não entram.
+ */
 export function iniciais(nome: string): string {
-  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  const partes = nome
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^\p{L}\s]/gu, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
   const primeira = partes[0]?.[0] ?? "?";
   const ultima = partes.length > 1 ? (partes[partes.length - 1]?.[0] ?? "") : "";
   return (primeira + ultima).toUpperCase();

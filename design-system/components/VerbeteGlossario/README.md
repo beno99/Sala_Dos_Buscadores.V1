@@ -10,3 +10,6 @@ Termo, língua/escrita original/tradução literal, definição atribuída a uma
 - Cada verbete é um card de material com accordion; o primeiro da letra abre sozinho. Os cards entram em cascata curta (40 ms).
 - Rodapé em `footnote`: quem redigiu o verbete.
 - Definições descrevem o uso na tradição; nunca afirmam o que "é verdade". Um termo com sentidos diferentes em Salas diferentes ganha um parágrafo por Sala.
+
+## Índice compacto (`.sdb-alpha--compact`)
+Para o glossário dentro de outra página (Biblioteca): botões de 34 px numa linha só, distribuída na largura, que rola na horizontal quando não cabe. Letras sem verbete ficam desabilitadas; ao entrar, a letra ativa é a primeira com verbete.

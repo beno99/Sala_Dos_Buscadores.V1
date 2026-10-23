@@ -2,7 +2,7 @@ import "server-only";
 import type { Route } from "next";
 import type { AnuncioVisual } from "@/components/ds/EspacoPublicitario";
 import type { Indicador } from "@/components/ds/PainelIndicadores";
-import { salaPorSlug, temaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
+import { salaPorSlug, salasOficiais, temaPorSlug, todosOsTemas } from "@/data/catalogo";
 import { ANUNCIOS } from "@/data/mock/anuncios";
 import { DESTAQUES_DO_CANAL } from "@/data/mock/banner";
 import { trilhaDaSala } from "@/data/mock/trilhas";
@@ -16,6 +16,7 @@ import {
 import type { Conteudo, Nivel, Placa, SalaSlug, TemaSlug } from "@/data/types";
 import type { Membro } from "@/features/auth/contas";
 import { avaliarConquistas, type EstadoConquista } from "@/features/estudo/conquistas";
+import { chaveEstante } from "@/features/estudo/estante";
 import { assuntoEmFoco, NOME_NIVEL, nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
 import { leiturasEmAndamento, resumoDoPainel } from "@/features/estudo/painel";
 import {
@@ -27,7 +28,8 @@ import {
 } from "@/features/estudo/recomendacao";
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
-import { imagem } from "./imagens";
+import { imagem, imagemDaSala, imagemDoCard } from "./imagens";
+import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
 
 /*
@@ -54,8 +56,11 @@ export interface NivelEmFoco {
 }
 
 export interface ModeloLateral {
+  /** Foto que a própria conta enviou no Perfil. */
+  foto?: string;
   continuar?: { titulo: string; detalhe: string; pct: number; href: Route; placa: Placa; chave: string };
-  salvos: { total: number; texto: string };
+  /** `chaves` no formato de chaveEstante ("sala:urantia"), para os botões de salvar. */
+  salvos: { total: number; texto: string; chaves: string[] };
   mostrarNiveis: boolean;
   nivelFoco?: NivelEmFoco;
   conquistas: EstadoConquista[];
@@ -125,7 +130,9 @@ export function modeloDaLateral(m: Membro): ModeloLateral {
   const conteudo = andamento && publicos.find((c) => c.sala === andamento.sala && c.slug === andamento.slug);
   const salas = p.estante.filter((e) => e.tipo === "sala").length;
   const conteudos = p.estante.length - salas;
+  const foto = perfilDe(m.id).foto;
   return {
+    ...(foto ? { foto } : {}),
     ...(conteudo && andamento
       ? {
           continuar: {
@@ -144,10 +151,11 @@ export function modeloDaLateral(m: Membro): ModeloLateral {
         p.estante.length === 0
           ? "Nada salvo ainda. Use o marcador nos cards."
           : `${plural(salas, "Sala", "Salas")} e ${plural(conteudos, "conteúdo", "conteúdos")} na Estante.`,
+      chaves: p.estante.map((e) => chaveEstante(e.tipo, e.ref)),
     },
     mostrarNiveis: p.mostrarNiveis,
     ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
-    conquistas: avaliarConquistas(p, { acervo, totalSalas: todasAsSalas().length }),
+    conquistas: avaliarConquistas(p, { acervo, totalSalas: salasOficiais().length }),
   };
 }
 
@@ -160,7 +168,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   const porChave = (sala: string, slug: string) => publicos.find((c) => c.sala === sala && c.slug === slug);
   const comImagem = (c: Conteudo): ConteudoComImagem => ({
     conteudo: c,
-    imagem: imagem("conteudos", c.slug),
+    imagem: imagemDoCard(c),
   });
 
   const ordem = ordenarSalas(
@@ -182,7 +190,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
         motivo,
         temas: [...new Set(acervo.filter((c) => c.sala === sala).flatMap((c) => c.temas))],
         progresso: { pct: n.total ? n.lidas / n.total : 0, legenda },
-        imagem: imagem("salas", sala),
+        imagem: imagemDaSala(resumo),
       },
     ];
   });
@@ -281,7 +289,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   });
 
   return {
-    imagemMarca: imagem("banner", "marca"),
+    imagemMarca: imagem("banner", "marca-colunata") ?? imagem("banner", "marca"),
     slidesAnuncio: anuncios
       .filter((a) => a.locais.includes("banner"))
       .map((a) => ({

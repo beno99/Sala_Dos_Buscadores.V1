@@ -7,7 +7,7 @@
   --sala-space: 8px;
   --sala-panel-solid: var(--ds-solid, var(--float-solid));
   --sala-panel-glass: var(--ds-glass, var(--float-solid));
-  --sala-surface: var(--ds-surface, var(--material-regular));
+  --sala-surface: var(--card-warm, var(--ds-surface, var(--material-regular)));
   --sala-ink: var(--label);
   --sala-muted: var(--ds-muted, var(--label-secondary));
   --sala-edge: var(--ds-edge, var(--glass-edge));
@@ -98,7 +98,7 @@
   transition: background 160ms ease, color 160ms ease;
   -webkit-tap-highlight-color: transparent;
 }
-.sala__save svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; }
+.sala__save svg { width: 20px; height: 20px; fill: currentColor; }
 .sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--bordo-rubro); }
 .sala__save[aria-pressed="true"] svg { fill: currentColor; }
 .sala__body {
@@ -156,7 +156,7 @@
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
-.sala__action svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.sala__action svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
 .sala__save:focus-visible { outline: 3px solid var(--branco); outline-offset: 3px; }
 .sala__action:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 .sala--normal { min-height: 552px; }
@@ -236,3 +236,6 @@
 .sala__chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sala-space); min-width: 0; }
 .sala__body > .sdb-progress { align-self: stretch; margin-top: auto; }
 .sala__media.sdb-skel { background: var(--fill); }
+
+/* Portal · extensão 1.0.2: Sala de anfitrião. O Selo de proveniência compacto (Anfitrião) vem logo depois da descrição. */
+.sala__body > .sdb-seal { align-self: flex-start; }

@@ -22,7 +22,7 @@ export default function Carregando() {
           <span className="sdb-skel h-6 w-[12rem]" />
           <span className="sdb-skel h-3 w-[10rem]" />
         </div>
-        <div className="sdb-panel sdb-material">
+        <div className="sdb-panel sdb-panel--progresso sdb-material">
           <PainelIndicadoresEsqueleto />
           <div className="sdb-panel__main">
             <div className="sdb-panel__block">

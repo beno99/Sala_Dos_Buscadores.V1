@@ -7,7 +7,7 @@ import { Icon } from "./Icon";
  * salvamento, indicador numérico e lista do histórico.
  */
 
-/** Status editorial pelo Badge com marcador (cheio, vazio, cadeado) e palavra. */
+/** Status editorial pelo Badge com marcador (cheio, meio, vazio) ou ícone (devolver, cadeado) e palavra. */
 export function SeloStatus({ status }: { status: StatusEditorial }) {
   if (status === "publicado") {
     return (
@@ -22,6 +22,22 @@ export function SeloStatus({ status }: { status: StatusEditorial }) {
       <span className="sdb-badge sdb-badge--neutral">
         <i className="sdb-badge__dot sdb-badge__dot--hollow" />
         Rascunho
+      </span>
+    );
+  }
+  if (status === "em_revisao") {
+    return (
+      <span className="sdb-badge">
+        <i className="sdb-badge__dot sdb-badge__dot--half" />
+        Em revisão
+      </span>
+    );
+  }
+  if (status === "reprovado") {
+    return (
+      <span className="sdb-badge sdb-badge--critical">
+        <Icon name="devolver" size="sm" />
+        Reprovado
       </span>
     );
   }
@@ -179,6 +195,17 @@ const ACAO_ROTULO: Record<RegistroAuditoria["acao"], string> = {
   "alterou-proveniencia": "Alterou a proveniência",
   "alterou-situacao-juridica": "Alterou a situação jurídica",
   "restaurou-acervo": "Restaurou o acervo de demonstração",
+  "enviou-para-revisao": "Enviou para revisão",
+  aprovou: "Aprovou",
+  reprovou: "Reprovou",
+  promoveu: "Promoveu a anfitrião",
+  rebaixou: "Tirou o papel de anfitrião",
+  convidou: "Convidou",
+  "revogou-convite": "Revogou o convite",
+  transferiu: "Transferiu",
+  "incluiu-na-comparacao": "Incluiu na comparação",
+  "removeu-da-comparacao": "Tirou da comparação",
+  "editou-perfil": "Editou o perfil",
 };
 
 export const rotuloAcao = (a: RegistroAuditoria["acao"]) => ACAO_ROTULO[a];

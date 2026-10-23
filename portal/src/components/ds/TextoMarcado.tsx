@@ -1,36 +1,43 @@
-import type { ReactNode } from "react";
-import type { TextoMarcado as Marcado } from "@/data/types";
+import { createElement, type ReactNode } from "react";
+import { renderizarTexto } from "@/design-system/marcacao.mjs";
 
-const TOKENS = /(\*[^*]+\*|_[^_]+_|\[\d+\])/g;
-
-/**
- * Renderiza o texto do acervo: *termo* vira <dfn> (termo próprio da tradição),
- * _obra_ vira <cite> e [n] vira a referência numerada da fonte (.sdb-ref).
- */
+/** A mesma gramática da biblioteca. React escapa texto; não há HTML do autor. */
 export function TextoMarcado({
   texto,
   hrefRef,
 }: {
-  texto: Marcado;
+  texto: string;
   hrefRef?: (n: number) => string;
 }): ReactNode {
-  const partes = texto.split(TOKENS);
-  let posicao = 0;
-  return partes.map((parte) => {
-    const key = `${posicao}`;
-    posicao += parte.length;
-    if (!parte) return null;
-    if (parte.startsWith("*") && parte.endsWith("*")) return <dfn key={key}>{parte.slice(1, -1)}</dfn>;
-    if (parte.startsWith("_") && parte.endsWith("_")) return <cite key={key}>{parte.slice(1, -1)}</cite>;
-    const ref = /^\[(\d+)\]$/.exec(parte);
-    if (ref) {
-      const n = Number(ref[1]);
-      return hrefRef ? (
-        <a key={key} className="sdb-ref" href={hrefRef(n)} aria-label={`Fonte ${n}`}>
+  return renderizarTexto(texto).map((p) => {
+    const key = p.inicio;
+    if (p.tipo === "texto") return p.texto;
+    if (p.tipo === "ref") {
+      const n = p.n ?? 0;
+      const destino = hrefRef?.(n);
+      return destino ? (
+        <a key={key} className="sdb-ref" href={destino} aria-label={`Fonte ${n}`}>
           {n}
         </a>
-      ) : null;
+      ) : (
+        <span key={key} className="sdb-ref">
+          <span className="sdb-sr">Fonte </span>
+          {n}
+        </span>
+      );
     }
-    return parte;
+    if (p.tipo === "a")
+      return (
+        <a
+          key={key}
+          className="sdb-link"
+          href={p.href}
+          target={p.href?.startsWith("/") ? undefined : "_blank"}
+          rel={p.href?.startsWith("/") ? undefined : "noopener noreferrer"}
+        >
+          {p.texto}
+        </a>
+      );
+    return createElement(p.tipo, { key }, p.texto);
   });
 }

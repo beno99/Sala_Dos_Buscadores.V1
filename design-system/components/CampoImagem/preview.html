@@ -1,0 +1,38 @@
+<!-- @dsCard group="Componentes básicos" height=620 subtitle="Envio de imagem com prévia e erro" -->
+<div class="sdb-stage">
+  <div class="sdb-material sdb-panel">
+    <div class="sdb-grid" style="--sdb-col:280px;gap:24px 16px">
+      <div class="sdb-field"><span class="sdb-label" id="ci1-l">Imagem da Sala <small>opcional</small></span>
+        <div class="sdb-upload" data-max-mb="5">
+          <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="ci1-l" aria-describedby="ci1-h"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b> ou arraste até aqui</span></label>
+          <figure class="sdb-upload__preview"><img alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name"></span><span class="sdb-upload__size"></span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-replace>Trocar</button><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
+        </div>
+        <p class="sdb-help" id="ci1-h">JPEG, PNG ou WebP, até 5 MB.</p>
+        <p class="sdb-error-msg" data-upload-error hidden><span data-icon="erro"></span><span><b>Erro:</b> <span data-upload-error-text></span></span></p>
+      </div>
+      <div class="sdb-field"><span class="sdb-label" id="ci2-l">Imagem do card <small>com imagem</small></span>
+        <div class="sdb-upload has-file" data-max-mb="5">
+          <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="ci2-l" aria-describedby="ci2-h"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b> ou arraste até aqui</span></label>
+          <figure class="sdb-upload__preview"><img src="../assets/images/corpus-hermeticum.webp" alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name">codice-ii-pagina-32.webp</span><span class="sdb-upload__size">412 KB</span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-replace>Trocar</button><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
+        </div>
+        <p class="sdb-help" id="ci2-h">JPEG, PNG ou WebP, até 5 MB.</p>
+        <p class="sdb-error-msg" data-upload-error hidden><span data-icon="erro"></span><span><b>Erro:</b> <span data-upload-error-text></span></span></p>
+      </div>
+      <div class="sdb-field"><span class="sdb-label" id="ci3-l">Thumb do artigo <small>erro</small></span>
+        <div class="sdb-upload is-error" data-max-mb="5">
+          <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="ci3-l" aria-describedby="ci3-e" aria-invalid="true"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b> ou arraste até aqui</span></label>
+          <figure class="sdb-upload__preview"><img alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name"></span><span class="sdb-upload__size"></span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-replace>Trocar</button><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
+        </div>
+        <p class="sdb-error-msg" id="ci3-e" data-upload-error><span data-icon="erro"></span><span><b>Erro:</b> <span data-upload-error-text>a imagem tem 7,2 MB; o limite é 5 MB.</span></span></p>
+      </div>
+      <div class="sdb-field"><span class="sdb-label" id="ci4-l">Avatar do anfitrião <small>quadrado</small></span>
+        <div class="sdb-upload sdb-upload--quadrado" data-max-mb="5">
+          <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="ci4-l"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b></span></label>
+          <figure class="sdb-upload__preview"><img alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name"></span><span class="sdb-upload__size"></span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
+        </div>
+        <p class="sdb-error-msg" data-upload-error hidden><span data-icon="erro"></span><span><b>Erro:</b> <span data-upload-error-text></span></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>SalaBuscadores.hydrate();</script>

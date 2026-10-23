@@ -19,6 +19,7 @@ vi.mock("next/headers", () => ({
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 const membro: Membro = {
+  id: "u-buscador",
   pseudonimo: "Buscador",
   email: CONTA_DEMONSTRACAO.email,
   papel: "membro",

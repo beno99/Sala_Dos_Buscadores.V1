@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { comparacaoDoTema, todasAsSalas } from "./catalogo";
+import { textoDoCorpo } from "./corpo";
 import { RESPOSTAS } from "./mock/assistente";
 import { CITACOES } from "./mock/citacoes";
 import { COMPARACOES } from "./mock/comparacoes";
@@ -24,9 +25,14 @@ describe("acervo simulado", () => {
     }
   });
 
-  it("lista as Salas em ordem alfabética, sem sugerir hierarquia", () => {
-    const nomes = todasAsSalas().map((s) => s.nome);
-    expect(nomes).toEqual([...nomes].sort((a, b) => a.localeCompare(b, "pt-BR")));
+  it("lista as Salas em ordem alfabética, sem sugerir hierarquia: oficiais e, depois, as de anfitriões", () => {
+    const salas = todasAsSalas();
+    const alfabetica = (nomes: string[]) => [...nomes].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const oficiais = salas.filter((s) => s.origem === "oficial").map((s) => s.nome);
+    const deAnfitrioes = salas.filter((s) => s.origem === "anfitriao").map((s) => s.nome);
+    expect(oficiais).toEqual(alfabetica(oficiais));
+    expect(deAnfitrioes).toEqual(alfabetica(deAnfitrioes));
+    expect(salas.map((s) => s.nome)).toEqual([...oficiais, ...deAnfitrioes]);
   });
 
   it("todo conteúdo tem metadados cruzados e proveniência (RF-11, RNF-DOM-01)", () => {
@@ -62,7 +68,7 @@ describe("acervo simulado", () => {
 
   it("nenhum texto afirma qual crença é verdadeira (RF-30, tom de voz)", () => {
     const textos = [
-      ...CONTEUDOS.flatMap((c) => c.corpo),
+      ...CONTEUDOS.flatMap((c) => textoDoCorpo(c.corpo)),
       ...RESPOSTAS.flatMap((r) => r.trechos.map((t) => t.texto)),
       ...COMPARACOES.flatMap((c) => c.respostas.map((r) => (r.vazia ? r.nota : r.resposta))),
     ];

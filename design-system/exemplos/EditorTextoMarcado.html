@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EditorTextoMarcado · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
-<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
-<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
 
 
 <link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
 </head>
 <body>
 <div class="sdb-stage">
@@ -19,13 +21,19 @@
     <div class="sdb-editor__block">
       <span class="sdb-editor__num" aria-hidden="true">1</span>
       <div class="sdb-editor__main">
-        <div class="sdb-editor__bar" role="toolbar" aria-label="Marcações do parágrafo 1">
-          <button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button"><dfn>Termo</dfn></button>
-          <button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button"><cite>Obra</cite></button>
-          <span class="sdb-footnote">Selecione o trecho e escolha a marcação.</span>
+        <div class="sdb-control sdb-control--area sdb-control--fmt">
+          <div class="sdb-fmt" role="toolbar" aria-label="Formatação do parágrafo 1" data-fmt-for="et-p1">
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="negrito" aria-pressed="false" aria-label="Negrito no parágrafo 1" data-tip="Negrito ⌘B"><span data-icon="negrito" class="sdb-icon--sm"></span></button>
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="link" aria-label="Link no parágrafo 1" data-tip="Link ⌘K"><span data-icon="link" class="sdb-icon--sm"></span></button>
+            <span class="sdb-fmt__sep" aria-hidden="true"></span>
+            <button class="sdb-fmt__btn" type="button" data-fmt="termo" aria-pressed="false" aria-label="Marcar termo da tradição no parágrafo 1"><dfn>Termo</dfn></button>
+            <button class="sdb-fmt__btn" type="button" data-fmt="obra" aria-pressed="false" aria-label="Marcar título de obra no parágrafo 1"><cite>Obra</cite></button>
+            <span class="sdb-fmt__sep" aria-hidden="true"></span>
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="limpar" aria-label="Limpar formatação do parágrafo 1" data-tip="Limpar formatação"><span data-icon="limparFormato" class="sdb-icon--sm"></span></button>
+          </div>
+          <textarea id="et-p1" aria-label="Parágrafo 1" rows="3">No ::Poimandres::, a alma sobe pelas sete esferas até a *Ogdóade*.</textarea>
         </div>
-        <div class="sdb-control sdb-control--area"><textarea aria-label="Parágrafo 1" rows="3">No _Poimandres_, a alma sobe pelas sete esferas até a *Ogdóade*.</textarea></div>
-        <p class="sdb-editor__preview">No <cite>Poimandres</cite>, a alma sobe pelas sete esferas até a <dfn>Ogdóade</dfn>.</p>
+        <div data-fmt-preview-for="et-p1" class="sdb-editor__preview">No <cite>Poimandres</cite>, a alma sobe pelas sete esferas até a <dfn>Ogdóade</dfn>.</div>
       </div>
       <div class="sdb-editor__tools">
         <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Subir parágrafo 1" disabled><span data-icon="chevronBaixo" class="sdb-icon--sm sdb-editor__up"></span></button>
@@ -34,6 +42,133 @@
       </div>
     </div>
     <button class="sdb-btn sdb-btn--tinted sdb-btn--sm" type="button" style="align-self:flex-start"><span data-icon="mais" class="sdb-icon--sm"></span>Adicionar parágrafo</button>
+  </div>
+  <div class="sdb-spec" style="max-width:760px"><span class="sdb-caption">Em blocos · corpo do artigo</span>
+  <div class="sdb-editor sdb-editor--blocos">
+    <div class="sdb-editor__block" data-tipo="paragrafo">
+      <span class="sdb-editor__num" aria-hidden="true">1</span>
+      <div class="sdb-editor__main">
+        <div class="sdb-editor__bar">
+          <span class="sdb-meta sdb-editor__type">Parágrafo · lead</span>
+        </div>
+        <div class="sdb-control sdb-control--area sdb-control--fmt">
+          <div class="sdb-fmt" role="toolbar" aria-label="Formatação do bloco 1" data-fmt-for="eb-1">
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="negrito" aria-pressed="false" aria-label="Negrito no bloco 1" data-tip="Negrito ⌘B"><span data-icon="negrito" class="sdb-icon--sm"></span></button>
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="link" aria-label="Link no bloco 1" data-tip="Link ⌘K"><span data-icon="link" class="sdb-icon--sm"></span></button>
+            <span class="sdb-fmt__sep" aria-hidden="true"></span>
+            <button class="sdb-fmt__btn" type="button" data-fmt="termo" aria-pressed="false" aria-label="Marcar termo da tradição no bloco 1"><dfn>Termo</dfn></button>
+            <button class="sdb-fmt__btn" type="button" data-fmt="obra" aria-pressed="false" aria-label="Marcar título de obra no bloco 1"><cite>Obra</cite></button>
+            <div class="sdb-menu-wrap">
+              <button class="sdb-fmt__btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Citar fonte no bloco 1">Citar fonte</button>
+              <div class="sdb-menu" role="menu">
+                <div class="sdb-menu__label">Obras escolhidas</div>
+                <button class="sdb-menu__item" role="menuitem" type="button" data-fmt-ref="1"><span><b>[1]</b> The Kybalion: The Definitive Edition</span></button>
+              </div>
+            </div>
+            <span class="sdb-fmt__sep" aria-hidden="true"></span>
+            <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="limpar" aria-label="Limpar formatação do bloco 1" data-tip="Limpar formatação"><span data-icon="limparFormato" class="sdb-icon--sm"></span></button>
+          </div>
+          <textarea id="eb-1" aria-label="Bloco 1, parágrafo de abertura (lead)" rows="3">::O Caibalion::, publicado em Chicago em 1908 por autores que assinam apenas como “Três Iniciados”, organiza seu ensinamento em **sete princípios**[1].</textarea>
+        </div>
+        <div class="sdb-field__foot">
+          <p class="sdb-help">O card mostra os primeiros 180 caracteres deste parágrafo.</p>
+          <span class="sdb-counter">148 caracteres</span>
+        </div>
+        <div data-fmt-preview-for="eb-1" class="sdb-editor__preview sdb-editor__preview--bloco"><p class="sdb-articlebody__lead"><cite>O Caibalion</cite>, publicado em Chicago em 1908 por autores que assinam apenas como “Três Iniciados”, organiza seu ensinamento em <strong>sete princípios</strong><a class="sdb-ref" href="#eb-fonte-1" aria-label="Fonte 1">1</a>.</p></div>
+      </div>
+      <div class="sdb-editor__tools">
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Subir bloco 1" disabled><span data-icon="chevronBaixo" class="sdb-icon--sm sdb-editor__up"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Descer bloco 1"><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Remover bloco 1"><span data-icon="lixeira" class="sdb-icon--sm"></span></button>
+      </div>
+    </div>
+    <div class="sdb-editor__insert">
+      <div class="sdb-menu-wrap">
+        <button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Adicionar bloco depois do bloco 1"><span data-icon="mais" class="sdb-icon--sm"></span>Adicionar</button>
+        <div class="sdb-menu" role="menu">
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Parágrafo</span><span data-icon="artigo"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Intertítulo</span><span data-icon="editar"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Destaque</span><span data-icon="fontePrimaria"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Imagem</span><span data-icon="imagem"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="sdb-editor__block" data-tipo="destaque">
+      <span class="sdb-editor__num" aria-hidden="true">2</span>
+      <div class="sdb-editor__main">
+        <div class="sdb-editor__bar">
+          <span class="sdb-meta sdb-editor__type">Destaque</span>
+        </div>
+        <div class="sdb-editor__fields">
+          <div class="sdb-control sdb-control--area sdb-control--fmt">
+            <div class="sdb-fmt" role="toolbar" aria-label="Formatação do bloco 2" data-fmt-for="eb-2">
+              <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="negrito" aria-pressed="false" aria-label="Negrito no bloco 2" data-tip="Negrito ⌘B"><span data-icon="negrito" class="sdb-icon--sm"></span></button>
+              <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="link" aria-label="Link no bloco 2" data-tip="Link ⌘K"><span data-icon="link" class="sdb-icon--sm"></span></button>
+              <span class="sdb-fmt__sep" aria-hidden="true"></span>
+              <button class="sdb-fmt__btn" type="button" data-fmt="termo" aria-pressed="false" aria-label="Marcar termo da tradição no bloco 2"><dfn>Termo</dfn></button>
+              <button class="sdb-fmt__btn" type="button" data-fmt="obra" aria-pressed="false" aria-label="Marcar título de obra no bloco 2"><cite>Obra</cite></button>
+              <button class="sdb-fmt__btn" type="button" aria-label="Citar fonte no bloco 2" data-tip="Escolha uma obra em Fontes" disabled>Citar fonte</button>
+              <span class="sdb-fmt__sep" aria-hidden="true"></span>
+              <button class="sdb-fmt__btn sdb-fmt__btn--icone" type="button" data-fmt="limpar" aria-label="Limpar formatação do bloco 2" data-tip="Limpar formatação"><span data-icon="limparFormato" class="sdb-icon--sm"></span></button>
+            </div>
+            <textarea id="eb-2" aria-label="Bloco 2, frase do destaque" rows="2">O que está em cima é como o que está embaixo, e o que está embaixo é como o que está em cima.</textarea>
+          </div>
+          <div class="sdb-field"><label class="sdb-label" for="eb-atrib">Atribuição</label><div class="sdb-control is-error"><input id="eb-atrib" value="" aria-invalid="true" aria-describedby="eb-atrib-e"></div><p class="sdb-error-msg" id="eb-atrib-e"><span data-icon="erro"></span><span><b>Erro:</b> diga de onde vem a frase. Ex.: O Caibalion, cap. II (1908).</span></p></div>
+        </div>
+        <div class="sdb-editor__preview sdb-editor__preview--bloco"><figure class="sdb-pullquote"><span class="sdb-pullquote__mark" aria-hidden="true">“</span><div><blockquote>O que está em cima é como o que está embaixo, e o que está embaixo é como o que está em cima.</blockquote><figcaption class="sdb-footnote">Falta a atribuição.</figcaption></div></figure></div>
+      </div>
+      <div class="sdb-editor__tools">
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Subir bloco 2"><span data-icon="chevronBaixo" class="sdb-icon--sm sdb-editor__up"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Descer bloco 2"><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Remover bloco 2"><span data-icon="lixeira" class="sdb-icon--sm"></span></button>
+      </div>
+    </div>
+    <div class="sdb-editor__insert">
+      <div class="sdb-menu-wrap">
+        <button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Adicionar bloco depois do bloco 2"><span data-icon="mais" class="sdb-icon--sm"></span>Adicionar</button>
+        <div class="sdb-menu" role="menu">
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Parágrafo</span><span data-icon="artigo"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Intertítulo</span><span data-icon="editar"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Destaque</span><span data-icon="fontePrimaria"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Imagem</span><span data-icon="imagem"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="sdb-editor__block" data-tipo="imagem">
+      <span class="sdb-editor__num" aria-hidden="true">3</span>
+      <div class="sdb-editor__main">
+        <div class="sdb-editor__bar"><span class="sdb-meta sdb-editor__type">Imagem</span></div>
+        <div class="sdb-editor__fields">
+          <div class="sdb-field"><span class="sdb-label" id="eb-img-l">Imagem</span>
+            <div class="sdb-upload has-file" data-max-mb="5">
+              <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="eb-img-l"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b> ou arraste até aqui</span></label>
+              <figure class="sdb-upload__preview"><img src="../assets/images/caibalion.webp" alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name">templo-sete-degraus.webp</span><span class="sdb-upload__size">286 KB</span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-replace>Trocar</button><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
+            </div>
+            <p class="sdb-help">JPEG, PNG ou WebP, até 5 MB. Só domínio público, licença aberta ou imagem sua; nunca gerada por IA.</p>
+          </div>
+          <div class="sdb-field"><label class="sdb-label" for="eb-alt">Texto alternativo</label><div class="sdb-control"><input id="eb-alt" value="Pintura de um templo no alto de sete degraus, cada um com o nome de uma operação alquímica"></div></div>
+          <div class="sdb-field"><label class="sdb-label" for="eb-cred">Crédito</label><div class="sdb-control"><input id="eb-cred" value="Pintura alquímica, provavelmente séc. XVII; acervo e autoria a confirmar."></div></div>
+          <div class="sdb-field"><label class="sdb-label" for="eb-leg">Legenda <small>opcional</small></label><div class="sdb-control"><input id="eb-leg" value="Templo no alto de sete degraus. Imagem de época, não pertence ao Caibalion."></div></div>
+        </div>
+      </div>
+      <div class="sdb-editor__tools">
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Subir bloco 3"><span data-icon="chevronBaixo" class="sdb-icon--sm sdb-editor__up"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Descer bloco 3" disabled><span data-icon="chevronBaixo" class="sdb-icon--sm"></span></button>
+        <button class="sdb-btn sdb-btn--icon sdb-btn--sm" type="button" aria-label="Remover bloco 3"><span data-icon="lixeira" class="sdb-icon--sm"></span></button>
+      </div>
+    </div>
+    <div class="sdb-editor__insert">
+      <div class="sdb-menu-wrap">
+        <button class="sdb-btn sdb-btn--plain sdb-btn--sm" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Adicionar bloco depois do bloco 3"><span data-icon="mais" class="sdb-icon--sm"></span>Adicionar</button>
+        <div class="sdb-menu" role="menu">
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Parágrafo</span><span data-icon="artigo"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Intertítulo</span><span data-icon="editar"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Destaque</span><span data-icon="fontePrimaria"></span></button>
+          <button class="sdb-menu__item" role="menuitem" type="button"><span>Imagem</span><span data-icon="imagem"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </div>
 <script>SalaBuscadores.hydrate();</script>

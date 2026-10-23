@@ -15,6 +15,7 @@ import {
   regraLimiteTrecho,
   regraProveniencia,
   regraSituacaoJuridica,
+  tamanhoReproduzido,
   temPendencia,
 } from "./checklist";
 import { LIMITE_TRECHO_PERMITIDO } from "./config";
@@ -122,6 +123,23 @@ describe("checklist editorial de artigo", () => {
     expect(temPendencia(checklistArtigo(longo))).toBe(false);
     expect(regraLimiteTrecho(artigoCompleto())).toBeNull();
     expect(regraLimiteTrecho({ ...longo, situacaoJuridica: { tipo: "dominio-publico" } })).toBeNull();
+  });
+
+  it("RF-15 com blocos: conta parágrafos, intertítulos e destaques; imagens não contam", () => {
+    const metade = "a".repeat(LIMITE_TRECHO_PERMITIDO / 2);
+    const comDestaque = artigoCompleto({
+      corpo: [metade, { tipo: "destaque", texto: `${metade}b`, atribuicao: "Poimandres, 26" }],
+    });
+    expect(tamanhoReproduzido(comDestaque)).toBe(LIMITE_TRECHO_PERMITIDO + 1);
+    expect(regraLimiteTrecho(comDestaque)?.estado).toBe("alerta");
+    const comImagem = artigoCompleto({
+      corpo: [
+        metade,
+        { tipo: "imagem", src: "/imagens/x.webp", alt: "a".repeat(2000), credito: "c".repeat(2000) },
+      ],
+    });
+    expect(tamanhoReproduzido(comImagem)).toBe(LIMITE_TRECHO_PERMITIDO / 2);
+    expect(regraLimiteTrecho(comImagem)).toBeNull();
   });
 
   it("RNF-DOM-03: tema divergente exige a nota que apresenta as leituras", () => {

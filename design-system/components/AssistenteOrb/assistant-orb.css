@@ -62,7 +62,7 @@ canvas[data-renderer="fallback"] { visibility: hidden; }
 .assistant-demo__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .assistant-demo__open { min-height: 48px; padding: 8px 24px; border: 0; border-radius: 999px; background: var(--prominent-fill); color: var(--on-prominent); font-size: 13px; font-weight: 500; }
 .orb-motion { display: inline-flex; justify-content: center; align-items: center; gap: 8px; min-height: 48px; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--ds-muted); font: 500 12px/1.4 var(--font-ui); cursor: pointer; }
-.orb-motion svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.orb-motion svg { width: 16px; height: 16px; fill: currentColor; }
 .orb-motion[aria-pressed="true"] { background: var(--ds-control); color: var(--label); }
 .assistant-demo__note { margin: 32px 0 0; color: var(--ds-muted); font-size: 12px; line-height: 1.6; }
 
@@ -101,13 +101,13 @@ canvas[data-renderer="fallback"] { visibility: hidden; }
 .assistant-chat__identity h2 { margin: 0; font-size: 14px; line-height: 1.5; font-weight: 550; }
 .assistant-chat__identity p { margin: 0; color: var(--ds-muted); font-size: 11px; line-height: 1.5; }
 .assistant-chat__icon { flex: none; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--ds-muted); }
-.assistant-chat__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.assistant-chat__icon svg { width: 20px; height: 20px; fill: currentColor; }
 .assistant-chat__scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 24px 16px; scrollbar-width: thin; scrollbar-color: var(--ds-edge) transparent; }
 .assistant-chat__welcome h3 { margin: 0 0 16px; max-width: 270px; font: 450 32px/1.1 var(--font-display-lower); letter-spacing: -.035em; }
 .assistant-chat__welcome p { margin: 0; color: var(--ds-muted); font-size: 13px; line-height: 1.65; }
 .assistant-chat__suggestions { display: grid; gap: 8px; margin-top: 24px; }
 .assistant-chat__suggestions button { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; padding: 8px 16px; border: 1px solid var(--ds-edge); border-radius: 16px; background: var(--ds-surface); color: var(--label); font-size: 12px; line-height: 1.5; text-align: left; }
-.assistant-chat__suggestions svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.assistant-chat__suggestions svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
 .assistant-chat__log { display: flex; flex-direction: column; gap: 24px; }
 .assistant-chat__message { max-width: 100%; font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
 .assistant-chat__message p { margin: 0; white-space: pre-wrap; }
@@ -121,7 +121,7 @@ canvas[data-renderer="fallback"] { visibility: hidden; }
 .assistant-chat__composer textarea { flex: 1; min-width: 0; height: 64px; min-height: 48px; max-height: 128px; resize: none; padding: 8px; border: 0; outline: none; background: transparent; color: var(--label); font: 400 16px/1.5 var(--font-ui); }
 .assistant-chat__composer textarea::placeholder { color: var(--ds-muted); }
 .assistant-chat__send { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--prominent-fill); color: var(--on-prominent); }
-.assistant-chat__send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.assistant-chat__send svg { width: 20px; height: 20px; fill: currentColor; }
 .assistant-chat__send:disabled { opacity: .35; cursor: default; }
 .assistant-chat__disclosure { margin: 8px 0 0; color: var(--ds-muted); font-size: 10px; line-height: 1.6; text-align: center; }
 .assistant-chat__motion { display: flex; justify-content: center; }

@@ -22,6 +22,8 @@ vi.mock("@/server/admin/acoes", () => ({
   salvarFonteAcao: vi.fn(),
   mudarStatusArtigoAcao: vi.fn(),
   mudarStatusVideoAcao: vi.fn(),
+  moverArtigoAcao: vi.fn(),
+  ligarVideoAcao: vi.fn(),
 }));
 
 function renderEditor(inicial = artigoVazio("corpus-hermeticum")) {
@@ -32,6 +34,7 @@ function renderEditor(inicial = artigoVazio("corpus-hermeticum")) {
       atualizadoEm={null}
       slugTravado={false}
       fontes={FONTES}
+      sala={{ slug: "corpus-hermeticum", nome: "Corpus Hermeticum", placa: "grafite" }}
     />,
   );
 }
@@ -79,5 +82,26 @@ describe("EditorArtigo", () => {
   it("com o checklist completo, Publicar deixa de estar bloqueado", () => {
     renderEditor(artigoCompleto());
     expect(screen.getByRole("button", { name: "Publicar" })).toHaveAttribute("aria-disabled", "false");
+  });
+
+  it("impede a publicação sem atribuição do destaque, alt ou crédito da imagem, e leva ao bloco", async () => {
+    const { user } = renderEditor(
+      artigoCompleto({
+        id: null,
+        corpo: [
+          "Segundo o _Tratado X_, o conhecimento de Deus é *silêncio divino*.",
+          { tipo: "destaque", texto: "O conhecimento é silêncio.", atribuicao: "" },
+          { tipo: "imagem", src: "/imagens/salas/corpus-hermeticum.webp", alt: "", credito: "" },
+        ],
+      }),
+    );
+    const checklist = screen.getByRole("region", { name: "Para publicar" });
+    expect(within(checklist).getByText(/Atribuição do destaque \(bloco 2\)/)).toBeInTheDocument();
+    expect(within(checklist).getByText(/Texto alternativo da imagem \(bloco 3\)/)).toBeInTheDocument();
+    expect(within(checklist).getByText(/Crédito da imagem \(bloco 3\)/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Publicar" }));
+    await waitFor(() => expect(screen.getByRole("textbox", { name: "Atribuição" })).toHaveFocus());
+    expect(screen.getByRole("textbox", { name: "Atribuição" })).toHaveAttribute("aria-invalid", "true");
+    expect(salvarArtigoAcao).not.toHaveBeenCalledWith(expect.anything(), "manual");
   });
 });

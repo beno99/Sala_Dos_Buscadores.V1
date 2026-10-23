@@ -6,3 +6,6 @@ Interrompe o fluxo para uma decisão (alerta) ou um formulário curto (sheet).
 - **Alerta** `--alert`: ícone em disco, título, texto e dois botões lado a lado (o seguro à esquerda). Destrutivo: `role="alertdialog"`, diga se é irreversível.
 - **Sheet** `.sdb-sheet`: barra com Cancelar · título · ação principal, como no iOS.
 - Materializa do centro (escala 0,92, desfoque 8 px) com mola; sai em 220 ms.
+
+## Paleta areia (out 2026)
+No Sólido claro, a superfície leva o degradê dourado `overlay-from` → `overlay-to` (Figma "Jornada do buscador"); listas e itens em foco por dentro usam `overlay-inset`. Nos outros temas, o material de antes.

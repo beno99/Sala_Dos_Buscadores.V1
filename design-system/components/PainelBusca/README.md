@@ -12,3 +12,6 @@ Sobreposição no topo da tela, aberta pela lupa da Barra superior ou por ⌘K /
 - O campo é um `combobox` com `aria-activedescendant`; ↑ ↓ navegam, ↵ abre, esc fecha e devolve o foco à lupa.
 - "Comparar" leva à Grade comparativa (`/comparar`). Busca por tema cobre o RF-17.
 - Sem resultados: diga o que tentar ("Nada no acervo com «x». Tente um tema: Morte, Alma, Meditação.").
+
+## Paleta areia (out 2026)
+No Sólido claro, barra e lista ficam em `card-warm`, o segmentado em `chip-warm` (texto em `on-chip-warm`), os blocos de ícone e as teclas em creme, e o fundo da página desfoca levemente sob o véu (opaco com `prefers-reduced-transparency`).

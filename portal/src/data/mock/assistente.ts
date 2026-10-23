@@ -33,7 +33,7 @@ export const RESPOSTAS: RespostaAssistente[] = [
         tipo: "editorial",
         rotulo: "Interpretação editorial · Helena Prado, Sala Nag Hammadi",
         texto:
-          "No _Apócrifo de João_, só sobem as almas que recebem o *espírito de vida*; as demais voltam a ser presas ao corpo até alcançarem o conhecimento.",
+          "No ::Apócrifo de João::, só sobem as almas que recebem o *espírito de vida*; as demais voltam a ser presas ao corpo até alcançarem o conhecimento.",
         refs: [3],
         sala: "nag-hammadi",
       },
@@ -148,7 +148,7 @@ export const RESPOSTAS: RespostaAssistente[] = [
         tipo: "editorial",
         rotulo: "Interpretação editorial · Verbete do glossário, Sala Nag Hammadi",
         texto:
-          "Nos textos gnósticos de Nag Hammadi, o *Pleroma* é a totalidade da esfera divina, habitada pelos *éons*. Segundo o _Apócrifo de João_, a queda de Sofia ocorre fora dele.",
+          "Nos textos gnósticos de Nag Hammadi, o *Pleroma* é a totalidade da esfera divina, habitada pelos *éons*. Segundo o ::Apócrifo de João::, a queda de Sofia ocorre fora dele.",
         refs: [1],
         sala: "nag-hammadi",
       },

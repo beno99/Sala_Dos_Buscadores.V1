@@ -6,6 +6,7 @@ import { NIVEL_ROTULO } from "@/data/rotulos";
 import { cx } from "@/lib/cx";
 import { formatarData, plural } from "@/lib/texto";
 import { Arc } from "./Arc";
+import { SeloProveniencia } from "./Selos";
 
 /**
  * Porta de entrada de uma Sala (CardSala 1.0, RF-09): mídia com a foto (ou a
@@ -21,8 +22,11 @@ export function CardSala({
   imagem,
   destaque,
   horizontal,
+  acaoAreia,
   acoes,
 }: {
+  /** "Entrar na Sala" como botão marrom (cards do Portal, layout do Figma). */
+  acaoAreia?: boolean;
   sala: SalaResumo;
   /** Progresso do membro: barra (0 a 1, decorativa) e legenda que carrega a informação. */
   progresso?: { pct: number; legenda: string };
@@ -52,6 +56,7 @@ export function CardSala({
         {sala.nome}
       </h3>
       <p className="sala__description">{sala.tradicao}</p>
+      {sala.origem === "anfitriao" && <SeloProveniencia tipo="anfitriao" compacto />}
       {progresso ? (
         <div className="sdb-progress">
           <span className="sdb-progress__track" aria-hidden="true">
@@ -76,8 +81,8 @@ export function CardSala({
       )}
       <Link className="sala__action" href={`/salas/${sala.slug}` as Route}>
         Entrar na sala<span className="sdb-sr"> {sala.nome}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 12h15m-6-6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+        <svg viewBox="0 0 256 256" aria-hidden="true">
+          <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
         </svg>
       </Link>
     </div>
@@ -85,7 +90,12 @@ export function CardSala({
 
   return (
     <article
-      className={cx("sala", destaque ? "sala--destaque" : "sala--normal", horizontal && "sala--horizontal")}
+      className={cx(
+        "sala",
+        destaque ? "sala--destaque" : "sala--normal",
+        horizontal && "sala--horizontal",
+        acaoAreia && "sala--acao-areia",
+      )}
       aria-labelledby={id}
     >
       <div className="sala__media">

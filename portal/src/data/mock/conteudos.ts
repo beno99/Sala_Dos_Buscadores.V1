@@ -28,9 +28,9 @@ export const CONTEUDOS: Conteudo[] = [
     autoria: EQUIPE("Nag Hammadi"),
     publicadoEm: "2026-08-20",
     corpo: [
-      "O _Evangelho de Tomé_ é o segundo tratado do Códice II (NHC II,2). Não narra a vida de Jesus: reúne 114 ditos introduzidos pela fórmula “Jesus disse”. Três fragmentos gregos encontrados em Oxirrinco, no Egito, no fim do século XIX, mostram que o texto circulou também em grego.",
+      "O ::Evangelho de Tomé:: é o segundo tratado do Códice II (NHC II,2). Não narra a vida de Jesus: reúne 114 ditos introduzidos pela fórmula “Jesus disse”. Três fragmentos gregos encontrados em Oxirrinco, no Egito, no fim do século XIX, mostram que o texto circulou também em grego.",
       "A datação divide os especialistas. Parte deles situa uma primeira coleção de ditos ainda no século I; outra parte defende uma composição no século II, dependente dos evangelhos canônicos. A Sala apresenta as duas leituras sem escolher entre elas.",
-      "Vários ditos tratam do *conhecimento* de si. No dito 3, o Reino “está dentro de vós e fora de vós”, e quem conhece a si mesmo será conhecido. Os editores observam que o texto não usa o vocabulário mitológico de outros tratados da coleção, como o _Apócrifo de João_.",
+      "Vários ditos tratam do *conhecimento* de si. No dito 3, o Reino “está dentro de vós e fora de vós”, e quem conhece a si mesmo será conhecido. Os editores observam que o texto não usa o vocabulário mitológico de outros tratados da coleção, como o ::Apócrifo de João::.",
     ],
     citacao: "tome-dito-2",
     fontes: ["meyer-nhs", "pagels-evangelhos"],
@@ -74,7 +74,7 @@ export const CONTEUDOS: Conteudo[] = [
     autoria: { nome: "Helena Prado", credencial: "Doutora em História Antiga" },
     publicadoEm: "2026-09-12",
     corpo: [
-      "O _Apócrifo de João_ sobreviveu em quatro cópias: três em Nag Hammadi (NHC II,1; III,1; IV,1) e uma no Códice de Berlim 8502. Essa quantidade de versões indica que o texto teve circulação relevante.",
+      "O ::Apócrifo de João:: sobreviveu em quatro cópias: três em Nag Hammadi (NHC II,1; III,1; IV,1) e uma no Códice de Berlim 8502. Essa quantidade de versões indica que o texto teve circulação relevante.",
       "Segundo o tratado, do Espírito invisível emanam os *éons*, que formam o *Pleroma*. O último deles, *Sofia*, age sem o consentimento de seu par e dá origem a *Ialdabaoth*, o *demiurgo*, que molda o mundo material e se declara o único deus.",
       "Na parte final, o texto descreve o destino das almas: as que recebem o espírito de vida sobem e são purificadas; as demais voltam a ser presas ao corpo até alcançarem o conhecimento. Estudiosos divergem sobre o quanto esse mito era lido de forma literal pelas comunidades que o copiaram.",
     ],
@@ -183,14 +183,35 @@ export const CONTEUDOS: Conteudo[] = [
     nivel: 1,
     formato: "texto",
     proveniencia: "curado",
-    duracaoMin: 9,
+    duracaoMin: 2,
     autoria: EQUIPE("O Caibalion"),
     publicadoEm: "2026-08-12",
     corpo: [
-      "O Caibalion organiza seu ensinamento em sete princípios: *mentalismo*, *correspondência*, vibração, polaridade, ritmo, causa e efeito e gênero.",
-      "O segundo princípio é resumido na fórmula “o que está em cima é como o que está embaixo”. O livro a apresenta como herança de Hermes Trismegisto.",
-      "Os editores registram que a relação entre esses princípios e os tratados herméticos antigos é contestada pela pesquisa: vários termos do livro não aparecem no Corpus Hermeticum.",
+      "::O Caibalion::, publicado em Chicago em 1908 por autores que assinam apenas como “Três Iniciados”, organiza seu ensinamento em sete princípios: mentalismo, correspondência, vibração, polaridade, ritmo, causa e efeito e gênero.",
+      "O primeiro deles, o *mentalismo*, é resumido na fórmula “O TODO é MENTE; o Universo é Mental”. Segundo o livro, tudo o que existe seria uma criação mental de um princípio único, que o texto chama de *O TODO*, e compreender esse princípio seria a chave para os demais.",
+      "O segundo, a *correspondência*, aparece na fórmula “o que está em cima é como o que está embaixo”. O livro a apresenta como herança de Hermes Trismegisto e a usa para ligar os planos físico, mental e espiritual.",
+      {
+        tipo: "destaque",
+        texto:
+          "O que está em cima é como o que está embaixo, e o que está embaixo é como o que está em cima.",
+        atribuicao: "::O Caibalion::, cap. II (1908), em tradução da equipe",
+      },
+      "Os princípios seguintes descrevem um mundo em movimento. A vibração afirma que nada está parado; a polaridade, que os opostos seriam graus de uma mesma coisa; o ritmo, que tudo oscila como um pêndulo. Causa e efeito negam o acaso, e o gênero descreve um par de forças que, segundo o livro, age em todos os planos.",
+      {
+        tipo: "imagem",
+        src: "/imagens/salas/caibalion.webp",
+        alt: "Pintura de um templo no alto de sete degraus, cada um com o nome de uma operação alquímica",
+        legenda:
+          "Templo no alto de sete degraus, cada um com o nome de uma operação alquímica. Imagem de época, não pertence ao Caibalion.",
+        credito: "Pintura alquímica, provavelmente séc. XVII; acervo e autoria a confirmar.",
+      },
+      { tipo: "intertitulo", texto: "O que a pesquisa diz" },
+      "Os editores registram que a relação entre esses princípios e os tratados herméticos antigos é contestada: vários termos do livro, como “O TODO” e o princípio de gênero, não aparecem no ::Corpus Hermeticum::.",
+      "Philip Deslippe, na edição crítica de 2011, relaciona o livro ao movimento do *Novo Pensamento* nos Estados Unidos e discute a hipótese de que William Walker Atkinson esteja por trás da assinatura coletiva. A Sala apresenta a autoria como hipótese, sem confirmação documental.",
     ],
+    divergencia:
+      "A ligação do Caibalion com o hermetismo antigo é afirmada pelo livro e contestada pela pesquisa. Veja as leituras das outras Salas em “Continuar a busca”, abaixo, antes de concluir.",
+    citacao: "caibalion-mentalismo",
     fontes: ["kybalion-1908", "deslippe-kybalion"],
   },
   {
@@ -343,7 +364,7 @@ export const CONTEUDOS: Conteudo[] = [
     autoria: { nome: "Helena Prado", credencial: "Doutora em História Antiga" },
     publicadoEm: "2026-07-30",
     corpo: [
-      "O _Apocalipse de Pedro_ foi composto provavelmente na primeira metade do século II. É conhecido por uma versão etíope completa e por um fragmento grego encontrado em Akhmim, no Egito, em 1886–1887.",
+      "O ::Apocalipse de Pedro:: foi composto provavelmente na primeira metade do século II. É conhecido por uma versão etíope completa e por um fragmento grego encontrado em Akhmim, no Egito, em 1886–1887.",
       "O texto narra visões de lugares de *castigo* e de *recompensa* para as almas depois da morte. O Fragmento Muratoriano, lista antiga de livros lidos pelas igrejas, menciona o Apocalipse de Pedro e registra que alguns não queriam que fosse lido.",
       "Pesquisadores apontam a influência dessas imagens em descrições cristãs posteriores do além. A Sala registra essa influência como leitura histórica, não como avaliação do texto.",
     ],

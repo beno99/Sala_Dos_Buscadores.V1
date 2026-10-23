@@ -13,6 +13,10 @@
     <div class="sdb-searchbar__foot" id="sb-foot"></div>
   </form>
   <p id="sb-msg" class="sdb-hint" aria-live="polite" style="padding:0 8px">Escreva uma pergunta ou escolha um tema para ver a resposta de cada Sala lado a lado.</p>
+
+  <h2 class="sdb-title-2" style="margin-top:16px">Compacta</h2>
+  <label class="sdb-searchfield"><span data-icon="busca"></span><span class="sdb-sr">Buscar na Biblioteca</span><input type="search" placeholder="Buscar na Biblioteca…" autocomplete="off"></label>
+  <p class="sdb-hint">Só o campo em cápsula, para filtrar uma página (Biblioteca, glossário). Sem modos nem sugestões; a busca global continua no ⌘K.</p>
 </div>
 <script>SalaBuscadores.hydrate();
 var mode = "tema", bar = document.getElementById("sb"), q = document.getElementById("sb-q"), msg = document.getElementById("sb-msg"), go = document.getElementById("sb-go");

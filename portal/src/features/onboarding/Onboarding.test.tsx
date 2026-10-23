@@ -16,6 +16,7 @@ vi.mock("./acoes", () => ({
 import { Onboarding } from "./Onboarding";
 
 const membro: Membro = {
+  id: "u-lia",
   pseudonimo: "Lia",
   email: "lia@exemplo.com",
   papel: "membro",
@@ -34,58 +35,60 @@ describe("Onboarding", () => {
     salvas.length = 0;
   });
 
+  const comecar = () => screen.getByRole("button", { name: "Começar" });
+
   it("anuncia a etapa e nada vem pré-selecionado", async () => {
     const { user, dialogo } = abrir();
     expect(within(dialogo).getByText("Etapa 1 de 4")).toBeInTheDocument();
     expect(
       within(dialogo).getByRole("heading", { name: "Boas-vindas à Sala dos Buscadores" }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Continuar" }));
+    expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
+    await user.click(comecar());
     expect(screen.getByText("Etapa 2 de 4")).toBeInTheDocument();
-    for (const chip of screen.getAllByRole("button", { pressed: false }))
-      expect(chip).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryAllByRole("button", { pressed: true })).toHaveLength(0);
+    await user.click(screen.getByRole("button", { name: "Voltar" }));
+    expect(screen.getByText("Etapa 1 de 4")).toBeInTheDocument();
   });
 
-  it("pular a religião salva só os interesses e mostra o resumo", async () => {
+  it("“Pular e ir ao Portal” fecha em qualquer etapa e guarda o que já foi escolhido", async () => {
     const { user, onConcluir } = abrir();
-    await user.click(screen.getByRole("button", { name: "Continuar" }));
+    await user.click(comecar());
     await user.click(screen.getByRole("button", { name: "Alma" }));
-    await user.click(screen.getByRole("button", { name: "Continuar" }));
+    await user.click(screen.getByRole("button", { name: "Pular e ir ao Portal" }));
+    expect(onConcluir).toHaveBeenCalledOnce();
+    expect(salvas).toEqual([{ temas: ["alma"], salas: [], conviccao: [], consentimento: false }]);
+  });
+
+  it("a convicção é escolha única e “Prefiro não informar” não pede consentimento", async () => {
+    const { user, onConcluir } = abrir();
+    await user.click(comecar());
+    await user.click(comecar());
     expect(screen.getByText(/Usamos só para sugerir conteúdos/)).toBeVisible();
-    for (const caixa of screen.getAllByRole("checkbox")) expect(caixa).not.toBeChecked();
-    await user.click(screen.getByRole("button", { name: "Pular" }));
+    for (const r of screen.getAllByRole("radio")) expect(r).not.toBeChecked();
+    await user.click(screen.getByRole("radio", { name: "Catolicismo" }));
+    await user.click(screen.getByRole("radio", { name: "Prefiro não informar" }));
+    expect(screen.getByRole("radio", { name: "Catolicismo" })).not.toBeChecked();
+    expect(screen.queryByRole("checkbox", { name: /Autorizo guardar/ })).not.toBeInTheDocument();
+    await user.click(comecar());
     expect(await screen.findByText("Etapa 4 de 4")).toBeInTheDocument();
-    expect(salvas.at(-1)).toMatchObject({ temas: ["alma"], conviccao: [] });
-    expect(screen.getByText("Não respondida")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Ir para o Portal" }));
+    expect(salvas.at(-1)).toMatchObject({ conviccao: ["nao-informar"], consentimento: false });
+    await user.click(comecar());
     expect(onConcluir).toHaveBeenCalled();
   });
 
   it("informar a religião pede consentimento antes de salvar", async () => {
     const { user } = abrir();
-    await user.click(screen.getByRole("button", { name: "Continuar" }));
-    await user.click(screen.getByRole("button", { name: "Pular por agora" }));
-    await user.click(screen.getByRole("checkbox", { name: "Budismo" }));
-    const continuar = screen.getByRole("button", { name: "Continuar" });
-    expect(continuar).toHaveAttribute("aria-disabled", "true");
-    await user.click(continuar);
+    await user.click(comecar());
+    await user.click(comecar());
+    await user.click(screen.getByRole("radio", { name: "Budismo" }));
+    expect(comecar()).toHaveAttribute("aria-disabled", "true");
+    await user.click(comecar());
     expect(salvas).toHaveLength(0);
     await user.click(screen.getByRole("checkbox", { name: /Autorizo guardar/ }));
-    expect(continuar).toHaveAttribute("aria-disabled", "false");
-    await user.click(continuar);
+    expect(comecar()).toHaveAttribute("aria-disabled", "false");
+    await user.click(comecar());
     expect(await screen.findByText("Etapa 4 de 4")).toBeInTheDocument();
     expect(salvas.at(-1)).toMatchObject({ conviccao: ["budismo"], consentimento: true });
-  });
-
-  it("“Prefiro não informar” desmarca as outras opções e não pede consentimento", async () => {
-    const { user } = abrir();
-    await user.click(screen.getByRole("button", { name: "Continuar" }));
-    await user.click(screen.getByRole("button", { name: "Pular por agora" }));
-    await user.click(screen.getByRole("checkbox", { name: "Catolicismo" }));
-    await user.click(screen.getByRole("checkbox", { name: "Prefiro não informar" }));
-    expect(screen.getByRole("checkbox", { name: "Catolicismo" })).not.toBeChecked();
-    expect(screen.queryByRole("checkbox", { name: /Autorizo guardar/ })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continuar" })).toHaveAttribute("aria-disabled", "false");
   });
 });

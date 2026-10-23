@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AvisoContextual · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<link rel="stylesheet" href="../components/EstadosInterface/estados-interface.css?v=3b79f636ba7c">
+<script src="../components/EstadosInterface/estados-interface.js?v=8cc36cc22b11"></script>
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <section class="sdb-ui-demo">
+    <div class="sdb-ui-notice">
+      <span data-ui-volume="escudo" data-ui-size="small"></span>
+      <div><strong>Sua busca, seu ritmo</strong><p>As salas apresentam diferentes tradições. Você escolhe o caminho que deseja explorar.</p></div>
+    </div>
+    <p class="sdb-hint">Aviso persistente e sereno. O texto comunica o significado completo; cor e ícone são complementares.</p>
+  </section>
+</div>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

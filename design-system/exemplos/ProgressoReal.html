@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProgressoReal · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<link rel="stylesheet" href="../components/EstadosInterface/estados-interface.css?v=3b79f636ba7c">
+<script src="../components/EstadosInterface/estados-interface.js?v=8cc36cc22b11"></script>
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <section class="sdb-ui-demo" aria-labelledby="progress-heading">
+    <h2 id="progress-heading" class="sdb-title-2">Uma descoberta de cada vez</h2>
+    <div id="progress-example" class="sdb-ui-progress">
+      <div><span>Sua trilha de introdução</span><strong data-ui-percent>33%</strong></div>
+      <progress value="1" max="3" aria-label="Sua trilha de introdução">33%</progress>
+      <small data-ui-progress-label>1 de 3 etapas concluídas</small>
+    </div>
+    <div class="sdb-ui-demo-checklist">
+      <label><input type="checkbox" checked>Conhecer a proposta do portal</label>
+      <label><input type="checkbox">Explorar uma sala</label>
+      <label><input type="checkbox">Escolher uma primeira leitura</label>
+    </div>
+    <p class="sdb-hint">As etapas desta prévia são demonstrativas. A porcentagem é calculada pelas caixas marcadas; nenhum temporizador inventa progresso.</p>
+  </section>
+</div>
+<script>
+document.querySelectorAll(".sdb-ui-demo-checklist input").forEach(input => input.addEventListener("change", () => {
+  const all = [...document.querySelectorAll(".sdb-ui-demo-checklist input")];
+  SalaInterface.atualizarProgresso(document.getElementById("progress-example"), all.filter(item => item.checked).length, all.length);
+}));
+</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

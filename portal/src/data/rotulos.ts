@@ -18,6 +18,7 @@ export const PROVENIENCIA_ROTULO: Record<Proveniencia, string> = {
   especialista: "Especialista",
   comunidade: "Comunidade",
   ia: "Síntese por IA",
+  anfitriao: "Anfitrião",
 };
 
 export const PROVENIENCIA_AJUDA: Record<Proveniencia, string> = {
@@ -26,6 +27,7 @@ export const PROVENIENCIA_AJUDA: Record<Proveniencia, string> = {
   especialista: "Assinado por pesquisador com credencial verificada.",
   comunidade: "Enviado por leitor e revisado antes de publicar.",
   ia: "Produzido pelo assistente a partir do acervo, sempre com fontes.",
+  anfitriao: "Escrito por um anfitrião na própria Sala e aprovado pela curadoria antes de ir ao ar.",
 };
 
 export const TIPO_ROTULO: Record<TipoConteudo, string> = {

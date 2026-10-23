@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EstadoSecao · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<link rel="stylesheet" href="../components/EstadosInterface/estados-interface.css?v=3b79f636ba7c">
+<script src="../components/EstadosInterface/estados-interface.js?v=8cc36cc22b11"></script>
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage">
+  <div class="sdb-ui-demo">
+    <div class="sdb-ui-demo-tabs" role="group" aria-label="Exemplo de estado">
+      <button type="button" class="sdb-ui-secondary" data-state="atividade" aria-pressed="true">Sem atividade</button>
+      <button type="button" class="sdb-ui-secondary" data-state="salvos" aria-pressed="false">Biblioteca vazia</button>
+      <button type="button" class="sdb-ui-secondary" data-state="busca" aria-pressed="false">Sem resultados</button>
+      <button type="button" class="sdb-ui-secondary" data-state="erro" aria-pressed="false">Falha ao carregar</button>
+    </div>
+    <section class="sdb-ui-empty" aria-labelledby="empty-title">
+      <span id="empty-icon" data-ui-volume="historico"></span>
+      <h3 id="empty-title">Sua jornada começa com uma descoberta</h3>
+      <p id="empty-description">Nenhuma atividade por aqui ainda. Explore uma sala e encontre um tema que desperte sua curiosidade.</p>
+      <button type="button" id="empty-action" class="sdb-ui-primary"><span>Explorar salas</span><span data-ui-icon="seta"></span></button>
+    </section>
+    <p id="empty-feedback" class="sdb-hint" role="status"></p>
+  </div>
+</div>
+<script>
+(() => {
+  const states = {
+    atividade: ["historico", "Sua jornada começa com uma descoberta", "Nenhuma atividade por aqui ainda. Explore uma sala e encontre um tema que desperte sua curiosidade.", "Explorar salas"],
+    salvos: ["pasta", "Um lugar para suas próximas leituras", "Você ainda não salvou conteúdos. Guarde o que fizer sentido para continuar a explorar depois.", "Encontrar conteúdos"],
+    busca: ["busca", "Ainda não encontramos esse caminho", "Nenhum resultado para esta busca. Experimente outra palavra ou volte a explorar todas as salas.", "Limpar busca"],
+    erro: ["alerta", "Erro: não foi possível abrir esta sala", "O conteúdo não carregou desta vez. Tente novamente para continuar sua leitura.", "Tentar novamente"],
+  };
+  document.querySelectorAll("[data-state]").forEach(button => button.addEventListener("click", () => {
+    const [icon, title, description, action] = states[button.dataset.state];
+    document.querySelectorAll("[data-state]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+    document.getElementById("empty-icon").innerHTML = SalaInterface.volume(icon);
+    document.getElementById("empty-title").textContent = title;
+    document.getElementById("empty-description").textContent = description;
+    document.querySelector("#empty-action span").textContent = action;
+    document.getElementById("empty-feedback").textContent = "";
+  }));
+  document.getElementById("empty-action").addEventListener("click", () => {
+    document.getElementById("empty-feedback").textContent = "Ação de exemplo: " + document.querySelector("#empty-action span").textContent + ". Na aplicação, conecte ao destino correspondente.";
+  });
+})();
+</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

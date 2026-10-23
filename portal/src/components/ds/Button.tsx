@@ -4,7 +4,17 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from 
 import { cx } from "@/lib/cx";
 import { Icon, type IconName } from "./Icon";
 
-export type ButtonVariant = "primary" | "secondary" | "glass" | "tinted" | "plain" | "destructive" | "clear";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "glass"
+  | "tinted"
+  | "plain"
+  | "destructive"
+  | "clear"
+  /** Dourado e areia escura das camadas douradas (onboarding). */
+  | "gold"
+  | "warm";
 
 interface Aparencia {
   variant?: ButtonVariant;

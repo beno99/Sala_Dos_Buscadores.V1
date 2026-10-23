@@ -105,6 +105,7 @@ export function MensagemAssistente({
                     capa={f.capa}
                     inicial={f.inicial}
                     href={f.href}
+                    proveniencia={f.proveniencia}
                   />
                 ))}
               </div>

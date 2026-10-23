@@ -38,7 +38,9 @@ export function gerarCsv<T>(colunas: Coluna<T>[], itens: T[]): string {
 
 export const STATUS_ROTULO: Record<StatusEditorial, string> = {
   rascunho: "Rascunho",
+  em_revisao: "Em revisão",
   publicado: "Publicado",
+  reprovado: "Reprovado",
   arquivado: "Arquivado",
 };
 

@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AreaTexto · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
-<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
-<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
 
 
 <link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
 </head>
 <body>
 <div class="sdb-stage">
@@ -27,6 +29,15 @@
   </div>
 </div>
 <script>SalaBuscadores.hydrate();</script>
+
+<div class="sdb-stage"><div class="sdb-field">
+<label class="sdb-label" for="area-marcada">Apresentação com marcação</label>
+<div class="sdb-control sdb-control--area sdb-control--fmt">
+<div class="sdb-fmt" role="toolbar" aria-label="Formatação da apresentação" data-fmt-for="area-marcada" data-fmt-inline></div>
+<textarea id="area-marcada" rows="3">Estudo o ::Corpus Hermeticum:: e seu vocabulário.</textarea>
+</div><div class="sdb-field__foot"><p class="sdb-help">Este campo é um parágrafo; formate trechos sem mudar a estrutura.</p><span class="sdb-counter" data-fmt-count-for="area-marcada"></span></div>
+<div class="sdb-editor__preview" data-fmt-preview-for="area-marcada"></div>
+</div></div><script>SalaBuscadores.hydrate();</script>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>
 <script>
 window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});

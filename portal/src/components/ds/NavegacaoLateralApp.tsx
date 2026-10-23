@@ -2,9 +2,10 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { type CSSProperties, type ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { cx } from "@/lib/cx";
 import { Arc } from "./Arc";
+import { Avatar } from "./Avatar";
 import { Button } from "./Button";
 import { Icon, type IconName } from "./Icon";
 import { type ItemMenu, Menu } from "./Menu";
@@ -19,6 +20,8 @@ export interface ItemNavegacaoApp {
   contagem?: number;
   /** Etiqueta curta ("nova"). */
   etiqueta?: string;
+  /** Ação de sair: texto em `danger`. */
+  perigo?: boolean;
 }
 
 export interface GrupoNavegacaoApp {
@@ -29,6 +32,10 @@ export interface GrupoNavegacaoApp {
 export interface PerfilLateral {
   iniciais: string;
   pseudonimo: string;
+  /** Papel em caixa alta sobre o nome ("Buscador", "Anfitrião", "Curadoria"). */
+  papel: string;
+  /** Foto que a própria pessoa enviou; sem ela, iniciais. */
+  foto?: string;
   /** "Membro desde set 2026". */
   descricao: string;
   menu: ItemMenu[];
@@ -111,18 +118,16 @@ export function NavegacaoLateralApp({
       </div>
 
       <Menu
-        triggerClassName="sdb-sidenav__profile"
+        triggerClassName="sdb-sidenav__profile sdb-sidenav__profile--foto"
         triggerLabel={`Conta de ${perfil.pseudonimo}`}
         titulo={`Conectado como ${perfil.pseudonimo}`}
         items={perfil.menu}
         trigger={
           <>
-            <span className="sdb-avatar" style={{ "--s": "36px" } as CSSProperties} aria-hidden="true">
-              {perfil.iniciais}
-            </span>
+            <Avatar iniciais={perfil.iniciais} foto={perfil.foto} tone="soft" />
             <span className="sdb-sidenav__who">
-              <b>{perfil.pseudonimo}</b>
-              <span>{perfil.descricao}</span>
+              <b>{perfil.papel}</b>
+              <span>{perfil.pseudonimo}</span>
             </span>
             <Icon name="chevronBaixo" size="sm" />
           </>
@@ -139,7 +144,11 @@ export function NavegacaoLateralApp({
               <>
                 <Icon name={i.icone} />
                 <span className="sdb-sidenav__label">{i.rotulo}</span>
-                {i.etiqueta && <span className="sdb-sidenav__tag">{i.etiqueta}</span>}
+                {i.etiqueta && (
+                  <span className={cx("sdb-sidenav__tag", i.etiqueta === "nova" && "sdb-sidenav__tag--nova")}>
+                    {i.etiqueta}
+                  </span>
+                )}
                 {i.contagem !== undefined && <span className="sdb-sidenav__count">{i.contagem}</span>}
               </>
             );
@@ -157,7 +166,7 @@ export function NavegacaoLateralApp({
               <button
                 key={i.rotulo}
                 type="button"
-                className="sdb-sidenav__item"
+                className={cx("sdb-sidenav__item", i.perigo && "sdb-sidenav__item--sair")}
                 onClick={i.onClick}
                 {...dicaSe(recolhida, i.rotulo)}
               >
@@ -203,7 +212,7 @@ export function ListaNavegacaoSheet({
               <button
                 key={i.rotulo}
                 type="button"
-                className="sdb-sidenav__item"
+                className={cx("sdb-sidenav__item", i.perigo && "sdb-sidenav__item--sair")}
                 onClick={() => {
                   onNavegar();
                   i.onClick?.();

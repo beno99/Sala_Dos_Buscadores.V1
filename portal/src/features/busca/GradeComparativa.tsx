@@ -16,8 +16,8 @@ const hrefLer = (r: RespostaComparada): Route =>
 
 function Seta() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 12h15m-6-6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 256 256" aria-hidden="true">
+      <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
     </svg>
   );
 }
@@ -82,8 +82,8 @@ function CardComparativo({
             aria-label={`Remover ${sala.nome} da comparação`}
             onClick={onRemover}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 6 12 12M18 6 6 18" strokeLinecap="round" />
+            <svg viewBox="0 0 256 256" aria-hidden="true">
+              <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" />
             </svg>
           </button>
         )}

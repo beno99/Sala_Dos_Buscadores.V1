@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChipTema · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=ef23aedf2e12">
-<link rel="stylesheet" href="../components/bundle.css?v=8852b0631680">
-<link rel="stylesheet" href="../assets/themes.css?v=8c2c029eb81b">
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
 
 
 <link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=27bc36d6d26a"></script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
 </head>
 <body>
 <div class="sdb-stage">
@@ -29,7 +31,13 @@
       <span class="sdb-chip sdb-chip--sm sdb-chip--static">Morte<button class="sdb-chip__x" aria-label="Remover filtro Morte" data-toast="Filtro Morte removido."><span data-icon="fechar" class="sdb-icon--sm"></span></button></span>
       <a href="#" class="sdb-chip sdb-chip--sm"><span data-arc class="" style=""></span>Corpus Hermeticum</a>
     </div></div>
+
+  <h2 class="sdb-title-2" style="margin-top:16px">Abas de Sala</h2>
+  <div style="max-width:420px"><div class="sdb-chiprow" role="group" aria-label="Sala"><button class="sdb-chip" type="button" aria-pressed="true">Todas <span class="sdb-count">20</span></button><button class="sdb-chip" type="button" aria-pressed="false">Apócrifos <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Nag Hammadi <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Corpus Hermeticum <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Caibalion <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Urântia <span class="sdb-count">4</span></button></div></div>
+  <p class="sdb-hint">Seleção única com contagem, em <code>.sdb-chiprow</code>: sem quebra, rola na horizontal quando não cabe. Ordem alfabética, que não indica importância.</p>
 </div>
+<h2 class="sdb-title-2" style="margin-top:16px">Areia (filtro com contagem)</h2>
+  <div class="sdb-row" style="gap:8px"><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Morte <span class="sdb-count">6</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">8</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="true">Conhecimento interior <span class="sdb-count">12</span></button></div>
 <script>SalaBuscadores.hydrate();</script>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>
 <script>

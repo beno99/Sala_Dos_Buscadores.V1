@@ -8,16 +8,18 @@ import { Drawer } from "@/components/ds/Drawer";
 import { type ItemNavegacao, NavegacaoLateral } from "@/components/ds/NavegacaoLateral";
 
 interface Contagens {
-  artigos: number;
-  videos: number;
+  /** Salas (oficiais e de anfitriões). */
+  salas: number;
   fontes: number;
+  /** Salas e artigos de anfitriões esperando decisão. */
+  revisao: number;
 }
 
 /*
- * Seções da curadoria. Fora desta etapa, cada uma entra aqui quando existir:
- * TODO(admin-salas): "Salas e temas" (edição de Salas e temas).
+ * Seções da curadoria. A curadoria trabalha a partir da Sala: artigos e
+ * vídeos vivem dentro de cada Sala (/admin/salas/[slug]); não há listas soltas.
+ * Fora desta etapa, cada seção entra aqui quando existir:
  * TODO(admin-glossario): "Glossário" (RF-14).
- * TODO(admin-usuarios): "Usuários e papéis" (RF-08), sem ranking nem pontuação de pessoas (RNF-DOM-05).
  * TODO(admin-moderacao): "Moderação" de comentários (RF-32 a RF-36).
  * TODO(admin-comparacoes): "Comparações e assistente" (edição da grade e das respostas curadas).
  */
@@ -26,18 +28,18 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
   return [
     { href: "/admin" as Route, rotulo: "Painel", icone: "grade", ativo: caminho === "/admin" },
     {
-      href: "/admin/artigos" as Route,
-      rotulo: "Artigos",
-      icone: "artigo",
-      ativo: em("/admin/artigos"),
-      contagem: c.artigos,
+      href: "/admin/salas" as Route,
+      rotulo: "Salas",
+      icone: "salas",
+      ativo: em("/admin/salas"),
+      contagem: c.salas,
     },
     {
-      href: "/admin/videos" as Route,
-      rotulo: "Vídeos",
-      icone: "video",
-      ativo: em("/admin/videos"),
-      contagem: c.videos,
+      href: "/admin/anfitrioes" as Route,
+      rotulo: "Revisão de anfitriões",
+      icone: "anfitriao",
+      ativo: em("/admin/anfitrioes"),
+      contagem: c.revisao || undefined,
     },
     {
       href: "/admin/fontes" as Route,
@@ -51,6 +53,13 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       rotulo: "Destaques",
       icone: "destaques",
       ativo: em("/admin/destaques"),
+    },
+    { href: "/admin/usuarios" as Route, rotulo: "Usuários", icone: "pessoa", ativo: em("/admin/usuarios") },
+    {
+      href: "/admin/caixa-saida" as Route,
+      rotulo: "Caixa de saída",
+      icone: "enviar",
+      ativo: em("/admin/caixa-saida"),
     },
     {
       href: "/admin/historico" as Route,

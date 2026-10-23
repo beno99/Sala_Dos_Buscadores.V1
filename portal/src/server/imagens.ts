@@ -17,3 +17,13 @@ export function imagem(pasta: PastaImagem, nome: string): string | undefined {
   }
   return undefined;
 }
+
+/** Imagem da Sala: a enviada pelo anfitrião (/midia) ou a foto de public/imagens/salas. */
+export function imagemDaSala(sala: { slug: string; imagem?: string }): string | undefined {
+  return sala.imagem ?? imagem("salas", sala.slug);
+}
+
+/** Imagem do card do conteúdo: a enviada pelo anfitrião ou a foto de public/imagens/conteudos. */
+export function imagemDoCard(conteudo: { slug: string; imagem?: string }): string | undefined {
+  return conteudo.imagem ?? imagem("conteudos", conteudo.slug);
+}

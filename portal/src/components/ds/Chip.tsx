@@ -11,14 +11,16 @@ interface ChipProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"
   small?: boolean;
   /** Mostra o arco antes do rótulo (chips de Sala). */
   arc?: boolean;
+  /** Filtro por tema com contagem, em areia dourada (ChipTema › --sand). */
+  areia?: boolean;
 }
 
 /** Chip de tema transversal ou de Sala, clicável (ChipTema). */
-export function Chip({ pressed, count, small, arc, className, children, ...rest }: ChipProps) {
+export function Chip({ pressed, count, small, arc, areia, className, children, ...rest }: ChipProps) {
   return (
     <button
       type="button"
-      className={cx("sdb-chip", small && "sdb-chip--sm", className)}
+      className={cx("sdb-chip", small && "sdb-chip--sm", areia && "sdb-chip--sand", className)}
       aria-pressed={pressed}
       {...rest}
     >
@@ -35,16 +37,26 @@ export function ChipLink({
   small,
   arc,
   count,
+  areia,
+  atual,
   children,
 }: {
   href: Route;
+  /** Filtro escolhido (pintado como selecionado, aria-current). */
+  atual?: boolean;
   small?: boolean;
+  /** Em areia dourada (ChipTema › --sand), como nos atalhos de "Continuar a busca". */
+  areia?: boolean;
   arc?: boolean;
   count?: number;
   children: ReactNode;
 }) {
   return (
-    <Link href={href} className={cx("sdb-chip", small && "sdb-chip--sm")}>
+    <Link
+      href={href}
+      className={cx("sdb-chip", small && "sdb-chip--sm", areia && "sdb-chip--sand")}
+      aria-current={atual ? "true" : undefined}
+    >
       {arc && <Arc />}
       {children}
       {count !== undefined && <span className="sdb-count">{count}</span>}

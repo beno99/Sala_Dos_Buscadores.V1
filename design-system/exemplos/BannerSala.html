@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BannerSala · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
+<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+<link rel="stylesheet" href="../components/CardVideo/card-video.css?v=b537fd317c40">
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-stage" style="container-type:inline-size;gap:32px">
+  <figure class="sdb-roombanner">
+    <div class="video-embed__frame"><img src="../assets/images/corpus-hermeticum.webp" alt="Gravura de um astrônomo junto a uma esfera armilar num observatório, com pirâmides ao fundo" style="object-position:45% 55%"></div>
+    <figcaption class="sdb-footnote sdb-roombanner__credit">Gravura do séc. XIX, frequentemente identificada como Hiparco em Alexandria; atribuição a confirmar.</figcaption>
+  </figure>
+  <figure class="sdb-roombanner">
+    <div class="video-embed__frame"><div class="sdb-plate sdb-plate--bordo" aria-hidden="true"><span data-arc="line" data-on="bordo"></span></div></div>
+  </figure>
+  <div style="container-type:inline-size;max-width:480px">
+    <figure class="sdb-roombanner">
+      <div class="video-embed__frame"><div class="sdb-plate sdb-plate--grafite" aria-hidden="true"><span data-arc="line" data-on="grafite"></span></div></div>
+    </figure>
+  </div>
+  <p class="sdb-hint">3:1 no container largo; 2:1 abaixo de 900 px; 16:10 abaixo de 520 px (a terceira, num container de 480 px).</p>
+</div>
+<script>SalaBuscadores.hydrate();</script>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+</body>
+</html>

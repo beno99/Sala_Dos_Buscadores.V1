@@ -1,0 +1,129 @@
+/* Perfil público: composição do frame Jornada do buscador / Perfil (19537:23004). */
+.sdb-publicprofile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-8);
+  container-type: inline-size;
+}
+
+.sdb-publicprofile .sdb-profilehead__cover {
+  aspect-ratio: 4 / 1;
+  box-shadow: none;
+}
+
+.sdb-publicprofile .sdb-profilehead__row {
+  padding-inline: var(--space-7) 0;
+}
+
+.sdb-publicprofile .sdb-profilehead__photo .sdb-avatar {
+  --s: 176px;
+  box-shadow: 0 0 0 var(--space-2) var(--bg-canvas), var(--shadow-float);
+}
+
+.sdb-publicprofile .sdb-profilehead__info {
+  gap: var(--space-2);
+}
+
+.sdb-publicprofile .sdb-profilehead__stats {
+  margin-top: var(--space-2);
+}
+
+.sdb-publicprofile__section {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sdb-publicprofile__heading {
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--separator);
+}
+
+.sdb-publicprofile__about {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-7);
+  padding: var(--space-7);
+  border-radius: var(--radius-lg);
+  background: var(--material-regular);
+}
+
+.sdb-publicprofile__presentation,
+.sdb-publicprofile__details,
+.sdb-publicprofile__detail {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.sdb-publicprofile__presentation > p,
+.sdb-publicprofile__details p,
+.sdb-publicprofile__detail > h3 {
+  margin: 0;
+}
+
+.sdb-publicprofile__presentation > .sdb-body {
+  font-family: var(--font-reading);
+  font-size: 1.375rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.sdb-publicprofile__details {
+  gap: var(--space-6);
+  padding-left: var(--space-7);
+  border-left: 1px solid var(--separator);
+}
+
+.sdb-publicprofile__detail {
+  gap: var(--space-2);
+}
+
+.sdb-publicprofile__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.sdb-publicprofile__tags .sdb-badge {
+  white-space: normal;
+}
+
+@container (max-width: 760px) {
+  .sdb-publicprofile .sdb-profilehead__row {
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-inline: var(--space-2);
+  }
+
+  .sdb-publicprofile .sdb-profilehead__photo {
+    margin-top: calc(-1 * var(--space-8));
+  }
+
+  .sdb-publicprofile .sdb-profilehead__photo .sdb-avatar {
+    --s: 112px;
+  }
+
+  .sdb-publicprofile .sdb-profilehead__info,
+  .sdb-publicprofile .sdb-profilehead__actions {
+    padding-top: 0;
+  }
+
+  .sdb-publicprofile__about {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    padding: var(--space-6);
+  }
+
+  .sdb-publicprofile__details {
+    padding-top: var(--space-6);
+    padding-left: 0;
+    border-top: 1px solid var(--separator);
+    border-left: 0;
+  }
+}

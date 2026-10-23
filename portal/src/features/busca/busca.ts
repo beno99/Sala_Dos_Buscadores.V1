@@ -1,6 +1,22 @@
-import { comparacaoDoTema, salaPorSlug, temaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
+import {
+  comparacaoDoTema,
+  salaPorSlug,
+  salasNaComparacao,
+  temaPorSlug,
+  todasAsSalas,
+  todosOsTemas,
+} from "@/data/catalogo";
 import { NIVEL_ROTULO } from "@/data/rotulos";
-import type { Comparacao, Conteudo, Formato, Nivel, SalaSlug, TemaSlug, Video } from "@/data/types";
+import type {
+  Comparacao,
+  Conteudo,
+  Formato,
+  Nivel,
+  RespostaComparada,
+  SalaSlug,
+  TemaSlug,
+  Video,
+} from "@/data/types";
 import { normalizar } from "@/lib/texto";
 
 /*
@@ -191,9 +207,65 @@ function aplicar(f: FiltrosBusca, acervo: AcervoBusca, ignorar?: Faceta): ItemRe
   });
 }
 
+/**
+ * Colunas das Salas de anfitrião que a curadoria incluiu na comparação
+ * (`naComparacao`): a leitura mais recente da Sala sobre o tema, com o selo
+ * de anfitrião; sem leitura, a coluna diz isso e não preenche a lacuna.
+ */
+export function respostasDeAnfitrioes(tema: TemaSlug, acervo: AcervoBusca): RespostaComparada[] {
+  return salasNaComparacao()
+    .filter((s) => s.origem === "anfitriao")
+    .map((sala): RespostaComparada => {
+      const leitura = acervo.conteudos
+        .filter((c) => c.sala === sala.slug && c.temas.includes(tema))
+        .sort((a, b) => b.publicadoEm.localeCompare(a.publicadoEm))[0];
+      if (!leitura) {
+        return {
+          sala: sala.slug,
+          vazia: true,
+          nota: "Esta Sala ainda não tem uma leitura sobre este tema.",
+          linkRotulo: "Entrar na Sala",
+        };
+      }
+      return {
+        sala: sala.slug,
+        resposta: leitura.resumo,
+        nivel: leitura.nivel,
+        proveniencia: leitura.proveniencia,
+        referencia: `${leitura.titulo} · ${leitura.autoria.nome}`,
+        conteudo: leitura.slug,
+      };
+    });
+}
+
+/** Texto da coluna de uma Sala oficial que ainda não tem resposta curada para o tema. */
+export const NOTA_SEM_LEITURA_CURADA = "Sem leitura curada para este tema ainda.";
+
+/**
+ * Salas oficiais que entram na grade sem resposta curada (uma Sala nova, por
+ * exemplo): a coluna aparece em estado vazio e diz isso, sem buraco nem erro.
+ */
+export function colunasSemLeituraCurada(curada: Comparacao): RespostaComparada[] {
+  const presentes = new Set(curada.respostas.map((r) => r.sala));
+  return salasNaComparacao()
+    .filter((s) => s.origem === "oficial" && !presentes.has(s.slug))
+    .map((s) => ({ sala: s.slug, vazia: true, nota: NOTA_SEM_LEITURA_CURADA, linkRotulo: "Entrar na Sala" }));
+}
+
 export function buscar(f: FiltrosBusca, acervo: AcervoBusca): ResultadoBusca {
   const tema = detectarTemas(f.q)[0] ?? f.temas[0] ?? null;
-  const base = tema ? (comparacaoDoTema(tema) ?? null) : null;
+  const curada = tema ? (comparacaoDoTema(tema) ?? null) : null;
+  const base =
+    curada && tema
+      ? {
+          ...curada,
+          respostas: [
+            ...curada.respostas,
+            ...colunasSemLeituraCurada(curada),
+            ...respostasDeAnfitrioes(tema, acervo),
+          ],
+        }
+      : curada;
   // O filtro de Sala tira colunas da grade; os demais filtros refinam só a lista.
   const comparacao =
     base && f.salas.length

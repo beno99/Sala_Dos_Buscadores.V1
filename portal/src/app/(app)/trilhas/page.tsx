@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Alerta } from "@/components/ds/Alerta";
+import { EstadoSecao } from "@/components/ds/EstadosInterface";
 
 export const metadata: Metadata = { title: "Trilhas" };
 
@@ -11,7 +11,11 @@ export default function Pagina() {
         Trilhas
       </h1>
       <p className="sdb-body-sm sdb-secondary">Trilhas de estudo por Sala, do iniciante ao avançado.</p>
-      <Alerta title="Seção em preparação">Esta seção entra na próxima etapa do redesenho do portal.</Alerta>
+      <EstadoSecao
+        simbolo="livro"
+        titulo="Seção em preparação"
+        descricao="Esta seção entra na próxima etapa do redesenho do portal."
+      />
     </section>
   );
 }

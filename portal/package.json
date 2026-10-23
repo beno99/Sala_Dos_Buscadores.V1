@@ -23,7 +23,8 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "check": "npm run ds:check && npm run lint && npm run typecheck && npm run test"
+    "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck && npm run test",
+    "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
   },
   "dependencies": {
     "next": "16.3.6",

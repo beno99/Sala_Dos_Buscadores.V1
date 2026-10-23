@@ -2,11 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import type { FormArtigo, FormFonte, FormVideo } from "@/features/admin/formularios";
+import type { FormSalaOficial } from "@/features/admin/regras/sala";
+import type { Membro } from "@/features/auth/contas";
 import type { GrupoVaga } from "@/features/destaques/vagas";
 import { AcessoNegado, exigirAdmin } from "../sessao";
 import * as destaques from "./destaques";
 import type { AcaoStatus, ModoSalvar, ResultadoAcao } from "./editorial";
 import * as editorial from "./editorial";
+import * as salas from "./salas";
 
 /*
  * Server Actions da curadoria. Podem ser chamadas direto por POST, então cada
@@ -15,10 +18,21 @@ import * as editorial from "./editorial";
  * precisa aparecer na mesma hora.
  */
 
-async function comAdmin<T>(fazer: (quem: string) => ResultadoAcao<T>): Promise<ResultadoAcao<T>> {
-  let quem: string;
+async function comAdmin<T>(
+  fazer: (quem: string) => ResultadoAcao<T>,
+  opcoes: { revalidar?: boolean } = {},
+): Promise<ResultadoAcao<T>> {
+  return comConta((admin) => fazer(admin.pseudonimo), opcoes);
+}
+
+/** Como comAdmin, mas entrega a conta (id e pseudônimo): imagens enviadas são da conta. */
+async function comConta<T>(
+  fazer: (admin: Membro) => ResultadoAcao<T>,
+  { revalidar = true }: { revalidar?: boolean } = {},
+): Promise<ResultadoAcao<T>> {
+  let admin: Membro;
   try {
-    quem = (await exigirAdmin()).pseudonimo;
+    admin = await exigirAdmin();
   } catch (e) {
     if (e instanceof AcessoNegado)
       return {
@@ -27,13 +41,41 @@ async function comAdmin<T>(fazer: (quem: string) => ResultadoAcao<T>): Promise<R
       };
     throw e;
   }
-  const resultado = fazer(quem);
-  if (resultado.ok) revalidatePath("/", "layout");
+  const resultado = fazer(admin);
+  if (resultado.ok && revalidar) revalidatePath("/", "layout");
   return resultado;
 }
 
+/*
+ * O rascunho salvo sozinho não muda o portal, então não invalida a página:
+ * invalidar remontaria o editor no meio da digitação (a URL já trocou de /novo
+ * para /[id]). Item publicado só muda com o salvamento manual, que invalida.
+ */
 export async function salvarArtigoAcao(form: FormArtigo, modo: ModoSalvar) {
-  return comAdmin((quem) => editorial.salvarArtigo(form, quem, modo));
+  return comConta((admin) => editorial.salvarArtigo(form, admin.pseudonimo, modo, admin.id), {
+    revalidar: modo === "manual",
+  });
+}
+
+export async function moverArtigoAcao(id: string, destino: string) {
+  return comAdmin((quem) => editorial.moverArtigo(String(id), String(destino), quem));
+}
+
+export async function ligarVideoAcao(videoId: string, artigoId: string, ligar: boolean) {
+  return comAdmin((quem) => editorial.ligarVideo(String(videoId), String(artigoId), ligar === true, quem));
+}
+
+// ---------- Salas oficiais ----------
+
+export async function salvarSalaOficialAcao(form: FormSalaOficial, modo: ModoSalvar) {
+  return comConta((admin) => salas.salvarSalaOficial(form, admin, modo), { revalidar: modo === "manual" });
+}
+
+export async function mudarStatusSalaAcao(id: string, acao: salas.AcaoSala) {
+  if (acao !== "publicar" && acao !== "arquivar" && acao !== "restaurar") {
+    return { ok: false as const, mensagem: "Erro: ação desconhecida." };
+  }
+  return comAdmin((quem) => salas.mudarStatusSala(String(id), acao, quem));
 }
 
 export async function mudarStatusArtigoAcao(id: string, acao: AcaoStatus) {
@@ -45,7 +87,7 @@ export async function duplicarArtigoAcao(id: string) {
 }
 
 export async function salvarVideoAcao(form: FormVideo, modo: ModoSalvar) {
-  return comAdmin((quem) => editorial.salvarVideo(form, quem, modo));
+  return comAdmin((quem) => editorial.salvarVideo(form, quem, modo), { revalidar: modo === "manual" });
 }
 
 export async function mudarStatusVideoAcao(id: string, acao: AcaoStatus) {

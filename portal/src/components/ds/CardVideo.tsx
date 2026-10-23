@@ -5,7 +5,7 @@ import { formatarData } from "@/lib/texto";
 import { Arc } from "./Arc";
 
 /** "24:10" → "24 minutos e 10 segundos", para o leitor de tela. */
-function duracaoPorExtenso(duracao: string): string {
+export function duracaoPorExtenso(duracao: string): string {
   const [min = 0, seg = 0] = duracao.split(":").map(Number);
   const partes = [];
   if (min) partes.push(`${min} ${min === 1 ? "minuto" : "minutos"}`);
@@ -28,8 +28,8 @@ export function CardVideo({ video }: { video: Video }) {
   const conteudoAcao = (
     <>
       Assistir no YouTube
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M14 4h6v6M20 4l-9 9M10 5H5v15h15v-5" strokeLinecap="round" strokeLinejoin="round" />
+      <svg viewBox="0 0 256 256" aria-hidden="true">
+        <path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z" />
       </svg>
     </>
   );
@@ -53,9 +53,8 @@ export function CardVideo({ video }: { video: Video }) {
         <div className="video__shade" aria-hidden="true" />
         <div className="video__top">
           <span className="video__duration">
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <circle cx="10" cy="10" r="7.25" />
-              <path d="M10 5.5V10l3 2" strokeLinecap="round" />
+            <svg viewBox="0 0 256 256" aria-hidden="true">
+              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z" />
             </svg>
             <span aria-hidden="true">{video.duracao}</span>
             <span className="sdb-sr">Duração: {duracaoPorExtenso(video.duracao)}</span>

@@ -1,20 +1,12 @@
 "use client";
-
-import { Alerta } from "@/components/ds/Alerta";
-import { Button } from "@/components/ds/Button";
-
-export default function ErroBusca({ reset }: { error: Error; reset: () => void }) {
+import { EstadoSecao } from "@/components/ds/EstadosInterface";
+export default function Erro({ retry }: { error: Error; retry: () => void }) {
   return (
-    <Alerta
-      variant="error"
-      title="Erro: não foi possível consultar as Salas"
-      actions={
-        <Button variant="destructive" size="sm" icon="regenerar" onClick={reset}>
-          Tentar de novo
-        </Button>
-      }
-    >
-      A consulta não terminou. Tente de novo; se o erro continuar, volte à página das Salas e escolha um tema.
-    </Alerta>
+    <EstadoSecao
+      simbolo="alerta"
+      titulo="Erro: não foi possível consultar as Salas"
+      descricao="A consulta não terminou. Tente de novo; se o erro continuar, volte à página das Salas e escolha um tema."
+      acao={{ rotulo: "Tentar de novo", executar: retry }}
+    />
   );
 }

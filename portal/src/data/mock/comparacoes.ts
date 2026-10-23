@@ -14,7 +14,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "apocrifos-cristianismo-primitivo",
         resposta:
-          "O _Apocalipse de Pedro_ (séc. II) narra visões de lugares de *castigo* e de *recompensa* para as almas. No _Evangelho de Maria_, a alma sobe e responde às potências que tentam retê-la.",
+          "O ::Apocalipse de Pedro:: (séc. II) narra visões de lugares de *castigo* e de *recompensa* para as almas. No ::Evangelho de Maria::, a alma sobe e responde às potências que tentam retê-la.",
         nivel: 2,
         proveniencia: "especialista",
         referencia: "Apocalipse de Pedro, versão etíope · Evangelho de Maria, BG 8502",
@@ -23,7 +23,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "nag-hammadi",
         resposta:
-          "Em textos como o _Apócrifo de João_, a alma que recebeu a *gnose* sobe pelas esferas dos *arcontes* e retorna ao *Pleroma*. A que não despertou volta a ser presa ao mundo material.",
+          "Em textos como o ::Apócrifo de João::, a alma que recebeu a *gnose* sobe pelas esferas dos *arcontes* e retorna ao *Pleroma*. A que não despertou volta a ser presa ao mundo material.",
         nivel: 3,
         proveniencia: "primaria",
         referencia: "Apócrifo de João, NHC II,1 · trad. Meyer, 2007",
@@ -39,7 +39,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "corpus-hermeticum",
         resposta:
-          "No _Poimandres_ (Tratado I, 24–26), o corpo se dissolve e a alma sobe pelas sete esferas, devolvendo a cada uma a paixão que dela recebeu, até chegar à *Ogdóade* e entrar em Deus.",
+          "No ::Poimandres:: (Tratado I, 24–26), o corpo se dissolve e a alma sobe pelas sete esferas, devolvendo a cada uma a paixão que dela recebeu, até chegar à *Ogdóade* e entrar em Deus.",
         nivel: 2,
         proveniencia: "primaria",
         referencia: "CH I, 24–26 · trad. Copenhaver, 1992",
@@ -64,7 +64,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "apocrifos-cristianismo-primitivo",
         resposta:
-          "No _Evangelho de Maria_, a alma dialoga com potências que a acusam de pertencer a elas; ela responde que as reconhece e se liberta de cada uma.",
+          "No ::Evangelho de Maria::, a alma dialoga com potências que a acusam de pertencer a elas; ela responde que as reconhece e se liberta de cada uma.",
         nivel: 2,
         proveniencia: "primaria",
         referencia: "Evangelho de Maria, BG 8502, p. 15–17",
@@ -73,7 +73,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "nag-hammadi",
         resposta:
-          "A _Exegese sobre a Alma_ (NHC II,6) descreve a alma como originalmente junto do Pai, caída no corpo e chamada de volta. No _Apócrifo de João_, ela precisa do *espírito de vida* para subir.",
+          "A ::Exegese sobre a Alma:: (NHC II,6) descreve a alma como originalmente junto do Pai, caída no corpo e chamada de volta. No ::Apócrifo de João::, ela precisa do *espírito de vida* para subir.",
         nivel: 3,
         proveniencia: "primaria",
         referencia: "NHC II,6 e NHC II,1 · trad. Meyer, 2007",
@@ -89,7 +89,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "corpus-hermeticum",
         resposta:
-          "Segundo o _Poimandres_ (I, 15), o ser humano é duplo: mortal pelo corpo, imortal pelo *homem essencial*, que vem da Mente.",
+          "Segundo o ::Poimandres:: (I, 15), o ser humano é duplo: mortal pelo corpo, imortal pelo *homem essencial*, que vem da Mente.",
         nivel: 2,
         proveniencia: "primaria",
         referencia: "CH I, 15 · trad. Copenhaver, 1992",
@@ -121,7 +121,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "nag-hammadi",
         resposta:
-          "O _Discurso sobre a Oitava e a Nona_ (NHC VI,6), tratado hermético guardado em Nag Hammadi, descreve oração, visão e um *hino silencioso* entre mestre e discípulo.",
+          "O ::Discurso sobre a Oitava e a Nona:: (NHC VI,6), tratado hermético guardado em Nag Hammadi, descreve oração, visão e um *hino silencioso* entre mestre e discípulo.",
         nivel: 3,
         proveniencia: "primaria",
         referencia: "NHC VI,6 · trad. Meyer, 2007",
@@ -166,7 +166,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "nag-hammadi",
         resposta:
-          "O _Apócrifo de João_ e _Sobre a Origem do Mundo_ (NHC II,5) narram emanações do Espírito invisível até *Sofia*, cuja ação gera *Ialdabaoth*, o *demiurgo* que molda o mundo material.",
+          "O ::Apócrifo de João:: e ::Sobre a Origem do Mundo:: (NHC II,5) narram emanações do Espírito invisível até *Sofia*, cuja ação gera *Ialdabaoth*, o *demiurgo* que molda o mundo material.",
         nivel: 3,
         proveniencia: "especialista",
         referencia: "NHC II,1 e NHC II,5 · trad. Meyer, 2007",
@@ -184,7 +184,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "corpus-hermeticum",
         resposta:
-          "No _Poimandres_, Hermes vê uma luz sem limites, que é a Mente, e uma escuridão úmida. Da luz sai o *Logos*, que separa os elementos e ordena o cosmos.",
+          "No ::Poimandres::, Hermes vê uma luz sem limites, que é a Mente, e uma escuridão úmida. Da luz sai o *Logos*, que separa os elementos e ordena o cosmos.",
         nivel: 1,
         proveniencia: "curado",
         referencia: "CH I, 4–11 · trad. Copenhaver, 1992",
@@ -209,7 +209,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "apocrifos-cristianismo-primitivo",
         resposta:
-          "No _Evangelho de Maria_, o ensinamento afirma que “o *Filho do Homem* está dentro de vós” e pede que se siga essa presença.",
+          "No ::Evangelho de Maria::, o ensinamento afirma que “o *Filho do Homem* está dentro de vós” e pede que se siga essa presença.",
         nivel: 2,
         proveniencia: "primaria",
         referencia: "Evangelho de Maria, BG 8502 · trad. King, 2003",
@@ -218,7 +218,7 @@ export const COMPARACOES: Comparacao[] = [
       {
         sala: "nag-hammadi",
         resposta:
-          "No _Evangelho de Tomé_, dito 3, o *Reino* está “dentro de vós e fora de vós”; quem conhece a si mesmo será conhecido.",
+          "No ::Evangelho de Tomé::, dito 3, o *Reino* está “dentro de vós e fora de vós”; quem conhece a si mesmo será conhecido.",
         nivel: 2,
         proveniencia: "primaria",
         referencia: "Evangelho de Tomé, dito 3 · NHC II,2",

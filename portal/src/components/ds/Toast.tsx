@@ -11,6 +11,8 @@ export interface OpcoesToast {
   onAction?: () => void;
   icon?: IconName;
   duration?: number;
+  /** Texto pronto para selecionar (o link, quando a área de transferência é recusada). */
+  select?: string;
 }
 
 interface ItemToast extends OpcoesToast {
@@ -117,6 +119,7 @@ function Toast({
       <div className="sdb-toast__msg">
         {item.title && <strong>{item.title}</strong>}
         <span>{item.message}</span>
+        {item.select && <span className="sdb-toast__select">{item.select}</span>}
       </div>
       {item.action && (
         <button

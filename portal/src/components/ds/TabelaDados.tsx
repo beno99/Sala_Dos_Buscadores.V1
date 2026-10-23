@@ -26,6 +26,13 @@ interface TabelaDadosProps<T> {
   selecionados?: Set<string>;
   onSelecionar?: (ids: Set<string>) => void;
   vazio: ReactNode;
+  /**
+   * Navegação em níveis (`.sdb-table--nav`): o link do título cobre a linha e
+   * uma última coluna mostra o chevron. O consumidor põe o link em `.sdb-table__title`.
+   */
+  navegacao?: boolean;
+  /** Filtros e contagem acima da tabela (`.sdb-table__toolbar`). */
+  barra?: ReactNode;
 }
 
 /**
@@ -43,6 +50,8 @@ export function TabelaDados<T>({
   selecionados,
   onSelecionar,
   vazio,
+  navegacao,
+  barra,
 }: TabelaDadosProps<T>) {
   const selecao = Boolean(selecionados && onSelecionar);
   const todos = itens.length > 0 && itens.every((i) => selecionados?.has(chave(i)));
@@ -58,7 +67,8 @@ export function TabelaDados<T>({
 
   return (
     <div className="sdb-table-wrap">
-      <table className="sdb-table">
+      {barra && <div className="sdb-table__toolbar">{barra}</div>}
+      <table className={cx("sdb-table", navegacao && "sdb-table--nav")}>
         <caption>{legenda}</caption>
         <thead>
           <tr>
@@ -103,12 +113,20 @@ export function TabelaDados<T>({
                 </th>
               );
             })}
+            {navegacao && (
+              <th scope="col">
+                <span className="sdb-sr">Abrir</span>
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
           {itens.length === 0 ? (
             <tr>
-              <td className="sdb-table__empty" colSpan={colunas.length + (selecao ? 1 : 0)}>
+              <td
+                className="sdb-table__empty"
+                colSpan={colunas.length + (selecao ? 1 : 0) + (navegacao ? 1 : 0)}
+              >
                 {vazio}
               </td>
             </tr>
@@ -139,6 +157,11 @@ export function TabelaDados<T>({
                       {c.celula(item)}
                     </td>
                   ))}
+                  {navegacao && (
+                    <td className="sdb-table__go" aria-hidden="true">
+                      <Icon name="chevronDireita" />
+                    </td>
+                  )}
                 </tr>
               );
             })
