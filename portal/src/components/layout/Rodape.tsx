@@ -69,10 +69,7 @@ export function Rodape() {
       </div>
       <div className="sdb-footer__bottom">
         <p>A Sala dos Buscadores · Curador de museu, não pregador</p>
-        <p>
-          Obras e referências citadas são reais; os autores dos artigos do acervo inicial são fictícios.{" "}
-          {TEXTO_NEUTRALIDADE}
-        </p>
+        <p>{TEXTO_NEUTRALIDADE}</p>
       </div>
     </footer>
   );

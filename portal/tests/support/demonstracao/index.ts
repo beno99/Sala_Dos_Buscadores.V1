@@ -32,6 +32,7 @@ import {
   type Papel,
 } from "./contas";
 import { DESTAQUES_INICIAIS } from "./destaques";
+import { VIDEOS } from "./videos";
 
 /*
  * Cenário de demonstração dos testes, num Postgres em memória (PGlite):
@@ -189,6 +190,23 @@ async function semearDemonstracao() {
       (valor): Gravacao => ({ tipo: "gravar", colecao: "convites", id: valor.id, valor }),
     ),
     { tipo: "gravar", colecao: "progresso", id: CONTA_DEMONSTRACAO.id, valor: progressoDemonstracao() },
+    ...VIDEOS.map(
+      ({ conteudos, ...v }): Gravacao => ({
+        tipo: "gravar",
+        colecao: "videos",
+        id: v.id,
+        valor: {
+          ...v,
+          status: "publicado",
+          criadoEm: `${v.publicadoEm}T09:00:00.000Z`,
+          atualizadoEm: `${v.publicadoEm}T09:00:00.000Z`,
+          criadoPor: "Importação do acervo oficial",
+          atualizadoPor: "Importação do acervo oficial",
+          youtubeId: "",
+          artigos: (conteudos ?? []).map((slug) => `c-${slug}`),
+        },
+      }),
+    ),
     { tipo: "destaques", valor: DESTAQUES_INICIAIS },
   ];
   for (const x of g) await acervoRepositorio.aplicar(x);

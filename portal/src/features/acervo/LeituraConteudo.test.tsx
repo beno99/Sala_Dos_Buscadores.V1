@@ -1,10 +1,10 @@
 import { screen, within } from "@testing-library/react";
+import { VIDEOS } from "@tests/support/demonstracao/videos";
 import { describe, expect, it } from "vitest";
 import { CITACOES } from "@/data/semente/citacoes";
 import { CONTEUDOS } from "@/data/semente/conteudos";
 import { FONTES } from "@/data/semente/fontes";
 import { SALAS } from "@/data/semente/salas";
-import { VIDEOS } from "@/data/semente/videos";
 import type { Conteudo, Sala } from "@/data/types";
 import { renderComProviders } from "../../../tests/support/render";
 import { LeituraConteudo } from "./LeituraConteudo";

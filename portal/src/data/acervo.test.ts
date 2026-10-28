@@ -1,4 +1,5 @@
 import { prepararDemonstracao } from "@tests/support/demonstracao";
+import { VIDEOS } from "@tests/support/demonstracao/videos";
 import { beforeEach, describe, expect, it } from "vitest";
 import { comparacaoDoTema, todasAsSalas } from "./catalogo";
 import { textoDoCorpo } from "./corpo";
@@ -9,7 +10,6 @@ import { fontesPorId } from "./repositorio";
 import { CITACOES } from "./semente/citacoes";
 import { CONTEUDOS } from "./semente/conteudos";
 import { SALAS } from "./semente/salas";
-import { VIDEOS } from "./semente/videos";
 
 /* Regras de domínio do DRS verificadas sobre o acervo da semente (e o cenário de demonstração). */
 

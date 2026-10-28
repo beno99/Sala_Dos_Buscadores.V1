@@ -31,7 +31,7 @@ export const RESPOSTAS: RespostaAssistente[] = [
       },
       {
         tipo: "editorial",
-        rotulo: "Interpretação editorial · Helena Prado, Sala Nag Hammadi",
+        rotulo: "Interpretação editorial · Equipe da Sala Nag Hammadi",
         texto:
           "No ::Apócrifo de João::, só sobem as almas que recebem o *espírito de vida*; as demais voltam a ser presas ao corpo até alcançarem o conhecimento.",
         refs: [3],
@@ -154,7 +154,7 @@ export const RESPOSTAS: RespostaAssistente[] = [
       },
       {
         tipo: "editorial",
-        rotulo: "Interpretação editorial · Helena Prado, Sala Nag Hammadi",
+        rotulo: "Interpretação editorial · Equipe da Sala Nag Hammadi",
         texto:
           "O último dos éons, *Sofia*, age sem o consentimento de seu par e dá origem a Ialdabaoth, que molda o mundo material.",
         refs: [2],
@@ -202,7 +202,7 @@ export const RESPOSTAS: RespostaAssistente[] = [
       },
       {
         tipo: "editorial",
-        rotulo: "Interpretação editorial · Tomás Vieira, Sala O Caibalion",
+        rotulo: "Interpretação editorial · Equipe da Sala O Caibalion",
         texto:
           "Pesquisadores como Philip Deslippe atribuem a redação a William Walker Atkinson, escritor do movimento *Novo Pensamento*. O livro nunca confirma a autoria.",
         refs: [2, 3],

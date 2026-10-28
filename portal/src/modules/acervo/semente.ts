@@ -1,6 +1,6 @@
 /*
- * Semente do banco: o acervo oficial (Salas, fontes, conteúdos, citações e
- * vídeos de src/data/semente) e a conta de administrador. Idempotente: o
+ * Semente do banco: o acervo oficial (Salas, fontes, conteúdos e citações de
+ * src/data/semente) e a conta de administrador. Idempotente: o
  * acervo só entra num banco sem Salas; a conta, se o e-mail ainda não existe.
  * Rodada por scripts/seed.ts (npm run db:seed).
  */
@@ -9,7 +9,6 @@ import { CITACOES } from "@/data/semente/citacoes";
 import { CONTEUDOS } from "@/data/semente/conteudos";
 import { FONTES } from "@/data/semente/fontes";
 import { SALAS } from "@/data/semente/salas";
-import { VIDEOS } from "@/data/semente/videos";
 import type { Gravacao } from "@/modules/acervo/acervo.contratos";
 import { acervoRepositorio } from "@/modules/acervo/acervo.repositorio";
 import { CUSTO_BCRYPT, novoIdConta } from "@/modules/conta/casos-de-uso/registrar";
@@ -87,25 +86,6 @@ function gravacoesDoAcervo(): Gravacao[] {
     });
   }
   for (const c of CITACOES) g.push({ tipo: "gravar", colecao: "citacoes", id: c.id, valor: c });
-  for (const v of VIDEOS) {
-    const { conteudos, ...resto } = v;
-    g.push({
-      tipo: "gravar",
-      colecao: "videos",
-      id: v.id,
-      valor: {
-        ...resto,
-        status: "publicado",
-        criadoEm: dia(v.publicadoEm),
-        atualizadoEm: dia(v.publicadoEm),
-        criadoPor: AUTOR,
-        atualizadoPor: AUTOR,
-        // As URLs do acervo inicial são buscas provisórias no YouTube, sem ID de vídeo.
-        youtubeId: "",
-        artigos: (conteudos ?? []).map((slug) => `c-${slug}`),
-      },
-    });
-  }
   return g;
 }
 

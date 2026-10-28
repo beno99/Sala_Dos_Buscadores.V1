@@ -1,4 +1,4 @@
-import type { Video } from "../types";
+import type { Video } from "@/data/types";
 
 /**
  * Vídeos do canal vinculados às Salas (RF-16). Enquanto o canal não tiver

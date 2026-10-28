@@ -1,8 +1,7 @@
 import type { Autoria, Conteudo } from "../types";
 
 /*
- * Conteúdos simulados. Nomes de especialistas são fictícios; obras e
- * referências citadas são reais. Toda afirmação é atribuída a uma fonte.
+ * Acervo inicial da curadoria. Obras e referências citadas são reais. Toda afirmação é atribuída a uma fonte.
  */
 
 const EQUIPE = (sala: string): Autoria => ({
@@ -69,9 +68,9 @@ export const CONTEUDOS: Conteudo[] = [
     periodo: "composição séc. II · cópias do séc. IV",
     nivel: 3,
     formato: "texto",
-    proveniencia: "especialista",
+    proveniencia: "curado",
     duracaoMin: 18,
-    autoria: { nome: "Helena Prado", credencial: "Doutora em História Antiga" },
+    autoria: EQUIPE("Nag Hammadi"),
     publicadoEm: "2026-09-12",
     corpo: [
       "O ::Apócrifo de João:: sobreviveu em quatro cópias: três em Nag Hammadi (NHC II,1; III,1; IV,1) e uma no Códice de Berlim 8502. Essa quantidade de versões indica que o texto teve circulação relevante.",
@@ -136,9 +135,9 @@ export const CONTEUDOS: Conteudo[] = [
     periodo: "séc. II–III",
     nivel: 3,
     formato: "texto",
-    proveniencia: "especialista",
+    proveniencia: "curado",
     duracaoMin: 16,
-    autoria: { nome: "Clara Menezes", credencial: "Doutora em Estudos Clássicos" },
+    autoria: EQUIPE("Corpus Hermeticum"),
     publicadoEm: "2026-07-18",
     corpo: [
       "No Tratado XIII, Tat pede a Hermes que lhe ensine o *renascimento*. Hermes responde que esse saber não se ensina como uma lição: ele é lembrado quando Deus quer.",
@@ -224,9 +223,9 @@ export const CONTEUDOS: Conteudo[] = [
     periodo: "1908",
     nivel: 2,
     formato: "texto",
-    proveniencia: "especialista",
+    proveniencia: "curado",
     duracaoMin: 12,
-    autoria: { nome: "Tomás Vieira", credencial: "Mestre em Ciência da Religião" },
+    autoria: EQUIPE("O Caibalion"),
     publicadoEm: "2026-08-28",
     corpo: [
       "A folha de rosto de 1908 atribui o livro a “Três Iniciados”, sem nomes. A editora, a Yogi Publication Society, de Chicago, publicava obras ligadas ao movimento do *Novo Pensamento*.",
@@ -291,9 +290,9 @@ export const CONTEUDOS: Conteudo[] = [
     periodo: "1955",
     nivel: 3,
     formato: "texto",
-    proveniencia: "especialista",
+    proveniencia: "curado",
     duracaoMin: 15,
-    autoria: { nome: "Rafael Souza", credencial: "Pesquisador de movimentos religiosos do séc. XX" },
+    autoria: EQUIPE("O Livro de Urântia"),
     publicadoEm: "2026-08-02",
     corpo: [
       "Segundo a Parte I do livro, no centro de tudo está a Ilha do *Paraíso*, morada do Pai Universal. Em volta dela giraria *Havona*, o universo central, e, mais longe, sete superuniversos em formação.",
@@ -359,9 +358,9 @@ export const CONTEUDOS: Conteudo[] = [
     periodo: "séc. II",
     nivel: 2,
     formato: "texto",
-    proveniencia: "especialista",
+    proveniencia: "curado",
     duracaoMin: 12,
-    autoria: { nome: "Helena Prado", credencial: "Doutora em História Antiga" },
+    autoria: EQUIPE("Apócrifos"),
     publicadoEm: "2026-07-30",
     corpo: [
       "O ::Apocalipse de Pedro:: foi composto provavelmente na primeira metade do século II. É conhecido por uma versão etíope completa e por um fragmento grego encontrado em Akhmim, no Egito, em 1886–1887.",

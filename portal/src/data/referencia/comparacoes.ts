@@ -16,7 +16,7 @@ export const COMPARACOES: Comparacao[] = [
         resposta:
           "O ::Apocalipse de Pedro:: (séc. II) narra visões de lugares de *castigo* e de *recompensa* para as almas. No ::Evangelho de Maria::, a alma sobe e responde às potências que tentam retê-la.",
         nivel: 2,
-        proveniencia: "especialista",
+        proveniencia: "curado",
         referencia: "Apocalipse de Pedro, versão etíope · Evangelho de Maria, BG 8502",
         conteudo: "apocalipse-de-pedro-imagens-do-alem",
       },
@@ -138,7 +138,7 @@ export const COMPARACOES: Comparacao[] = [
         resposta:
           "No Tratado X, o conhecimento de Deus é descrito como *silêncio divino* e suspensão dos sentidos. O Tratado XIII termina com um hino secreto, recitado depois de um pedido de silêncio.",
         nivel: 3,
-        proveniencia: "especialista",
+        proveniencia: "curado",
         referencia: "CH X, 5 e CH XIII · trad. Copenhaver, 1992",
         conteudo: "tratado-xiii-renascimento-silencio",
       },
@@ -168,7 +168,7 @@ export const COMPARACOES: Comparacao[] = [
         resposta:
           "O ::Apócrifo de João:: e ::Sobre a Origem do Mundo:: (NHC II,5) narram emanações do Espírito invisível até *Sofia*, cuja ação gera *Ialdabaoth*, o *demiurgo* que molda o mundo material.",
         nivel: 3,
-        proveniencia: "especialista",
+        proveniencia: "curado",
         referencia: "NHC II,1 e NHC II,5 · trad. Meyer, 2007",
         conteudo: "apocrifo-de-joao-mito-de-sofia",
       },
@@ -195,7 +195,7 @@ export const COMPARACOES: Comparacao[] = [
         resposta:
           "O livro descreve um universo centrado na Ilha do *Paraíso*, cercada por *Havona* e por sete superuniversos. O Documento 57 narra a formação do sistema solar.",
         nivel: 3,
-        proveniencia: "especialista",
+        proveniencia: "curado",
         referencia: "Documentos 11–14 e 57 · Fundação Urântia, 1955",
         conteudo: "o-universo-segundo-urantia",
       },
@@ -238,7 +238,7 @@ export const COMPARACOES: Comparacao[] = [
         resposta:
           "Segundo o Tratado XI, quem não se torna semelhante a Deus não pode compreender Deus. O conhecimento é descrito como transformação de quem conhece.",
         nivel: 3,
-        proveniencia: "especialista",
+        proveniencia: "curado",
         referencia: "CH XI, 20 · trad. Copenhaver, 1992",
         conteudo: "tratado-xiii-renascimento-silencio",
       },
