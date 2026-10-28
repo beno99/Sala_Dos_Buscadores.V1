@@ -7,28 +7,28 @@ import { Icon } from "./Icon";
  * salvamento, indicador numérico e lista do histórico.
  */
 
-/** Status editorial pelo Badge com marcador (cheio, meio, vazio) ou ícone (devolver, cadeado) e palavra. */
+/** Status editorial pelo Badge 1.1: cor semântica, ícone e palavra. */
 export function SeloStatus({ status }: { status: StatusEditorial }) {
   if (status === "publicado") {
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot" />
+      <span className="sdb-badge sdb-badge--published">
+        <Icon name="check" size="sm" />
         Publicado
       </span>
     );
   }
   if (status === "rascunho") {
     return (
-      <span className="sdb-badge sdb-badge--neutral">
-        <i className="sdb-badge__dot sdb-badge__dot--hollow" />
+      <span className="sdb-badge sdb-badge--draft">
+        <Icon name="artigo" size="sm" />
         Rascunho
       </span>
     );
   }
   if (status === "em_revisao") {
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot sdb-badge__dot--half" />
+      <span className="sdb-badge sdb-badge--review">
+        <Icon name="editar" size="sm" />
         Em revisão
       </span>
     );
@@ -42,7 +42,7 @@ export function SeloStatus({ status }: { status: StatusEditorial }) {
     );
   }
   return (
-    <span className="sdb-badge sdb-badge--neutral">
+    <span className="sdb-badge sdb-badge--archived">
       <Icon name="cadeado" size="sm" />
       Arquivado
     </span>

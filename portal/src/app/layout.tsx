@@ -11,8 +11,11 @@ import "@/design-system/card-video.css";
 import "@/design-system/card-comparativo.css";
 import "@/design-system/assistant-orb.css";
 import "@/design-system/refinement.css";
+// 1.1: cards de Conquista, sempre escuros; carregados depois dos ajustes, como pede o guia.
+import "@/design-system/card-conquista.css";
 import "@/design-system/conta.css";
 import "@/design-system/estados-interface.css";
+import "@/design-system/components/TelaAssistente/tela-assistente.css";
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";

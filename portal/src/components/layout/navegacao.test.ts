@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   abasDoCelular,
+  estaNoMais,
   gruposDaLateral,
   iniciaisDe,
   membroDesde,
+  subtituloDaPagina,
   tituloDaPagina,
   trilhaDaPagina,
 } from "./navegacao";
@@ -14,6 +16,7 @@ describe("navegação do app", () => {
     expect(tituloDaPagina("/salas/corpus-hermeticum")).toBe("Salas");
     expect(tituloDaPagina("/comparar")).toBe("Comparar");
     expect(tituloDaPagina("/ajustes")).toBe("Ajustes");
+    expect(tituloDaPagina("/conquistas")).toBe("Conquistas");
   });
 
   it("a página da Sala ganha a trilha Salas / {nome}; as outras páginas, não", () => {
@@ -79,6 +82,37 @@ describe("navegação do app", () => {
       ["Trilhas", true],
       ["Estante", false],
     ]);
+  });
+
+  it("Conquistas aparece em Estudo e no Mais do celular, sem ocupar uma aba fixa", () => {
+    const grupos = gruposDaLateral("/conquistas", {
+      admin: false,
+      sair: () => {},
+    });
+    const estudo = grupos.find((grupo) => grupo.titulo === "Estudo");
+    expect(estudo?.itens.find((item) => item.rotulo === "Conquistas")).toMatchObject({
+      href: "/conquistas",
+      ativo: true,
+    });
+    expect(grupos.flatMap((grupo) => grupo.itens).filter((item) => item.ativo)).toHaveLength(1);
+    expect(estaNoMais("/conquistas")).toBe(true);
+    expect(abasDoCelular("/conquistas").every((aba) => !aba.ativa)).toBe(true);
+    expect(abasDoCelular("/conquistas")).toHaveLength(4);
+    expect(subtituloDaPagina("/conquistas")).toBe("Seu caminho de estudo, conquista por conquista");
+  });
+
+  it("o título e a seleção de Conquistas respeitam o limite da rota", () => {
+    expect(tituloDaPagina("/conquistas/primeiro-passo")).toBe("Conquistas");
+    expect(subtituloDaPagina("/conquistas/primeiro-passo")).toBe(
+      "Seu caminho de estudo, conquista por conquista",
+    );
+    expect(tituloDaPagina("/conquistas-antigas")).toBe("A Sala dos Buscadores");
+    expect(subtituloDaPagina("/conquistas-antigas")).toBeUndefined();
+    const grupos = gruposDaLateral("/conquistas-antigas", {
+      admin: false,
+      sair: () => {},
+    });
+    expect(grupos.flatMap((grupo) => grupo.itens).some((item) => item.ativo)).toBe(false);
   });
 
   it("perfil: iniciais e mês do cadastro", () => {

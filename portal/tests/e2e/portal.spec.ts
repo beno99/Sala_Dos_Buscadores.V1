@@ -20,65 +20,59 @@ test.beforeEach(async ({ browser }) => {
 
 test("a conta de demonstração vê indicadores, “Continuar” e conquistas", async ({ page }) => {
   await entrarComoMembro(page);
-  const painel = page.getByRole("region", { name: "Seu progresso" });
+  const painel = page.getByRole("main");
   const indicadores = painel.getByRole("group", { name: "Seu progresso no acervo" });
   for (const rotulo of ["Salas visitadas", "Conteúdos lidos", "Temas comparados", "Trilhas em andamento"]) {
     await expect(indicadores.getByText(rotulo)).toBeVisible();
   }
   expect(await valorDoIndicador(page, "Salas visitadas")).toBe(3);
 
-  const continuar = painel.getByRole("region", { name: "Continue de onde parou" });
-  await expect(continuar.getByRole("link")).toHaveCount(1);
+  const continuar = painel.getByRole("region", { name: "Continue sua busca" });
+  await expect(continuar.getByRole("link", { name: /Retomar leitura/ })).toHaveCount(1);
   await expect(continuar.getByRole("link", { name: /Poimandres, §24–26/ })).toBeVisible();
-  await expect(continuar.getByText("Lido até 38%")).toBeVisible();
+  await expect(continuar.getByText("38% lido")).toBeVisible();
   await expect(continuar.getByText("Retomar leitura")).toBeVisible();
 
   await expect(
-    page.getByRole("region", { name: "Salas recomendadas" }).getByText("Para ampliar o olhar"),
+    page.getByRole("region", { name: "Conheça outras Salas" }).getByText("Para ampliar o olhar"),
   ).toBeVisible();
-  await expect(painel.getByRole("region", { name: "Para ampliar o olhar" }).getByRole("link")).toHaveCount(1);
-
-  await page.getByRole("button", { name: "Ver conquistas" }).first().click();
-  const modal = page.getByRole("dialog", { name: "Suas conquistas" });
-  await expect(modal.getByText("Porta aberta")).toBeVisible();
-  await expect(modal.getByText("Ainda bloqueadas")).toBeVisible();
-  await modal.getByRole("button", { name: "Como os níveis funcionam" }).click();
   await expect(
-    page.getByRole("dialog", { name: "Como os níveis funcionam" }).getByText(/nada sobre crença/),
-  ).toBeVisible();
+    painel.getByRole("region", { name: "Para sua próxima leitura" }).getByRole("article"),
+  ).toHaveCount(1);
+
+  await page
+    .getByRole("region", { name: "Seu caminho" })
+    .getByRole("link", { name: "Ver conquistas" })
+    .click();
+  await expect(page).toHaveURL("/conquistas");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("“Publicados recentemente” é uma lista de links, cada um com o Selo de proveniência", async ({
-  page,
-}) => {
+test("“Novidades do acervo” é uma lista de links, cada um com o Selo de proveniência", async ({ page }) => {
   await entrarComoMembro(page);
-  const recentes = page
-    .getByRole("region", { name: "Seu progresso" })
-    .getByRole("region", { name: "Publicados recentemente" });
+  const recentes = page.getByRole("main").getByRole("region", { name: "Novidades do acervo" });
   const linhas = recentes.getByRole("listitem");
-  await expect(linhas).toHaveCount(6);
-  for (let i = 0; i < 5; i++) {
+  await expect(linhas).toHaveCount(3);
+  for (let i = 0; i < 3; i++) {
     const link = linhas.nth(i).getByRole("link");
     await expect(link).toHaveAttribute("href", /^\/salas\//);
     await expect(link.locator(".sdb-seal")).toHaveCount(1);
   }
   await expect(recentes.locator(".sdb-card")).toHaveCount(0);
-  await recentes.getByRole("link", { name: "Ver tudo na Biblioteca" }).click();
+  await recentes.getByRole("link", { name: "Ver Biblioteca" }).click();
   await expect(page).toHaveURL("/biblioteca");
 });
 
-test("o anúncio fica dentro do painel, identificado como publicidade", async ({ page }) => {
+test("o anúncio fica na lateral de apoio, identificado como publicidade", async ({ page }) => {
   await entrarComoMembro(page);
-  const anuncio = page
-    .getByRole("region", { name: "Seu progresso" })
-    .getByRole("complementary", { name: "Publicidade" });
-  await expect(anuncio.getByText("Publicidade", { exact: true })).toBeVisible();
+  const anuncio = page.getByRole("main").getByRole("complementary", { name: "Publicidade" });
+  await expect(anuncio.getByText("PUBLICIDADE", { exact: true })).toBeVisible();
   await expect(anuncio.getByText("Edições Pórtico (anunciante fictício)")).toBeVisible();
   await expect(anuncio.locator(".sdb-seal")).toHaveCount(0);
   const chamada = anuncio.getByRole("link", { name: /Conhecer a coleção/ });
   await expect(chamada).toHaveAttribute("rel", /sponsored/);
   await expect(chamada).toHaveAttribute("target", "_blank");
-  await anuncio.getByRole("button", { name: "Por que estou vendo isto?" }).click();
+  await page.getByRole("button", { name: "Sobre os anúncios" }).click();
   await expect(page.getByRole("dialog", { name: "Por que estou vendo isto?" })).toBeVisible();
   // Só um anúncio fora do banner rotativo: a coluna lateral de antes saiu.
   await expect(page.locator("main aside.sdb-ad")).toHaveCount(1);
@@ -86,7 +80,8 @@ test("o anúncio fica dentro do painel, identificado como publicidade", async ({
 
 test("o chip de tema filtra as Salas e oferece a comparação", async ({ page }) => {
   await entrarComoMembro(page);
-  const salas = page.getByRole("region", { name: "Salas recomendadas" });
+  const salas = page.getByRole("region", { name: "Conheça outras Salas" });
+  await salas.locator("summary").click();
   await salas.getByRole("button", { name: /^Meditação/ }).click();
   await expect(salas.getByRole("article")).toHaveCount(1);
   await salas.getByRole("link", { name: "Comparar meditação entre as Salas" }).click();
@@ -115,11 +110,11 @@ test("visitar uma Sala e abrir um conteúdo entram no progresso", async ({ page 
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.waitForTimeout(800);
   await page.goto("/");
-  // Só a leitura mais recente aparece em "Continue de onde parou": agora é a que acabou de abrir.
+  // Só a leitura mais recente aparece em "Continue sua busca": agora é a que acabou de abrir.
   await expect(async () => {
     await page.reload();
     await expect(
-      page.getByRole("region", { name: "Continue de onde parou" }).getByRole("link", { name: /universo/i }),
+      page.getByRole("region", { name: "Continue sua busca" }).getByRole("link", { name: /universo/i }),
     ).toBeVisible({ timeout: 2_000 });
   }).toPass({ timeout: 15_000 });
   expect(await valorDoIndicador(page, "Salas visitadas")).toBe(4);

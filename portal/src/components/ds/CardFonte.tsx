@@ -25,8 +25,18 @@ export function CardFonte({ fonte }: { fonte: Fonte }) {
         <h3 className="sdb-source__title">{fonte.titulo}</h3>
         <p className="sdb-source__author">{fonte.autor}</p>
         <div className="sdb-source__tags">
-          <Badge variant={fonte.tipo === "Fonte primária" ? "solid" : "neutral"}>{fonte.tipo}</Badge>
-          <Badge variant="neutral">{fonte.tradicao}</Badge>
+          {fonte.tipo === "Fonte primária" ? (
+            <Badge variant="source" icon="fontePrimaria">
+              {fonte.tipo}
+            </Badge>
+          ) : (
+            <Badge variant="language" icon="artigo">
+              {fonte.tipo}
+            </Badge>
+          )}
+          <Badge variant="topic" icon="glossario">
+            {fonte.tradicao}
+          </Badge>
         </div>
         <p className="sdb-source__ref">
           {fonte.referencia}

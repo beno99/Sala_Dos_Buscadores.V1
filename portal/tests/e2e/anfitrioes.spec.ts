@@ -149,7 +149,7 @@ test("convite, Sala com dois artigos, revisão, comparação e edição que tira
   await expect(secao.getByRole("heading", { name: nomeSala })).toBeVisible();
   await secao
     .getByRole("article", { name: nomeSala })
-    .getByRole("link", { name: /Entrar na sala/ })
+    .getByRole("link", { name: /Entrar na Sala/ })
     .click();
   await page.waitForURL(/\/salas\/[^/]+$/);
   const urlPublica = page.url();

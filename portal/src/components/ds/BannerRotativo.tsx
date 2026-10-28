@@ -4,9 +4,9 @@ import { type ReactNode, useEffect, useState } from "react";
 import type { Placa } from "@/data/types";
 import { deveRodar, INTERVALO_BANNER_MS, proximoSlide } from "@/features/estudo/banner";
 import { cx } from "@/lib/cx";
-import { Arc } from "./Arc";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
+import { ImagemAcervo } from "./ImagemAcervo";
 
 export interface MidiaBanner {
   placa: Placa;
@@ -38,14 +38,7 @@ export type SlideBanner =
 function Midia({ midia }: { midia: MidiaBanner }) {
   return (
     <div className="sdb-banner__media">
-      {midia.imagem ? (
-        // biome-ignore lint/performance/noImgElement: imagem decorativa de tamanho fixo, servida de public/.
-        <img src={midia.imagem} alt="" />
-      ) : (
-        <div className={`sdb-plate sdb-plate--${midia.placa}`}>
-          <Arc on={midia.placa} />
-        </div>
-      )}
+      <ImagemAcervo src={midia.imagem} placa={midia.placa} />
     </div>
   );
 }
@@ -80,7 +73,10 @@ function Conteudo({ slide, onPorQue }: { slide: SlideBanner; onPorQue: () => voi
   return (
     <div className="sdb-banner__text">
       <p className="sdb-banner__label">
-        <span className="sdb-badge sdb-badge--neutral">Publicidade</span>
+        <span className="sdb-badge sdb-badge--neutral">
+          <Icon name="info" size="sm" />
+          Publicidade
+        </span>
         {slide.anunciante}
       </p>
       <h2 className="sdb-banner__title">

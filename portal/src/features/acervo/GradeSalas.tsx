@@ -57,13 +57,12 @@ export function GradeSalas({
       </p>
       {visiveis.length > 0 ? (
         <div id={id} className="grid grid-cols-3 gap-5 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1">
-          {visiveis.map((s, i) => (
+          {visiveis.map((s) => (
             <CardSala
               key={s.sala.slug}
               sala={s.sala}
               imagem={s.imagem}
-              destaque={i === 0}
-              acoes={<BotaoSalvar tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
+              acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
             />
           ))}
         </div>

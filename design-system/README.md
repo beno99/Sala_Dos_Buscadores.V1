@@ -2,7 +2,9 @@
 
 Biblioteca de componentes do portal: tokens, estilos, comportamentos e exemplos, na linguagem de design da Apple (Liquid Glass) com as cores, as fontes e o arco da marca. HTML + CSS + JavaScript puro, sem dependências, então funciona com qualquer tecnologia.
 
-Versão 1.0: evolução local baseada nos componentes aprovados no estudo v0.6. A biblioteca reúne componentes do acervo, do portal e da Comunidade, mantém HTML/CSS/JavaScript puro e abre tanto por arquivo local quanto por HTTP.
+Versão 1.1 · revisão visual de 27/10/2026, integrada ao código fonte da biblioteca original. A biblioteca reúne componentes do acervo, do portal e da Comunidade, mantém HTML/CSS/JavaScript puro e abre tanto por arquivo local quanto por HTTP.
+
+A TelaAssistente usa módulos JavaScript e deve ser aberta por HTTP. Essa exceção fica isolada no exemplo da tela; os exemplos com runtime clássico continuam aceitando arquivo local.
 
 ## Ver a biblioteca
 
@@ -41,7 +43,7 @@ node scripts/build.mjs --check   # sai com 1 se algum arquivo gerado estiver des
 node scripts/contraste.mjs       # pares de texto WCAG AA nos quatro temas
 ```
 
-`tokens.css`, `exemplos/` e `catalogo.html` são gerados: mude `tokens.json`, `components/<Nome>/preview.html` (o cabeçalho `@dsCard` dá grupo, altura e legenda) ou a tabela de peças abaixo (dá a ordem do catálogo) e rode o gerador.
+`tokens.css`, `exemplos/`, `catalogo.html` e `components/refined.js` são gerados; partes de `components/bundle.js` e o runtime de EstadosInterface também são montadas pelo gerador. Para alterar a biblioteca: mude `tokens.json`, `components/<Nome>/preview.html` (o cabeçalho `@dsCard` dá grupo, altura e legenda) ou a tabela de peças abaixo (dá a ordem do catálogo) e rode o gerador.
 
 ## Em React, Vue ou outro framework
 
@@ -49,13 +51,25 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 
 ## Linguagem visual 1.0
 
-- Grid de 8 px; containers de 24 px, interiores de 16 px e recuo de 8 px.
+- Grid de 8 px; containers de 24 px, interiores de 16 px e recuo de 8 px. Botões com raio de 12 px; tags semânticas com raio de 8 px.
 - Quatro temas: sólido claro/escuro e translúcido claro/escuro, com contraste verificado.
 - `catalogo.css` e `catalogo.js`: navegação, pesquisa e prévias sob demanda.
 - `components/refinement.css`: ajustes da família original; `assets/themes.css`: materiais aprovados.
 - `components/refined.js`: gerado dos módulos dos novos componentes e de `scripts/refined-entry.js`. Runtime clássico para funcionar também em `file://`; não editar diretamente.
 - Os novos exemplos preservam os componentes independentes em suas pastas. Para usar um deles, carregue seu CSS específico e `components/refined.js` depois de `bundle.js`.
+- A [TelaAssistente](components/TelaAssistente/README.md) carrega também seus estilos após `refinement.css` e seu `preview.js` como módulo, por HTTP. Seu fundo escuro e suas fontes ficam limitados a `.sdb-assistant-screen`; o tema do catálogo e das demais peças não muda.
 - O mini chat usa respostas locais demonstrativas. O CTA do vídeo continua desativado até existir uma URL específica válida do YouTube.
+
+## Revisão visual integrada · 27/10/2026
+
+- **CardSala:** imagem de fundo e painel de vidro escuro em todos os temas, nos formatos vertical e horizontal. O botão usa a família compartilhada: fosco em repouso, mais luminoso no hover e no foco. A versão de estudo mostra percentual, barra e contagem de conteúdos concluídos; também está no Carrossel e no PortalInicio.
+- **Conquista:** cards sempre escuros, com esferas de vidro e texturas minerais reforçadas. A cor ocupa o topo e desaparece antes do título; bloqueadas ficam cinza. Rotação e resposta ao hover/clique são suaves, com pausa e movimento reduzido.
+- **Botão:** raio de 12 px, foco dourado de 2 px afastado 3 px, reflexo e halo; variantes dourada e areia preservadas.
+- **Nível e tags:** Iniciante em laranja suave, Intermediário em laranja intenso e Avançado em roxo com brilho breve. Tags e selos usam ícones e cores semânticas; rótulos continuam explícitos. Anfitrião e Reprovado mantêm seus significados.
+- **Progresso:** trilho escuro e gradiente de ouro escuro a ouro luminoso, com halo na parte preenchida. O padrão é compartilhado por salas, leituras, vídeo, níveis, checklist e ProgressoReal. Dados ausentes não viram progresso fictício.
+- **TelaAssistente:** um assistente do acervo, modos Explorar, Comparar e Leitura guiada, seleção de Sala e troca entre esfera dourada com anéis e esfera grafite texturizada sem anéis. A tela escura reúne acolhimento, sugestões, pergunta e conversa com fontes. As respostas e conversas são demonstrações locais, sem IA conectada nem persistência.
+
+As fontes desta revisão estão em `tokens.json`, `components/bundle.css` e nas pastas de cada componente. `scripts/build.mjs` carrega os estilos e scripts específicos nos exemplos oficiais. Preserve os arquivos de fonte ao sincronizar a biblioteca; `exemplos/` e `catalogo.html` continuam derivados.
 
 ## Arquivos
 
@@ -64,7 +78,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | `tokens.json` | fonte dos tokens (cores dos 4 temas, tipografia, espaço, raios, sombras, desfoque, tempos, curvas) |
 | `tokens.css` | os tokens como variáveis CSS, gerados do `tokens.json` |
 | `scripts/build.mjs` · `scripts/contraste.mjs` | gerador dos arquivos derivados · conferência de contraste |
-| `components/bundle.css` | todos os estilos das peças |
+| `components/bundle.css` | estilos compartilhados; peças maiores também têm CSS próprio em sua pasta |
 | `components/bundle.js` | ícones, arco e comportamentos (global `SalaBuscadores`) |
 | `components/<Nome>/README.md` | guia de uso da peça |
 | `components/<Nome>/preview.html` | fonte do exemplo (fragmento, com o cabeçalho `@dsCard`) |
@@ -81,7 +95,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | --- | --- |
 | [IconeVolume](components/IconeVolume/README.md) · [exemplo](exemplos/IconeVolume.html) | Ícones neutros em camadas, com sombra e detalhes da marca, para orientar em estados e diálogos. |
 | [Arco](components/Arco/README.md) · [exemplo](exemplos/Arco.html) | O arco com escada de degraus é o símbolo da marca: a porta aberta e a escada que cada pessoa sobe sozinha. |
-| [Iconografia](components/Iconografia/README.md) · [exemplo](exemplos/Iconografia.html) | Conjunto próprio de ícones de traço, no espírito dos SF Symbols: peso único, pontas arredondadas, neutros entre tradições. |
+| [Iconografia](components/Iconografia/README.md) · [exemplo](exemplos/Iconografia.html) | Phosphor Regular, com Fill nos controles ativos; ícones incorporados, sem dependência de rede. |
 | [Materiais](components/Materiais/README.md) · [exemplo](exemplos/Materiais.html) | Duas camadas, como no Liquid Glass da Apple: a camada de conteúdo usa materiais (fino, regular, espesso); a camada funcional, que flutua sobre o conteúdo, usa vidro. |
 | [Movimento](components/Movimento/README.md) · [exemplo](exemplos/Movimento.html) | Movimento a serviço da resposta: começa no toque, parte do valor atual e pode ser interrompido. |
 | [Proporcao](components/Proporcao/README.md) · [exemplo](exemplos/Proporcao.html) | Quanto de cada cor aparece em uma tela e quais pares de texto são permitidos. |
@@ -93,15 +107,15 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | --- | --- |
 | [EstadoSecao](components/EstadoSecao/README.md) · [exemplo](exemplos/EstadoSecao.html) | Container padrão para seção vazia, nenhum resultado e erro, com ação contextual. |
 | [CarregamentoSala](components/CarregamentoSala/README.md) · [exemplo](exemplos/CarregamentoSala.html) | Esqueleto da página enquanto o conteúdo carrega; sem porcentagem simulada. |
-| [ProgressoReal](components/ProgressoReal/README.md) · [exemplo](exemplos/ProgressoReal.html) | Progresso acessível em degradê, calculado por etapas concluídas e total conhecido. |
+| [ProgressoReal](components/ProgressoReal/README.md) · [exemplo](exemplos/ProgressoReal.html) | Progresso acessível em dourado luminoso sobre trilho escuro, calculado por etapas concluídas e total conhecido. |
 | [AvisoContextual](components/AvisoContextual/README.md) · [exemplo](exemplos/AvisoContextual.html) | Orientação com título, texto e ícone em volume compacto. |
 | [DialogoContextual](components/DialogoContextual/README.md) · [exemplo](exemplos/DialogoContextual.html) | Diálogo de orientação com ícone em volume, ações, foco e Escape. |
 | [Accordion](components/Accordion/README.md) · [exemplo](exemplos/Accordion.html) | Revela conteúdo por partes dentro de uma lista agrupada (inset grouped). |
 | [Alerta](components/Alerta/README.md) · [exemplo](exemplos/Alerta.html) | Mensagem persistente na página, ligada ao conteúdo ao redor. |
 | [AreaTexto](components/AreaTexto/README.md) · [exemplo](exemplos/AreaTexto.html) | Várias linhas para notas, contribuições e justificativas. |
 | [Avatar](components/Avatar/README.md) · [exemplo](exemplos/Avatar.html) | Identifica quem assina: iniciais em círculo; nunca foto de perfil. |
-| [Badge](components/Badge/README.md) · [exemplo](exemplos/Badge.html) | Rótulo curto, não clicável, em cápsula. Para temas clicáveis use Chip de tema. |
-| [Botao](components/Botao/README.md) · [exemplo](exemplos/Botao.html) | Ação em forma de cápsula; o rótulo diz exatamente o que acontece. |
+| [Badge](components/Badge/README.md) · [exemplo](exemplos/Badge.html) | Rótulo curto com ícone e cor semântica, não clicável. Para temas clicáveis use Chip de tema. |
+| [Botao](components/Botao/README.md) · [exemplo](exemplos/Botao.html) | Ação com cantos de 12 px e foco dourado; o rótulo diz exatamente o que acontece. |
 | [Breadcrumbs](components/Breadcrumbs/README.md) · [exemplo](exemplos/Breadcrumbs.html) | Mostra o caminho até a página atual (Acervo › Sala › Coleção › Conteúdo) numa cápsula de vidro. |
 | [CampoTexto](components/CampoTexto/README.md) · [exemplo](exemplos/CampoTexto.html) | Entrada de uma linha, com rótulo sempre visível acima. |
 | [CampoImagem](components/CampoImagem/README.md) · [exemplo](exemplos/CampoImagem.html) | Envio de uma imagem com prévia, troca, remoção e erro de tipo ou tamanho. |
@@ -127,11 +141,11 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | [AutoriaConteudo](components/AutoriaConteudo/README.md) · [exemplo](exemplos/AutoriaConteudo.html) | Coluna da página de leitura: avatar, nome e credencial, filete e dados em linhas (data, leitura, nível, temas, proveniência, compartilhar). |
 | [CorpoArtigo](components/CorpoArtigo/README.md) · [exemplo](exemplos/CorpoArtigo.html) | Texto em blocos (lead, parágrafo, intertítulo, destaque e imagem) e a leitura em duas colunas com autoria e extras. |
 | [CardFonte](components/CardFonte/README.md) · [exemplo](exemplos/CardFonte.html) | Uma obra usada pelo acervo ou pelo assistente, apresentada como um livro: capa, título, autor, tradição, tipo e referência. |
-| [CardSala](components/CardSala/README.md) · [exemplo](exemplos/CardSala.html) | Porta de entrada de uma Sala: placa com o arco, nome, tradição, volume, nível predominante e última atualização. |
+| [CardSala](components/CardSala/README.md) · [exemplo](exemplos/CardSala.html) | Imagem de fundo, painel de vidro escuro e ação compartilhada; versão com nível/data ou progresso pessoal de estudo. |
 | [CardVideo](components/CardVideo/README.md) · [exemplo](exemplos/CardVideo.html) | Vídeo do canal com miniatura, duração, Sala ou tema e a ação de assistir (abre o YouTube em nova aba). |
 | [ChipTema](components/ChipTema/README.md) · [exemplo](exemplos/ChipTema.html) | Tema que atravessa várias Salas ("morte", "meditação", "origem do universo", "alma"). Clicar filtra ou abre a comparação daquele tema. |
 | [LinhaDoTempo](components/LinhaDoTempo/README.md) · [exemplo](exemplos/LinhaDoTempo.html) | Eventos e documentos em ordem, ligados por arcos cuja altura mostra quanto tempo separa um do outro. |
-| [SeloNivel](components/SeloNivel/README.md) · [exemplo](exemplos/SeloNivel.html) | Nível de aprofundamento como uma pequena escada de três degraus, sempre com a palavra. |
+| [SeloNivel](components/SeloNivel/README.md) · [exemplo](exemplos/SeloNivel.html) | Escada e palavra: Iniciante em laranja suave, Intermediário em laranja intenso e Avançado em roxo com brilho breve. |
 | [ListaConteudos](components/ListaConteudos/README.md) · [exemplo](exemplos/ListaConteudos.html) | Conteúdos em linhas, sem card (título, meta, selo compacto, chevron), e o item compacto para retomar ou começar uma leitura. |
 | [SeloProveniencia](components/SeloProveniencia/README.md) · [exemplo](exemplos/SeloProveniencia.html) | Diz de onde vem cada conteúdo. Obrigatório em cards, citações, colunas da grade comparativa e respostas do assistente. |
 | [TrilhaEstudo](components/TrilhaEstudo/README.md) · [exemplo](exemplos/TrilhaEstudo.html) | Sequência de etapas que leva do iniciante ao avançado dentro de uma Sala, desenhada como degraus ligados por arcos que sobem. |
@@ -150,6 +164,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 
 | Peça | Para quê |
 | --- | --- |
+| [TelaAssistente](components/TelaAssistente/README.md) · [exemplo](exemplos/TelaAssistente.html) | Tela completa de um assistente com modos de estudo, seleção de Sala e esferas dourada ou escura; demonstração local por HTTP. |
 | [AvisoNeutralidade](components/AvisoNeutralidade/README.md) · [exemplo](exemplos/AvisoNeutralidade.html) | Lembrete permanente de que a IA não determina qual crença é verdadeira e de que toda resposta aponta suas fontes. |
 | [CampoPerguntaIA](components/CampoPerguntaIA/README.md) · [exemplo](exemplos/CampoPerguntaIA.html) | Onde a pessoa escreve para o assistente: cresce com o texto, oferece temas em chips e alterna entre enviar e interromper. |
 | [IndicadorConsulta](components/IndicadorConsulta/README.md) · [exemplo](exemplos/IndicadorConsulta.html) | Mostra que o assistente está consultando o acervo, há quanto tempo e em que etapa. |
@@ -159,10 +174,11 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 
 | Peça | Para quê |
 | --- | --- |
+| [PortalInicio](components/PortalInicio/README.md) · [exemplo](exemplos/PortalInicio.html) | Home: retomada, descoberta e apoio comercial identificado. |
 | [NavegacaoLateral](components/NavegacaoLateral/README.md) · [exemplo](exemplos/NavegacaoLateral.html) | Navegação principal do portal e da curadoria: perfil, "Continuar", itens em grupos e rodapé; recolhível para só ícones. |
 | [BarraSuperior](components/BarraSuperior/README.md) · [exemplo](exemplos/BarraSuperior.html) | Título da página e saudação ou trilha; busca, aparência e conta. Entra na camada flutuante ao rolar. |
 | [BannerRotativo](components/BannerRotativo/README.md) · [exemplo](exemplos/BannerRotativo.html) | Card largo no topo do Portal que alterna marca, episódios e anúncios, com pausa. |
-| [Carrossel](components/Carrossel/README.md) · [exemplo](exemplos/Carrossel.html) | Faixa horizontal de cards com cabeçalho, setas e scroll-snap. |
+| [Carrossel](components/Carrossel/README.md) · [exemplo](exemplos/Carrossel.html) | Faixa horizontal de cards com cabeçalho, setas e scroll-snap; Salas reutilizam imagem, vidro e progresso compartilhados. |
 | [PainelBusca](components/PainelBusca/README.md) · [exemplo](exemplos/PainelBusca.html) | Busca no topo da tela (lupa ou ⌘K) com sugestões de Salas, temas, conteúdos e o assistente. |
 | [BotaoFlutuante](components/BotaoFlutuante/README.md) · [exemplo](exemplos/BotaoFlutuante.html) | Atalho de vidro para o assistente sobre qualquer página. |
 | [Onboarding](components/Onboarding/README.md) · [exemplo](exemplos/Onboarding.html) | Primeiro acesso em etapas: boas-vindas, interesses, religião ou convicção (opcional) e resumo. |
@@ -173,7 +189,7 @@ Não reescreva o CSS. Crie componentes que emitem as mesmas classes `sdb-*` e os
 | [BannerSala](components/BannerSala/README.md) · [exemplo](exemplos/BannerSala.html) | Imagem da Sala na largura toda (3:1, 2:1, 16:10 pelo container) ou a placa com o arco, com crédito. |
 | [PainelCabecalho](components/PainelCabecalho/README.md) · [exemplo](exemplos/PainelCabecalho.html) | Abre uma seção grande: rótulo, título e subtítulo, com vistas, busca e filtros à direita. |
 | [PainelProgresso](components/PainelProgresso/README.md) · [exemplo](exemplos/PainelProgresso.html) | Indicadores, leitura e anúncio num contêiner só, na grade de quatro colunas dos indicadores. |
-| [Conquista](components/Conquista/README.md) · [exemplo](exemplos/Conquista.html) | Marco de estudo privado: emblema de ouro obtido ou bloqueado com o critério. |
+| [Conquista](components/Conquista/README.md) · [exemplo](exemplos/Conquista.html) | Marco privado em card escuro com esfera de vidro mineral; cor quando obtido, cinza quando bloqueado. |
 | [EspacoPublicitario](components/EspacoPublicitario/README.md) · [exemplo](exemplos/EspacoPublicitario.html) | Anúncio identificado, no painel, em coluna ou banner, distinto do acervo. |
 | [Rodape](components/Rodape/README.md) · [exemplo](exemplos/Rodape.html) | Marca e frase, colunas de links e linha final. |
 

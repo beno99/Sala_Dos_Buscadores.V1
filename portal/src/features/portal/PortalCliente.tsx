@@ -1,34 +1,52 @@
 "use client";
 
+import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { BannerRotativo, type SlideBanner } from "@/components/ds/BannerRotativo";
 import { Button, ButtonLink } from "@/components/ds/Button";
+import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardSala } from "@/components/ds/CardSala";
 import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
-import { ItemCompacto, LinhaConteudo, LinhaMais, ListaLinhas } from "@/components/ds/ListaConteudos";
+import { LinhaConteudo, ListaLinhas } from "@/components/ds/ListaConteudos";
 import { PainelIndicadores } from "@/components/ds/PainelIndicadores";
-import { BlocoPainel, PainelProgresso } from "@/components/ds/PainelProgresso";
+import { RetomadaPortal } from "@/components/ds/RetomadaPortal";
+import { SeloNivelProgresso } from "@/components/ds/SeloNivelProgresso";
 import { abrirNaMoldura } from "@/components/layout/aberturas";
 import { salaPorSlug } from "@/data/catalogo";
 import { TIPO_ROTULO } from "@/data/rotulos";
 import type { TemaSlug } from "@/data/types";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { intercalarSlides } from "@/features/estudo/banner";
-import { formatarData } from "@/lib/texto";
 import type { ModeloPortal } from "@/server/estudo";
+import { comporLeituras } from "./composicao";
 import { ModalPoliticaAnuncios } from "./ModalPoliticaAnuncios";
 
-/** Portal: a página inicial do membro, conforme o frame Figma 19537:21623. */
+function Cabecalho({ id, titulo, acao, href }: { id: string; titulo: string; acao?: string; href?: Route }) {
+  return (
+    <div className="sdb-home__head">
+      <h2 id={id}>{titulo}</h2>
+      {href && (
+        <ButtonLink href={href} variant="plain" size="sm">
+          {acao}
+          <Icon name="chevronDireita" size="sm" />
+        </ButtonLink>
+      )}
+    </div>
+  );
+}
+
+/** Frame 15:355: composição sobre dados privados e recomendações existentes. */
 export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [politica, setPolitica] = useState(false);
   const temaEscolhido = modelo.temas.find((t) => t.slug === tema);
   const salas = tema ? modelo.salas.filter((s) => s.temas.includes(tema)) : modelo.salas;
-
+  const { retomada, inicio, sugestoes, novidades } = comporLeituras(modelo);
   const marca: SlideBanner = {
     id: "marca",
     tipo: "marca",
@@ -61,167 +79,197 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
   const slides = intercalarSlides(marca, episodios, modelo.slidesAnuncio);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="sdb-home">
       <h1 className="sdb-sr">Portal</h1>
       <BannerRotativo slides={slides} onPorQue={() => setPolitica(true)} />
-
-      <Carrossel
-        id="salas-recomendadas"
-        titulo="Salas recomendadas"
-        legenda={`Acesso rápido às Salas · ${modelo.salas.length} abertas`}
-        rotuloItens="Salas"
-        larguraItem={392}
-        filtros={
-          <div className="sdb-row" style={{ gap: 8 }} role="group" aria-label="Filtrar Salas por tema">
-            {modelo.temas.map((t) => (
-              <Chip
-                key={t.slug}
-                areia
-                pressed={tema === t.slug}
-                count={t.contagem}
-                onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
-              >
-                {t.nome}
-              </Chip>
-            ))}
-          </div>
-        }
-        rodape={
-          temaEscolhido && (
-            <p className="sdb-footnote m-0" aria-live="polite">
-              {salas.length} {salas.length === 1 ? "Sala trata" : "Salas tratam"} de{" "}
-              {temaEscolhido.nome.toLowerCase()}.{" "}
-              <a className="sdb-link" href={`/comparar?tema=${temaEscolhido.slug}`}>
-                Comparar {temaEscolhido.nome.toLowerCase()} entre as Salas
-              </a>
-            </p>
-          )
-        }
-      >
-        {salas.length > 0 ? (
-          salas.map((s, i) => (
-            <CardSala
-              key={s.sala.slug}
-              destaque={i === 0}
-              acaoAreia
-              acoes={<BotaoSalvar tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
-              sala={s.sala}
-              progresso={s.progresso}
-              ampliar={s.motivo === "ampliar"}
-              imagem={s.imagem}
+      <PainelIndicadores rotulo="Seu progresso no acervo" itens={modelo.indicadores} />
+      <div className="sdb-home__columns">
+        <div className="sdb-home__editorial">
+          <section className="sdb-home__section" aria-labelledby="home-retomada">
+            <Cabecalho
+              id="home-retomada"
+              titulo={retomada ? "Continue sua busca" : "Comece sua busca"}
+              acao={retomada ? "Ver minha Estante" : "Explorar o acervo"}
+              href={retomada ? "/estante" : "/biblioteca"}
             />
-          ))
-        ) : (
-          <EstadoSecao
-            simbolo="busca"
-            compacto
-            titulo={`Nenhuma Sala trata de ${temaEscolhido?.nome.toLowerCase()} ainda.`}
-            descricao="Tire o filtro de tema para ver todas as Salas."
-            acao={{ rotulo: "Tirar o filtro", executar: () => setTema(null) }}
-          />
-        )}
-      </Carrossel>
-
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="flex flex-col gap-1">
-            <h2 id="titulo-progresso" className="sdb-title-2">
-              Seu progresso
-            </h2>
-            <p className="sdb-footnote m-0">Só você vê estes números.</p>
-          </div>
-          {modelo.mostrarNiveis && (
-            <div className="sdb-row" style={{ gap: 4 }}>
-              <Button variant="plain" size="sm" onClick={() => abrirNaMoldura("niveis")}>
-                Como os níveis funcionam
-              </Button>
-              <Button variant="gold" size="sm" icon="trilha" onClick={() => abrirNaMoldura("conquistas")}>
-                Ver conquistas
-              </Button>
+            {retomada ? (
+              <RetomadaPortal {...retomada} />
+            ) : (
+              <>
+                <p className="sdb-home__intro">Escolha uma leitura para começar.</p>
+                {inicio ? (
+                  <RetomadaPortal {...inicio} />
+                ) : (
+                  <EstadoSecao
+                    compacto
+                    simbolo="busca"
+                    titulo="O acervo está aberto à sua busca."
+                    descricao="Conheça as leituras disponíveis na Biblioteca."
+                    acao={{ rotulo: "Explorar o acervo", href: "/biblioteca" }}
+                  />
+                )}
+              </>
+            )}
+          </section>
+          <Carrossel
+            id="proximas-leituras"
+            className="sdb-home__leituras"
+            titulo="Para sua próxima leitura"
+            rotuloItens="leituras"
+            larguraItem={300}
+            acoes={
+              <ButtonLink href="/biblioteca" variant="plain" size="sm">
+                Explorar o acervo
+              </ButtonLink>
+            }
+            rodape={
+              sugestoes.length === 0 ? (
+                <p className="sdb-home__intro">Explore o acervo para encontrar sua próxima leitura.</p>
+              ) : undefined
+            }
+          >
+            {sugestoes.map(({ conteudo }) => (
+              <CardConteudo
+                key={`${conteudo.sala}/${conteudo.slug}`}
+                conteudo={conteudo}
+                mostrarNivel={modelo.mostrarNiveis}
+                acoes={
+                  <BotaoSalvar
+                    tipo="conteudo"
+                    estilo="card"
+                    alvo={`${conteudo.sala}/${conteudo.slug}`}
+                    titulo={conteudo.titulo}
+                  />
+                }
+              />
+            ))}
+          </Carrossel>
+          <Carrossel
+            id="salas-recomendadas"
+            className="sdb-home__salas"
+            titulo="Conheça outras Salas"
+            rotuloItens="Salas"
+            larguraItem={388}
+            acoes={
+              <ButtonLink href="/salas" variant="plain" size="sm">
+                Ver Salas
+              </ButtonLink>
+            }
+            filtros={
+              <details className="sdb-home__filtros">
+                <summary>Filtrar Salas por tema{temaEscolhido ? `: ${temaEscolhido.nome}` : ""}</summary>
+                <div className="sdb-carousel__chips" role="group" aria-label="Filtrar Salas por tema">
+                  {modelo.temas.map((t) => (
+                    <Chip
+                      key={t.slug}
+                      areia
+                      pressed={tema === t.slug}
+                      count={t.contagem}
+                      onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
+                    >
+                      {t.nome}
+                    </Chip>
+                  ))}
+                </div>
+              </details>
+            }
+            rodape={
+              temaEscolhido ? (
+                <p className="sdb-footnote" aria-live="polite">
+                  {salas.length} {salas.length === 1 ? "Sala trata" : "Salas tratam"} de{" "}
+                  {temaEscolhido.nome.toLowerCase()}.{" "}
+                  <Link className="sdb-link" href={`/comparar?tema=${temaEscolhido.slug}`}>
+                    Comparar {temaEscolhido.nome.toLowerCase()} entre as Salas
+                  </Link>
+                </p>
+              ) : salas.length === 0 ? (
+                <EstadoSecao
+                  compacto
+                  simbolo="busca"
+                  titulo="Nenhuma Sala disponível por enquanto."
+                  descricao="As Salas publicadas aparecerão aqui."
+                />
+              ) : undefined
+            }
+          >
+            {salas.map((s) => (
+              <CardSala
+                key={s.sala.slug}
+                sala={s.sala}
+                progresso={s.progresso}
+                ampliar={s.motivo === "ampliar"}
+                imagem={s.imagem}
+                acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
+              />
+            ))}
+          </Carrossel>
+          <section className="sdb-home__section" aria-labelledby="home-perguntas">
+            <Cabecalho id="home-perguntas" titulo="Explore uma pergunta" />
+            <div className="sdb-home__perguntas">
+              {[
+                { tema: "alma", texto: "Como as tradições compreendem a alma?" },
+                { tema: "morte", texto: "O que acontece após a morte?" },
+              ].map((p) => (
+                <Link key={p.tema} className="sdb-home__pergunta" href={`/comparar?tema=${p.tema}`}>
+                  <span>
+                    <span className="sdb-home__pergunta-titulo">{p.texto}</span>
+                    <span className="sdb-home__pergunta-acao">Comparar perspectivas</span>
+                  </span>
+                  <Icon name="seta" />
+                </Link>
+              ))}
             </div>
+          </section>
+          <section className="sdb-home__section sdb-home__novidades" aria-labelledby="home-novidades">
+            <Cabecalho
+              id="home-novidades"
+              titulo="Novidades do acervo"
+              acao="Ver Biblioteca"
+              href="/biblioteca"
+            />
+            {novidades.length ? (
+              <ListaLinhas>
+                {novidades.map(({ conteudo }) => (
+                  <LinhaConteudo
+                    key={`${conteudo.sala}/${conteudo.slug}`}
+                    conteudo={conteudo}
+                    icone
+                    meta={`${TIPO_ROTULO[conteudo.tipo]} · ${salaPorSlug(conteudo.sala)?.nome ?? conteudo.sala}`}
+                  />
+                ))}
+              </ListaLinhas>
+            ) : (
+              <EstadoSecao
+                compacto
+                simbolo="busca"
+                titulo="Sem novidades por enquanto."
+                descricao="Novas publicações do acervo aparecerão aqui."
+              />
+            )}
+          </section>
+        </div>
+        <div className="sdb-home__apoio">
+          <section className="sdb-home__caminho" aria-labelledby="home-caminho">
+            <h2 id="home-caminho">Seu caminho</h2>
+            <p>Suas leituras e descobertas, um passo de cada vez.</p>
+            {modelo.mostrarNiveis && modelo.nivelFoco ? (
+              <SeloNivelProgresso {...modelo.nivelFoco} />
+            ) : (
+              <p>Um espaço para acompanhar suas leituras e descobertas.</p>
+            )}
+            <ButtonLink href="/conquistas" variant="secondary" size="sm" icon="trilha">
+              Ver conquistas
+            </ButtonLink>
+          </section>
+          {modelo.anuncioPainel && (
+            <EspacoPublicitario
+              anuncio={modelo.anuncioPainel}
+              variante="portal"
+              onPorQue={() => setPolitica(true)}
+            />
           )}
         </div>
-
-        <PainelProgresso
-          tituloId="titulo-progresso"
-          indicadores={<PainelIndicadores rotulo="Seu progresso no acervo" itens={modelo.indicadores} />}
-          anuncio={
-            modelo.anuncioPainel && (
-              <EspacoPublicitario
-                anuncio={modelo.anuncioPainel}
-                variante="painel"
-                onPorQue={() => setPolitica(true)}
-              />
-            )
-          }
-        >
-          {modelo.emAndamento.length > 0 ? (
-            <BlocoPainel
-              id="titulo-continuar"
-              titulo="Continue de onde parou"
-              sub="Retome a leitura no ponto em que parou."
-            >
-              <ul className="sdb-entries">
-                {modelo.emAndamento.slice(0, 1).map(({ conteudo, imagem, pct }) => (
-                  <li key={conteudo.slug}>
-                    <ItemCompacto
-                      conteudo={conteudo}
-                      imagem={imagem}
-                      progresso={pct}
-                      acao="Retomar leitura"
-                    />
-                  </li>
-                ))}
-              </ul>
-            </BlocoPainel>
-          ) : (
-            modelo.comecePorAqui.length > 0 && (
-              <BlocoPainel
-                id="titulo-comece"
-                titulo="Comece por aqui"
-                sub="Três leituras de nível iniciante, de Salas diferentes."
-              >
-                <ul className="sdb-entries">
-                  {modelo.comecePorAqui.map(({ conteudo, imagem }) => (
-                    <li key={conteudo.slug}>
-                      <ItemCompacto conteudo={conteudo} imagem={imagem} acao="Começar a leitura" />
-                    </li>
-                  ))}
-                </ul>
-              </BlocoPainel>
-            )
-          )}
-
-          <BlocoPainel
-            id="titulo-recentes"
-            titulo="Publicados recentemente"
-            sub="Conteúdos que entraram no acervo"
-          >
-            <ListaLinhas>
-              {modelo.recentes.map(({ conteudo }) => (
-                <LinhaConteudo
-                  key={`${conteudo.sala}/${conteudo.slug}`}
-                  conteudo={conteudo}
-                  meta={`${salaPorSlug(conteudo.sala)?.nome} · ${TIPO_ROTULO[conteudo.tipo]} · publicado em ${formatarData(conteudo.publicadoEm)}`}
-                />
-              ))}
-              <LinhaMais href="/biblioteca">Ver tudo na Biblioteca</LinhaMais>
-            </ListaLinhas>
-          </BlocoPainel>
-
-          {modelo.ampliar && (
-            <BlocoPainel id="titulo-ampliar" titulo="Para ampliar o olhar" sub={modelo.ampliar.motivo}>
-              <ListaLinhas>
-                <LinhaConteudo
-                  conteudo={modelo.ampliar.conteudo}
-                  meta={`${salaPorSlug(modelo.ampliar.conteudo.sala)?.nome} · ${TIPO_ROTULO[modelo.ampliar.conteudo.tipo]} · ${modelo.ampliar.conteudo.duracaoMin} min de leitura`}
-                />
-              </ListaLinhas>
-            </BlocoPainel>
-          )}
-        </PainelProgresso>
       </div>
-
       <ModalPoliticaAnuncios aberto={politica} onFechar={() => setPolitica(false)} />
     </div>
   );

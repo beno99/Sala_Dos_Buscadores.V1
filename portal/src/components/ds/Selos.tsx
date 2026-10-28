@@ -52,9 +52,24 @@ export function SeloNivel({ nivel, plain }: { nivel: Nivel; plain?: boolean }) {
   );
 }
 
-type BadgeVariant = "neutral" | "solid" | "ink" | "critical" | "glass";
+type BadgeVariant =
+  | "neutral"
+  | "solid"
+  | "ink"
+  | "critical"
+  | "glass"
+  // 1.1: tags semânticas (cor + ícone + palavra) e status editoriais.
+  | "topic"
+  | "source"
+  | "period"
+  | "language"
+  | "new"
+  | "published"
+  | "review"
+  | "draft"
+  | "archived";
 
-/** Rótulo curto, não clicável. */
+/** Rótulo curto com ícone e cor semântica, não clicável. O rótulo sempre diz o significado. */
 export function Badge({
   variant,
   icon,

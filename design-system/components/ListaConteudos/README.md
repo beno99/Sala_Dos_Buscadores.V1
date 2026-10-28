@@ -20,3 +20,8 @@ Conteúdos do acervo em linhas, sem card: uma tabela leve para listas curtas (pu
 - Foco visível dentro da linha (contorno recuado), para não ser cortado por um contêiner que recorta.
 - Movimento só na resposta: fundo `accent-soft` ao passar ou pressionar e o chevron andando 3 px.
 - Nada de anúncio no formato de linha: publicidade nunca imita conteúdo editorial.
+
+## Novidades com ícone (PortalInicio)
+A variante `.sdb-rows__link--icon` reserva a área `type` para `.sdb-rows__type`.
+O ícone acompanha o tipo real do conteúdo. Texto, selo e seta conservam suas áreas;
+no celular o selo desce sem deslocar o ícone para uma linha implícita.

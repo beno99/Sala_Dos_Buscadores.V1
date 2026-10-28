@@ -236,7 +236,12 @@ export function RevisaoSala({
                             <span className="sdb-footnote">
                               {f.titulo} · {f.autor}
                             </span>
-                            {f.nova && <span className="sdb-badge sdb-badge--ink">Nova</span>}
+                            {f.nova && (
+                              <span className="sdb-badge sdb-badge--new">
+                                <Icon name="assistente" size="sm" />
+                                Nova
+                              </span>
+                            )}
                           </li>
                         ))}
                       </ul>

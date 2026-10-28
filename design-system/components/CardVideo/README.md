@@ -28,3 +28,7 @@ Só no artigo de anfitrião com link do YouTube: o vídeo toca na própria pági
 - Moldura com `radius-lg`, fundo `depth-fill` enquanto carrega e `shadow-card`. A legenda diz de onde vem o vídeo.
 - Sem o player (por exemplo na prévia do catálogo), a moldura recebe a placa da marca (`.sdb-plate`).
 - A mesma moldura (`.video-embed__frame` com `<img alt="">`) mostra a imagem de topo do artigo de anfitrião quando não há vídeo; sem imagem, a placa da marca.
+
+## Progresso compartilhado
+
+O elemento nativo `.video__progress` recebe o trilho escuro, o gradiente dourado e o halo definidos em `components/bundle.css`. Evite sobrescrever a cor no CSS do vídeo. A prévia identifica os dados ilustrativos; na integração, mostre progresso apenas quando a origem disponibilizar um valor real.

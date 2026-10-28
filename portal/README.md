@@ -98,7 +98,7 @@ Terceiro papel: o anfitrião mantém Salas próprias e escreve artigos nelas; na
 
 - **Ciclo** (`features/anfitriao/regras/ciclo.ts`): rascunho → em revisão → publicado ou reprovado (motivo de pelo menos 20 caracteres). Editar algo publicado tira do ar até a nova aprovação; o salvamento automático nunca faz isso. Só se exclui o que nunca foi publicado.
 - **Visibilidade** (`regras/visibilidade.ts`): Sala de anfitrião aparece se, e só se, está publicada e tem pelo menos um artigo publicado. `/salas` mostra “Salas da curadoria” e “Salas de anfitriões”.
-- **Comparação e assistente:** a Sala de anfitrião só entra na grade (`respostasDeAnfitrioes` em `features/busca/busca.ts`) e no assistente (`features/assistente/motor.ts`, leituras citadas como interpretação, com o selo Anfitrião) quando a curadoria liga `naComparacao`.
+- **Comparação e assistente:** a Sala de anfitrião só entra na grade (`respostasDeAnfitrioes` em `features/busca/busca.ts`) e no conjunto de leituras elegíveis ao futuro assistente (registro de leituras publicadas; o motor legado em `features/assistente/motor.ts` é usado apenas em testes) quando a curadoria liga `naComparacao`.
 - **Imagens:** `POST /midia` (só anfitrião; JPEG, PNG ou WebP até 5 MB, conferidos pelos magic bytes) e `GET /midia/[id]`. O envio exige o aceite de direitos, registrado com nome e data.
 - **Fontes propostas:** o anfitrião cadastra uma fonte nova; só ele a vê até o artigo ser aprovado, quando ela entra no catálogo.
 - **Servidor:** `server/anfitriao/` (`editorial.ts` lado do anfitrião, `revisao.ts` decisões da curadoria, `usuarios.ts` papéis, candidaturas, convites e perfil, `consultas.ts` leitura, `acoes.ts` e `acoes-admin.ts` Server Actions que conferem papel e posse).
@@ -140,7 +140,7 @@ src/
     admin/             curadoria (papel de administrador)
   components/ds/       peças da biblioteca em React: emitem as mesmas classes sdb-* dos exemplos
   components/layout/   moldura, navegação (regras testadas), rodapé, providers
-  features/            acervo, busca (lógica pura + UI + painel), assistente (motor simulado + UI), auth, onboarding,
+  features/            acervo, busca (lógica pura + UI + painel), assistente (contrato de integração + UI), auth, onboarding,
                        aparencia, admin (regras + telas da curadoria)
   data/                tipos, rótulos, catálogo, repositório público, referencia/ (conteúdo editorial em código)
                        e semente/ (acervo oficial importado pelo db:seed)
@@ -165,9 +165,30 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 
 ## Dados iniciais
 
-O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. O assistente continua simulado em `consultar`, em `features/assistente/motor.ts`. Obras e referências citadas são reais; os autores dos artigos do acervo inicial são fictícios.
+O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que informa indisponibilidade enquanto não houver IA conectada. `features/assistente/motor.ts` permanece como fixture legada de testes, sem ser o serviço padrão. Obras e referências citadas são reais; os autores dos artigos do acervo inicial são fictícios.
 
 ## Fora desta etapa
 
 - No portal: o Portal novo (Fase C) e as versões funcionais de Destaques, Biblioteca, Trilhas, Estante e Ajustes (Fase D), marcados com `TODO(redesign)`; notificações (`TODO(notificacoes)`); comentários/comunidade (`TODO(comunidade)`); qualquer ranking entre pessoas continua vedado (RNF-DOM-05).
 - Na curadoria (`src/features/admin/ui/CascaCuradoria.tsx` e `src/data/catalogo.ts`): edição de Salas e temas (`TODO(admin-salas)`), glossário (`TODO(admin-glossario)`), usuários e papéis, RF-08 (`TODO(admin-usuarios)`), moderação (`TODO(admin-moderacao)`), comparações e respostas do assistente (`TODO(admin-comparacoes)`). Nenhum upload de arquivo binário.
+
+### Home · Retomar e descobrir (26/10/2026)
+
+A rota `/` mantém o modelo autenticado em `server/estudo.ts`. `PortalCliente`
+compõe banner, indicadores, retomada, sugestões únicas, Salas, perguntas e
+novidades; apoio e publicidade vêm depois do estudo na ordem do DOM. O nível de
+“Seu caminho” reutiliza o cálculo da lateral. Sem retomada, há início honesto;
+sem sugestões ou anúncio, nenhum item é fabricado. Os estilos estão na origem
+do DS (`PortalInicio`, `bundle.css`), sincronizados por `ds:sync`.
+Capturas, medidas e decisões: `../artifacts/home-2026-10-26/LEIA-ME.md`.
+
+
+## Assistente do acervo · tela aprovada em 27/10/2026
+
+`/assistente` integra `TelaAssistente` à moldura existente, com tema escuro local, fontes General Sans/Gambetta, modos Explorar/Comparar/Leitura guiada e Salas publicadas. `?pergunta=`, `?escopo=`, `?modo=` e `?orb=gold|dark` preparam contexto editável. Não alteram dados do acervo nem o tema salvo da conta. A navegação, a busca e a conta são as da moldura; não há uma segunda sidebar ou tabbar.
+
+`components/ds/EsferaAssistente.tsx` usa os renderizadores originais do DS, copiados por `ds:sync`. Eles suspendem frames com pausa, movimento reduzido, aba oculta e fora da tela, mantêm fallback CSS e liberam os recursos ao desmontar. A troca de aparência não reinicia a conversa ou o rascunho. `Nova conversa` preserva modo, Sala, aparência e pausa. Enter envia apenas em desktop com ponteiro fino; no celular e durante IME não envia.
+
+O `ConversaProvider` compartilha a conversa em memória com o mini chat e invalida respostas atrasadas após interrupção/nova conversa. Não existe histórico persistente. O endpoint `POST /api/assistente` confere sessão e valida texto (1–2.000 caracteres), modo e Sala visível. O transporte é `features/assistente/servico.ts`; o ponto de integração server-only é `server/assistente.ts` (`ServicoAssistente`). Sem provedor configurado, retorna HTTP 503 com aviso explícito e não gera respostas ou referências. O futuro adaptador deve recuperar apenas fontes publicadas/elegíveis, retornar `ResultadoAssistente` e respeitar `AbortSignal`. Ainda faltam o provedor/RAG e a persistência por conta; nenhuma credencial nova foi criada ou exigida nesta implementação.
+
+O diálogo de fontes e a cópia usam exclusivamente os trechos/referências retornados. Sucesso é exercitado com fixtures restritas aos testes; a aplicação não importa `TelaAssistente/preview.js` nem `demo-data.js`. A validação da interface está em `tests/e2e/assistente-tela.spec.ts`, cobrindo desktop/celular, contexto enviado, indisponibilidade, teclado, fontes/cópia, duas esferas, pausa/redução de movimento, fallback e navegação.

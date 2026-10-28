@@ -234,29 +234,7 @@
   color: var(--accent);
   font-weight: 550;
 }
-.sdb-ui-progress progress {
-  appearance: none;
-  -webkit-appearance: none;
-  display: block;
-  width: 100%;
-  height: 7px;
-  border: 0;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--fill-strong);
-}
-.sdb-ui-progress progress::-webkit-progress-bar {
-  background: var(--fill-strong);
-  border-radius: 4px;
-}
-.sdb-ui-progress progress::-webkit-progress-value {
-  background: linear-gradient(90deg, var(--accent-fill), var(--accent-soft), var(--bg-canvas));
-  border-radius: 4px;
-}
-.sdb-ui-progress progress::-moz-progress-bar {
-  background: linear-gradient(90deg, var(--accent-fill), var(--accent-soft), var(--bg-canvas));
-  border-radius: 4px;
-}
+/* Native progress rendering is shared in bundle.css. */
 .sdb-ui-progress small {
   display: block;
   font-size: 10px;

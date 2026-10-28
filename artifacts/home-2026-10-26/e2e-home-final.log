@@ -1,0 +1,52 @@
+
+> sala-dos-buscadores-portal@0.1.0 test:e2e
+> playwright test tests/e2e/home-responsiva.spec.ts tests/e2e/moldura.spec.ts tests/e2e/portal.spec.ts tests/e2e/estados-interface.spec.ts tests/e2e/conquistas.spec.ts
+
+
+Running 38 tests using 1 worker
+
+(node:39426) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/conquistas.spec.ts:4:5 › perfil e coleção compartilham os oito badges; filtros, detalhes e foco funcionam (3.2s)
+  ✓   2 [desktop] › tests/e2e/conquistas.spec.ts:43:5 › temas, UV e tamanhos preservam a coleção sem transbordamento (2.1s)
+  ✓   3 [desktop] › tests/e2e/estados-interface.spec.ts:4:5 › busca sem resultados usa ícone opaco e permite limpar a consulta (2.8s)
+  ✓   4 [desktop] › tests/e2e/estados-interface.spec.ts:17:5 › diálogo de orientação preserva contexto e retorno do foco (1.3s)
+  ✓   5 [desktop] › tests/e2e/home-responsiva.spec.ts:11:5 › ações da home preservam Estante, assistente, busca e destinos (6.4s)
+  ✓   6 [desktop] › tests/e2e/home-responsiva.spec.ts:63:5 › seis viewports, quatro temas e movimento reduzido sem overflow (4.2s)
+  ✓   7 [desktop] › tests/e2e/moldura.spec.ts:4:5 › cadastro novo passa pelo onboarding e chega ao Portal (1.8s)
+  ✓   8 [desktop] › tests/e2e/moldura.spec.ts:38:5 › ⌘K abre a busca e a sugestão de tema leva à grade (2.1s)
+  ✓   9 [desktop] › tests/e2e/moldura.spec.ts:56:5 › o orbe abre o mini chat do assistente sobre a página (2.0s)
+  ✓  10 [desktop] › tests/e2e/moldura.spec.ts:73:5 › o mini chat responde com trechos separados e fontes (4.7s)
+  ✓  11 [desktop] › tests/e2e/moldura.spec.ts:84:5 › lateral: recolhe, guarda a escolha e marca a página atual (2.0s)
+  -  12 [desktop] › tests/e2e/moldura.spec.ts:96:5 › celular: barra de abas embaixo e “Mais” com o resto do menu
+  ✓  13 [desktop] › tests/e2e/moldura.spec.ts:110:5 › aparência: o tema e a lateral translúcida só valem ao salvar e ficam guardados (3.9s)
+  ✓  14 [desktop] › tests/e2e/portal.spec.ts:21:5 › a conta de demonstração vê indicadores, “Continuar” e conquistas (3.7s)
+  ✓  15 [desktop] › tests/e2e/portal.spec.ts:51:5 › “Novidades do acervo” é uma lista de links, cada um com o Selo de proveniência (3.9s)
+  ✓  16 [desktop] › tests/e2e/portal.spec.ts:66:5 › o anúncio fica na lateral de apoio, identificado como publicidade (3.8s)
+  ✓  17 [desktop] › tests/e2e/portal.spec.ts:81:5 › o chip de tema filtra as Salas e oferece a comparação (3.7s)
+  ✓  18 [desktop] › tests/e2e/portal.spec.ts:91:5 › o banner gira sozinho e para com o botão de pausa (3.7s)
+  ✓  19 [desktop] › tests/e2e/portal.spec.ts:107:5 › visitar uma Sala e abrir um conteúdo entram no progresso (5.6s)
+(node:40204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  20 [celular] › tests/e2e/conquistas.spec.ts:4:5 › perfil e coleção compartilham os oito badges; filtros, detalhes e foco funcionam (4.2s)
+  ✓  21 [celular] › tests/e2e/conquistas.spec.ts:43:5 › temas, UV e tamanhos preservam a coleção sem transbordamento (2.4s)
+  ✓  22 [celular] › tests/e2e/estados-interface.spec.ts:4:5 › busca sem resultados usa ícone opaco e permite limpar a consulta (2.9s)
+  ✓  23 [celular] › tests/e2e/estados-interface.spec.ts:17:5 › diálogo de orientação preserva contexto e retorno do foco (1.4s)
+  ✓  24 [celular] › tests/e2e/home-responsiva.spec.ts:11:5 › ações da home preservam Estante, assistente, busca e destinos (6.6s)
+  ✓  25 [celular] › tests/e2e/home-responsiva.spec.ts:63:5 › seis viewports, quatro temas e movimento reduzido sem overflow (4.4s)
+  ✓  26 [celular] › tests/e2e/moldura.spec.ts:4:5 › cadastro novo passa pelo onboarding e chega ao Portal (1.7s)
+  ✓  27 [celular] › tests/e2e/moldura.spec.ts:38:5 › ⌘K abre a busca e a sugestão de tema leva à grade (2.0s)
+  ✓  28 [celular] › tests/e2e/moldura.spec.ts:56:5 › o orbe abre o mini chat do assistente sobre a página (1.9s)
+  ✓  29 [celular] › tests/e2e/moldura.spec.ts:73:5 › o mini chat responde com trechos separados e fontes (4.9s)
+  -  30 [celular] › tests/e2e/moldura.spec.ts:84:5 › lateral: recolhe, guarda a escolha e marca a página atual
+  ✓  31 [celular] › tests/e2e/moldura.spec.ts:96:5 › celular: barra de abas embaixo e “Mais” com o resto do menu (6.3s)
+  ✓  32 [celular] › tests/e2e/moldura.spec.ts:110:5 › aparência: o tema e a lateral translúcida só valem ao salvar e ficam guardados (3.9s)
+  ✓  33 [celular] › tests/e2e/portal.spec.ts:21:5 › a conta de demonstração vê indicadores, “Continuar” e conquistas (4.3s)
+  ✓  34 [celular] › tests/e2e/portal.spec.ts:51:5 › “Novidades do acervo” é uma lista de links, cada um com o Selo de proveniência (3.8s)
+  ✓  35 [celular] › tests/e2e/portal.spec.ts:66:5 › o anúncio fica na lateral de apoio, identificado como publicidade (3.9s)
+  ✓  36 [celular] › tests/e2e/portal.spec.ts:81:5 › o chip de tema filtra as Salas e oferece a comparação (3.9s)
+  ✓  37 [celular] › tests/e2e/portal.spec.ts:91:5 › o banner gira sozinho e para com o botão de pausa (3.9s)
+  ✓  38 [celular] › tests/e2e/portal.spec.ts:107:5 › visitar uma Sala e abrir um conteúdo entram no progresso (5.5s)
+
+  2 skipped
+  36 passed (2.2m)

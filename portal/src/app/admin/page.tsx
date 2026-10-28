@@ -45,12 +45,8 @@ export default function PainelCuradoria() {
           <h2 id="titulo-revisao-anfitrioes" className="sdb-headline">
             Revisão de anfitriões
           </h2>
-          <span className={revisao ? "sdb-badge" : "sdb-badge sdb-badge--neutral"}>
-            <i
-              className={
-                revisao ? "sdb-badge__dot sdb-badge__dot--half" : "sdb-badge__dot sdb-badge__dot--hollow"
-              }
-            />
+          <span className={revisao ? "sdb-badge sdb-badge--review" : "sdb-badge sdb-badge--published"}>
+            <Icon name={revisao ? "editar" : "check"} size="sm" />
             {revisao ? `${revisao} em revisão` : "Nada pendente"}
           </span>
         </div>

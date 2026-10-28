@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { Button } from "@/components/ds/Button";
-import { ConquistaLinha, type ConquistaVisual } from "@/components/ds/Conquista";
-import { ProgressoReal } from "@/components/ds/EstadosInterface";
+import { Button, ButtonLink } from "@/components/ds/Button";
+import type { ConquistaVisual } from "@/components/ds/Conquista";
 import { Sheet } from "@/components/ds/Sheet";
 
 /**
@@ -27,7 +26,6 @@ export function ModalConquistas({
     if (aberto) setVista(vistaInicial);
   }, [aberto, vistaInicial]);
   const obtidas = conquistas.filter((c) => c.obtida);
-  const bloqueadas = conquistas.filter((c) => !c.obtida);
 
   return (
     <Sheet aberto={aberto} onFechar={onFechar} rotuloId={`${id}-titulo`}>
@@ -53,40 +51,9 @@ export function ModalConquistas({
               {obtidas.length} de {conquistas.length} obtidas. Só você vê: não há placar nem comparação entre
               pessoas.
             </p>
-            <ProgressoReal
-              concluidos={obtidas.length}
-              total={conquistas.length}
-              rotulo="Conquistas obtidas"
-              unidade="conquistas obtidas"
-            />
-            {obtidas.length > 0 && (
-              <section aria-labelledby={`${id}-obtidas`} className="flex flex-col gap-2">
-                <h3 id={`${id}-obtidas`} className="sdb-caption">
-                  Obtidas
-                </h3>
-                <div className="sdb-list">
-                  {obtidas.map((c) => (
-                    <div key={c.id} className="px-4">
-                      <ConquistaLinha c={c} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            {bloqueadas.length > 0 && (
-              <section aria-labelledby={`${id}-bloqueadas`} className="flex flex-col gap-2">
-                <h3 id={`${id}-bloqueadas`} className="sdb-caption">
-                  Ainda bloqueadas
-                </h3>
-                <div className="sdb-list">
-                  {bloqueadas.map((c) => (
-                    <div key={c.id} className="px-4">
-                      <ConquistaLinha c={c} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            <ButtonLink href="/conquistas" onClick={onFechar}>
+              Abrir coleção de conquistas
+            </ButtonLink>
             <Button variant="secondary" onClick={() => setVista("niveis")}>
               Como os níveis funcionam
             </Button>

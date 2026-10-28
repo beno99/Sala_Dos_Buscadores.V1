@@ -22,3 +22,9 @@ Anúncio identificado, em três versões: painel (dentro do Painel de progresso 
 
 ### Por que ela pode encostar nas bordas e ter imagem cheia
 No painel, todo conteúdo editorial é linha ou item compacto, nunca card com imagem. A única área com imagem cheia é o anúncio, então a diferença de forma já separa publicidade de acervo. Além disso o rótulo "Publicidade" e o anunciante ficam sempre visíveis no topo, e o anúncio não tem Selo de proveniência nem o tracejado da IA, que marcam conteúdo do acervo.
+
+## Coluna da nova home (26/10/2026)
+A variante `.sdb-ad--portal`, documentada em PortalInicio, usa título
+Fraunces 24/30 e label PUBLICIDADE em Fraunces 16/18 conforme o frame atual.
+O anunciante e a identificação de demonstração continuam separados da curadoria;
+nunca leva SeloProveniencia. `demonstracao` vem do contrato do anúncio fictício.

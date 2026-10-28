@@ -77,16 +77,9 @@
 .comparativo__answer dfn { padding-inline: 2px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-style: italic; font-weight: 550; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .comparativo__foot { display: flex; flex-direction: column; gap: 16px; margin-inline: 16px; padding-block: 24px 8px; border-top: 1px solid var(--comparativo-edge); }
 .comparativo__badges { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-.comparativo__source, .comparativo__level, .comparativo__empty-label { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1.35; }
-.comparativo__source { background: var(--accent-soft); color: var(--accent); }
-.comparativo__source svg, .comparativo__empty-label svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
-.comparativo__level, .comparativo__empty-label { background: var(--fill); color: var(--comparativo-muted); }
-.comparativo__steps { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
-.comparativo__steps i { width: 3px; border-radius: 1px; background: currentColor; }
-.comparativo__steps i:nth-child(1) { height: 6px; }
-.comparativo__steps i:nth-child(2) { height: 10px; }
-.comparativo__steps i:nth-child(3) { height: 14px; }
-.comparativo__level[data-level="1"] i:nth-child(n+2), .comparativo__level[data-level="2"] i:nth-child(3) { opacity: .25; }
+.comparativo__empty-label { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1.35; }
+.comparativo__empty-label svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
+.comparativo__empty-label { background: var(--fill); color: var(--comparativo-muted); }
 .comparativo__reference { min-height: 40px; margin: 0; color: var(--comparativo-muted); font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
 .comparativo__action { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; margin-top: auto; color: var(--accent); font-size: 14px; font-weight: 550; line-height: 1.5; text-decoration: none; }
 .comparativo__action svg { flex: none; width: 20px; height: 20px; fill: currentColor; }

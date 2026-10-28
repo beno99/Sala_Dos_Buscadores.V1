@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Arc } from "@/components/ds/Arc";
 import { Icon } from "@/components/ds/Icon";
-import { ICONE_PROVENIENCIA } from "@/components/ds/Selos";
+import { SeloNivel, SeloProveniencia } from "@/components/ds/Selos";
 import { TextoMarcado } from "@/components/ds/TextoMarcado";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
-import { NIVEL_ROTULO, PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type { Comparacao, RespostaComparada, SalaSlug } from "@/data/types";
 
 const hrefLer = (r: RespostaComparada): Route =>
@@ -99,18 +98,8 @@ function CardComparativo({
       </div>
       <footer className="comparativo__foot">
         <div className="comparativo__badges">
-          <span className="comparativo__source">
-            <Icon name={ICONE_PROVENIENCIA[resposta.proveniencia]} size="sm" />
-            {PROVENIENCIA_ROTULO[resposta.proveniencia]}
-          </span>
-          <span className="comparativo__level" data-level={resposta.nivel}>
-            <span className="comparativo__steps" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            {NIVEL_ROTULO[resposta.nivel]}
-          </span>
+          <SeloProveniencia tipo={resposta.proveniencia} />
+          <SeloNivel nivel={resposta.nivel} />
         </div>
         <p className="comparativo__reference">{resposta.referencia}</p>
         <Link className="comparativo__action" href={hrefLer(resposta)}>

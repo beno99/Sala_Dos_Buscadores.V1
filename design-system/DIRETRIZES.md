@@ -22,13 +22,13 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 ### Tema padrão: Sólido claro
 - `data-theme="solido-claro"` é o padrão; `solido-escuro` é a opção escura. Os temas de vidro continuam disponíveis na biblioteca.
 - Paleta areia (desde out 2026, do Figma "Jornada do buscador"): fundo areia chapado `bg-canvas` #EBDCC1 (grafite no escuro), sem brilho ambiente nem gradiente. Lateral em caramelo (`nav-fill` #DABC86), com cartões em `nav-card` e contorno `nav-edge`; barra superior com filete `topbar-edge` e busca em `card-warm`.
-- Cards de Sala e de conteúdo na superfície quente `card-warm` (#E3C998); citação, vídeo, glossário, fontes e painéis continuam em creme (`material-regular`). Contorno sutil (`glass-edge`) e sombra curta (`shadow-card`). Limpo, sem moldura pesada.
+- Cards de conteúdo usam a superfície quente `card-warm` (#E3C998); citação, vídeo, glossário, fontes e painéis continuam em creme (`material-regular`). Cards de Sala usam imagem ao fundo e painel de vidro escuro, com moldura acompanhando o tema. Cards de Conquista ficam sempre escuros, inclusive nas páginas claras e areia.
 - Chips de filtro por tema com contagem em areia dourada (`.sdb-chip--sand`, `chip-warm` com texto `on-chip-warm`).
 - Layout de painel: tudo preso à mesma grade, com a mesma borda esquerda, as mesmas larguras de coluna e o mesmo ritmo vertical. Texto alinhado à esquerda; nunca `text-align: justify`.
 
 ### Camada flutuante
 - O que passa por cima do conteúdo (botão flutuante do assistente, barra superior quando o conteúdo rola por baixo, barra de abas do celular) usa os tokens `float-*` e `blur-float`: translúcido e desfocado **também nos temas sólidos** (`.sdb-float`).
-- Só essas peças. Conteúdo, lateral, cards e listas ficam opacos.
+- Conteúdo, lateral e listas ficam opacos. Exceções aprovadas em 27/10/2026: painel de vidro escuro do CardSala e esfera de vidro do CardConquista; o texto de Conquista permanece sobre grafite neutro.
 - `prefers-reduced-transparency`: a camada flutuante fica opaca (`float-solid`).
 
 ### Duas camadas, dois materiais
@@ -42,18 +42,18 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 ### Cor
 - 60% `bg-canvas` (bege no claro, grafite no escuro), 25% `depth-fill` (bordô), 10% texto, 5% `gold`.
 - Texto: `label`, `label-secondary`, `label-tertiary` (vibrantes, legíveis sobre todos os materiais). Destaque e links em `accent`.
-- Pares de texto permitidos: grafite sobre bege, areia, caramelo ou branco; bordô sobre bege ou areia; branco sobre grafite; bege sobre bordô. Os tokens `on-accent`, `on-prominent`, `on-depth` e `on-critical` garantem isso nos quatro temas.
+- Pares de texto da marca: grafite sobre bege, areia, caramelo ou branco; bordô sobre bege ou areia; branco sobre grafite; bege sobre bordô. Os tokens `on-accent`, `on-prominent`, `on-depth` e `on-critical` garantem isso nos quatro temas. Tags e níveis usam os pares semânticos `tag-*-fill/ink` e `level-*`, conferidos pelo mesmo teste de contraste.
 - Cores de texto da paleta areia, sempre com AA conferido por `scripts/contraste.mjs`: marrom `label-brand` (títulos de destaque, como o nome da Sala e "Salvos para depois"), dourado escuro `nav-active-label` (item ativo da lateral), verde `positive` (selo "nova") e vermelho `danger` (só a ação de sair). Os tons do Figma foram escurecidos o mínimo para passar 4,5:1.
 - Botão primário em `prominent-fill` (grafite no claro, branco no escuro); seleção em `accent-fill` (bordô no claro, bege no escuro).
-- Ouro puro (`gold` #D3C759) é emblema (disco ou selo com glifo preto em `on-gold`), filete ou progresso sobre placa escura. Nunca texto, nunca fundo de leitura. Os tons areia e caramelo da paleta clara não são o ouro da marca: são superfícies, com texto nos pares acima.
+- O ouro é usado em emblemas, foco e ações douradas, com texto nos pares próprios de contraste. Barras usam `progress-track` escuro e `progress-gradient`, do ouro escuro ao luminoso, com halo somente no preenchimento. Não use ouro como fundo de leitura longa. Areia e caramelo continuam sendo superfícies.
 - Erro é bordô com ícone e a palavra "Erro", nunca só cor. O vermelho `danger` é só para a ação de sair.
 
 ### Forma
 - Grid estrutural de 8 pontos: espaços de 8, 16, 24, 32, 48 e 64 px. 4 px é reservado para ajustes ópticos pequenos.
-- Cantos contínuos e generosos: `radius-sm` e `radius-md` 16 (campos, itens e interiores), `radius-lg` e `radius-xl` 24 (cards, painéis, modais), `radius-pill` (botões, chips, barras).
+- Cantos: `radius-sm` e `radius-md` 16 (campos, itens e interiores), `radius-lg` e `radius-xl` 24 (cards, painéis, modais), `radius-button` 12 (todos os botões, inclusive os de ícone). Tags e selos de proveniência usam 8 px; chips, níveis e barras mantêm `radius-pill`.
 - Raios concêntricos: o que fica dentro de um card recuado 8 px usa o raio do card menos 8 (placas de Sala).
 - Separação por material e sombra suave (`shadow-card`, `shadow-float`); divisórias só dentro de listas, recuadas 24 px.
-- Foco: anel de 3 px em `focus-ring` (bordô no claro, ouro no escuro), afastado 2 px; campos em foco ganham anel duplo com `accent-soft`.
+- Foco de botão: anel dourado de 2 px em `button-focus-ring`, afastado 3 px, com filete e halo pelos tokens `button-focus-rim/glow`. Outros controles mantêm `focus-ring`; campos em foco ganham anel duplo com `accent-soft`.
 
 ### Tipografia
 - `display-caps` (Gambetta, caixa-alta) só para momentos de marca: `.sdb-display-xl`, `.sdb-display-l`.
@@ -66,11 +66,11 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 - Resposta no pressionar: `scale(0.96)` em `duration-press`, volta com mola.
 - `spring-soft` (ressalto de 1,7%) para o que se desloca: polegares, menus, modais, toasts, drawer. `ease-standard` (sem ressalto) para o resto.
 - Entradas materializam (escala 0,92–0,94 + opacidade + desfoque); saídas mais rápidas pelo mesmo caminho. Popovers nascem do gatilho; modais, do centro.
-- Transições CSS (interrompíveis) em vez de keyframes. Command palette sem animação.
+- Prefira transições CSS interrompíveis. O selo Avançado permite duas passagens de brilho em 3,6 s, sem repetição infinita. As esferas de Conquista usam rotação lenta e deformação discreta, com pausa; Command palette sem animação.
 - `prefers-reduced-motion`: deslocamento vira esmaecimento, sem ressalto.
 
 ### Imagem
-Acervos reais, livros, manuscritos, gravuras, arquitetura de biblioteca, mãos e gestos de estudo. Sem fotos disponíveis, use as placas da marca (bordô, grafite, bege) com o arco. Nunca cristais, mandalas, lua, velas, fumaça ou gradiente roxo.
+Acervos reais, livros, manuscritos, gravuras, arquitetura de biblioteca, mãos e gestos de estudo. Sem fotos disponíveis, use as placas da marca (bordô, grafite, bege) com o arco. Evite mandalas, lua, velas e fumaça como decoração genérica. Exceção aprovada: as Conquistas usam gemas procedurais com vidro, nuances minerais e brilhos internos; são marcos privados de estudo, sem atribuição espiritual. O roxo é permitido no nível Avançado e nas tags semânticas, sem alterar a paleta geral da marca.
 
 No portal, as fotos ficam em `portal/public/imagens/{banner,salas,episodios,anuncios,conteudos}` (nomes e proporções no `LEIA-ME.md` da pasta). Toda peça com imagem aceita `<img alt="">` e cai na placa da marca quando o arquivo não existe. Só imagens com direito de uso registrado. Imagens enviadas por anfitriões entram pelo Campo de imagem, com o aceite de responsabilidade registrado no envio.
 
@@ -92,3 +92,19 @@ As peças maiores são montagens das básicas: a Grade comparativa usa placas, S
 ## Refinamento 1.0
 
 Os quatro materiais e os exemplos de Card Sala, Card Vídeo, Grade Comparativa e Botão Flutuante seguem os componentes aprovados no estudo v0.6. O assistente usa um núcleo de ouro líquido em WebGL e três anéis concêntricos: abrem no hover e fecham ao sair. O ouro permanece decorativo e nunca é fundo de leitura. O mini chat é uma demonstração local, sem IA conectada.
+
+### Tela do Assistente
+
+A tela aprovada em 27/10/2026 apresenta um único assistente do acervo. A pessoa escolhe o modo de estudo (Explorar, Comparar ou Leitura guiada) e o contexto (Todo o acervo ou uma Sala) junto ao campo de pergunta. Os atalhos preparam uma pergunta editável; a conversa ganha prioridade após o envio. Fontes, interpretação editorial e síntese da IA devem continuar identificadas.
+
+O seletor de esfera muda somente a aparência: ouro líquido com três anéis ou grafite texturizado em WebGL, sem anéis. O fundo escuro e a tipografia General Sans/Gambetta ficam dentro de `.sdb-assistant-screen`, sem redefinir o tema ou as fontes das demais peças. Ambas as esferas oferecem pausa, respeitam movimento reduzido e mantêm uma alternativa visual quando WebGL não está disponível.
+
+O exemplo do Design System contém respostas locais e conversas ilustrativas, sem consulta à IA ou persistência. Ao levar a composição para o portal, reutilize os estilos e os renderizadores e conecte os modos e a Sala ao fluxo real de conversa; não transfira as respostas demonstrativas.
+
+## Regras dos componentes revisados
+
+CardSala tem uma única composição de imagem e vidro, com formatos vertical e horizontal. A versão de estudo troca nível/data pelo conjunto de progresso, mantendo título, descrição e ação. Calcule o preenchimento com o valor exato de conteúdos concluídos / total; arredonde apenas o percentual exibido. Progresso desconhecido não equivale a zero.
+
+Conquista mantém card e área de texto escuros em qualquer tema. O degradê do topo acompanha a gema e termina antes do título; o bloqueio coloca esfera e degradê em cinza. Movimento reduzido interrompe rotação, deformação e expansão.
+
+Níveis: Iniciante em laranja suave, Intermediário em laranja intenso e Avançado em roxo luminoso. Tags e selos combinam cor, ícone Phosphor e palavra. O brilho representa profundidade de estudo no acervo, nunca superioridade ou evolução espiritual.

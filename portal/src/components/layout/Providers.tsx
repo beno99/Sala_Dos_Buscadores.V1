@@ -35,7 +35,7 @@ export function Providers({
   return (
     <ToastProvider>
       <SessaoProvider inicial={membro}>
-        <ConversaProvider>{children}</ConversaProvider>
+        <ConversaProvider key={membro?.id ?? "anonimo"}>{children}</ConversaProvider>
       </SessaoProvider>
     </ToastProvider>
   );

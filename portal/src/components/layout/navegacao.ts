@@ -23,6 +23,7 @@ const SECOES: Secao[] = [
   { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "comunidade", grupo: "Estudo" },
   { href: "/trilhas" as Route, rotulo: "Trilhas", icone: "trilha", grupo: "Estudo" },
   { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },
+  { href: "/conquistas" as Route, rotulo: "Conquistas", icone: "check", grupo: "Estudo" },
   { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
   { href: "/assistente", rotulo: "Assistente", icone: "assistente", grupo: "Ferramentas" },
   { href: "/ajustes" as Route, rotulo: "Ajustes", icone: "ajustes", grupo: "Conta" },
@@ -86,6 +87,9 @@ export function trilhaDaPagina(
 export function subtituloDaPagina(caminho: string): string | undefined {
   if (caminho === "/estante" || caminho.startsWith("/estante/")) return "Todos os conteúdos salvos";
   if (caminho === "/perfil" || caminho.startsWith("/perfil/")) return "Seu perfil";
+  if (caminho === "/conquistas" || caminho.startsWith("/conquistas/")) {
+    return "Seu caminho de estudo, conquista por conquista";
+  }
   return undefined;
 }
 

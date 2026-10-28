@@ -4,14 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CardSala · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=cfbebf7e5dcc">
-<link rel="stylesheet" href="../components/bundle.css?v=87ea5c78d6a7">
+<link rel="stylesheet" href="../tokens.css?v=575303c42586">
+<link rel="stylesheet" href="../components/bundle.css?v=93b3f28e0b3b">
 <link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
 <link rel="stylesheet" href="../components/refined-layout.css?v=bfd6c90bac79">
-<link rel="stylesheet" href="../components/CardSala/card-sala.css?v=d2c275cffc5e">
-<link rel="stylesheet" href="../components/CardVideo/card-video.css?v=b537fd317c40">
-<link rel="stylesheet" href="../components/CardComparativo/card-comparativo.css?v=e2476731704e">
+<link rel="stylesheet" href="../components/CardSala/card-sala.css?v=f76d81a7d585">
+<link rel="stylesheet" href="../components/CardVideo/card-video.css?v=75418677e79a">
+<link rel="stylesheet" href="../components/CardComparativo/card-comparativo.css?v=3d8729d83a38">
 <link rel="stylesheet" href="../components/AssistenteOrb/assistant-orb.css?v=ab5b3e82252b">
+
 
 
 <link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
@@ -21,113 +22,110 @@
 </head>
 <body>
 <div class="sdb-stage refined-preview">
-<section>
+  <section>
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Formato dos cards">
-        <button id="tab-vertical" role="tab" type="button" aria-controls="panel-vertical" aria-selected="true" tabindex="0"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,16v64H56V56Zm0,144H56V136H200v64Z"/></svg>Vertical</button>
-        <button id="tab-horizontal" role="tab" type="button" aria-controls="panel-horizontal" aria-selected="false" tabindex="-1"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40ZM56,56h64V200H56ZM200,200H136V56h64V200Z"/></svg>Horizontal</button>
+        <button id="tab-vertical" role="tab" type="button" aria-controls="panel-vertical" aria-selected="true" tabindex="0"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="1.5" width="8" height="13" rx="2"/><path d="M4 9h8"/></svg>Vertical</button>
+        <button id="tab-horizontal" role="tab" type="button" aria-controls="panel-horizontal" aria-selected="false" tabindex="-1"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="3.5" width="14" height="9" rx="2"/><path d="M7 3.5v9"/></svg>Horizontal</button>
       </div>
-      <p class="toolbar-note">Mesma sala, três tratamentos visuais.</p>
+      <p class="toolbar-note">Imagem e vidro · com ou sem progresso de estudo.</p>
     </div>
-    <section id="panel-vertical" class="gallery" role="tabpanel" aria-labelledby="tab-vertical" tabindex="0"><div class="variant"><div class="variant-label"><h2>Normal</h2><span>01</span></div><article class="sala sala--normal" aria-labelledby="title-normal-vertical"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
+
+    <section id="panel-vertical" class="gallery sala-gallery" role="tabpanel" aria-labelledby="tab-vertical" tabindex="0">
+      <div class="variant">
+        <div class="variant-label"><h2>Card de Sala</h2></div>
+        <article class="sala" aria-labelledby="title-vertical">
+          <div class="sala__media">
+            <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
+            <div class="sala__tools">
+              <span class="sala__count">3 conteúdos</span>
+              <button class="sdb-btn sdb-btn--icon sdb-btn--glass sala__save" data-theme="solido-escuro" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="sala__body" data-theme="solido-escuro">
+              <h3 class="sala__title" id="title-vertical">Corpus Hermeticum</h3>
+              <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
+              <div class="sala__meta">
+                <span class="sdb-level" data-level="2"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
+                <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
+              </div>
+              <a class="sdb-btn sdb-btn--primary sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na Sala <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
       </div>
-      
-    </div><div class="sala__body">
-      <h3 class="sala__title" id="title-normal-vertical">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
+      <div class="variant">
+        <div class="variant-label"><h2>Com progresso de estudo</h2></div>
+        <article class="sala" aria-labelledby="title-progress-vertical">
+          <div class="sala__media">
+            <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
+            <div class="sala__tools">
+              <span class="sala__count">3 conteúdos</span>
+              <button class="sdb-btn sdb-btn--icon sdb-btn--glass sala__save" data-theme="solido-escuro" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="sala__body" data-theme="solido-escuro">
+              <h3 class="sala__title" id="title-progress-vertical">Corpus Hermeticum</h3>
+              <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
+              <div class="sala__progress">
+                <div class="sala__progress-heading"><label for="sala-progress-vertical">Estudo da sala</label><strong aria-hidden="true">67%</strong></div>
+                <progress class="sala__progress-bar" id="sala-progress-vertical" value="0.6666666666666666" max="1" aria-label="Progresso de estudo de Corpus Hermeticum" aria-valuetext="67% estudado · 2 de 3 conteúdos lidos">67%</progress>
+                <span class="sala__progress-caption">2 de 3 conteúdos lidos</span>
+              </div>
+              <a class="sdb-btn sdb-btn--primary sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na Sala <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
       </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div></article><p class="variant-caption">Imagem e conteúdo em áreas separadas.</p></div>
-<div class="variant"><div class="variant-label"><h2>Destaque · painel sólido</h2><span>02</span></div><article class="sala sala--destaque" aria-labelledby="title-solido-vertical"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
-      </div>
-      <div class="sala__body">
-      <h3 class="sala__title" id="title-solido-vertical">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
-      </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div>
-    </div></article><p class="variant-caption">Moldura de vidro. Painel opaco sobre a imagem.</p></div>
-<div class="variant"><div class="variant-label"><h2>Destaque · painel translúcido</h2><span>03</span></div><article class="sala sala--destaque sala--translucido" aria-labelledby="title-translucido-vertical"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
-      </div>
-      <div class="sala__body">
-      <h3 class="sala__title" id="title-translucido-vertical">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
-      </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div>
-    </div></article><p class="variant-caption">Moldura de vidro. Painel que deixa a imagem passar.</p></div></section>
-    <section id="panel-horizontal" class="gallery gallery--horizontal" role="tabpanel" aria-labelledby="tab-horizontal" tabindex="0" hidden><div class="variant"><div class="variant-label"><h2>Normal</h2><span>01</span></div><article class="sala sala--normal sala--horizontal" aria-labelledby="title-normal-horizontal"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
-      </div>
-      
-    </div><div class="sala__body">
-      <h3 class="sala__title" id="title-normal-horizontal">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
-      </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div></article><p class="variant-caption">Imagem e conteúdo em áreas separadas.</p></div>
-<div class="variant"><div class="variant-label"><h2>Destaque · painel sólido</h2><span>02</span></div><article class="sala sala--destaque sala--horizontal" aria-labelledby="title-solido-horizontal"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
-      </div>
-      <div class="sala__body">
-      <h3 class="sala__title" id="title-solido-horizontal">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
-      </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div>
-    </div></article><p class="variant-caption">Moldura de vidro. Painel opaco sobre a imagem.</p></div>
-<div class="variant"><div class="variant-label"><h2>Destaque · painel translúcido</h2><span>03</span></div><article class="sala sala--destaque sala--translucido sala--horizontal" aria-labelledby="title-translucido-horizontal"><div class="sala__media">
-      <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
-      <div class="sala__tools">
-        <span class="sala__count">64 conteúdos</span>
-        <button class="sala__save" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 256 256" aria-hidden="true"><g class="sdb-icon__r"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></g><g class="sdb-icon__f"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></g></svg></button>
-      </div>
-      <div class="sala__body">
-      <h3 class="sala__title" id="title-translucido-horizontal">Corpus Hermeticum</h3>
-      <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
-      <div class="sala__meta">
-        <span class="sala__level" data-level="2"><span class="sala__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
-        <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
-      </div>
-      <a class="sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na sala <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-    </div>
-    </div></article><p class="variant-caption">Moldura de vidro. Painel que deixa a imagem passar.</p></div></section>
     </section>
-<div class="feedback" role="status" aria-live="polite" hidden></div>
-<dialog id="sala-corpus-hermeticum" aria-labelledby="dialog-title"><p class="eyebrow">Prévia de navegação</p><h2 id="dialog-title">Corpus Hermeticum</h2><p data-dialog-description></p><p>Esta é uma demonstração. A sala completa pertence ao portal.</p><form method="dialog"><button>Voltar aos cards</button></form></dialog></div>
+
+    <section id="panel-horizontal" class="gallery sala-gallery gallery--horizontal sala-gallery--horizontal" role="tabpanel" aria-labelledby="tab-horizontal" tabindex="0" hidden>
+      <div class="variant">
+        <div class="variant-label"><h2>Card de Sala</h2></div>
+        <article class="sala sala--horizontal" aria-labelledby="title-horizontal">
+          <div class="sala__media">
+            <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
+            <div class="sala__tools">
+              <span class="sala__count">3 conteúdos</span>
+              <button class="sdb-btn sdb-btn--icon sdb-btn--glass sala__save" data-theme="solido-escuro" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="sala__body" data-theme="solido-escuro">
+              <h3 class="sala__title" id="title-horizontal">Corpus Hermeticum</h3>
+              <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
+              <div class="sala__meta">
+                <span class="sdb-level" data-level="2"><span class="sdb-level__steps" aria-hidden="true"><i></i><i></i><i></i></span>Intermediário</span>
+                <span class="sala__date">Atualizada em <time datetime="2026-09-03">3 set 2026</time></span>
+              </div>
+              <a class="sdb-btn sdb-btn--primary sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na Sala <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="variant">
+        <div class="variant-label"><h2>Com progresso de estudo</h2></div>
+        <article class="sala sala--horizontal" aria-labelledby="title-progress-horizontal">
+          <div class="sala__media">
+            <img class="sala__image" src="../assets/images/corpus-hermeticum.webp" alt="" width="736" height="414" decoding="async">
+            <div class="sala__tools">
+              <span class="sala__count">3 conteúdos</span>
+              <button class="sdb-btn sdb-btn--icon sdb-btn--glass sala__save" data-theme="solido-escuro" type="button" data-save-room="corpus-hermeticum" data-room-name="Corpus Hermeticum" aria-pressed="false" aria-label="Salvar Corpus Hermeticum na estante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="sala__body" data-theme="solido-escuro">
+              <h3 class="sala__title" id="title-progress-horizontal">Corpus Hermeticum</h3>
+              <p class="sala__description">Hermetismo greco-egípcio · séculos I–III</p>
+              <div class="sala__progress">
+                <div class="sala__progress-heading"><label for="sala-progress-horizontal">Estudo da sala</label><strong aria-hidden="true">67%</strong></div>
+                <progress class="sala__progress-bar" id="sala-progress-horizontal" value="0.6666666666666666" max="1" aria-label="Progresso de estudo de Corpus Hermeticum" aria-valuetext="67% estudado · 2 de 3 conteúdos lidos">67%</progress>
+                <span class="sala__progress-caption">2 de 3 conteúdos lidos</span>
+              </div>
+              <a class="sdb-btn sdb-btn--primary sala__action" href="#sala-corpus-hermeticum" data-preview-room>Entrar na Sala <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </section>
+  <div class="feedback" role="status" aria-live="polite" hidden></div>
+  <dialog class="sala-preview-dialog" id="sala-corpus-hermeticum" aria-labelledby="dialog-title"><p class="eyebrow">Prévia de navegação</p><h2 id="dialog-title">Corpus Hermeticum</h2><p data-dialog-description></p><p>Esta é uma demonstração. A sala completa pertence ao portal.</p><form method="dialog"><button class="sdb-btn sdb-btn--primary">Voltar aos cards</button></form></dialog>
+</div>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>
 <script>
 window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});

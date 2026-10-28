@@ -33,6 +33,10 @@ export function BarraSuperior({
   /** Aparência e conta (e, no futuro, notificações). */
   acoes: ReactNode;
 } & SegundaLinha) {
+  const [tecla, setTecla] = useState("Ctrl+K");
+  useEffect(() => {
+    setTecla(/Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl+K");
+  }, []);
   const [rolou, setRolou] = useState(false);
   useEffect(() => {
     const medir = () => setRolou(window.scrollY > 4);
@@ -74,7 +78,7 @@ export function BarraSuperior({
             <Icon name="busca" />
             <span>Buscar no acervo</span>
             <span className="sdb-kbd" aria-hidden="true">
-              ⌘K
+              {tecla}
             </span>
           </button>
         )}

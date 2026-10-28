@@ -1,19 +1,15 @@
-/* Card Sala · v0.2. Tokens da marca + assets/themes.css; independente do catálogo. */
+/* Card Sala · imagem integral + painel de vidro. Requer bundle.css e assets/themes.css. */
 .sala {
   --sala-radius: 24px;
   --sala-inset: 8px;
   --sala-media-radius: calc(var(--sala-radius) - var(--sala-inset));
   --sala-panel-radius: 16px;
   --sala-space: 8px;
-  --sala-panel-solid: var(--ds-solid, var(--float-solid));
-  --sala-panel-glass: var(--ds-glass, var(--float-solid));
-  --sala-surface: var(--card-warm, var(--ds-surface, var(--material-regular)));
-  --sala-ink: var(--label);
-  --sala-muted: var(--ds-muted, var(--label-secondary));
-  --sala-edge: var(--ds-edge, var(--glass-edge));
-  --sala-rim: var(--ds-rim, var(--glass-rim));
+  --sala-panel-solid: var(--grafite-profundo);
+  --sala-panel-glass: rgb(17 19 19 / 62%);
   --sala-frame: var(--ds-frame, var(--glass-fill));
-  --sala-overlay: rgb(17 19 19 / 78%);
+  --sala-rim: var(--ds-rim, var(--glass-rim));
+  --sala-overlay: rgb(17 19 19 / 82%);
   --sala-shadow: var(--ds-shadow, var(--shadow-card));
   position: relative;
   isolation: isolate;
@@ -22,11 +18,9 @@
   min-width: 0;
   padding: var(--sala-inset);
   border-radius: var(--sala-radius);
-  color: var(--sala-ink);
-  background: var(--sala-surface);
-  -webkit-backdrop-filter: var(--ds-backdrop, none);
-  backdrop-filter: var(--ds-backdrop, none);
-  box-shadow: inset 0 0 0 1px var(--sala-edge), var(--sala-shadow);
+  color: var(--label);
+  background: var(--sala-frame);
+  box-shadow: inset 0 0 0 1px var(--sala-rim), var(--sala-shadow);
   font-family: var(--font-ui);
   transition: box-shadow 180ms ease;
 }
@@ -34,10 +28,12 @@
 .sala__media {
   position: relative;
   isolation: isolate;
-  flex: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   min-width: 0;
+  min-height: 552px;
   overflow: hidden;
-  aspect-ratio: 16 / 10;
   border-radius: var(--sala-media-radius);
   background: var(--depth-fill);
 }
@@ -49,7 +45,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 45% 55%;
+  object-position: 55% 50%;
 }
 .sala__media::before {
   content: "";
@@ -66,15 +62,8 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sala-space);
+  margin-bottom: 120px;
   padding: calc(var(--sala-space) * 2);
-}
-.sala__count, .sala__save {
-  border: 0;
-  background: var(--sala-overlay);
-  color: var(--branco);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 30%);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
 }
 .sala__count {
   align-self: center;
@@ -82,150 +71,113 @@
   align-items: center;
   min-height: 32px;
   padding: 6px 12px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-button);
+  background: var(--sala-overlay);
+  color: var(--branco);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 18%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.35;
 }
-.sala__save {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 160ms ease, color 160ms ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.sala__save svg { width: 20px; height: 20px; fill: currentColor; }
+/* Forma, foco, hover e pressão vêm da família compartilhada de botões. */
+.sala__save { flex: none; background-color: var(--sala-overlay); color: var(--branco); }
+.sala__save svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; }
 .sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--bordo-rubro); }
 .sala__save[aria-pressed="true"] svg { fill: currentColor; }
 .sala__body {
   position: relative;
   display: flex;
-  flex: 1;
+  flex: none;
   flex-direction: column;
   align-items: flex-start;
   gap: calc(var(--sala-space) * 2);
   min-width: 0;
-  padding: calc(var(--sala-space) * 3) calc(var(--sala-space) * 2) calc(var(--sala-space) * 2);
+  margin: auto 8px 8px;
+  padding: calc(var(--sala-space) * 3);
+  border-radius: var(--sala-panel-radius);
+  background: var(--sala-panel-glass);
+  color: var(--branco);
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+  backdrop-filter: blur(24px) saturate(125%);
+  box-shadow: inset 0 0 0 1px rgb(246 231 206 / 26%), inset 0 1px 0 rgb(255 255 255 / 16%), 0 4px 24px rgb(17 19 19 / 16%);
 }
 .sala__title {
   margin: 0;
-  font: 450 32px/1.06 var(--font-display-lower);
+  font: 450 32px/1.1 var(--font-display-lower);
   letter-spacing: -.035em;
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.sala__description { margin: 0; color: var(--sala-muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
-.sala__meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sala-space); margin-top: auto; }
-.sala__level {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sala-space);
-  padding: 8px 12px;
-  border-radius: var(--radius-pill);
-  background: var(--fill);
-  color: var(--sala-ink);
-  font-size: 12px;
-  font-weight: 550;
-  line-height: 1.2;
-}
-.sala__steps { display: flex; align-items: end; gap: 2px; height: 14px; }
-.sala__steps i { display: block; width: 3px; border-radius: 1px; background: currentColor; }
-.sala__steps i:nth-child(1) { height: 6px; }
-.sala__steps i:nth-child(2) { height: 10px; }
-.sala__steps i:nth-child(3) { height: 14px; }
-.sala__level[data-level="1"] i:nth-child(n+2), .sala__level[data-level="2"] i:nth-child(3) { opacity: .2; }
-.sala__date { color: var(--sala-muted); font-size: 12px; line-height: 1.5; }
+.sala__description { margin: 0; color: rgb(255 255 255 / 94%); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.sala__meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sala-space); }
+.sala__date { color: rgb(255 255 255 / 94%); font-size: 12px; line-height: 1.5; }
+.sala__body .sdb-progress__label { color: rgb(255 255 255 / 94%); }
 .sala__action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--sala-space) * 2);
-  min-height: 48px;
-  max-width: 100%;
-  padding: 12px 16px;
-  border-radius: var(--radius-pill);
-  background: var(--prominent-fill);
-  color: var(--on-prominent);
-  font-size: 12px;
-  font-weight: 550;
-  line-height: 1.4;
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
+  --sala-action-fill: color-mix(in srgb, var(--prominent-fill) 82%, var(--on-prominent));
+  --sala-action-lit-shadow: inset 0 1px 0 rgb(255 255 255 / 90%), 0 2px 6px rgb(17 19 19 / 16%), 0 0 16px rgb(255 255 255 / 18%);
+  --button-shadow: inset 0 1px 0 rgb(255 255 255 / 20%), 0 1px 2px rgb(17 19 19 / 16%);
+  flex: none; max-width: 100%; height: auto; min-height: 48px; padding-block: 12px;
+  white-space: normal; text-align: left; line-height: 1.4;
+  background-color: var(--sala-action-fill);
 }
-.sala__action svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
-.sala__save:focus-visible { outline: 3px solid var(--branco); outline-offset: 3px; }
-.sala__action:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
-.sala--normal { min-height: 552px; }
-.sala--normal .sala__action { padding-inline: 0; background: transparent; color: var(--accent); }
+.sala__action svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.sala__action:focus-visible:where(:not(:disabled, [aria-disabled="true"], .is-disabled, .is-loading)) {
+  --sala-action-fill: var(--prominent-fill);
+  --button-shadow: var(--sala-action-lit-shadow);
+}
+.sala .sala__action.sdb-btn:is(:disabled, [aria-disabled="true"], .is-disabled, .is-loading) { transform: none; }
+.sala .sala__action.sdb-btn:is(:disabled, [aria-disabled="true"], .is-disabled, .is-loading)::before { opacity: 0; }
 
-/* Destaque: moldura → imagem → painel; o material do painel é independente do tema. */
-.sala--destaque {
-  background: var(--sala-frame);
-  box-shadow: inset 0 0 0 1px var(--sala-rim), var(--sala-shadow);
-}
-.sala--destaque .sala__media { display: flex; flex-direction: column; flex: 1; min-height: 536px; aspect-ratio: auto; }
-.sala--destaque .sala__image { object-position: 55% 50%; }
-.sala--destaque .sala__body {
-  flex: none;
-  margin: 136px 8px 8px;
-  padding: calc(var(--sala-space) * 3);
-  border-radius: var(--sala-panel-radius);
-  background: var(--sala-panel-solid);
-  box-shadow: inset 0 0 0 1px var(--sala-rim), 0 4px 24px rgb(17 19 19 / 7%);
-}
-.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
-.sala--destaque .sala__tools { margin-bottom: 128px; }
-.sala--translucido .sala__body {
-  background: var(--sala-panel-glass);
-  -webkit-backdrop-filter: blur(24px) saturate(115%);
-  backdrop-filter: blur(24px) saturate(115%);
-}
+/* Progresso da sala: conteúdos concluídos / total, nunca tempo de carregamento. */
+.sala__progress { display: grid; gap: 8px; width: 100%; min-width: 0; }
+.sala__progress-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: var(--branco); font-size: 13px; line-height: 1.4; }
+.sala__progress-heading strong { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sala__progress-caption { color: rgb(255 255 255 / 94%); font-size: 12px; line-height: 1.5; }
 
-/* Horizontal: metadados no canto da imagem e corpo que cresce com o texto. */
-.sala--horizontal.sala--normal { flex-direction: row; min-height: 320px; }
-.sala--horizontal.sala--normal .sala__media { width: 46%; aspect-ratio: auto; }
-.sala--horizontal.sala--normal .sala__body { padding: 24px 32px; }
-.sala--horizontal.sala--destaque .sala__media { min-height: 408px; }
-.sala--horizontal.sala--destaque .sala__tools { margin-bottom: 0; }
-.sala--horizontal.sala--destaque .sala__body { width: min(46%, 368px); margin: 8px 8px 8px; padding: 24px; }
-.sala--horizontal.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
-.sala--horizontal.sala--destaque .sala__image { object-position: 65% 55%; }
+/* O formato horizontal conserva a mesma imagem e o mesmo painel de vidro. */
+.sala--horizontal .sala__media { min-height: 408px; }
+.sala--horizontal .sala__tools { margin-bottom: 0; }
+.sala--horizontal .sala__body { width: min(48%, 392px); }
+.sala--horizontal .sala__image { object-position: 65% 55%; }
+.sala-gallery { grid-template-columns: repeat(2, minmax(0, 440px)); justify-content: center; }
+.sala-gallery--horizontal { grid-template-columns: minmax(0, 928px); max-width: none; }
+
+/* Diálogo demonstrativo compartilhado pelas prévias da sala e do carrossel. */
+.sala-preview-dialog { width: min(460px, calc(100vw - 32px)); padding: 32px; border: 1px solid var(--ds-edge); border-radius: 24px; color: var(--label); background: var(--ds-solid); box-shadow: var(--shadow-float); }
+.sala-preview-dialog::backdrop { background: var(--scrim); backdrop-filter: blur(4px); }
+.sala-preview-dialog h2 { margin: 16px 0; font: 450 32px/1.12 var(--font-display-lower); }
+.sala-preview-dialog p { color: var(--label-secondary); font-size: 14px; line-height: 1.6; }
+.sala-preview-dialog form { margin-top: 16px; }
 
 @media (hover: hover) and (pointer: fine) {
   .sala:hover { --sala-shadow: var(--ds-shadow-hover, var(--shadow-float)); }
-  .sala__save:hover { background: rgb(17 19 19 / 92%); }
-  .sala__save[aria-pressed="true"]:hover { background: var(--branco); }
-  .sala__action:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .sala__action:hover:where(:not(:disabled, [aria-disabled="true"], .is-disabled, .is-loading)) {
+    --sala-action-fill: var(--prominent-fill);
+    --button-shadow: var(--sala-action-lit-shadow);
+  }
+  .sala__action.sdb-btn:hover:not(:active):not(.is-pressed):where(:not(:disabled, [aria-disabled="true"], .is-disabled, .is-loading))::before { opacity: 0; }
 }
+@media (max-width: 760px) { .sala-gallery { grid-template-columns: minmax(0, 440px); } }
 @media (max-width: 620px) {
-  .sala--horizontal.sala--normal { flex-direction: column; min-height: 0; }
-  .sala--horizontal.sala--normal .sala__media { width: 100%; aspect-ratio: 16 / 10; }
-  .sala--horizontal.sala--normal .sala__body { padding: 24px 16px 16px; }
-  .sala--horizontal.sala--destaque .sala__media { min-height: 536px; }
-  .sala--horizontal.sala--destaque .sala__body { width: auto; margin: auto 8px 8px; }
-  .sala--horizontal.sala--destaque .sala__tools { margin-bottom: 128px; }
+  .sala--horizontal .sala__media { min-height: 552px; }
+  .sala--horizontal .sala__body { width: auto; }
+  .sala--horizontal .sala__tools { margin-bottom: 120px; }
 }
-@media (prefers-reduced-transparency: reduce) {
-  .sala { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .sala__count, .sala__save { background: var(--grafite-profundo); backdrop-filter: none; -webkit-backdrop-filter: none; }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala__count, .sala__save { background-color: var(--grafite-profundo); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .sala { background: var(--sala-panel-solid); }
-  .sala--translucido .sala__body { background: var(--sala-panel-solid); }
-  .sala__count, .sala__save { background: var(--grafite-profundo); }
+  .sala__body { background: var(--sala-panel-solid); }
+  .sala__count, .sala__save { background-color: var(--grafite-profundo); }
   .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
 }
 @media (prefers-contrast: more) {
-  .sala { outline: 1px solid var(--label); background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .sala__count, .sala__save { background: var(--grafite-profundo); box-shadow: inset 0 0 0 2px var(--branco); backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+  .sala { outline: 1px solid var(--label); }
+  .sala__body { box-shadow: inset 0 0 0 1px var(--branco); }
 }
 @media (prefers-reduced-motion: reduce) { .sala, .sala * { transition: none; } }
 

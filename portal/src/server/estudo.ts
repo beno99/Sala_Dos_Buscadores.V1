@@ -113,6 +113,7 @@ export interface ModeloPortal {
   recentes: ConteudoComImagem[];
   ampliar?: ConteudoComImagem & { motivo: string };
   anuncioPainel?: AnuncioVisual;
+  nivelFoco?: NivelEmFoco;
   mostrarNiveis: boolean;
 }
 
@@ -182,7 +183,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   const porChave = (sala: string, slug: string) => publicos.find((c) => c.sala === sala && c.slug === slug);
   const comImagem = (c: Conteudo): ConteudoComImagem => ({
     conteudo: c,
-    imagem: imagemDoCard(c),
+    imagem: imagemDoCard(c) ?? imagemDaSala({ slug: c.sala }),
   });
 
   const ordem = ordenarSalas(
@@ -236,7 +237,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
       valor: resumo.temas.total,
       dica: resumo.temas.total
         ? lista(resumo.temas.slugs.map((t) => temaPorSlug(t)?.nome ?? t))
-        : "Nenhum ainda. Escolha um tema acima.",
+        : "Nenhum ainda. Escolha um tema para comparar.",
     },
     {
       rotulo: "Trilhas em andamento",
@@ -336,6 +337,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
           },
         }
       : {}),
+    ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
     anuncioPainel: anuncios.find((a) => a.locais.includes("painel")),
     mostrarNiveis: p.mostrarNiveis,
   };

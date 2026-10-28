@@ -6,6 +6,7 @@ import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { Avatar } from "@/components/ds/Avatar";
 import { BarraAbasApp } from "@/components/ds/BarraAbasApp";
 import { BarraSuperior } from "@/components/ds/BarraSuperior";
+import { CabecalhoAssistente } from "@/components/ds/CabecalhoAssistente";
 import { CartaoLateral, ContinuarLateral } from "@/components/ds/CartoesLateral";
 import { ConquistasMini } from "@/components/ds/Conquista";
 import { Drawer } from "@/components/ds/Drawer";
@@ -76,7 +77,7 @@ export function Moldura({
   const [assistente, setAssistente] = useState(false);
   const [orbePausado, setOrbePausado] = useState(false);
   const [mais, setMais] = useState(false);
-  const [conquistas, setConquistas] = useState<"conquistas" | "niveis" | null>(null);
+  const [conquistas, setConquistas] = useState<"niveis" | null>(null);
   const [onboarding, setOnboarding] = useState(membroInicial.preferencias === null);
   // Cada abertura começa da primeira etapa, com as respostas atuais.
   const [vezOnboarding, setVezOnboarding] = useState(0);
@@ -99,7 +100,8 @@ export function Moldura({
     const abrir = (e: Event) => {
       const pedido = (e as CustomEvent<Abertura>).detail;
       if (pedido === "assistente") setAssistente(true);
-      if (pedido === "conquistas" || pedido === "niveis") setConquistas(pedido);
+      if (pedido === "conquistas") router.push("/conquistas" as Route);
+      if (pedido === "niveis") setConquistas(pedido);
       if (pedido === "preferencias") {
         setVezOnboarding((v) => v + 1);
         setOnboarding(true);
@@ -111,7 +113,7 @@ export function Moldura({
       document.removeEventListener("keydown", atalho);
       window.removeEventListener(EVENTO_ABRIR, abrir);
     };
-  }, []);
+  }, [router]);
 
   const grupos = gruposDaLateral(caminho, {
     admin,
@@ -134,7 +136,7 @@ export function Moldura({
           {
             label: `Suas conquistas (${lateral.conquistas.filter((c) => c.obtida).length} de ${lateral.conquistas.length})`,
             icon: "check" as const,
-            onSelect: () => setConquistas("conquistas"),
+            onSelect: () => router.push("/conquistas" as Route),
           },
         ]
       : []),
@@ -151,7 +153,11 @@ export function Moldura({
 
   return (
     <EstanteProvider chaves={lateral.salvos.chaves}>
-      <div className="flex min-h-dvh">
+      <div
+        className={`flex min-h-dvh${noAssistente ? " sdb-assistant-screen sdb-assistant-screen--portal" : ""}`}
+        data-theme={noAssistente ? "solido-escuro" : undefined}
+        data-portal={caminho === "/" ? "inicio" : undefined}
+      >
         <div className="sticky top-0 hidden h-dvh shrink-0 nav:block">
           <NavegacaoLateralApp
             id="navegacao-principal"
@@ -199,7 +205,7 @@ export function Moldura({
                     <button
                       type="button"
                       className="sdb-sidenav__cta"
-                      onClick={() => setConquistas("conquistas")}
+                      onClick={() => router.push("/conquistas" as Route)}
                     >
                       Ver conquistas
                     </button>
@@ -211,15 +217,10 @@ export function Moldura({
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <BarraSuperior
-            titulo={tituloDaPagina(caminho, conteudos)}
-            {...(trilha
-              ? { trilha }
-              : { saudacao: subtituloDaPagina(caminho) ?? `Boas-vindas de volta, ${membro.pseudonimo}.` })}
-            onBuscar={() => setBusca(true)}
-            acoes={
-              <>
-                <MenuAparencia inicial={aparencia} lateralInicial={lateralTranslucida} />
+          {noAssistente ? (
+            <CabecalhoAssistente
+              onBuscar={() => setBusca(true)}
+              conta={
                 <Menu
                   right
                   triggerClassName="sdb-topbar__account"
@@ -228,9 +229,35 @@ export function Moldura({
                   items={menuConta}
                   trigger={<Avatar iniciais={iniciais} foto={lateral.foto} />}
                 />
-              </>
-            }
-          />
+              }
+            />
+          ) : (
+            <BarraSuperior
+              titulo={tituloDaPagina(caminho, conteudos)}
+              {...(trilha
+                ? { trilha }
+                : {
+                    saudacao:
+                      caminho === "/"
+                        ? undefined
+                        : (subtituloDaPagina(caminho) ?? `Boas-vindas de volta, ${membro.pseudonimo}.`),
+                  })}
+              onBuscar={() => setBusca(true)}
+              acoes={
+                <>
+                  <MenuAparencia inicial={aparencia} lateralInicial={lateralTranslucida} />
+                  <Menu
+                    right
+                    triggerClassName="sdb-topbar__account"
+                    triggerLabel={`Conta de ${membro.pseudonimo}`}
+                    titulo={`Conectado como ${membro.pseudonimo}`}
+                    items={menuConta}
+                    trigger={<Avatar iniciais={iniciais} foto={lateral.foto} />}
+                  />
+                </>
+              }
+            />
+          )}
           <main
             id="conteudo"
             tabIndex={-1}
@@ -272,7 +299,7 @@ export function Moldura({
         <PainelBusca aberto={busca} onFechar={fecharBusca} conteudos={conteudos} />
         <ModalConquistas
           aberto={conquistas !== null}
-          vistaInicial={conquistas ?? "conquistas"}
+          vistaInicial="niveis"
           conquistas={lateral.conquistas}
           onFechar={() => setConquistas(null)}
         />

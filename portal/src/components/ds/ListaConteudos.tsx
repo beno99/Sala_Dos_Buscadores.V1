@@ -16,10 +16,35 @@ export function ListaLinhas({ children }: { children: ReactNode }) {
 }
 
 /** Linha de conteúdo: título, meta, Selo de proveniência compacto (obrigatório) e chevron. */
-export function LinhaConteudo({ conteudo, meta }: { conteudo: Conteudo; meta: string }) {
+export function LinhaConteudo({
+  conteudo,
+  meta,
+  icone,
+}: {
+  conteudo: Conteudo;
+  meta: string;
+  icone?: boolean;
+}) {
   return (
     <li>
-      <Link className="sdb-rows__link" href={hrefDo(conteudo)}>
+      <Link
+        className={icone ? "sdb-rows__link sdb-rows__link--icon" : "sdb-rows__link"}
+        href={hrefDo(conteudo)}
+      >
+        {icone && (
+          <Icon
+            name={
+              conteudo.tipo === "fonte-primaria"
+                ? "fontePrimaria"
+                : conteudo.tipo === "video"
+                  ? "video"
+                  : conteudo.tipo === "verbete"
+                    ? "glossario"
+                    : "artigo"
+            }
+            className="sdb-rows__type"
+          />
+        )}
         <span className="sdb-rows__text">
           <span className="sdb-rows__title">{conteudo.titulo}</span>
           <span className="sdb-rows__meta">{meta}</span>

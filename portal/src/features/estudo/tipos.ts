@@ -13,6 +13,13 @@ export interface Leitura {
 }
 
 export type ConquistaId =
+  | "primeiro-passo"
+  | "palavra-por-palavra"
+  | "alem-da-primeira-leitura"
+  | "entre-salas"
+  | "leitura-atenta"
+  | "caminho-percorrido"
+  // IDs legados continuam aceitos para preservar o histórico já registrado.
   | "porta-aberta"
   | "cinco-salas"
   | "lado-a-lado"

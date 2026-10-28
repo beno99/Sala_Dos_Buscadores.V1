@@ -46,8 +46,7 @@ export default async function Biblioteca(props: PageProps<"/biblioteca">) {
         <CardSala
           sala={s}
           imagem={imagemDaSala(s)}
-          acaoAreia
-          acoes={<BotaoSalvar tipo="sala" alvo={s.slug} titulo={s.nome} />}
+          acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.slug} titulo={s.nome} />}
         />
       ),
     }));

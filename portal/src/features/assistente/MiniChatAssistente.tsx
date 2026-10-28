@@ -5,9 +5,9 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { AvisoNeutralidade } from "@/components/ds/AvisoNeutralidade";
 import { PausarOrbe } from "@/components/ds/OrbeAssistente";
 import { useConversa } from "./ConversaProvider";
-import { IndicadorConsulta } from "./IndicadorConsulta";
 import { MensagemAssistente } from "./MensagemAssistente";
-import { responder, SUGESTOES } from "./motor";
+
+const SUGESTOES = ["O que é o Pleroma?", "Como descrevem a alma?", "Uma leitura do Poimandres."];
 
 /**
  * Mini chat do assistente (BotaoFlutuante 1.0), aberto pelo orbe sobre
@@ -109,7 +109,7 @@ export function MiniChatAssistente({
           <span className="assistant-chat__spark" aria-hidden="true" />
           <div>
             <h2 id={`${id}-titulo`}>Assistente de IA</h2>
-            <p>Consulta só o acervo das Salas e cita as fontes</p>
+            <p>Serviço de IA ainda não conectado</p>
           </div>
         </div>
         <Link className="sdb-link px-2" style={{ fontSize: 12 }} href="/assistente" onClick={onFechar}>
@@ -159,7 +159,6 @@ export function MiniChatAssistente({
         ) : (
           <div className="assistant-chat__log" aria-live="off">
             {turnos.map((t) => {
-              const previa = responder(t.pergunta, t.escopo);
               return (
                 <div key={t.id} className="flex flex-col gap-4">
                   <p className="sdb-bubble">{t.pergunta}</p>
@@ -171,16 +170,13 @@ export function MiniChatAssistente({
                       onGerarNovamente={() => gerarNovamente(t.id)}
                     />
                   ) : (
-                    <IndicadorConsulta
-                      pergunta={t.pergunta}
-                      estado={t.estado}
-                      etapa={t.etapa}
-                      inicio={t.inicio}
-                      fim={t.fim}
-                      salas={previa.salasConsultadas}
-                      trechos={previa.trechosLidos}
-                      onInterromper={interromper}
-                    />
+                    <p className="sdb-footnote" role={t.estado === "erro" ? "alert" : "status"}>
+                      {t.estado === "erro"
+                        ? t.erro
+                        : t.estado === "interrompida"
+                          ? "Consulta interrompida. Sua pergunta foi preservada."
+                          : "Aguardando o serviço do acervo…"}
+                    </p>
                   )}
                 </div>
               );
@@ -205,7 +201,13 @@ export function MiniChatAssistente({
             readOnly={gerando}
             onChange={(e) => setValor(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+              if (
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                !e.nativeEvent.isComposing &&
+                e.keyCode !== 229 &&
+                window.matchMedia("(min-width: 901px) and (hover: hover) and (pointer: fine)").matches
+              ) {
                 e.preventDefault();
                 void enviar();
               }

@@ -16,10 +16,10 @@ test("sem sessão, qualquer rota leva a /entrar com a volta preservada", async (
   await expect(page.getByRole("heading", { level: 1, name: "Criar conta" })).toBeVisible();
 });
 
-test("jornada completa do membro", async ({ page, isMobile }) => {
+test("jornada completa do membro", async ({ page }) => {
   await test.step("entra e chega ao Portal", async () => {
     await entrarComoMembro(page);
-    if (!isMobile) await expect(page.getByText("Boas-vindas de volta, Buscador.")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Portal" })).toBeAttached();
   });
 
   await test.step("explora uma Sala", async () => {
@@ -52,15 +52,24 @@ test("jornada completa do membro", async ({ page, isMobile }) => {
     await expect(page.getByText("4 Salas respondem diretamente, 1 não trata do tema.")).toBeVisible();
   });
 
-  await test.step("pergunta ao assistente e recebe resposta identificada como IA, com fontes", async () => {
+  await test.step("prepara a pergunta ao assistente e recebe aviso honesto de indisponibilidade", async () => {
     await page.getByRole("link", { name: "Perguntar ao assistente sobre este tema" }).click();
-    await expect(page.getByLabel("Pergunta ao assistente")).toHaveValue(
+    await expect(page.getByRole("combobox", { name: "Modo de estudo" })).toHaveValue("comparar");
+    await expect(page.getByLabel("Sua pergunta ao acervo")).toHaveValue(
       "O que acontece com a alma após a morte?",
     );
     await page.getByRole("button", { name: "Enviar pergunta" }).click();
-    await expect(page.getByText("Fontes citadas", { exact: true })).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByText("Síntese por IA").first()).toBeVisible();
-    await expect(page.getByLabel("Aviso de neutralidade").first()).toBeVisible();
+    await expect(page.locator(".study-turn").getByRole("alert")).toContainText(
+      "serviço de IA ainda não está conectado",
+    );
+    await expect(page.getByLabel("Sua pergunta ao acervo")).toHaveValue(
+      "O que acontece com a alma após a morte?",
+    );
+    await expect(
+      page
+        .locator(".assistant-note")
+        .getByText("A IA organiza o que o acervo diz; não determina qual crença é verdadeira."),
+    ).toBeVisible();
   });
 });
 

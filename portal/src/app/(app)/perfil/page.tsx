@@ -3,11 +3,11 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Avatar } from "@/components/ds/Avatar";
 import { ButtonLink } from "@/components/ds/Button";
-import { Icon } from "@/components/ds/Icon";
-import { SeloNivel } from "@/components/ds/Selos";
+import { Badge, SeloNivel } from "@/components/ds/Selos";
 import { todosOsTemas } from "@/data/catalogo";
 import { GradeSalas } from "@/features/acervo/GradeSalas";
 import { PublicacoesPerfil } from "@/features/comunidade/ui/PublicacoesPerfil";
+import { ColecaoConquistas } from "@/features/conquistas/ColecaoConquistas";
 import { EditarPerfil } from "@/features/perfil/EditarPerfil";
 import { cx } from "@/lib/cx";
 import { formatarData, iniciais, plural } from "@/lib/texto";
@@ -110,9 +110,9 @@ export default async function Perfil() {
                 {m.temasAcompanhados.length > 0 ? (
                   <div className="sdb-row" style={{ gap: 8 }}>
                     {m.temasAcompanhados.map((t) => (
-                      <span key={t} className="sdb-badge sdb-badge--neutral">
+                      <Badge key={t} variant="topic" icon="glossario">
                         {t}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 ) : (
@@ -198,30 +198,10 @@ export default async function Perfil() {
             <Cabecalho
               id="titulo-conquistas"
               titulo="Conquistas"
+              acao={{ rotulo: "Ver todas as conquistas", href: "/conquistas" as Route }}
               nota={`${m.conquistas.filter((c) => c.obtida).length} de ${m.conquistas.length}`}
             />
-            <div className="sdb-card sdb-card--warm p-5">
-              <div className="flex flex-wrap items-start gap-4">
-                {m.conquistas.map((c) => (
-                  <div
-                    key={c.id}
-                    className={cx("sdb-achv", !c.obtida && "is-locked")}
-                    title={c.obtida ? c.feito : c.criterio}
-                  >
-                    <span className="sdb-achv__emblem" aria-hidden="true">
-                      <Icon name={c.obtida ? c.icone : "cadeado"} />
-                    </span>
-                    <span className="sdb-achv__name">
-                      {c.nome}
-                      <span className="sdb-sr">{c.obtida ? ", obtida" : `, bloqueada: ${c.criterio}`}</span>
-                    </span>
-                  </div>
-                ))}
-                <p className="sdb-footnote m-0 min-w-[12rem] flex-1 self-center">
-                  Só você vê. Não há placar nem comparação entre pessoas.
-                </p>
-              </div>
-            </div>
+            <ColecaoConquistas conquistas={m.conquistas} compacta />
           </section>
         )}
 

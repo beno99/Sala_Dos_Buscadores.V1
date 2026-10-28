@@ -1,3 +1,251 @@
+/* Anatomia editorial preservada; independente dos cards de sala. */
+
+.sala--conteudo .sala__media { display: block; flex: none; min-height: 0; }
+.sala--conteudo .sala__tools { margin-bottom: 0; }
+.sala--conteudo .sala__body { margin: 0; border-radius: 0; background: none; color: inherit; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.sala--conteudo.sala--horizontal .sala__body { width: auto; }
+/* Card Sala · v0.2. Tokens da marca + assets/themes.css; independente do catálogo. */
+.sala--conteudo {
+  --sala-radius: 24px;
+  --sala-inset: 8px;
+  --sala-media-radius: calc(var(--sala-radius) - var(--sala-inset));
+  --sala-panel-radius: 16px;
+  --sala-space: 8px;
+  --sala-panel-solid: var(--ds-solid, var(--float-solid));
+  --sala-panel-glass: var(--ds-glass, var(--float-solid));
+  --sala-surface: var(--card-warm, var(--ds-surface, var(--material-regular)));
+  --sala-ink: var(--label);
+  --sala-muted: var(--ds-muted, var(--label-secondary));
+  --sala-edge: var(--ds-edge, var(--glass-edge));
+  --sala-rim: var(--ds-rim, var(--glass-rim));
+  --sala-frame: var(--ds-frame, var(--glass-fill));
+  --sala-overlay: rgb(17 19 19 / 78%);
+  --sala-shadow: var(--ds-shadow, var(--shadow-card));
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--sala-inset);
+  border-radius: var(--sala-radius);
+  color: var(--sala-ink);
+  background: var(--sala-surface);
+  -webkit-backdrop-filter: var(--ds-backdrop, none);
+  backdrop-filter: var(--ds-backdrop, none);
+  box-shadow: inset 0 0 0 1px var(--sala-edge), var(--sala-shadow);
+  font-family: var(--font-ui);
+  transition: box-shadow 180ms ease;
+}
+.sala--conteudo *, .sala--conteudo *::before, .sala--conteudo *::after { box-sizing: border-box; }
+:where(.sala--conteudo) .sala__media {
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  min-width: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--sala-media-radius);
+  background: var(--depth-fill);
+}
+:where(.sala--conteudo) .sala__image {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% 55%;
+}
+:where(.sala--conteudo) .sala__media::before {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(17 19 19 / 24%), transparent 38%);
+}
+:where(.sala--conteudo) .sala__tools {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sala-space);
+  padding: calc(var(--sala-space) * 2);
+}
+:where(.sala--conteudo) .sala__count, :where(.sala--conteudo) .sala__save {
+  border: 0;
+  background: var(--sala-overlay);
+  color: var(--branco);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 30%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+:where(.sala--conteudo) .sala__count {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+:where(.sala--conteudo) .sala__save {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.sala--conteudo) .sala__save svg { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+:where(.sala--conteudo) .sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--bordo-rubro); }
+:where(.sala--conteudo) .sala__save[aria-pressed="true"] svg { fill: currentColor; }
+:where(.sala--conteudo) .sala__body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--sala-space) * 2);
+  min-width: 0;
+  padding: calc(var(--sala-space) * 3) calc(var(--sala-space) * 2) calc(var(--sala-space) * 2);
+}
+:where(.sala--conteudo) .sala__title {
+  margin: 0;
+  font: 450 32px/1.06 var(--font-display-lower);
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+:where(.sala--conteudo) .sala__description { margin: 0; color: var(--sala-muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+:where(.sala--conteudo) .sala__meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sala-space); margin-top: auto; }
+:where(.sala--conteudo) .sala__level {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sala-space);
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--sala-ink);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.2;
+}
+:where(.sala--conteudo) .sala__steps { display: flex; align-items: end; gap: 2px; height: 14px; }
+:where(.sala--conteudo) .sala__steps i { display: block; width: 3px; border-radius: 1px; background: currentColor; }
+:where(.sala--conteudo) .sala__steps i:nth-child(1) { height: 6px; }
+:where(.sala--conteudo) .sala__steps i:nth-child(2) { height: 10px; }
+:where(.sala--conteudo) .sala__steps i:nth-child(3) { height: 14px; }
+:where(.sala--conteudo) .sala__level[data-level="1"] i:nth-child(n+2), :where(.sala--conteudo) .sala__level[data-level="2"] i:nth-child(3) { opacity: .2; }
+:where(.sala--conteudo) .sala__date { color: var(--sala-muted); font-size: 12px; line-height: 1.5; }
+:where(.sala--conteudo) .sala__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--sala-space) * 2);
+  min-height: 48px;
+  max-width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--prominent-fill);
+  color: var(--on-prominent);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.sala--conteudo) .sala__action svg { flex: none; width: 16px; height: 16px; fill: currentColor; }
+:where(.sala--conteudo) .sala__save:focus-visible { outline: 3px solid var(--branco); outline-offset: 3px; }
+:where(.sala--conteudo) .sala__action:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.sala--conteudo.sala--normal { min-height: 552px; }
+.sala--conteudo.sala--normal .sala__action { padding-inline: 0; background: transparent; color: var(--accent); }
+
+/* Destaque: moldura → imagem → painel; o material do painel é independente do tema. */
+.sala--conteudo.sala--destaque {
+  background: var(--sala-frame);
+  box-shadow: inset 0 0 0 1px var(--sala-rim), var(--sala-shadow);
+}
+.sala--conteudo.sala--destaque .sala__media { display: flex; flex-direction: column; flex: 1; min-height: 536px; aspect-ratio: auto; }
+.sala--conteudo.sala--destaque .sala__image { object-position: 55% 50%; }
+.sala--conteudo.sala--destaque .sala__body {
+  flex: none;
+  margin: 136px 8px 8px;
+  padding: calc(var(--sala-space) * 3);
+  border-radius: var(--sala-panel-radius);
+  background: var(--sala-panel-solid);
+  box-shadow: inset 0 0 0 1px var(--sala-rim), 0 4px 24px rgb(17 19 19 / 7%);
+}
+.sala--conteudo.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
+.sala--conteudo.sala--destaque .sala__tools { margin-bottom: 128px; }
+.sala--conteudo.sala--translucido .sala__body {
+  background: var(--sala-panel-glass);
+  -webkit-backdrop-filter: blur(24px) saturate(115%);
+  backdrop-filter: blur(24px) saturate(115%);
+}
+
+/* Horizontal: metadados no canto da imagem e corpo que cresce com o texto. */
+.sala--conteudo.sala--horizontal.sala--normal { flex-direction: row; min-height: 320px; }
+.sala--conteudo.sala--horizontal.sala--normal .sala__media { width: 46%; aspect-ratio: auto; }
+.sala--conteudo.sala--horizontal.sala--normal .sala__body { padding: 24px 32px; }
+.sala--conteudo.sala--horizontal.sala--destaque .sala__media { min-height: 408px; }
+.sala--conteudo.sala--horizontal.sala--destaque .sala__tools { margin-bottom: 0; }
+.sala--conteudo.sala--horizontal.sala--destaque .sala__body { width: min(46%, 368px); margin: 8px 8px 8px; padding: 24px; }
+.sala--conteudo.sala--horizontal.sala--destaque .sala__tools + .sala__body { margin-top: auto; }
+.sala--conteudo.sala--horizontal.sala--destaque .sala__image { object-position: 65% 55%; }
+
+@media (hover: hover) and (pointer: fine) {
+  .sala--conteudo:hover { --sala-shadow: var(--ds-shadow-hover, var(--shadow-float)); }
+  :where(.sala--conteudo) .sala__save:hover { background: rgb(17 19 19 / 92%); }
+  :where(.sala--conteudo) .sala__save[aria-pressed="true"]:hover { background: var(--branco); }
+  :where(.sala--conteudo) .sala__action:hover { text-decoration: underline; text-underline-offset: 4px; }
+}
+@media (max-width: 620px) {
+  .sala--conteudo.sala--horizontal.sala--normal { flex-direction: column; min-height: 0; }
+  .sala--conteudo.sala--horizontal.sala--normal .sala__media { width: 100%; aspect-ratio: 16 / 10; }
+  .sala--conteudo.sala--horizontal.sala--normal .sala__body { padding: 24px 16px 16px; }
+  .sala--conteudo.sala--horizontal.sala--destaque .sala__media { min-height: 536px; }
+  .sala--conteudo.sala--horizontal.sala--destaque .sala__body { width: auto; margin: auto 8px 8px; }
+  .sala--conteudo.sala--horizontal.sala--destaque .sala__tools { margin-bottom: 128px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .sala--conteudo { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala--conteudo.sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :where(.sala--conteudo) .sala__count, :where(.sala--conteudo) .sala__save { background: var(--grafite-profundo); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :where(.sala--conteudo) .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sala--conteudo { background: var(--sala-panel-solid); }
+  .sala--conteudo.sala--translucido .sala__body { background: var(--sala-panel-solid); }
+  :where(.sala--conteudo) .sala__count, :where(.sala--conteudo) .sala__save { background: var(--grafite-profundo); }
+  :where(.sala--conteudo) .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@media (prefers-contrast: more) {
+  .sala--conteudo { outline: 1px solid var(--label); background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sala--conteudo.sala--translucido .sala__body { background: var(--sala-panel-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :where(.sala--conteudo) .sala__count, :where(.sala--conteudo) .sala__save { background: var(--grafite-profundo); box-shadow: inset 0 0 0 2px var(--branco); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :where(.sala--conteudo) .sala__save[aria-pressed="true"] { background: var(--bege-damasco); }
+}
+@media (prefers-reduced-motion: reduce) { .sala--conteudo, .sala--conteudo * { transition: none; } }
+
+/* Portal · extensões 1.0.1: placa da marca quando não há foto, etiquetas sobre a imagem e progresso do membro. */
+:where(.sala--conteudo) .sala__placa { position: absolute; z-index: -2; inset: 0; display: grid; place-items: end center; }
+:where(.sala--conteudo) .sala__placa > .sdb-arc { width: 30%; max-width: 116px; height: auto; aspect-ratio: 36 / 48; margin-bottom: -1px; }
+.sala--conteudo.sala--destaque .sala__placa > .sdb-arc { width: 24%; }
+:where(.sala--conteudo) .sala__chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sala-space); min-width: 0; }
+:where(.sala--conteudo) .sala__body > .sdb-progress { align-self: stretch; margin-top: auto; }
+:where(.sala--conteudo) .sala__media.sdb-skel { background: var(--fill); }
+
+/* Portal · extensão 1.0.2: Sala de anfitrião. O Selo de proveniência compacto (Anfitrião) vem logo depois da descrição. */
+:where(.sala--conteudo) .sala__body > .sdb-seal { align-self: flex-start; }
+
 /*
  * Card de conteúdo · modo destaque compacto (1.0.2).
  * Usa a anatomia do Card Sala (card-sala.css: container de 24 px, imagem de 16 px,
@@ -72,6 +320,6 @@
 .sala__info { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: auto; color: var(--sala-muted); font-size: 12.5px; line-height: 1.3; }
 .sala__dur { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
 .sala__dur svg { width: 14px; height: 14px; fill: currentColor; }
-.sala__barra { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 3px; background: color-mix(in srgb, var(--branco) 28%, transparent); }
-.sala__barra i { display: block; width: calc(var(--p, 0) * 100%); height: 100%; background: var(--bege-damasco); }
+.sala__barra { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 6px; background: var(--progress-track); }
+.sala__barra i { display: block; width: calc(var(--p, 0) * 100%); height: 100%; background: var(--progress-gradient); filter: drop-shadow(0 0 4px var(--progress-glow)); }
 .sala--conteudo.sala--acervo .sala__info + .sdb-seal { margin-top: 0; }

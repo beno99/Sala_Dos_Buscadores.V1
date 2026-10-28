@@ -3,6 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ds/Icon";
 import { TabelaDados } from "@/components/ds/TabelaDados";
 import { formatarData } from "@/lib/texto";
 
@@ -81,8 +82,8 @@ export function ListaAnfitrioesAdmin({
           cabecalho: "Pendentes",
           celula: (l) =>
             l.pendentes > 0 ? (
-              <span className="sdb-badge">
-                <i className="sdb-badge__dot sdb-badge__dot--half" />
+              <span className="sdb-badge sdb-badge--review">
+                <Icon name="editar" size="sm" />
                 {l.pendentes} em revisão
               </span>
             ) : (

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { entrarComoMembro } from "./apoio";
 
-test("cadastro novo passa pelo onboarding e chega ao Portal", async ({ page, isMobile }, info) => {
+test("cadastro novo passa pelo onboarding e chega ao Portal", async ({ page }, info) => {
   await page.goto("/cadastro");
   await page.getByRole("textbox", { name: "Pseudônimo", exact: true }).fill("Leitora de Hermes");
   await page
@@ -24,8 +24,12 @@ test("cadastro novo passa pelo onboarding e chega ao Portal", async ({ page, isM
   await page.getByRole("dialog").getByRole("button", { name: "Ir ao Portal" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page).toHaveURL("/");
-  // No celular a saudação sai da barra superior para caber o título.
-  if (!isMobile) await expect(page.getByText("Boas-vindas de volta, Leitora de Hermes.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comece sua busca" })).toBeVisible();
+  await expect(page.getByText("Escolha uma leitura para começar.")).toBeVisible();
+  await expect(page.getByText("38% lido")).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Continue sua busca" })).toHaveCount(0);
+  const indicadores = page.getByRole("group", { name: "Seu progresso no acervo" });
+  await expect(indicadores.locator(".sdb-stat__value").first()).toHaveText("0de 6");
 
   await page.reload();
   await expect(page.getByRole("heading", { name: "Boas-vindas à Sala dos Buscadores" })).toHaveCount(0);
@@ -66,15 +70,15 @@ test("o orbe abre o mini chat do assistente sobre a página", async ({ page }) =
   await expect(page.getByRole("button", { name: "Abrir o assistente" })).toHaveCount(0);
 });
 
-test("o mini chat responde com trechos separados e fontes", async ({ page }) => {
+test("o mini chat informa a indisponibilidade real e conserva a pergunta", async ({ page }) => {
   await entrarComoMembro(page, "/salas");
   await page.getByRole("button", { name: "Abrir o assistente" }).click();
   const chat = page.getByRole("dialog", { name: "Assistente de IA" });
   await chat.getByLabel("Sua pergunta ao acervo").fill("O que é o Pleroma?");
   await chat.getByRole("button", { name: "Enviar pergunta" }).click();
-  const resposta = chat.getByRole("article", { name: "Assistente de IA" });
-  await expect(resposta).toBeVisible({ timeout: 15_000 });
-  await expect(resposta.getByText("Fontes citadas")).toBeVisible();
+  await expect(chat.getByRole("alert")).toContainText("serviço de IA ainda não está conectado");
+  await expect(chat.getByLabel("Sua pergunta ao acervo")).toHaveValue("O que é o Pleroma?");
+  await expect(chat.getByRole("article")).toHaveCount(0);
 });
 
 test("lateral: recolhe, guarda a escolha e marca a página atual", async ({ page, isMobile }) => {

@@ -98,8 +98,8 @@ export default async function PainelAnfitriao() {
                   </span>
                 </div>
                 {n.decisao.decisao === "aprovado" ? (
-                  <span className="sdb-badge">
-                    <i className="sdb-badge__dot" />
+                  <span className="sdb-badge sdb-badge--published">
+                    <Icon name="check" size="sm" />
                     Publicado
                   </span>
                 ) : (

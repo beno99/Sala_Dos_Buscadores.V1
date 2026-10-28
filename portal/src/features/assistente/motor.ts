@@ -3,6 +3,7 @@ import { RESPOSTAS } from "@/data/referencia/assistente";
 import type { RespostaAssistente, SalaSlug, TemaSlug, TrechoResposta } from "@/data/types";
 import { detectarTemas } from "@/features/busca/busca";
 import { normalizar } from "@/lib/texto";
+import type { ModoEstudo } from "./contrato";
 
 /*
  * Motor simulado do assistente (RF-26 a RF-31). Não chama nenhuma API de IA:
@@ -267,6 +268,7 @@ export function responder(pergunta: string, escopo: Escopo = "todo"): Resposta {
 }
 
 export interface OpcoesConsulta {
+  modo?: ModoEstudo;
   escopo?: Escopo;
   signal?: AbortSignal;
   onEtapa?: (etapa: Etapa, indice: number) => void;

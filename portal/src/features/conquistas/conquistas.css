@@ -1,0 +1,216 @@
+.sdb-conquistas-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  max-width: 1360px;
+  width: 100%;
+  margin-inline: auto;
+}
+.sdb-conquistas-page__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+}
+.sdb-conquistas-page__heading p {
+  margin: 0 0 var(--space-3);
+  letter-spacing: 0.09em;
+}
+.sdb-collection-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.48fr);
+  gap: var(--space-8);
+  padding: var(--space-7);
+  border: 1px solid var(--ds-edge);
+  border-radius: var(--radius-lg);
+  background: var(--card-warm);
+}
+.sdb-collection-summary__intro {
+  max-width: 620px;
+}
+.sdb-collection-summary__eyebrow {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  font: 500 13px / 1.5 var(--font-ui);
+  margin-bottom: var(--space-4);
+  color: var(--label-secondary);
+}
+.sdb-collection-summary__intro p {
+  margin: var(--space-4) 0 0;
+  font: 400 15px / 1.65 var(--font-ui);
+  color: var(--label-secondary);
+  max-width: 56ch;
+}
+.sdb-collection-summary__progress {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: var(--space-7);
+  border-left: 1px solid var(--ds-edge);
+  gap: var(--space-2);
+}
+.sdb-collection-summary__progress p {
+  margin: 0;
+  font: 400 24px / 1 var(--font-display-lower);
+  color: var(--label-secondary);
+}
+.sdb-collection-summary__progress strong {
+  font: 400 64px / 1 var(--font-display-lower);
+  color: var(--label);
+}
+.sdb-collection-summary progress {
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  margin: var(--space-3) 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--progress-track);
+}
+.sdb-collection-summary progress::-webkit-progress-bar {
+  background: var(--progress-track);
+  border-radius: var(--radius-pill);
+}
+.sdb-collection-summary progress::-webkit-progress-value {
+  background: var(--progress-gradient);
+  border-radius: var(--radius-pill);
+}
+.sdb-collection-summary progress::-moz-progress-bar {
+  background: var(--progress-gradient);
+  border-radius: var(--radius-pill);
+}
+.sdb-collection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.sdb-collection__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.sdb-collection__filters {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  padding: var(--space-1);
+  background: var(--ds-control);
+  border-radius: var(--radius-pill);
+}
+.sdb-collection__filters button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font: 500 13px / 1.4 var(--font-ui);
+  color: var(--label-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+.sdb-collection__filters button[aria-pressed="true"] {
+  color: var(--label);
+  background: var(--ds-control-selected);
+  box-shadow: var(--shadow-card);
+}
+.sdb-collection__filters :where(button) span {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.sdb-collection button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+.sdb-cosmos-mini {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--cosmos-luz),
+    var(--cosmos-cor) 40%,
+    var(--cosmos-fundo) 90%
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--cosmos-cor) 28%, transparent);
+}
+.sdb-collection__empty {
+  padding: var(--space-8);
+  border: 1px solid var(--ds-edge);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  background: var(--ds-surface);
+}
+.sdb-collection__empty p {
+  color: var(--label-secondary);
+}
+.sdb-conquistas-page__privacy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--label-secondary);
+  font: 400 12px / 1.5 var(--font-ui);
+  margin: 0;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  .sdb-conquistas-page {
+    gap: var(--space-5);
+  }
+  .sdb-conquistas-page__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .sdb-collection-summary {
+    grid-template-columns: 1fr;
+    padding: var(--space-5);
+    gap: var(--space-5);
+  }
+  .sdb-collection-summary__progress {
+    border-left: 0;
+    border-top: 1px solid var(--ds-edge);
+    padding-left: 0;
+    padding-top: var(--space-4);
+  }
+  .sdb-collection-summary__progress strong {
+    font-size: 48px;
+  }
+  .sdb-collection__filters button {
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 701px) {
+  .sdb-collection-summary {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  .sdb-collection-summary__progress {
+    padding-left: 0;
+    padding-top: var(--space-4);
+    border-left: 0;
+    border-top: 1px solid var(--ds-edge);
+    display: grid;
+    grid-template-columns: 104px 1fr;
+    column-gap: var(--space-5);
+  }
+  .sdb-collection-summary__progress p {
+    grid-row: 1 / 4;
+  }
+  .sdb-collection-summary__progress strong {
+    font-size: 48px;
+  }
+  .sdb-collection-summary__progress progress {
+    margin: 0;
+  }
+}

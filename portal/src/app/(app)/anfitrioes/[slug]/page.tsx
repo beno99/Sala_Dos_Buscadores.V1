@@ -120,7 +120,9 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
                   <h3 className="sdb-meta">Temas nas Salas</h3>
                   <div className="sdb-publicprofile__tags">
                     {temas.map((tema) => (
-                      <Badge key={tema.slug}>{tema.nome}</Badge>
+                      <Badge key={tema.slug} variant="topic" icon="glossario">
+                        {tema.nome}
+                      </Badge>
                     ))}
                   </div>
                 </div>

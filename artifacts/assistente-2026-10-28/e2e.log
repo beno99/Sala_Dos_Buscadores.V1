@@ -1,0 +1,48 @@
+
+> sala-dos-buscadores-portal@0.1.0 test:e2e
+> playwright test tests/e2e/assistente-tela.spec.ts tests/e2e/moldura.spec.ts tests/e2e/jornada-do-buscador.spec.ts
+
+
+Running 34 tests using 1 worker
+
+(node:71341) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/assistente-tela.spec.ts:9:5 › tela integrada: desktop/celular, modos e contexto real (8.3s)
+  ✓   2 [desktop] › tests/e2e/assistente-tela.spec.ts:77:5 › fontes e cópia com resposta controlada apenas no teste (1.9s)
+  ✓   3 [desktop] › tests/e2e/assistente-tela.spec.ts:135:5 › fallback sem WebGL, movimento reduzido, pausado e larguras estreitas (1.8s)
+  ✓   4 [desktop] › tests/e2e/assistente-tela.spec.ts:172:5 › endpoint exige sessão e valida contexto sem produzir fontes fictícias (1.5s)
+  ✓   5 [desktop] › tests/e2e/assistente-tela.spec.ts:196:5 › WebGL desenha, pausa, troca pausado e suspende movimento reduzido/fora da tela (3.5s)
+  ✓   6 [desktop] › tests/e2e/assistente-tela.spec.ts:252:5 › moldura mantém busca, conta e navegação móvel com tema local (2.9s)
+  ✓   7 [desktop] › tests/e2e/jornada-do-buscador.spec.ts:9:5 › sem sessão, qualquer rota leva a /entrar com a volta preservada (1.4s)
+  ✓   8 [desktop] › tests/e2e/jornada-do-buscador.spec.ts:19:5 › jornada completa do membro (3.3s)
+  ✓   9 [desktop] › tests/e2e/jornada-do-buscador.spec.ts:76:5 › busca sem resultado orienta a tentar um tema (3.2s)
+  ✓  10 [desktop] › tests/e2e/jornada-do-buscador.spec.ts:85:5 › filtros refinam os resultados e ficam na URL (3.3s)
+  ✓  11 [desktop] › tests/e2e/moldura.spec.ts:4:5 › cadastro novo passa pelo onboarding e chega ao Portal (2.5s)
+  ✓  12 [desktop] › tests/e2e/moldura.spec.ts:38:5 › ⌘K abre a busca e a sugestão de tema leva à grade (2.6s)
+  ✓  13 [desktop] › tests/e2e/moldura.spec.ts:56:5 › o orbe abre o mini chat do assistente sobre a página (2.5s)
+  ✓  14 [desktop] › tests/e2e/moldura.spec.ts:73:5 › o mini chat informa a indisponibilidade real e conserva a pergunta (1.7s)
+  ✓  15 [desktop] › tests/e2e/moldura.spec.ts:84:5 › lateral: recolhe, guarda a escolha e marca a página atual (2.2s)
+  -  16 [desktop] › tests/e2e/moldura.spec.ts:96:5 › celular: barra de abas embaixo e “Mais” com o resto do menu
+  ✓  17 [desktop] › tests/e2e/moldura.spec.ts:110:5 › aparência: o tema e a lateral translúcida só valem ao salvar e ficam guardados (4.6s)
+(node:71796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  18 [celular] › tests/e2e/assistente-tela.spec.ts:9:5 › tela integrada: desktop/celular, modos e contexto real (8.1s)
+  ✓  19 [celular] › tests/e2e/assistente-tela.spec.ts:77:5 › fontes e cópia com resposta controlada apenas no teste (1.8s)
+  ✓  20 [celular] › tests/e2e/assistente-tela.spec.ts:135:5 › fallback sem WebGL, movimento reduzido, pausado e larguras estreitas (1.6s)
+  ✓  21 [celular] › tests/e2e/assistente-tela.spec.ts:172:5 › endpoint exige sessão e valida contexto sem produzir fontes fictícias (1.6s)
+  ✓  22 [celular] › tests/e2e/assistente-tela.spec.ts:196:5 › WebGL desenha, pausa, troca pausado e suspende movimento reduzido/fora da tela (3.4s)
+  ✓  23 [celular] › tests/e2e/assistente-tela.spec.ts:252:5 › moldura mantém busca, conta e navegação móvel com tema local (2.5s)
+  ✓  24 [celular] › tests/e2e/jornada-do-buscador.spec.ts:9:5 › sem sessão, qualquer rota leva a /entrar com a volta preservada (1.3s)
+  ✓  25 [celular] › tests/e2e/jornada-do-buscador.spec.ts:19:5 › jornada completa do membro (3.3s)
+  ✓  26 [celular] › tests/e2e/jornada-do-buscador.spec.ts:76:5 › busca sem resultado orienta a tentar um tema (3.6s)
+  ✓  27 [celular] › tests/e2e/jornada-do-buscador.spec.ts:85:5 › filtros refinam os resultados e ficam na URL (6.5s)
+  ✓  28 [celular] › tests/e2e/moldura.spec.ts:4:5 › cadastro novo passa pelo onboarding e chega ao Portal (2.3s)
+  ✓  29 [celular] › tests/e2e/moldura.spec.ts:38:5 › ⌘K abre a busca e a sugestão de tema leva à grade (2.4s)
+  ✓  30 [celular] › tests/e2e/moldura.spec.ts:56:5 › o orbe abre o mini chat do assistente sobre a página (2.4s)
+  ✓  31 [celular] › tests/e2e/moldura.spec.ts:73:5 › o mini chat informa a indisponibilidade real e conserva a pergunta (1.9s)
+  -  32 [celular] › tests/e2e/moldura.spec.ts:84:5 › lateral: recolhe, guarda a escolha e marca a página atual
+  ✓  33 [celular] › tests/e2e/moldura.spec.ts:96:5 › celular: barra de abas embaixo e “Mais” com o resto do menu (2.6s)
+  ✓  34 [celular] › tests/e2e/moldura.spec.ts:110:5 › aparência: o tema e a lateral translúcida só valem ao salvar e ficam guardados (4.0s)
+
+  2 skipped
+  32 passed (1.6m)

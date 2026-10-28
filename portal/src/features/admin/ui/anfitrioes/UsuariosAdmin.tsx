@@ -67,20 +67,20 @@ const data = (iso: string) => formatarData(iso.slice(0, 10));
 function SituacaoConvite({ s }: { s: StatusConvite }) {
   if (s === "pendente")
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot sdb-badge__dot--half" />
+      <span className="sdb-badge sdb-badge--review">
+        <Icon name="editar" size="sm" />
         Pendente
       </span>
     );
   if (s === "usado")
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot" />
+      <span className="sdb-badge sdb-badge--published">
+        <Icon name="check" size="sm" />
         Usado
       </span>
     );
   return (
-    <span className="sdb-badge sdb-badge--neutral">
+    <span className="sdb-badge sdb-badge--archived">
       <Icon name={s === "expirado" ? "relogio" : "cadeado"} size="sm" />
       {s === "expirado" ? "Expirado" : "Revogado"}
     </span>
@@ -90,15 +90,15 @@ function SituacaoConvite({ s }: { s: StatusConvite }) {
 function SituacaoCandidatura({ s }: { s: StatusCandidatura }) {
   if (s === "pendente")
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot sdb-badge__dot--half" />
+      <span className="sdb-badge sdb-badge--review">
+        <Icon name="editar" size="sm" />
         Pendente
       </span>
     );
   if (s === "aprovada")
     return (
-      <span className="sdb-badge">
-        <i className="sdb-badge__dot" />
+      <span className="sdb-badge sdb-badge--published">
+        <Icon name="check" size="sm" />
         Aprovada
       </span>
     );

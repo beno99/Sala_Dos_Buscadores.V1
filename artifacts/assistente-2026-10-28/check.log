@@ -1,0 +1,59 @@
+
+> sala-dos-buscadores-portal@0.1.0 check
+> npm run ds:check && npm run ds:test && npm run lint && npm run typecheck && npm run test
+
+
+> sala-dos-buscadores-portal@0.1.0 ds:check
+> node scripts/sync-design-system.mjs --check
+
+Design system em dia.
+
+> sala-dos-buscadores-portal@0.1.0 ds:test
+> node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs
+
+✔ cada sinal produz apenas o elemento permitido, na ordem correta (2.282375ms)
+✔ texto simples e HTML do autor permanecem texto (0.210834ms)
+✔ marcas aninhadas ficam integralmente visíveis (0.189958ms)
+✔ links aceitam apenas https e caminhos realmente internos (0.268625ms)
+✔ referência sem fontes continua representada e numerada (0.137625ms)
+✔ cursor dentro e seleção parcial detectam e removem a marca inteira (0.200875ms)
+✔ marca, modelo, endereço e limpeza devolvem seleções úteis (0.272917ms)
+✔ conversão em lista e retorno preservam todas as linhas (0.209209ms)
+✔ migração da gramática antiga preserva links e transforma somente obras (0.21425ms)
+✔ um link existente pode ser desmarcado com cursor no endereço (0.18625ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.908209
+
+> sala-dos-buscadores-portal@0.1.0 lint
+> biome check
+
+Checked 441 files in 197ms. No fixes applied.
+
+> sala-dos-buscadores-portal@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> sala-dos-buscadores-portal@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.2 /Users/benonibrandao/Desktop/Portal_Sala_Buscadores/portal
+
+
+ Test Files  73 passed (73)
+      Tests  461 passed (461)
+   Start at  15:26:29
+   Duration  18.64s (environment 56%, tests 25%, setup 9%, transform 6%, import 4%)
+
+Environment  jsdom was created 73 times · 84.10s total, 56% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

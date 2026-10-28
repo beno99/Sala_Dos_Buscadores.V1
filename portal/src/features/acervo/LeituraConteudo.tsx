@@ -66,7 +66,7 @@ export function LeituraConteudo({
           {
             rotulo: temas.length > 1 ? "Temas" : "Tema",
             valor: temas.map((t) => (
-              <Badge key={t.slug} variant="neutral">
+              <Badge key={t.slug} variant="topic" icon="glossario">
                 {t.nome}
               </Badge>
             )),

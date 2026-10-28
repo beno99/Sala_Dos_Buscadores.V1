@@ -7,3 +7,7 @@ O arquivo `preview.html` é a fonte do exemplo. Execute `node scripts/build.mjs`
 ## Grade dentro do portal (1.0.1)
 
 As regras da faixa (`.comparison*`) moram em `CardComparativo/card-comparativo.css` e medem o próprio contêiner (container queries): 3 colunas, 2 até 860 px e 1 até 560 px de largura da grade. Assim a grade se ajusta ao lado da navegação lateral. O título da pergunta pode ser `h1` ou `h2` dentro de `.comparison__intro`.
+
+## Nível e proveniência
+
+O rodapé usa os componentes compartilhados `.sdb-level` e `.sdb-seal`, com as cores semânticas, rótulos e ícones Phosphor da biblioteca. Não recrie esses tratamentos em `.comparativo__level` ou `.comparativo__source`. O nível Avançado mantém apenas o brilho breve previsto no SeloNivel; todos os textos e referências continuam legíveis.

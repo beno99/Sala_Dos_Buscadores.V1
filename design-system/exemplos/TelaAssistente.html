@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="solido-claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TelaAssistente · A Sala dos Buscadores</title>
+<link rel="stylesheet" href="../tokens.css?v=575303c42586">
+<link rel="stylesheet" href="../components/bundle.css?v=93b3f28e0b3b">
+<link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
+
+
+
+
+<link rel="stylesheet" href="../components/refinement.css?v=ea7394631f17">
+<link rel="stylesheet" href="../components/AssistenteOrb/assistant-orb.css?v=ab5b3e82252b">
+<link rel="stylesheet" href="../components/TelaAssistente/tela-assistente.css?v=4b28abfefc44">
+
+<script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script src="../components/bundle.js?v=0184409eeff8"></script>
+</head>
+<body>
+<div class="sdb-assistant-screen" data-assistant-screen data-theme="solido-escuro" data-orb="gold">
+  <a href="#question" class="skip-link">Ir para a pergunta</a>
+  <aside class="sidebar" aria-label="Navegação do portal">
+    <a class="brand" href="../catalogo.html"><span data-arc aria-hidden="true"></span><span>A Sala dos<br>Buscadores</span></a>
+    <nav class="portal-nav" aria-label="Portal">
+      <a href="PortalInicio.html"><span data-icon="inicio"></span>Portal</a>
+      <a href="CardConteudo.html"><span data-icon="biblioteca"></span>Biblioteca</a>
+      <a href="CardSala.html"><span data-icon="salas"></span>Salas</a>
+      <a href="Comunidade.html"><span data-icon="comunidade"></span>Comunidade</a>
+      <a href="TelaAssistente.html" aria-current="page"><span data-icon="assistente"></span>Assistente<span class="current-dot" aria-hidden="true"></span></a>
+    </nav>
+    <div class="conversation-nav">
+      <button class="sdb-btn sdb-btn--secondary new-conversation" type="button" data-new><span data-icon="mais"></span>Nova conversa</button>
+      <div class="section-label"><span>CONVERSAS</span><span class="sample-label">Exemplos</span></div>
+      <div id="history" class="history" aria-label="Conversas nesta prévia">
+        <button type="button" data-example="pleroma"><span data-icon="assistente"></span><span>O que é o Pleroma?<small>Biblioteca de Nag Hammadi</small></span></button>
+        <button type="button" data-example="alma"><span data-icon="assistente"></span><span>Os caminhos da alma<small>Todo o acervo</small></span></button>
+        <button type="button" data-example="poimandres"><span data-icon="assistente"></span><span>Lendo o Poimandres<small>Corpus Hermeticum</small></span></button>
+      </div>
+    </div>
+    <div class="sidebar-foot"><span class="sdb-avatar" aria-hidden="true">B</span><div><b>Seu espaço de estudo</b><small>Uma pergunta de cada vez.</small></div></div>
+  </aside>
+  <div class="app">
+    <header class="topbar">
+      <div class="page-path"><span data-icon="assistente"></span><span>Assistente do acervo</span><span class="preview-label">Prévia</span></div>
+      <div class="appearance"><span class="appearance-label" id="appearance-label">Esfera</span><div class="appearance-switch" role="group" aria-labelledby="appearance-label">
+        <button type="button" data-appearance="gold" aria-pressed="true"><i class="swatch swatch--gold" aria-hidden="true"></i>Dourada</button>
+        <button type="button" data-appearance="dark" aria-pressed="false"><i class="swatch swatch--dark" aria-hidden="true"></i>Escura</button>
+      </div><button id="motion" type="button" class="icon-control" aria-label="Pausar movimento" aria-pressed="false" title="Pausar movimento"><span data-icon="pausar"></span></button></div>
+    </header>
+    <main class="workspace" id="workspace">
+      <section class="welcome" aria-labelledby="welcome-title">
+        <button class="hero-orb" type="button" id="orb-focus" aria-label="Começar uma pergunta">
+          <span class="orb-visual" id="gold-visual"><canvas id="gold-canvas" aria-hidden="true"></canvas><span class="orb-fallback-rings" aria-hidden="true"><i></i><i></i><i></i></span></span>
+          <span class="dark-visual" id="dark-visual" hidden><canvas id="dark-canvas" aria-hidden="true"></canvas></span>
+        </button>
+        <p class="eyebrow">UM ACERVO. MUITAS PERSPECTIVAS.</p>
+        <h1 id="welcome-title">O que você quer<br><em>compreender hoje?</em></h1>
+        <p class="welcome-description">Explore o acervo, conecte ideias e siga as fontes.</p>
+      </section>
+      <section id="conversation" class="conversation" aria-label="Conversa de estudo" hidden><header class="conversation-heading"><div><p class="eyebrow">ASSISTENTE DO ACERVO</p><h1>Uma pergunta, novos caminhos.</h1></div><button type="button" data-new class="sdb-btn sdb-btn--secondary sdb-btn--sm">Nova conversa</button></header><div id="messages"></div></section>
+      <div class="writing-area">
+        <form id="question-form" class="composer">
+          <label class="sdb-sr" for="question">Sua pergunta ao acervo</label>
+          <textarea id="question" rows="2" maxlength="2000" placeholder="Toda busca começa com uma pergunta…"></textarea>
+          <div class="composer-bar">
+            <label class="context-control"><span data-icon="glossario" aria-hidden="true"></span><span class="sdb-sr">Modo de estudo</span><select id="study-mode" aria-describedby="mode-description"><option value="explorar">Explorar</option><option value="comparar">Comparar</option><option value="leitura">Leitura guiada</option></select><span data-icon="chevronBaixo" class="chevron" aria-hidden="true"></span></label>
+            <span class="context-separator" aria-hidden="true"></span>
+            <label class="context-control context-control--scope"><span data-icon="salas" aria-hidden="true"></span><span class="sdb-sr">Sala de estudo</span><select id="room"><option value="todo">Todo o acervo</option><option value="nag">Biblioteca de Nag Hammadi</option><option value="corpus">Corpus Hermeticum</option><option value="caibalion">O Caibalion</option><option value="urantia">O Livro de Urântia</option><option value="apocrifos">Apócrifos do Cristianismo Primitivo</option></select><span data-icon="chevronBaixo" class="chevron" aria-hidden="true"></span></label>
+            <button class="sdb-btn sdb-btn--gold sdb-btn--icon send" id="send" type="submit" aria-label="Enviar pergunta" disabled><span data-icon="enviar" aria-hidden="true"></span></button>
+          </div>
+        </form>
+        <div class="composer-caption"><p id="mode-description">Para entender conceitos e descobrir conexões no acervo.</p><span class="keyboard-hint">Enter <span aria-hidden="true">↵</span></span></div>
+        <p id="status" role="status" class="status" hidden></p>
+      </div>
+      <section class="suggestions" aria-labelledby="suggestions-title">
+        <h2 id="suggestions-title">POR ONDE COMEÇAR</h2>
+        <div class="suggestion-grid">
+          <button type="button" class="suggestion" data-example="pleroma"><span data-icon="glossario" class="suggestion-icon"></span><b>Entender um conceito</b><span>O que é o Pleroma?</span><span class="suggestion-arrow" aria-hidden="true">↗</span></button>
+          <button type="button" class="suggestion" data-example="alma"><span data-icon="comparar" class="suggestion-icon"></span><b>Comparar tradições</b><span>Como descrevem a alma?</span><span class="suggestion-arrow" aria-hidden="true">↗</span></button>
+          <button type="button" class="suggestion" data-example="poimandres"><span data-icon="fontePrimaria" class="suggestion-icon"></span><b>Explorar um texto</b><span>Uma leitura do Poimandres.</span><span class="suggestion-arrow" aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <footer class="assistant-note"><span data-icon="fontePrimaria" aria-hidden="true"></span><p>A IA organiza o que o acervo diz; não determina qual crença é verdadeira.<br><span>Prévia interativa com respostas de demonstração.</span></p></footer>
+    </main>
+    <nav class="mobile-nav" aria-label="Navegação móvel"><a href="PortalInicio.html"><span data-icon="inicio"></span>Portal</a><a href="CardSala.html"><span data-icon="salas"></span>Salas</a><button type="button" data-new aria-current="page"><span data-icon="assistente"></span>Assistente</button><button type="button" id="recent-open"><span data-icon="linhaTempo"></span>Conversas</button></nav>
+  </div>
+  <dialog id="source-dialog" class="study-dialog" aria-labelledby="sources-title"><header><h2 id="sources-title">Fontes do exemplo</h2><button type="button" class="icon-control" data-close aria-label="Fechar fontes"><span data-icon="fechar"></span></button></header><div id="source-content"></div><p class="dialog-note">Referências desta demonstração de interface. Não houve consulta a uma IA.</p></dialog>
+  <dialog id="recent-dialog" class="study-dialog" aria-labelledby="recent-title"><header><h2 id="recent-title">Conversas de exemplo</h2><button type="button" class="icon-control" data-close aria-label="Fechar conversas"><span data-icon="fechar"></span></button></header><div class="history"><button type="button" data-example="pleroma">O que é o Pleroma?</button><button type="button" data-example="alma">Os caminhos da alma</button><button type="button" data-example="poimandres">Lendo o Poimandres</button></div></dialog>
+</div>
+<script src="../components/refined.js?v=98df67e3bc61" defer></script>
+<script>
+window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
+try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
+</script>
+<script type="module" src="../components/TelaAssistente/preview.js?v=380af9a96fbb"></script>
+</body>
+</html>

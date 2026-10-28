@@ -4,12 +4,12 @@ Diz de onde vem cada conteúdo. Obrigatório em cards, citações, colunas da gr
 
 | Variante | Classe | Forma |
 | --- | --- | --- |
-| Fonte primária | `--primaria` | cápsula bordô, ícone em ouro. O único selo preenchido com cor de profundidade. |
-| Editorial curado | `--curado` | `accent-soft`, disco `accent-fill` |
-| Especialista | `--especialista` | `fill`, emblema de ouro com glifo preto |
-| Comunidade | `--comunidade` | `fill`, texto secundário |
-| Síntese por IA | `--ia` | contorno tracejado, sem fundo: o mesmo tracejado marca todo texto escrito pela IA |
-| Anfitrião | `--anfitriao` | contorno contínuo em `accent`, sem fundo, disco `accent-fill` com o ícone `anfitriao` (o arco com uma pessoa à porta) e o complemento "Revisado pela curadoria" |
+| Fonte primária | `--primaria` | verde suave com ícone `fontePrimaria` |
+| Editorial curado | `--curado` | azul suave com ícone `curado` |
+| Especialista | `--especialista` | roxo suave com ícone `especialista` |
+| Comunidade | `--comunidade` | âmbar suave com ícone `comunidade` |
+| Síntese por IA | `--ia` | roxo suave, ícone `ia` e contorno tracejado |
+| Anfitrião | `--anfitriao` | roxo suave, contorno contínuo, ícone Phosphor `anfitriao` e complemento "Revisado pela curadoria" |
 
 ## Anfitrião
 Conteúdo escrito por um anfitrião (autor externo) e aprovado pela curadoria antes de ir ao ar. Leva sempre o complemento, em `.sdb-seal__note` depois do rótulo:
@@ -19,10 +19,10 @@ Conteúdo escrito por um anfitrião (autor externo) e aprovado pela curadoria an
 ```
 
 - Aparece em toda página, card e citação de conteúdo de anfitrião, inclusive quando o assistente cita esse conteúdo.
-- Texto em `accent` (bordô sobre bege no claro, bege sobre grafite no escuro) e complemento em `label-secondary`; o contorno é contínuo para não confundir com o tracejado da IA.
+- Texto no par semântico roxo do tema e complemento em `label-secondary`; o contorno é contínuo para não confundir com o tracejado da IA.
 - No tamanho compacto o complemento some; ponha `title="Anfitrião · revisado pela curadoria"` no selo para não perder a informação.
 
-As variantes se distinguem por ícone, forma e palavra, nunca só por cor.
+As variantes usam cantos de 8 px, fundo suave e ícone em base levemente tonalizada. Distinguem-se por ícone, forma e palavra, nunca só por cor. Preserve a biblioteca Phosphor e os pares `tag-*-fill/ink` compartilhados.
 
 ## Tamanho compacto
 `.sdb-seal--sm` (24 px de altura, ícone de 16 px) para linhas de lista, como na Lista de conteúdos. Mesmas variantes, mesma palavra; só muda a escala. Fora de listas, use o tamanho normal.

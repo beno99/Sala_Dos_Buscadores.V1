@@ -1,0 +1,98 @@
+[
+  {
+    "banner": {
+      "bottom": 599,
+      "height": 495,
+      "left": 328,
+      "right": 1464,
+      "top": 104,
+      "width": 1136,
+      "x": 328,
+      "y": 104
+    },
+    "columns": "800px 312px",
+    "height": 900,
+    "overflow": 0,
+    "width": 1504
+  },
+  {
+    "banner": {
+      "bottom": 599,
+      "height": 495,
+      "left": 320,
+      "right": 1408,
+      "top": 104,
+      "width": 1088,
+      "x": 320,
+      "y": 104
+    },
+    "columns": "752px 312px",
+    "height": 900,
+    "overflow": 0,
+    "width": 1440
+  },
+  {
+    "banner": {
+      "bottom": 510.5,
+      "height": 406.5,
+      "left": 320,
+      "right": 992,
+      "top": 104,
+      "width": 672,
+      "x": 320,
+      "y": 104
+    },
+    "columns": "672px",
+    "height": 768,
+    "overflow": 0,
+    "width": 1024
+  },
+  {
+    "banner": {
+      "bottom": 510.125,
+      "height": 414.125,
+      "left": 24,
+      "right": 744,
+      "top": 96,
+      "width": 720,
+      "x": 24,
+      "y": 96
+    },
+    "columns": "720px",
+    "height": 1024,
+    "overflow": 0,
+    "width": 768
+  },
+  {
+    "banner": {
+      "bottom": 597.796875,
+      "height": 501.796875,
+      "left": 16,
+      "right": 374,
+      "top": 96,
+      "width": 358,
+      "x": 16,
+      "y": 96
+    },
+    "columns": "358px",
+    "height": 844,
+    "overflow": 0,
+    "width": 390
+  },
+  {
+    "banner": {
+      "bottom": 597.796875,
+      "height": 501.796875,
+      "left": 16,
+      "right": 344,
+      "top": 96,
+      "width": 328,
+      "x": 16,
+      "y": 96
+    },
+    "columns": "328px",
+    "height": 800,
+    "overflow": 0,
+    "width": 360
+  }
+]

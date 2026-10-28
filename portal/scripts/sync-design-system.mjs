@@ -39,8 +39,15 @@ const FILES = [
   ["components/AssistenteOrb/assistant-orb.css", "assistant-orb.css"],
   // Telas de conta (Entrar, Redefinir senha, Criar conta): Figma 19537:4958.
   ["components/Conta/conta.css", "conta.css"],
-  // Renderizador WebGL do orbe do assistente: é desenho, não comportamento, então vem como está.
+  // Cards de Conquista (1.1): sempre escuros, com a esfera de vidro.
+  ["components/Conquista/card-conquista.css", "card-conquista.css"],
+  // Renderizadores WebGL (orbe do assistente e esferas das Conquistas): são desenho,
+  // não comportamento, então vêm como estão.
   ["components/AssistenteOrb/gold-orb.js", "gold-orb.js"],
+  ["components/AssistenteOrb/dark-orb.js", "dark-orb.js"],
+  // Mantém o caminho relativo das fontes locais da tela aprovada.
+  ["components/TelaAssistente/tela-assistente.css", "components/TelaAssistente/tela-assistente.css"],
+  ["components/Conquista/solid-orb.js", "solid-orb.js"],
   ["fonts/Gambetta-Variable.woff2", "fonts/Gambetta-Variable.woff2"],
   ["fonts/Gambetta-VariableItalic.woff2", "fonts/Gambetta-VariableItalic.woff2"],
   ["fonts/Gambetta-LICENCA-FFL.txt", "fonts/Gambetta-LICENCA-FFL.txt"],

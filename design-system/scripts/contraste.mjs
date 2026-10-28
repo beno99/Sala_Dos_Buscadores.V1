@@ -55,6 +55,14 @@ function razao(a, b) {
 const FUNDOS = ["bg-canvas", "material-thin", "material-regular", "material-thick", "float-fill", "nav-fill", "card-warm", "nav-card", "overlay-from", "overlay-to"];
 const TEXTOS = ["label", "label-secondary", "accent", "critical"];
 const PARES = [
+  ["level-beginner-ink", "level-beginner-fill"],
+  ["level-intermediate-ink", "level-intermediate-fill"],
+  ["level-advanced-ink", "level-advanced-fill"],
+  ["tag-blue-ink", "tag-blue-fill"],
+  ["tag-green-ink", "tag-green-fill"],
+  ["tag-amber-ink", "tag-amber-fill"],
+  ["tag-purple-ink", "tag-purple-fill"],
+  ["tag-neutral-ink", "tag-neutral-fill"],
   ["on-accent", "accent-fill"],
   ["on-prominent", "prominent-fill"],
   ["on-depth", "depth-fill"],

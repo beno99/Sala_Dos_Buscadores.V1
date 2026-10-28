@@ -8,7 +8,7 @@ import { cx } from "@/lib/cx";
 import { formatarData } from "@/lib/texto";
 import { Arc } from "./Arc";
 import { Icon, type IconName } from "./Icon";
-import { SeloNivel, SeloProveniencia } from "./Selos";
+import { Badge, SeloNivel, SeloProveniencia } from "./Selos";
 
 const ICONE_TIPO: Record<TipoConteudo, IconName> = {
   artigo: "artigo",
@@ -22,11 +22,13 @@ export function CardConteudo({
   conteudo,
   titleAs: Titulo = "h3",
   empilhado,
+  mostrarNivel = true,
   acoes,
 }: {
   conteudo: Conteudo;
   titleAs?: "h2" | "h3";
   empilhado?: boolean;
+  mostrarNivel?: boolean;
   /** Botão de Estante com .sdb-over, acima do link do card. */
   acoes?: ReactNode;
 }) {
@@ -54,11 +56,11 @@ export function CardConteudo({
         <p className="sdb-content__excerpt sdb-clamp-3">{conteudo.resumo}</p>
         <div className="sdb-row" style={{ gap: 8 }}>
           {conteudo.temas.slice(0, 2).map((t) => (
-            <span key={t} className="sdb-badge sdb-badge--neutral">
+            <Badge key={t} variant="topic" icon="glossario">
               {temaPorSlug(t)?.nome}
-            </span>
+            </Badge>
           ))}
-          <SeloNivel nivel={conteudo.nivel} />
+          {mostrarNivel && <SeloNivel nivel={conteudo.nivel} />}
         </div>
       </div>
       <div className="sdb-card__foot">

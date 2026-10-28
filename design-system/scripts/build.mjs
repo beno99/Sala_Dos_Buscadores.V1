@@ -166,19 +166,20 @@ function gerarExemplo(p) {
 ${['CardSala','CardVideo','GradeComparativa','BotaoFlutuante'].includes(p.nome) ? ['components/refined-layout.css','components/CardSala/card-sala.css','components/CardVideo/card-video.css','components/CardComparativo/card-comparativo.css','components/AssistenteOrb/assistant-orb.css'].map(path=>`<link rel="stylesheet" href="../${asset(path)}">`).join('\n') : ''}
 ${['BannerSala','CorpoArtigo'].includes(p.nome) ? `<link rel="stylesheet" href="../${asset('components/CardVideo/card-video.css')}">` : ''}
 ${['CardConteudo','CorpoArtigo'].includes(p.nome) ? ['components/CardSala/card-sala.css','components/CardConteudo/card-conteudo.css'].map(path=>`<link rel="stylesheet" href="../${asset(path)}">`).join('\n') : ''}
-<link rel="stylesheet" href="../${asset('components/refinement.css')}">
+${['Carrossel','PortalInicio'].includes(p.nome) ? `<link rel="stylesheet" href="../${asset('components/CardSala/card-sala.css')}">` : ''}
+<link rel="stylesheet" href="../${asset('components/refinement.css')}">${p.nome === 'Conquista' ? `\n<link rel="stylesheet" href="../${asset('components/Conquista/card-conquista.css')}">` : ''}${p.nome === 'TelaAssistente' ? ['components/AssistenteOrb/assistant-orb.css','components/TelaAssistente/tela-assistente.css'].map(path=>`\n<link rel="stylesheet" href="../${asset(path)}">`).join('') : ''}
 ${["IconeVolume","EstadoSecao","CarregamentoSala","ProgressoReal","AvisoContextual","DialogoContextual","Comunidade","CompositorComunidade","PainelComentarios"].includes(p.nome) ? `<link rel="stylesheet" href="../${asset('components/EstadosInterface/estados-interface.css')}">
 <script src="../${asset('components/EstadosInterface/estados-interface.js')}"></script>` : ""}
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <script src="../${asset('components/bundle.js')}"></script>
 </head>
 <body>
-${corpo.replace(/\n$/, "")}
+${corpo.replace(/\n$/, "")}${p.nome === 'Conquista' ? ['solid-orb.js','badge-motion.js','preview.js'].map(file => `\n<script src="../${asset('components/Conquista/'+file)}" defer></script>`).join('') : ''}
 <script src="../${asset('components/refined.js')}" defer></script>
 <script>
 window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});
 try {new ResizeObserver(function(){parent.postMessage({sdbAltura:Math.ceil(document.body.getBoundingClientRect().height)},'*');}).observe(document.body);}catch{}
-</script>
+</script>${p.nome === 'TelaAssistente' ? `\n<script type="module" src="../${asset('components/TelaAssistente/preview.js')}"></script>` : ''}
 </body>
 </html>
 `;
@@ -202,7 +203,7 @@ function gerarRuntime() {
 function gerarCatalogo(pecas) {
   const grupos=[];
   for(const p of pecas){let g=grupos.find(g=>g.nome===p.grupo);if(!g){g={nome:p.grupo,id:IDS_GRUPO[p.grupo],pecas:[]};grupos.push(g);}g.pecas.push(p);}
-  const updated=['CardSala','CardVideo','GradeComparativa','BotaoFlutuante','IconeVolume','EstadoSecao','CarregamentoSala','ProgressoReal','AvisoContextual','DialogoContextual'];
+  const updated=['CardSala','CardVideo','GradeComparativa','BotaoFlutuante','IconeVolume','EstadoSecao','CarregamentoSala','ProgressoReal','AvisoContextual','DialogoContextual','Conquista','Carrossel','Botao','Badge','SeloNivel','SeloProveniencia','PortalInicio','TelaAssistente'];
   const esc=s=>s.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
   const navigation=grupos.map(g=>`<a href="#${g.id}">${g.nome}<span>${g.pecas.length}</span></a>`).join('');
   const sections=grupos.map(g=>`<section class="cat-group" id="${g.id}"><div class="cat-group__head"><h2>${g.nome}</h2><span>${g.pecas.length} componentes</span></div>${g.pecas.map(p=>`<details class="cat-item" id="${p.nome}" data-search="${esc(p.nome+' '+p.subtitulo+' '+p.grupo)}"><summary><span class="cat-item__number">${String(pecas.indexOf(p)+1).padStart(2,'0')}</span><div><h3>${p.nome.replace(/([a-z])([A-Z])/g,'$1 $2')}</h3><p>${p.subtitulo}</p></div>${updated.includes(p.nome)?'<span class="cat-item__tag">NOVO DESIGN</span>':''}</summary><div class="cat-item__actions"><a href="components/${p.nome}/README.md" target="_blank" rel="noopener">Guia ↗</a><a href="exemplos/${p.nome}.html" data-example-link="exemplos/${p.nome}.html" target="_blank" rel="noopener">Abrir exemplo ↗</a></div><iframe class="cat-frame" title="${p.nome}" data-src="exemplos/${p.nome}.html" style="height:${p.altura}px"></iframe></details>`).join('')}</section>`).join('');

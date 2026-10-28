@@ -80,8 +80,7 @@ export function EstanteCliente({ itens }: { itens: ItemNaEstante[] }) {
                 key={`sala:${i.sala.slug}`}
                 sala={i.sala}
                 imagem={i.imagem}
-                destaque
-                acoes={<BotaoSalvar tipo="sala" alvo={i.sala.slug} titulo={i.sala.nome} />}
+                acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={i.sala.slug} titulo={i.sala.nome} />}
               />
             ) : i.tipo === "conteudo" ? (
               <CardConteudo
