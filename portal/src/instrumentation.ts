@@ -9,9 +9,6 @@ export async function register() {
   try {
     await sincronizarAcervo();
   } catch (erro) {
-    console.error(
-      "Não foi possível carregar o acervo do banco. Confira o docker compose e o DATABASE_URL.",
-      erro,
-    );
+    console.error("Não foi possível carregar o acervo do banco. Confira o DATABASE_URL.", erro);
   }
 }

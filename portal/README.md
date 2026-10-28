@@ -1,17 +1,17 @@
 # A Sala dos Buscadores · portal (MVP)
 
-Conta obrigatória com onboarding, acervo em Salas, busca comparativa, assistente de IA e a área de curadoria, onde a equipe editorial cadastra, publica e arquiva artigos, vídeos e fontes. Contas, acervo, estudo e auditoria ficam no **PostgreSQL**; as imagens enviadas, num armazenamento **S3** (MinIO no local). O assistente ainda não chama uma API de IA.
+Conta obrigatória com onboarding, acervo em Salas, busca comparativa, assistente de IA e a área de curadoria, onde a equipe editorial cadastra, publica e arquiva artigos, vídeos e fontes. Contas, acervo, estudo e auditoria ficam no **PostgreSQL**; as imagens enviadas, no **Supabase Storage** (compatível com S3). O assistente ainda não chama uma API de IA.
 
 ## Rodar
 
 ```bash
 npm install
 cp .env.example .env.local   # ajuste SEED_ADMIN_EMAIL e SEED_ADMIN_SENHA
-npm run db:setup             # docker compose up -d (Postgres + MinIO), migrações e semente
+npm run db:setup             # migrações e semente no banco do .env.local
 npm run dev                  # http://localhost:3000 (sincroniza o design system antes)
 ```
 
-A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações e fontes). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria. O console do MinIO fica em http://localhost:9001.
+A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações e fontes). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria.
 
 Fluxo para demonstrar: **Criar conta** → onboarding (interesses e, se quiser, religião ou convicção) → Portal (“Comece por aqui”) → **Salas** → abrir uma Sala (conquista “Porta aberta”) → abrir um conteúdo (entra em “Continue de onde parou”) → lupa ou ⌘K / Ctrl K: “vida após a morte” → **Comparar** → **Perguntar ao assistente sobre este tema** → enviar. O botão flutuante abre o assistente por cima de qualquer página.
 
@@ -24,7 +24,7 @@ O cenário de demonstração (Buscador com histórico, a anfitriã fictícia Hel
 | Script | O que faz |
 | --- | --- |
 | `npm run dev` / `build` / `start` | Next.js 16 (Turbopack) |
-| `npm run db:setup` | `db:up` (docker compose), `db:migrate` e `db:seed` |
+| `npm run db:setup` | `db:migrate` e `db:seed` |
 | `npm run db:generate` | gera a migração SQL em `drizzle/` a partir dos `*.schema.ts` |
 | `npm run e2e:banco` | migra e põe o cenário de demonstração no banco de E2E (`DATABASE_URL_E2E`) |
 | `npm run check` | tudo abaixo, menos E2E |

@@ -12,7 +12,7 @@ import { Pool } from "pg";
 
 const url = process.env.DATABASE_URL_E2E;
 if (!url) throw new Error("DATABASE_URL_E2E não definida em .env.local.");
-if (url === process.env.DATABASE_URL && !url.includes("e2e")) {
+if (url === process.env.DATABASE_URL && process.env.SDB_SERVIDOR_E2E !== "1") {
   throw new Error("DATABASE_URL_E2E não pode ser o banco de desenvolvimento.");
 }
 process.env.DATABASE_URL = url;

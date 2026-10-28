@@ -113,4 +113,14 @@ export const FONTES: Fonte[] = [
     capa: "bege",
     inicial: "L",
   },
+  {
+    id: "ferreira-hymn-pearl",
+    titulo: "The Hymn of the Pearl: The Syriac and Greek Texts",
+    autor: "Johan Ferreira (ed. e trad.)",
+    tradicao: "Cristianismo siríaco · Atos de Tomé",
+    tipo: "Tradução comentada",
+    referencia: "Sydney: St Pauls Publications, 2002",
+    capa: "grafite",
+    inicial: "H",
+  },
 ];

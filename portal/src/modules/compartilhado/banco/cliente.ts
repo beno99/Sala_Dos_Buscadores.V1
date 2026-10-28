@@ -5,7 +5,7 @@ import { Pool } from "pg";
 import * as schema from "./schema";
 
 /*
- * Conexão única com o Postgres (docker-compose.yml). Fica em globalThis para
+ * Conexão única com o Postgres (Supabase). Fica em globalThis para
  * sobreviver ao recarregamento do código em `next dev` sem abrir um pool por
  * recarga. Os testes trocam o banco por um PGlite com `usarBanco`.
  */

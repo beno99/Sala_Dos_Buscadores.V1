@@ -1,4 +1,4 @@
-/* Armazenamento dos bytes das imagens: S3 (MinIO no docker-compose, R2 ou S3 em produção). */
+/* Armazenamento dos bytes das imagens: S3 (Supabase Storage ou outro compatível). */
 export interface ArmazenamentoDeArquivos {
   enviar(chave: string, bytes: Uint8Array, tipo: string): Promise<void>;
   /** null quando o objeto não existe. */

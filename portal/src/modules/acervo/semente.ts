@@ -1,7 +1,7 @@
 /*
  * Semente do banco: o acervo oficial (Salas, fontes, conteúdos e citações de
- * src/data/semente) e a conta de administrador. Idempotente: o
- * acervo só entra num banco sem Salas; a conta, se o e-mail ainda não existe.
+ * src/data/semente) e a conta de administrador. Idempotente: entra só o
+ * registro do acervo que ainda não existe; a conta, se o e-mail ainda não existe.
  * Rodada por scripts/seed.ts (npm run db:seed).
  */
 import bcrypt from "bcryptjs";
@@ -90,11 +90,10 @@ function gravacoesDoAcervo(): Gravacao[] {
 }
 
 async function popularAcervo(relatar: Relato) {
-  const atual = await acervoRepositorio.carregar();
-  if (atual.colecoes.salas.size > 0) return relatar("O acervo já tem Salas; nada a importar.");
-  const gravacoes = gravacoesDoAcervo();
-  for (const g of gravacoes) await acervoRepositorio.aplicar(g);
-  relatar(`Acervo importado: ${gravacoes.length} registros.`);
+  const { colecoes } = await acervoRepositorio.carregar();
+  const novas = gravacoesDoAcervo().filter((g) => g.tipo === "gravar" && !colecoes[g.colecao].has(g.id));
+  for (const g of novas) await acervoRepositorio.aplicar(g);
+  relatar(novas.length ? `Acervo importado: ${novas.length} registros novos.` : "O acervo já está completo.");
 }
 
 /** Conta de administrador e acervo oficial, sem duplicar o que já existe. */

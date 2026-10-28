@@ -1,9 +1,9 @@
 # Diagrama do banco
 
-PostgreSQL 16 (`portal/docker-compose.yml`). Schema em Drizzle, um arquivo por módulo
+PostgreSQL no Supabase. Schema em Drizzle, um arquivo por módulo
 (`portal/src/modules/<módulo>/<módulo>.schema.ts`), migrações em `portal/drizzle/`.
 Ids em `text` (`u-…`, `c-…`, `m-…`, slugs das Salas oficiais). Datas editoriais em texto ISO,
-como o domínio (`portal/src/data/types.ts`) as usa. Os bytes das imagens ficam no S3 (MinIO local);
+como o domínio (`portal/src/data/types.ts`) as usa. Os bytes das imagens ficam no Supabase Storage (S3);
 o banco guarda só a chave.
 
 Todas as tabelas têm RLS ligado e nenhuma policy: a API pública do Supabase não lê nada, e o portal

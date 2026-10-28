@@ -18,7 +18,7 @@ function cliente(): S3Client {
   g[chave] ??= new S3Client({
     endpoint: process.env.S3_ENDPOINT || undefined,
     region: process.env.S3_REGIAO ?? "us-east-1",
-    // MinIO e outros compatíveis endereçam o bucket no caminho, não no subdomínio.
+    // Supabase Storage e outros compatíveis endereçam o bucket no caminho, não no subdomínio.
     forcePathStyle: Boolean(process.env.S3_ENDPOINT),
     requestChecksumCalculation: "WHEN_REQUIRED",
     responseChecksumValidation: "WHEN_REQUIRED",
