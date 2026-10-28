@@ -11,7 +11,7 @@ npm run db:setup             # docker compose up -d (Postgres + MinIO), migraç�
 npm run dev                  # http://localhost:3000 (sincroniza o design system antes)
 ```
 
-A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações, fontes e vídeos). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria. O console do MinIO fica em http://localhost:9001.
+A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações e fontes). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria. O console do MinIO fica em http://localhost:9001.
 
 Fluxo para demonstrar: **Criar conta** → onboarding (interesses e, se quiser, religião ou convicção) → Portal (“Comece por aqui”) → **Salas** → abrir uma Sala (conquista “Porta aberta”) → abrir um conteúdo (entra em “Continue de onde parou”) → lupa ou ⌘K / Ctrl K: “vida após a morte” → **Comparar** → **Perguntar ao assistente sobre este tema** → enviar. O botão flutuante abre o assistente por cima de qualquer página.
 
@@ -165,7 +165,7 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 
 ## Dados iniciais
 
-O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que informa indisponibilidade enquanto não houver IA conectada. `features/assistente/motor.ts` permanece como fixture legada de testes, sem ser o serviço padrão. Obras e referências citadas são reais; os autores dos artigos do acervo inicial são fictícios.
+O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que informa indisponibilidade enquanto não houver IA conectada. `features/assistente/motor.ts` permanece como fixture legada de testes, sem ser o serviço padrão. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala, e os vídeos de demonstração ficam só nos testes.
 
 ## Fora desta etapa
 

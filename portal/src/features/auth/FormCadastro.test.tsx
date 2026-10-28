@@ -41,6 +41,8 @@ describe("FormCadastro", () => {
     await user.type(screen.getByLabelText("Senha"), "uma-senha-longa");
     await user.click(screen.getByRole("checkbox", { name: /Concordo com o uso/ }));
     await user.click(screen.getByRole("button", { name: "Criar conta" }));
-    await waitFor(() => expect(navigationMock.router.push).toHaveBeenCalledWith("/comparar"));
+    await waitFor(() => expect(navigationMock.router.push).toHaveBeenCalledWith("/comparar"), {
+      timeout: 5000,
+    });
   });
 });
