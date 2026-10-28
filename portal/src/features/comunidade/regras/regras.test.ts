@@ -1,5 +1,5 @@
+import { comunidadeInicial } from "@tests/support/demonstracao";
 import { describe, expect, it } from "vitest";
-import { comunidadeInicial } from "@/data/mock/comunidade";
 import {
   dentroDoLimiteDiario,
   emDebate,

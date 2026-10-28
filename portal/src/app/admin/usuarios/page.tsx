@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { type Aba, UsuariosAdmin } from "@/features/admin/ui/anfitrioes/UsuariosAdmin";
-import { listarContas } from "@/features/auth/contas";
 import { listarCandidaturas, listarConvites } from "@/server/anfitriao/consultas";
-import { acervo } from "@/server/store";
+import { acervo, contasDoDiretorio as listarContas } from "@/server/store";
 
 export const metadata: Metadata = { title: "Usuários" };
 

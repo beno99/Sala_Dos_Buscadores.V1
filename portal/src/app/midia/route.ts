@@ -28,6 +28,6 @@ export async function POST(pedido: Request) {
   if (!(arquivo instanceof Blob)) {
     return Response.json({ ok: false, erro: "escolha uma imagem para enviar." }, { status: 400 });
   }
-  const r = guardarImagem(new Uint8Array(await arquivo.arrayBuffer()), donoId);
+  const r = await guardarImagem(new Uint8Array(await arquivo.arrayBuffer()), donoId);
   return r.ok ? Response.json(r, { status: 201 }) : Response.json(r, { status: 422 });
 }

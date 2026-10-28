@@ -1,5 +1,5 @@
 import type { ComentarioComunidade, EstadoComunidade, Publicacao, SeguirComunidade } from "@/data/types";
-import type { Papel } from "@/features/auth/contas";
+import type { Papel } from "@/modules/conta/conta.contratos";
 
 export const LIMITES_COMUNIDADE = {
   texto: 1500,

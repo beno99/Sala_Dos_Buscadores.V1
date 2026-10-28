@@ -131,7 +131,7 @@ it("área marcada controlada entrega a edição ao formulário e à prévia", as
   const campo = screen.getByRole("textbox") as HTMLTextAreaElement;
   campo.focus();
   campo.setSelectionRange(0, 3);
-  await userEvent.setup().click(screen.getByRole("button", { name: "Negrito no descrição" }));
+  await userEvent.setup().click(screen.getByRole("button", { name: "Negrito no campo descrição" }));
   expect(campo).toHaveValue("**Uma** descrição");
   expect(document.querySelector(".sdb-editor__preview strong")).toHaveTextContent("Uma");
 });

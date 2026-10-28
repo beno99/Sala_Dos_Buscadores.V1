@@ -1,17 +1,18 @@
 // @vitest-environment node
+
+import {
+  abrirSessao,
+  CONTA_ADMIN_DEMONSTRACAO,
+  contaPorEmail,
+  prepararDemonstracao,
+} from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { salaPorSlug } from "@/data/catalogo";
 import { acervoPublico, conteudosDaSala, videosDaSala } from "@/data/repositorio";
 import { artigoCompleto, videoCompleto } from "@/features/admin/regras/fixtures";
 import { type FormSalaOficial, salaOficialVazia } from "@/features/admin/regras/sala";
-import {
-  abrirSessao,
-  CONTA_ADMIN_DEMONSTRACAO,
-  contaPorEmail,
-  reiniciarContas,
-} from "@/features/auth/contas";
 import { buscar, FILTROS_VAZIOS, NOTA_SEM_LEITURA_CURADA } from "@/features/busca/busca";
-import { acervo, restaurarAcervoInicial } from "../store";
+import { acervo } from "../store";
 import { moverArtigo, mudarStatusArtigo, mudarStatusVideo, salvarArtigo, salvarVideo } from "./editorial";
 import { listarSalasAdmin, mudarStatusSala, salvarSalaOficial } from "./salas";
 
@@ -58,9 +59,8 @@ function publicarArtigoNa(sala: string, titulo = "O si mesmo na Chandogya") {
   return r.valor;
 }
 
-beforeEach(() => {
-  reiniciarContas();
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
   token = undefined;
 });
 
@@ -69,8 +69,8 @@ describe("rotas antigas redirecionam para a Sala (308 no servidor)", () => {
   const ctx = <T extends object>(params: T) => ({ params: Promise.resolve(params) });
   const destino = (r: Response) => new URL(r.headers.get("location") ?? "").pathname;
 
-  beforeEach(() => {
-    token = abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
+  beforeEach(async () => {
+    token = await abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
   });
 
   it("listas e “novo” vão para /admin/salas", async () => {
@@ -151,7 +151,7 @@ describe("criar artigo ou vídeo exige uma Sala oficial ativa", () => {
   });
 
   it("a Server Action também recusa (o papel é conferido e a Sala também)", async () => {
-    token = abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
     const { salvarArtigoAcao, salvarVideoAcao } = await import("./acoes");
     expect(await salvarArtigoAcao(artigoCompleto({ sala: "" }), "manual")).toMatchObject({ ok: false });
     expect(

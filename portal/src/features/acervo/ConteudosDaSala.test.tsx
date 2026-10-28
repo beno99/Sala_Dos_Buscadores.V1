@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { CONTEUDOS } from "@/data/mock/conteudos";
+import { CONTEUDOS } from "@/data/semente/conteudos";
 import { renderComProviders } from "../../../tests/support/render";
 import { ConteudosDaSala } from "./ConteudosDaSala";
 

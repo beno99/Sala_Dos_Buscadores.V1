@@ -1,12 +1,13 @@
 import { screen, waitFor } from "@testing-library/react";
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { contas } from "@/modules/conta";
 import { navigationMock } from "../../../tests/support/next-navigation";
 import { renderComProviders } from "../../../tests/support/render";
-import { registrar, reiniciarContas } from "./contas";
 
-// A Server Action grava cookie; no teste de componente vale só a regra de cadastro.
+// A Server Action grava cookie; no teste de componente vale só a regra de cadastro (no PGlite).
 vi.mock("./acoes", () => ({
-  cadastrarAcao: async (d: Parameters<typeof registrar>[0]) => registrar(d),
+  cadastrarAcao: async (d: Parameters<typeof contas.registrar>[0]) => contas.registrar(d),
   entrarAcao: vi.fn(),
   sairAcao: vi.fn(),
   solicitarRedefinicaoAcao: vi.fn(),
@@ -15,7 +16,7 @@ vi.mock("./acoes", () => ({
 import { FormCadastro } from "./FormCadastro";
 
 describe("FormCadastro", () => {
-  beforeEach(reiniciarContas);
+  beforeEach(() => prepararDemonstracao({ demonstracao: false }));
 
   it("cadastro obrigatório: sem tradição de interesse nem saída sem conta (RF-01, RF-07 no onboarding)", () => {
     renderComProviders(<FormCadastro voltar="/" />);

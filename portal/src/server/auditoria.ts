@@ -1,6 +1,7 @@
 import "server-only";
+import { randomUUID } from "node:crypto";
 import type { RegistroAuditoria } from "@/data/types";
-import { auditoriaBruta } from "./store";
+import { auditoriaBruta, incluirAuditoria } from "./store";
 
 /*
  * Histórico de auditoria (RNF-04). A única escrita possível é `registrar`,
@@ -11,14 +12,13 @@ import { auditoriaBruta } from "./store";
 export type NovoRegistro = Omit<RegistroAuditoria, "id" | "quando">;
 
 export function registrar(novo: NovoRegistro, quando = new Date()): RegistroAuditoria {
-  const lista = auditoriaBruta();
   const registro: RegistroAuditoria = Object.freeze({
     ...novo,
     mudancas: novo.mudancas?.map((m) => Object.freeze({ ...m })),
-    id: `a-${lista.length + 1}-${quando.getTime().toString(36)}`,
+    id: `a-${randomUUID()}`,
     quando: quando.toISOString(),
   });
-  lista.push(registro);
+  incluirAuditoria(registro);
   return { ...registro };
 }
 

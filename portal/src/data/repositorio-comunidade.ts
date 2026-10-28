@@ -1,13 +1,12 @@
 import "server-only";
 import type { PessoaComunidadeVisual } from "@/components/ds/LinhaPessoa";
-import { contaPorId } from "@/features/auth/contas";
 import { ordenarComentarios } from "@/features/comunidade/regras";
 import { nivelNoAssunto } from "@/features/estudo/niveis";
 import { iniciais } from "@/lib/texto";
 import { urlDaMidia } from "@/server/midia";
 import { perfilDe } from "@/server/perfilBuscador";
 import { progressoDe } from "@/server/progresso";
-import { acervo, salasVisiveis } from "@/server/store";
+import { acervo, contaNoDiretorio as contaPorId, salasVisiveis } from "@/server/store";
 import { acervoDeEstudo, conteudoParaPublico } from "./repositorio";
 import type { ComentarioComunidade, Conteudo, Nivel, Publicacao } from "./types";
 
@@ -83,7 +82,7 @@ export function publicacoesVisiveisComunidade(): PublicacaoPublica[] {
         : [];
     });
     const conta = contaPorId(p.autorId);
-    const progresso = conta ? progressoDe(conta.email) : undefined;
+    const progresso = conta ? progressoDe(conta.id) : undefined;
     const sala = p.salaSlug ? salas.get(p.salaSlug) : undefined;
     const nivel =
       sala && progresso?.mostrarNiveis && progresso.leituras.some((l) => l.sala === sala.slug)

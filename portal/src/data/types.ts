@@ -1,8 +1,8 @@
 import type { BlocoTexto } from "@/design-system/marcacao.mjs";
 /**
  * Modelo de domínio do acervo (DRS, cap. 5.2 e 5.3).
- * Os dados simulados em src/data/mock seguem estes tipos; um backend real
- * deve devolver o mesmo formato pelos repositórios em src/data/repositorio.ts.
+ * O banco (modules/*) guarda estes formatos; as telas os recebem pelos
+ * repositórios em src/data/repositorio.ts.
  */
 
 /** Nível de aprofundamento: 1 iniciante, 2 intermediário, 3 avançado. */

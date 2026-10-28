@@ -3,6 +3,7 @@
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { Avatar } from "@/components/ds/Avatar";
 import { BarraAbasApp } from "@/components/ds/BarraAbasApp";
 import { BarraSuperior } from "@/components/ds/BarraSuperior";
 import { CartaoLateral, ContinuarLateral } from "@/components/ds/CartoesLateral";
@@ -19,7 +20,6 @@ import { SeloNivelProgresso } from "@/components/ds/SeloNivelProgresso";
 import { MenuAparencia } from "@/features/aparencia/MenuAparencia";
 import type { Aparencia } from "@/features/aparencia/tema";
 import { MiniChatAssistente } from "@/features/assistente/MiniChatAssistente";
-import type { Membro } from "@/features/auth/contas";
 import { useSessao } from "@/features/auth/SessaoProvider";
 import { PainelBusca } from "@/features/busca/PainelBusca";
 import type { ConteudoBuscavel } from "@/features/busca/sugestoes";
@@ -28,6 +28,7 @@ import { EstanteProvider } from "@/features/estudo/EstanteProvider";
 import { ModalConquistas } from "@/features/estudo/ModalConquistas";
 import { useOuvinteEstudo } from "@/features/estudo/useOuvinteEstudo";
 import { Onboarding } from "@/features/onboarding/Onboarding";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import type { ModeloLateral } from "@/server/estudo";
 import { type Abertura, EVENTO_ABRIR } from "./aberturas";
 import {
@@ -225,11 +226,7 @@ export function Moldura({
                   triggerLabel={`Conta de ${membro.pseudonimo}`}
                   titulo={`Conectado como ${membro.pseudonimo}`}
                   items={menuConta}
-                  trigger={
-                    <span className="sdb-avatar" aria-hidden="true">
-                      {iniciais}
-                    </span>
-                  }
+                  trigger={<Avatar iniciais={iniciais} foto={lateral.foto} />}
                 />
               </>
             }

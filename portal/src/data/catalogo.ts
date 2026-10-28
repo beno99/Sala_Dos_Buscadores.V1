@@ -1,21 +1,20 @@
-import { COMPARACOES } from "./mock/comparacoes";
-import { GLOSSARIO } from "./mock/glossario";
-import { SALAS } from "./mock/salas";
-import { TEMAS } from "./mock/temas";
+import { COMPARACOES } from "./referencia/comparacoes";
+import { GLOSSARIO } from "./referencia/glossario";
+import { TEMAS } from "./referencia/temas";
 import type { Comparacao, Sala, SalaSlug, Tema, TemaSlug, Verbete } from "./types";
 
 /*
  * Catálogo de referência: Salas, temas, glossário e comparações curadas.
  * Pode ser lido no servidor e no navegador.
  *
- * As Salas deixaram de ser fixas: além das oficiais (o acervo de demonstração),
- * existem as dos anfitriões, criadas em tempo de execução. As funções de Sala
+ * As Salas vivem no banco: as oficiais, mantidas pela curadoria, e as dos
+ * anfitriões. As funções de Sala
  * leem um registro em globalThis com as Salas visíveis ao público:
  * - no servidor, o store (src/server/store.ts) instala o registro e o mantém
  *   em dia, porque guarda Salas e artigos;
  * - no navegador, o `RegistroSalas` (components/layout) instala a lista que o
  *   servidor mandou no layout raiz.
- * Sem registro (testes de funções puras), valem as Salas oficiais.
+ * Sem registro, não há Salas.
  * Salas que ainda não estão no ar (rascunho, em revisão) não passam por aqui:
  * a área do anfitrião e a curadoria as leem do servidor.
  *
@@ -32,12 +31,9 @@ export function instalarRegistroSalas(fonte: () => Sala[]): void {
   (globalThis as ComRegistro)[CHAVE_REGISTRO] = fonte;
 }
 
-/** Salas oficiais do acervo de demonstração, na ordem alfabética do nome. */
-export const SALAS_OFICIAIS: readonly Sala[] = SALAS;
-
 /** Salas visíveis ao público: oficiais primeiro, depois as de anfitriões, cada grupo em ordem alfabética. */
 export function todasAsSalas(): Sala[] {
-  return (globalThis as ComRegistro)[CHAVE_REGISTRO]?.() ?? [...SALAS];
+  return (globalThis as ComRegistro)[CHAVE_REGISTRO]?.() ?? [];
 }
 
 export function salaPorSlug(slug: string): Sala | undefined {

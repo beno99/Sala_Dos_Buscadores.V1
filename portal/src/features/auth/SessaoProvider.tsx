@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import type { Membro, Resultado } from "@/modules/conta/conta.contratos";
 import { cadastrarAcao, entrarAcao, sairAcao } from "./acoes";
-import type { Membro, Resultado } from "./contas";
 
 interface Sessao {
   /** null só nas telas de conta: o resto do portal exige sessão. */

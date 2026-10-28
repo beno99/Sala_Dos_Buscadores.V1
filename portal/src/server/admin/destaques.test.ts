@@ -1,14 +1,14 @@
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it } from "vitest";
 import { obterDestaques, vagasDestaques } from "@/data/repositorio";
 import { listarAuditoria } from "../auditoria";
-import { restaurarAcervoInicial } from "../store";
 import { definirVaga, moverVaga } from "./destaques";
 import { mudarStatusArtigo } from "./editorial";
 
 const QUEM = "Editoria do acervo";
 
 describe("vagas de Destaques na curadoria", () => {
-  beforeEach(() => restaurarAcervoInicial());
+  beforeEach(() => prepararDemonstracao());
 
   it("o acervo de demonstração já vem com as vagas do mockup, nenhuma automática", async () => {
     const vagas = vagasDestaques();

@@ -1,6 +1,5 @@
+import { contaPorId, prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, expect, it, vi } from "vitest";
-import { contaPorId } from "@/features/auth/contas";
-import { restaurarAcervoInicial } from "@/server/store";
 import { consultarComunidade } from "./consultas";
 
 const sessao = vi.hoisted(() => ({ id: "u-buscador" }));
@@ -10,8 +9,8 @@ vi.mock("@/server/sessao", () => ({
     throw new Error("sem sessão");
   },
 }));
-beforeEach(() => {
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
   sessao.id = "u-buscador";
 });
 it("salvos e seguindo pertencem à sessão atual", async () => {

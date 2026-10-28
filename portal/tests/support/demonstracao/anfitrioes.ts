@@ -1,10 +1,3 @@
-import { duracaoDoTexto, resumoDoTexto } from "@/features/anfitriao/regras/artigo";
-import { expiraEm } from "@/features/anfitriao/regras/convite";
-import {
-  CONTA_ADMIN_DEMONSTRACAO,
-  CONTA_ANFITRIAO_DEMONSTRACAO,
-  CONTA_CANDIDATA_DEMONSTRACAO,
-} from "@/features/auth/contas";
 import type {
   AssinaturaAnfitriao,
   Candidatura,
@@ -15,7 +8,14 @@ import type {
   PerfilAnfitriao,
   SalaEditorial,
   TemaSlug,
-} from "../types";
+} from "@/data/types";
+import { duracaoDoTexto, resumoDoTexto } from "@/features/anfitriao/regras/artigo";
+import { expiraEm } from "@/features/anfitriao/regras/convite";
+import {
+  CONTA_ADMIN_DEMONSTRACAO,
+  CONTA_ANFITRIAO_DEMONSTRACAO,
+  CONTA_CANDIDATA_DEMONSTRACAO,
+} from "./contas";
 
 /*
  * Anfitriões de demonstração (§12). As pessoas são fictícias e marcadas como

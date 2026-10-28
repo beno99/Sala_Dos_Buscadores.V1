@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { renderComProviders } from "../../../tests/support/render";
 import { type EntradaPreferencias, validarPreferencias } from "./preferencias";
 
@@ -35,7 +35,7 @@ describe("Onboarding", () => {
     salvas.length = 0;
   });
 
-  const comecar = () => screen.getByRole("button", { name: "Começar" });
+  const comecar = () => screen.getByRole("button", { name: /^(Começar|Continuar|Ir ao Portal)$/ });
 
   it("anuncia a etapa e nada vem pré-selecionado", async () => {
     const { user, dialogo } = abrir();

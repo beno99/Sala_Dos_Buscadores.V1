@@ -1,13 +1,20 @@
 import { screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { comparacaoDoTema } from "@/data/catalogo";
+import type { Comparacao } from "@/data/types";
 import { renderComProviders } from "../../../tests/support/render";
 import { GradeComparativa } from "./GradeComparativa";
 
-const morte = comparacaoDoTema("morte");
-if (!morte) throw new Error("comparação de morte ausente");
+// As colunas seguem as Salas do banco do teste, que sobe no beforeAll.
+let morte: Comparacao;
 
 describe("GradeComparativa", () => {
+  beforeAll(() => {
+    const c = comparacaoDoTema("morte");
+    if (!c) throw new Error("comparação de morte ausente");
+    morte = c;
+  });
+
   it("mostra uma coluna por Sala e a nota de que não há síntese única (RF-18, RF-19)", () => {
     renderComProviders(<GradeComparativa comparacao={morte} />);
     expect(screen.getByRole("heading", { level: 2, name: morte.pergunta })).toBeInTheDocument();

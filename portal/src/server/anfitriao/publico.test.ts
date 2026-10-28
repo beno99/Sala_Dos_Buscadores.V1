@@ -1,10 +1,8 @@
+import { prepararDemonstracao, SALA_TOME_ID } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it } from "vitest";
-import { SALA_TOME_ID } from "@/data/mock/anfitrioes";
 import { acervoPublico } from "@/data/repositorio";
 import { responder } from "@/features/assistente/motor";
-import { reiniciarContas } from "@/features/auth/contas";
 import { buscar, FILTROS_VAZIOS } from "@/features/busca/busca";
-import { restaurarAcervoInicial } from "../store";
 import { definirNaComparacao } from "./revisao";
 
 /* Onde o conteúdo de anfitrião aparece (§7): grade e assistente só com `naComparacao`. */
@@ -15,9 +13,8 @@ const grade = (tema: string) =>
     (r) => r.sala,
   ) ?? [];
 
-beforeEach(() => {
-  reiniciarContas();
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
 });
 
 describe("grade comparativa", () => {

@@ -33,7 +33,7 @@ import {
   podeExcluir,
   transicao,
 } from "@/features/anfitriao/regras/ciclo";
-import type { Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import type { ModoSalvar } from "../admin/editorial";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";

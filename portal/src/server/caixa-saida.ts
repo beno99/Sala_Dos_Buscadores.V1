@@ -1,10 +1,11 @@
 import "server-only";
+import { randomUUID } from "node:crypto";
 import type { EmailEnviado } from "@/data/types";
-import { caixaSaidaBruta } from "./store";
+import { caixaSaidaBruta, incluirEmail } from "./store";
 
 /*
- * Caixa de saída simulada (§10). Nenhum e-mail sai do servidor: cada envio
- * fica registrado em memória (para, assunto, corpo em texto e quando), e a
+ * Caixa de saída (§10). Nenhum e-mail sai do servidor ainda: cada envio
+ * fica registrado no banco (para, assunto, corpo em texto e quando), e a
  * curadoria lê tudo em /admin/caixa-saida.
  *
  * Para usar um serviço real, troque só o corpo de `enviarEmail` (mantendo a
@@ -20,19 +21,20 @@ export interface NovoEmail {
 /** Destinatário dos avisos para a curadoria (candidatura recebida). */
 export const EMAIL_CURADORIA = "curadoria@saladosbuscadores.org";
 
+export const URL_PUBLICA = process.env.SDB_URL_PUBLICA ?? "http://localhost:3000";
+
 /** Assinatura dos e-mails, na voz da casa. */
 const RODAPE = "\n\nA Sala dos Buscadores · curadoria do acervo";
 
 export function enviarEmail(novo: NovoEmail, quando = new Date()): EmailEnviado {
-  const lista = caixaSaidaBruta();
   const email: EmailEnviado = Object.freeze({
-    id: `e-${lista.length + 1}-${quando.getTime().toString(36)}`,
+    id: `e-${randomUUID()}`,
     para: novo.para.trim().toLowerCase(),
     assunto: novo.assunto.trim(),
     corpo: `${novo.corpo.trim()}${RODAPE}`,
     quando: quando.toISOString(),
   });
-  lista.push(email);
+  incluirEmail(email);
   return { ...email };
 }
 

@@ -6,10 +6,9 @@ import {
   reprovar,
   transicao,
 } from "@/features/anfitriao/regras/ciclo";
-import { contaPorId } from "@/features/auth/contas";
 import { registrar } from "../auditoria";
 import { enviarEmail } from "../caixa-saida";
-import { acervo } from "../store";
+import { acervo, contaNoDiretorio as contaPorId } from "../store";
 import { agora, comDecisao, erro, hoje, novaDecisao, ok, type ResultadoAcao } from "./comum";
 
 /*

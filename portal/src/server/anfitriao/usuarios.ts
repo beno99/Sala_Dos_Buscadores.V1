@@ -11,16 +11,12 @@ import {
   validarCandidatura,
   validarPerfil,
 } from "@/features/anfitriao/regras/perfil";
-import {
-  contaPorEmail,
-  contaPorId,
-  definirPapel,
-  type Membro,
-  registrar as registrarConta,
-} from "@/features/auth/contas";
 import { validarEmail, validarPseudonimo, validarSenha } from "@/features/auth/validacao";
+import { contas } from "@/modules/conta";
+import { hash } from "@/modules/conta/casos-de-uso/sessao";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { registrar } from "../auditoria";
-import { EMAIL_CURADORIA, enviarEmail } from "../caixa-saida";
+import { EMAIL_CURADORIA, enviarEmail, URL_PUBLICA } from "../caixa-saida";
 import { midiaDoDono } from "../midia";
 import { acervo } from "../store";
 import { agora, erro, falha, novoId, ok, type ResultadoAcao } from "./comum";
@@ -30,9 +26,6 @@ import { agora, erro, falha, novoId, ok, type ResultadoAcao } from "./comum";
  * As funções de curadoria recebem o pseudônimo do administrador já
  * conferido (./acoes-admin.ts); as do membro e do anfitrião recebem a conta.
  */
-
-/** Endereço público do portal, para os links dos e-mails. */
-export const URL_PUBLICA = process.env.SDB_URL_PUBLICA ?? "http://localhost:3000";
 
 const limpar = (s: string) => s.trim().replace(/\s+/g, " ");
 
@@ -64,11 +57,11 @@ export function perfilIncompleto(p: PerfilAnfitriao | undefined): boolean {
 
 // ---------- promoção pela curadoria ----------
 
-export function promover(contaId: string, quem: string): ResultadoAcao {
-  const conta = contaPorId(contaId);
+export async function promover(contaId: string, quem: string): Promise<ResultadoAcao> {
+  const conta = await contas.porId(contaId);
   if (!conta) return erro("esta conta não existe mais.");
   if (conta.papel !== "membro") return erro("só membros podem ser promovidos a anfitrião.");
-  const r = definirPapel(contaId, "anfitriao");
+  const r = await contas.definirPapel(contaId, "anfitriao");
   if (!r.ok) return erro(r.erro);
   criarPerfil(contaId, { nome: conta.pseudonimo });
   registrar({ quem, acao: "promoveu", tipoItem: "usuario", itemId: contaId, itemTitulo: conta.pseudonimo });
@@ -95,14 +88,18 @@ function itensDoDono(donoId: string) {
  * - despublicar: tudo vai para arquivado, nada é apagado;
  * - transferir: Salas e artigos mudam de dono; os já publicados mantêm a assinatura do autor original.
  */
-export function rebaixar(contaId: string, opcao: OpcaoRebaixamento, quem: string): ResultadoAcao {
-  const conta = contaPorId(contaId);
+export async function rebaixar(
+  contaId: string,
+  opcao: OpcaoRebaixamento,
+  quem: string,
+): Promise<ResultadoAcao> {
+  const conta = await contas.porId(contaId);
   if (!conta) return erro("esta conta não existe mais.");
   if (conta.papel !== "anfitriao") return erro("esta conta não é de anfitrião.");
   let destino: Membro | null = null;
   let perfilDestino: PerfilAnfitriao | undefined;
   if (opcao.tipo === "transferir") {
-    destino = contaPorId(opcao.para);
+    destino = await contas.porId(opcao.para);
     if (destino?.papel !== "anfitriao" || destino.id === contaId) {
       return erro("escolha outro anfitrião para receber as Salas.");
     }
@@ -158,10 +155,12 @@ export function rebaixar(contaId: string, opcao: OpcaoRebaixamento, quem: string
       if (f.proposta?.donoId === contaId)
         acervo().fontes.set(f.id, { ...f, proposta: { ...f.proposta, donoId: destino.id } });
     }
-    for (const m of acervo().midias.values()) if (m.donoId === contaId) m.donoId = destino.id;
+    for (const m of acervo().midias.values()) {
+      if (m.donoId === contaId) acervo().midias.set(m.id, { ...m, donoId: destino.id });
+    }
   }
 
-  definirPapel(contaId, "membro");
+  await contas.definirPapel(contaId, "membro");
   const rotulo = {
     manter: "manter publicado e congelado",
     despublicar: "despublicar tudo",
@@ -282,16 +281,16 @@ export function candidatar(f: FormCandidatura, membro: Membro): ResultadoAcao<{ 
   );
 }
 
-export function decidirCandidatura(
+export async function decidirCandidatura(
   id: string,
   decisao: "aprovar" | "recusar",
   motivo: string | undefined,
   quem: string,
-): ResultadoAcao {
+): Promise<ResultadoAcao> {
   const c = acervo().candidaturas.get(id);
   if (!c) return erro("esta candidatura não existe mais.");
   if (c.status !== "pendente") return erro("esta candidatura já foi decidida.");
-  const conta = contaPorId(c.contaId);
+  const conta = await contas.porId(c.contaId);
   if (!conta) return erro("a conta desta candidatura não existe mais.");
 
   if (decisao === "recusar") {
@@ -326,7 +325,7 @@ export function decidirCandidatura(
   }
 
   if (conta.papel !== "membro") return erro("esta conta já não é de membro.");
-  definirPapel(conta.id, "anfitriao");
+  await contas.definirPapel(conta.id, "anfitriao");
   criarPerfil(conta.id, c);
   acervo().candidaturas.set(id, { ...c, status: "aprovada", decididaEm: agora(), decididaPor: quem });
   registrar({ quem, acao: "aprovou", tipoItem: "candidatura", itemId: id, itemTitulo: c.nome });
@@ -345,15 +344,15 @@ export function decidirCandidatura(
 
 // ---------- convite (§2.3) ----------
 
-export function convidar(
+export async function convidar(
   email: string,
   quem: string,
   quando = new Date(),
-): ResultadoAcao<{ id: string; link: string }> {
+): Promise<ResultadoAcao<{ id: string; link: string }>> {
   const erroEmail = validarEmail(email);
   if (erroEmail) return falha(`Erro: ${erroEmail}`, { "campo-email": erroEmail });
   const para = email.trim().toLowerCase();
-  if (contaPorEmail(para)) {
+  if (await contas.porEmail(para)) {
     return falha("Erro: já existe uma conta com este e-mail.", {
       "campo-email": "já existe uma conta com este e-mail. Promova a pessoa na aba Usuários.",
     });
@@ -366,9 +365,10 @@ export function convidar(
       "campo-email": "já há um convite pendente para este e-mail. Revogue-o para enviar outro.",
     });
   }
+  const token = randomBytes(24).toString("base64url");
   const convite: Convite = {
     id: novoId("conv"),
-    token: randomBytes(24).toString("base64url"),
+    token: hash(token),
     email: para,
     criadoEm: quando.toISOString(),
     expiraEm: expiraEm(quando).toISOString(),
@@ -376,7 +376,7 @@ export function convidar(
     status: "pendente",
   };
   acervo().convites.set(convite.id, convite);
-  const link = `${URL_PUBLICA}/cadastro?convite=${convite.token}`;
+  const link = `${URL_PUBLICA}/cadastro?convite=${token}`;
   registrar({ quem, acao: "convidou", tipoItem: "convite", itemId: convite.id, itemTitulo: para });
   enviarEmail(
     {
@@ -404,7 +404,8 @@ export function revogarConvite(id: string, quem: string): ResultadoAcao {
 
 export function conviteDoToken(token: string | undefined | null): Convite | undefined {
   if (!token) return undefined;
-  return [...acervo().convites.values()].find((c) => c.token === token);
+  const h = hash(token);
+  return [...acervo().convites.values()].find((c) => c.token === h);
 }
 
 /** Erro do convite (vencido, usado, revogado, inexistente) ou null quando serve para cadastrar. */
@@ -417,18 +418,18 @@ export function situacaoDoConvite(token: string | undefined | null, agoraData = 
  * Cadastro pelo link do convite: cria a conta já como anfitrião, com o e-mail
  * travado no do convite, e o perfil inicial (a pessoa completa em seguida).
  */
-export function aceitarConvite(
+export async function aceitarConvite(
   token: string,
   dados: { pseudonimo: string; senha: string },
   agoraData = new Date(),
-): ResultadoAcao<Membro> {
+): Promise<ResultadoAcao<Membro>> {
   const { convite, erro: erroConvite } = situacaoDoConvite(token, agoraData);
   if (!convite || erroConvite) return erro(erroConvite ?? "convite inválido.");
   const erroPseudonimo = validarPseudonimo(dados.pseudonimo);
   if (erroPseudonimo) return falha(`Erro: ${erroPseudonimo}`, { pseudonimo: erroPseudonimo });
   const erroSenha = validarSenha(dados.senha);
   if (erroSenha) return falha(`Erro: ${erroSenha}`, { senha: erroSenha });
-  const r = registrarConta(
+  const r = await contas.registrar(
     { pseudonimo: dados.pseudonimo, email: convite.email, senha: dados.senha },
     { papel: "anfitriao" },
   );

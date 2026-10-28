@@ -29,13 +29,10 @@ import {
 import { rotuloSituacao } from "@/features/admin/regras/csv";
 import { gerarSlug, slugUnico, validarSlug } from "@/features/admin/regras/slug";
 import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtube";
-import { CONTA_DEMONSTRACAO, contaPorEmail, restaurarContasDemonstracao } from "@/features/auth/contas";
 import { plural } from "@/lib/texto";
-import { restaurarPerfilDemonstracao } from "@/server/perfilBuscador";
-import { restaurarProgressoDemonstracao } from "@/server/progresso";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo } from "../midia";
-import { AUTOR_IMPORTACAO, acervo, auditoriaBruta, restaurarAcervoInicial } from "../store";
+import { acervo, auditoriaBruta } from "../store";
 import { podarDestaques } from "./destaques";
 import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
 
@@ -693,24 +690,4 @@ export function excluirFonte(id: string, quem: string): ResultadoAcao {
       : [],
   });
   return { ok: true, valor: undefined, mensagem: "Fonte excluída." };
-}
-
-// ---------- acervo ----------
-
-export function restaurarAcervo(quem: string): ResultadoAcao {
-  restaurarAcervoInicial();
-  // As contas de demonstração (membro, curadoria, anfitriã e candidato) voltam ao papel e ao
-  // histórico iniciais, junto com Salas, candidaturas e convites; contas reais não são tocadas.
-  restaurarContasDemonstracao();
-  restaurarProgressoDemonstracao();
-  const demo = contaPorEmail(CONTA_DEMONSTRACAO.email);
-  if (demo) restaurarPerfilDemonstracao(demo.id);
-  registrar({
-    quem,
-    acao: "restaurou-acervo",
-    tipoItem: "acervo",
-    itemId: "acervo",
-    itemTitulo: AUTOR_IMPORTACAO,
-  });
-  return { ok: true, valor: undefined, mensagem: "Acervo de demonstração restaurado." };
 }

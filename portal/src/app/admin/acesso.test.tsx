@@ -1,12 +1,12 @@
 import { screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   abrirSessao,
   CONTA_ADMIN_DEMONSTRACAO,
   CONTA_DEMONSTRACAO,
   type Membro,
-  reiniciarContas,
-} from "@/features/auth/contas";
+  prepararDemonstracao,
+} from "@tests/support/demonstracao";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderComProviders } from "../../../tests/support/render";
 
 /* Proteção por papel (RF-08): sem sessão, membro e administrador. */
@@ -27,8 +27,8 @@ const membro: Membro = {
   preferencias: null,
 };
 
-beforeEach(() => {
-  reiniciarContas();
+beforeEach(async () => {
+  await prepararDemonstracao();
   token = undefined;
 });
 
@@ -43,7 +43,7 @@ describe("layout da curadoria", () => {
   });
 
   it("membro vê uma mensagem de acesso restrito, sem a área de trabalho nem rotas internas", async () => {
-    token = abrirSessao(CONTA_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_DEMONSTRACAO.email);
     await renderLayout();
     expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
     expect(screen.queryByText("Área de trabalho")).not.toBeInTheDocument();
@@ -51,7 +51,7 @@ describe("layout da curadoria", () => {
   });
 
   it("administrador entra na área de trabalho", async () => {
-    token = abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
     await renderLayout();
     expect(screen.getByText("Área de trabalho")).toBeInTheDocument();
     expect(screen.getAllByRole("navigation", { name: "Curadoria" }).length).toBeGreaterThan(0);
@@ -60,15 +60,16 @@ describe("layout da curadoria", () => {
 
 describe("Server Actions da curadoria", () => {
   it("recusam quem não é administrador, mesmo chamadas direto por POST", async () => {
-    const { restaurarAcervoAcao } = await import("@/server/admin/acoes");
+    const { definirVagaDestaqueAcao } = await import("@/server/admin/acoes");
+    const acao = () => definirVagaDestaqueAcao("video", 0, null);
     token = undefined;
-    expect(await restaurarAcervoAcao()).toMatchObject({
+    expect(await acao()).toMatchObject({
       ok: false,
       mensagem: expect.stringMatching(/acesso restrito/i),
     });
-    token = abrirSessao(CONTA_DEMONSTRACAO.email);
-    expect(await restaurarAcervoAcao()).toMatchObject({ ok: false });
-    token = abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
-    expect(await restaurarAcervoAcao()).toMatchObject({ ok: true });
+    token = await abrirSessao(CONTA_DEMONSTRACAO.email);
+    expect(await acao()).toMatchObject({ ok: false });
+    token = await abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
+    expect(await acao()).toMatchObject({ ok: true });
   });
 });

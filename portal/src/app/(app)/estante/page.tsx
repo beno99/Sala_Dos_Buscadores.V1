@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Estante" };
  */
 export default async function Estante() {
   const membro = await membroAtual();
-  const estante = membro ? progressoDe(membro.email).estante : [];
+  const estante = membro ? progressoDe(membro.id).estante : [];
   const publico = acervoPublico();
   const itens = estante.flatMap((e): ItemNaEstante[] => {
     if (e.tipo === "sala") {

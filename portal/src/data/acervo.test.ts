@@ -1,18 +1,21 @@
-import { describe, expect, it } from "vitest";
+import { prepararDemonstracao } from "@tests/support/demonstracao";
+import { beforeEach, describe, expect, it } from "vitest";
 import { comparacaoDoTema, todasAsSalas } from "./catalogo";
 import { textoDoCorpo } from "./corpo";
-import { RESPOSTAS } from "./mock/assistente";
-import { CITACOES } from "./mock/citacoes";
-import { COMPARACOES } from "./mock/comparacoes";
-import { CONTEUDOS } from "./mock/conteudos";
-import { GLOSSARIO } from "./mock/glossario";
-import { SALAS } from "./mock/salas";
-import { VIDEOS } from "./mock/videos";
+import { RESPOSTAS } from "./referencia/assistente";
+import { COMPARACOES } from "./referencia/comparacoes";
+import { GLOSSARIO } from "./referencia/glossario";
 import { fontesPorId } from "./repositorio";
+import { CITACOES } from "./semente/citacoes";
+import { CONTEUDOS } from "./semente/conteudos";
+import { SALAS } from "./semente/salas";
+import { VIDEOS } from "./semente/videos";
 
-/* Regras de domínio do DRS verificadas sobre os dados simulados. */
+/* Regras de domínio do DRS verificadas sobre o acervo da semente (e o cenário de demonstração). */
 
-describe("acervo simulado", () => {
+beforeEach(() => prepararDemonstracao());
+
+describe("acervo da semente", () => {
   it("cobre as 5 Salas do primeiro ciclo, com ao menos 3 conteúdos, 1 vídeo, 1 citação e 1 verbete cada", () => {
     expect(SALAS.map((s) => s.slug).sort()).toEqual(
       ["apocrifos-cristianismo-primitivo", "caibalion", "corpus-hermeticum", "nag-hammadi", "urantia"].sort(),

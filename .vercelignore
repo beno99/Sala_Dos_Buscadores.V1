@@ -1,0 +1,13 @@
+.env*
+!portal/.env.example
+.claude
+docs
+BRANDIG_DNA
+DESIGN SYSTEM
+*.docx
+*.pdf
+portal/node_modules
+portal/.next
+portal/test-results
+portal/playwright-report
+portal/coverage

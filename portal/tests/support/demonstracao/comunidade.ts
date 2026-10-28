@@ -1,4 +1,4 @@
-import type { ComentarioComunidade, DadosComunidade, Publicacao } from "../types";
+import type { ComentarioComunidade, DadosComunidade, Publicacao } from "@/data/types";
 
 /** Pessoas fictícias, obras reais. Datas relativas à inicialização, para o debate semanal não expirar no demo. */
 export function comunidadeInicial(agora = new Date()): DadosComunidade {

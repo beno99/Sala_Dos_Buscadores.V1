@@ -1,16 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import type {
   FormArtigoAnfitriao,
   FormFonteProposta,
   FormSalaAnfitriao,
 } from "@/features/anfitriao/regras/artigo";
 import type { FormCandidatura, FormPerfil } from "@/features/anfitriao/regras/perfil";
-import { abrirSessao, type Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
+import { gravarSessao } from "@/modules/conta/conta.controller";
 import type { ModoSalvar } from "../admin/editorial";
-import { AcessoNegado, COOKIE_SESSAO, exigirAnfitriao, membroAtual } from "../sessao";
+import { AcessoNegado, exigirAnfitriao, membroAtual } from "../sessao";
+import { aguardarGravacoes, sincronizarAcervo } from "../store";
 import type { ResultadoAcao } from "./comum";
 import * as editorial from "./editorial";
 import * as usuarios from "./usuarios";
@@ -25,7 +26,7 @@ import * as usuarios from "./usuarios";
 const NEGADO = (mensagem: string) => ({ ok: false as const, mensagem: `Erro: ${mensagem}` });
 
 async function comAnfitriao<T>(
-  fazer: (dono: Membro) => ResultadoAcao<T>,
+  fazer: (dono: Membro) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
   { revalidar = true }: { revalidar?: boolean } = {},
 ): Promise<ResultadoAcao<T>> {
   let dono: Membro;
@@ -35,7 +36,8 @@ async function comAnfitriao<T>(
     if (e instanceof AcessoNegado) return NEGADO("acesso restrito a anfitriões.");
     throw e;
   }
-  const r = fazer(dono);
+  const r = await fazer(dono);
+  await aguardarGravacoes();
   if (r.ok && revalidar) revalidatePath("/", "layout");
   return r;
 }
@@ -93,6 +95,7 @@ export async function candidatarAcao(form: FormCandidatura) {
   const membro = await membroAtual();
   if (!membro) return NEGADO("entre na sua conta para se candidatar.");
   const r = usuarios.candidatar(form, membro);
+  await aguardarGravacoes();
   if (r.ok) revalidatePath("/", "layout");
   return r;
 }
@@ -101,17 +104,12 @@ export async function candidatarAcao(form: FormCandidatura) {
 
 /** Cria a conta pelo link do convite, já como anfitrião, e abre a sessão. */
 export async function cadastrarPorConviteAcao(token: string, dados: { pseudonimo: string; senha: string }) {
-  const r = usuarios.aceitarConvite(String(token), {
+  await sincronizarAcervo();
+  const r = await usuarios.aceitarConvite(String(token), {
     pseudonimo: String(dados.pseudonimo),
     senha: String(dados.senha),
   });
-  if (r.ok) {
-    (await cookies()).set(COOKIE_SESSAO, abrirSessao(r.valor.email), {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
-  }
+  await aguardarGravacoes();
+  if (r.ok) await gravarSessao(r.valor);
   return r;
 }

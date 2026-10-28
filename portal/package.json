@@ -2,7 +2,7 @@
   "name": "sala-dos-buscadores-portal",
   "version": "0.1.0",
   "private": true,
-  "description": "MVP de frontend de A Sala dos Buscadores: acervo em Salas, busca comparativa e assistente de IA, com dados simulados.",
+  "description": "MVP de A Sala dos Buscadores: acervo em Salas, busca comparativa e assistente de IA, com Postgres e armazenamento S3.",
   "engines": {
     "node": ">=20.9.0"
   },
@@ -12,6 +12,11 @@
     "prebuild": "npm run ds:check",
     "build": "next build",
     "start": "next start",
+    "db:up": "docker compose up -d",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx --env-file=.env.local --conditions=react-server scripts/seed.ts",
+    "db:setup": "npm run db:up && npm run db:migrate && npm run db:seed",
     "ds:sync": "node scripts/sync-design-system.mjs",
     "ds:check": "node scripts/sync-design-system.mjs --check",
     "lint": "biome check",
@@ -21,19 +26,25 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "e2e:banco": "tsx --env-file=.env.local --conditions=react-server scripts/e2e-banco.ts --migrar",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck && npm run test",
     "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.913.0",
+    "bcryptjs": "^3.0.2",
+    "drizzle-orm": "^0.44.7",
     "next": "16.3.6",
+    "pg": "^8.16.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
+    "@electric-sql/pglite": "^0.3.11",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/dom": "^10.4.2",
@@ -41,13 +52,16 @@
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
     "@types/node": "^22",
+    "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.2",
     "babel-plugin-react-compiler": "1.0.0",
+    "drizzle-kit": "^0.31.5",
     "jsdom": "^30.1.1",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vitest": "^5.0.2"
   }

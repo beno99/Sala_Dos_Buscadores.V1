@@ -1,11 +1,15 @@
 import { screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { renderComProviders } from "../../../tests/support/render";
 import { MensagemAssistente, textoParaCopiar } from "./MensagemAssistente";
 import { responder } from "./motor";
 
 describe("MensagemAssistente", () => {
-  const resposta = responder("O que acontece com a alma após a morte?");
+  // O motor lê as Salas do banco do teste, que sobe no beforeAll.
+  let resposta: ReturnType<typeof responder>;
+  beforeAll(() => {
+    resposta = responder("O que acontece com a alma após a morte?");
+  });
 
   it("se identifica como IA, separa os três tipos de trecho e numera as fontes (RF-27 a RF-29)", () => {
     const { container } = renderComProviders(

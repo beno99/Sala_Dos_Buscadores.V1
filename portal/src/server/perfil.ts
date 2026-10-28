@@ -2,14 +2,14 @@ import "server-only";
 import type { Route } from "next";
 import type { ConquistaVisual } from "@/components/ds/Conquista";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
-import { trilhaDaSala } from "@/data/mock/trilhas";
+import { trilhaDaSala } from "@/data/referencia/trilhas";
 import { acervoDeEstudo, acervoPublico, listarSalas, temasDaSala } from "@/data/repositorio";
 import type { Nivel, SalaSlug } from "@/data/types";
 import type { SalaNaGrade } from "@/features/acervo/GradeSalas";
-import type { Membro } from "@/features/auth/contas";
 import { avaliarConquistas } from "@/features/estudo/conquistas";
 import { nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
 import { leiturasEmAndamento } from "@/features/estudo/painel";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { imagem, imagemDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
@@ -37,7 +37,7 @@ export interface ModeloPerfil {
 }
 
 export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
-  const p = progressoDe(m.email);
+  const p = progressoDe(m.id);
   const acervo = acervoDeEstudo();
   const salas = await listarSalas();
   const oficiais = salas.filter((s) => s.origem === "oficial");

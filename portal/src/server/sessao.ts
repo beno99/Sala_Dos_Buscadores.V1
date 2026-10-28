@@ -1,9 +1,10 @@
 import "server-only";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ConteudoEditorial, FonteEditorial, SalaEditorial } from "@/data/types";
-import { type Membro, membroDaSessao } from "@/features/auth/contas";
-import { acervo } from "./store";
+import type { Membro } from "@/modules/conta/conta.contratos";
+import * as conta from "@/modules/conta/conta.controller";
+import { acervo, sincronizarAcervo } from "./store";
 
 /*
  * Camada de acesso aos dados de sessão (DAL). Toda página, Server Action e
@@ -11,14 +12,16 @@ import { acervo } from "./store";
  * checagem otimista, e Server Actions podem ser chamadas direto por POST.
  */
 
-export const COOKIE_SESSAO = "sdb_sessao";
+export { COOKIE_SESSAO, tokenDaSessao } from "@/modules/conta/conta.controller";
 
-export async function tokenDaSessao(): Promise<string | undefined> {
-  return (await cookies()).get(COOKIE_SESSAO)?.value;
-}
-
+/**
+ * Conta da sessão. Toda página, Server Action e rota do portal passa por aqui
+ * (o portal exige conta), então é também onde o snapshot do acervo é posto em
+ * dia com o banco antes de qualquer leitura (src/server/store.ts).
+ */
 export async function membroAtual(): Promise<Membro | null> {
-  return membroDaSessao(await tokenDaSessao());
+  const [membro] = await Promise.all([conta.membroAtual(), sincronizarAcervo()]);
+  return membro;
 }
 
 /** "sem-sessao" só aparece se o proxy for contornado: o portal exige conta. */

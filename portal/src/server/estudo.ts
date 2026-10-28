@@ -3,9 +3,8 @@ import type { Route } from "next";
 import type { AnuncioVisual } from "@/components/ds/EspacoPublicitario";
 import type { Indicador } from "@/components/ds/PainelIndicadores";
 import { salaPorSlug, salasOficiais, temaPorSlug, todosOsTemas } from "@/data/catalogo";
-import { ANUNCIOS } from "@/data/mock/anuncios";
-import { DESTAQUES_DO_CANAL } from "@/data/mock/banner";
-import { trilhaDaSala } from "@/data/mock/trilhas";
+import { DESTAQUES_DO_CANAL } from "@/data/referencia/banner";
+import { trilhaDaSala } from "@/data/referencia/trilhas";
 import {
   acervoDeEstudo,
   acervoPublico,
@@ -14,7 +13,6 @@ import {
   type SalaResumo,
 } from "@/data/repositorio";
 import type { Conteudo, Nivel, Placa, SalaSlug, TemaSlug } from "@/data/types";
-import type { Membro } from "@/features/auth/contas";
 import { avaliarConquistas, type EstadoConquista } from "@/features/estudo/conquistas";
 import { chaveEstante } from "@/features/estudo/estante";
 import { assuntoEmFoco, NOME_NIVEL, nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
@@ -28,6 +26,7 @@ import {
 } from "@/features/estudo/recomendacao";
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { imagem, imagemDaSala, imagemDoCard } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
@@ -36,6 +35,21 @@ import { progressoDe } from "./progresso";
  * Monta, no servidor, o que o Portal e a lateral mostram, a partir do acervo
  * publicado, do progresso da conta e das regras puras de features/estudo.
  */
+
+/** Anúncio aprovado pela curadoria (DRS): sem charlatanismo, promessa de cura ou urgência. */
+interface Anuncio {
+  id: string;
+  anunciante: string;
+  /** Título em dois tons: a segunda parte sai em label-secondary. */
+  titulo: [string, string];
+  texto: string;
+  chamada: string;
+  href: string;
+  placa: Placa;
+  /** Até dois atributos com ícone, mostrados no anúncio do painel. */
+  atributos?: { icone: "fontePrimaria" | "glossario" | "relogio" | "artigo"; texto: string }[];
+  locais: ("banner" | "painel")[];
+}
 
 export interface SlideAnuncio {
   id: string;
@@ -123,7 +137,7 @@ function nivelEmFoco(p: ProgressoEstudo, m: Membro): NivelEmFoco | undefined {
 }
 
 export function modeloDaLateral(m: Membro): ModeloLateral {
-  const p = progressoDe(m.email);
+  const p = progressoDe(m.id);
   const acervo = acervoDeEstudo();
   const publicos = acervoPublico().conteudos;
   const andamento = leiturasEmAndamento(p)[0];
@@ -160,7 +174,7 @@ export function modeloDaLateral(m: Membro): ModeloLateral {
 }
 
 export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
-  const p = progressoDe(m.email);
+  const p = progressoDe(m.id);
   const prefs = preferenciasDe(m);
   const acervo = acervoDeEstudo();
   const { conteudos: publicos, videos } = acervoPublico();
@@ -271,7 +285,8 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   );
   const temaEmComum = conteudoAmpliar?.temas.find((t) => temasLidos.has(t));
 
-  const anuncios = ANUNCIOS.map((a) => ({ ...a, imagem: imagem("anuncios", a.id) }));
+  // Anúncios entram quando houver anunciantes reais, com tabela própria e aprovação da curadoria.
+  const anuncios: (Anuncio & { imagem?: string })[] = [];
   const episodios = DESTAQUES_DO_CANAL.flatMap((d) => {
     const v = videos.find((x) => x.id === d.video);
     if (!v) return [];

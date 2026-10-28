@@ -1,5 +1,5 @@
 import { salaPorSlug, salasNaComparacao } from "@/data/catalogo";
-import { RESPOSTAS } from "@/data/mock/assistente";
+import { RESPOSTAS } from "@/data/referencia/assistente";
 import type { RespostaAssistente, SalaSlug, TemaSlug, TrechoResposta } from "@/data/types";
 import { detectarTemas } from "@/features/busca/busca";
 import { normalizar } from "@/lib/texto";

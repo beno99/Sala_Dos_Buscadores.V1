@@ -1,14 +1,11 @@
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, type Page } from "@playwright/test";
 
-/**
- * Lê a conta de demonstração do administrador direto do arquivo de contas,
- * para a senha não ser repetida nos testes. (O módulo é server-only e não
- * pode ser importado aqui.)
- */
+/** Lê a conta de demonstração do administrador do arquivo de contas da demonstração. */
 export function contaAdmin(): { email: string; senha: string } {
-  const fonte = readFileSync(join(process.cwd(), "src/features/auth/contas.ts"), "utf8");
+  const fonte = readFileSync(join(process.cwd(), "tests/support/demonstracao/contas.ts"), "utf8");
   const bloco = fonte.slice(fonte.indexOf("CONTA_ADMIN_DEMONSTRACAO = {"));
   const email = /email: "([^"]+)"/.exec(bloco)?.[1];
   const senha = /senha: "([^"]+)"/.exec(bloco)?.[1];
@@ -37,11 +34,12 @@ export async function entrarComoAdmin(page: Page) {
   await expect(page.getByRole("heading", { level: 1, name: "Painel do acervo" })).toBeVisible();
 }
 
+/** Volta o banco de E2E ao cenário de demonstração (as sessões abertas continuam valendo). */
 export async function restaurarAcervo(page: Page) {
+  execFileSync("npx", ["tsx", "--env-file=.env.local", "--conditions=react-server", "scripts/e2e-banco.ts"], {
+    stdio: "inherit",
+  });
   await page.goto("/admin");
-  await page.getByRole("button", { name: "Restaurar acervo de demonstração" }).click();
-  await page.getByRole("alertdialog").getByRole("button", { name: "Restaurar" }).click();
-  await expect(page.getByText("Acervo de demonstração restaurado.")).toBeVisible();
 }
 
 /** Confirma o Modal de mudança de status. */

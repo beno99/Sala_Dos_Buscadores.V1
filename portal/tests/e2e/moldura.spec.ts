@@ -16,12 +16,12 @@ test("cadastro novo passa pelo onboarding e chega ao Portal", async ({ page, isM
   await expect(dialogo.getByText("Etapa 1 de 4")).toBeVisible();
   await dialogo.getByRole("button", { name: "Começar" }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Alma", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByText(/Usamos só para sugerir conteúdos/)).toBeVisible();
   await page.getByRole("dialog").getByRole("radio", { name: "Prefiro não informar" }).check();
-  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByRole("heading", { name: "Preferências salvas" })).toBeVisible();
-  await page.getByRole("dialog").getByRole("button", { name: "Começar" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ir ao Portal" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page).toHaveURL("/");
   // No celular a saudação sai da barra superior para caber o título.

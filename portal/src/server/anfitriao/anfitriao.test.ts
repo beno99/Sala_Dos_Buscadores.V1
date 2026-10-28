@@ -1,22 +1,25 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { salaPorSlug, salasNaComparacao, todasAsSalas } from "@/data/catalogo";
-import { ANFITRIA_DEMO_ID, FONTE_PROPOSTA_ID, SALA_PEROLA_ID, SALA_TOME_ID } from "@/data/mock/anfitrioes";
-import { acervoPublico, fontesPorId, obterConteudo } from "@/data/repositorio";
-import { artigoVazio, type FormArtigoAnfitriao, salaVazia } from "@/features/anfitriao/regras/artigo";
 import {
+  ANFITRIA_DEMO_ID,
   CONTA_ADMIN_DEMONSTRACAO,
   CONTA_ANFITRIAO_DEMONSTRACAO,
   CONTA_CANDIDATA_DEMONSTRACAO,
   CONTA_DEMONSTRACAO,
   contaPorEmail,
+  FONTE_PROPOSTA_ID,
   type Membro,
+  prepararDemonstracao,
   registrar as registrarConta,
-  reiniciarContas,
-} from "@/features/auth/contas";
-import { mudarStatusArtigo, restaurarAcervo, salvarArtigo as salvarArtigoAdmin } from "../admin/editorial";
+  SALA_PEROLA_ID,
+  SALA_TOME_ID,
+} from "@tests/support/demonstracao";
+import { beforeEach, describe, expect, it } from "vitest";
+import { salaPorSlug, salasNaComparacao, todasAsSalas } from "@/data/catalogo";
+import { acervoPublico, fontesPorId, obterConteudo } from "@/data/repositorio";
+import { artigoVazio, type FormArtigoAnfitriao, salaVazia } from "@/features/anfitriao/regras/artigo";
+import { mudarStatusArtigo, salvarArtigo as salvarArtigoAdmin } from "../admin/editorial";
 import { listarEmails } from "../caixa-saida";
 import { guardarImagem } from "../midia";
-import { acervo, restaurarAcervoInicial } from "../store";
+import { acervo } from "../store";
 import {
   artigoDoAnfitriao,
   fontesParaAnfitriao,
@@ -44,10 +47,14 @@ const conta = (email: string) => {
 const helena = () => conta(CONTA_ANFITRIAO_DEMONSTRACAO.email);
 
 /** Um segundo anfitrião, promovido pela curadoria e com perfil completo. */
-function criarAnfitriaoB(): Membro {
-  const r = registrarConta({ pseudonimo: "Rui Sena", email: "rui.sena@exemplo.com", senha: "1234567890" });
+async function criarAnfitriaoB(): Promise<Membro> {
+  const r = await registrarConta({
+    pseudonimo: "Rui Sena",
+    email: "rui.sena@exemplo.com",
+    senha: "1234567890",
+  });
   if (!r.ok) throw new Error(r.erro);
-  expect(usu.promover(r.valor.id, ADMIN).ok).toBe(true);
+  expect((await usu.promover(r.valor.id, ADMIN)).ok).toBe(true);
   const b = conta("rui.sena@exemplo.com");
   const p = usu.salvarPerfil(
     {
@@ -91,9 +98,8 @@ function criarArtigo(dono: Membro, salaId: string, parcial: Partial<FormArtigoAn
   return r.valor;
 }
 
-beforeEach(() => {
-  reiniciarContas();
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
 });
 
 describe("dados de demonstração", () => {
@@ -290,8 +296,8 @@ describe("ciclo do anfitrião", () => {
 });
 
 describe("permissões", () => {
-  it("o anfitrião A não lê nem edita Sala, artigo ou fonte pendente do B", () => {
-    const b = criarAnfitriaoB();
+  it("o anfitrião A não lê nem edita Sala, artigo ou fonte pendente do B", async () => {
+    const b = await criarAnfitriaoB();
     const salaB = criarSala(b);
     const artigoB = criarArtigo(b, salaB.id);
     const h = helena();
@@ -316,10 +322,10 @@ describe("permissões", () => {
     expect(acervo().salas.get(salaB.id)?.nome).toBe("Leituras de Plotino");
   });
 
-  it("imagem enviada por outra conta não entra no item", () => {
-    const b = criarAnfitriaoB();
+  it("imagem enviada por outra conta não entra no item", async () => {
+    const b = await criarAnfitriaoB();
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
-    const img = guardarImagem(png, b.id);
+    const img = await guardarImagem(png, b.id);
     if (!img.ok) throw new Error(img.erro);
     const h = helena();
     const r = anf.salvarSala({ ...salaVazia(), nome: "Com imagem alheia", imagem: img.id }, h, "manual");
@@ -327,12 +333,12 @@ describe("permissões", () => {
     expect(acervo().salas.get(r.valor.id)?.imagem).toBeUndefined();
   });
 
-  it("imagem no corpo: a própria entra com o endereço de /midia; a de outra conta é recusada no bloco", () => {
+  it("imagem no corpo: a própria entra com o endereço de /midia; a de outra conta é recusada no bloco", async () => {
     const h = helena();
-    const b = criarAnfitriaoB();
+    const b = await criarAnfitriaoB();
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
-    const minha = guardarImagem(png, h.id);
-    const alheia = guardarImagem(png, b.id);
+    const minha = await guardarImagem(png, h.id);
+    const alheia = await guardarImagem(png, b.id);
     if (!minha.ok || !alheia.ok) throw new Error("envio de imagem");
     const sala = criarSala(h, "Corpo com imagens");
     const imagem = {
@@ -400,16 +406,16 @@ describe("candidatura, convite e rebaixamento", () => {
     link: "",
   };
 
-  it("no máximo uma candidatura pendente; recusa exige motivo; o membro pode tentar de novo", () => {
+  it("no máximo uma candidatura pendente; recusa exige motivo; o membro pode tentar de novo", async () => {
     const tomas = conta(CONTA_CANDIDATA_DEMONSTRACAO.email);
     expect(usu.candidatar(form, tomas).ok).toBe(false);
-    expect(usu.decidirCandidatura("cand-tomas-arruda", "recusar", "", ADMIN).ok).toBe(false);
-    expect(usu.decidirCandidatura("cand-tomas-arruda", "recusar", MOTIVO, ADMIN).ok).toBe(true);
+    expect((await usu.decidirCandidatura("cand-tomas-arruda", "recusar", "", ADMIN)).ok).toBe(false);
+    expect((await usu.decidirCandidatura("cand-tomas-arruda", "recusar", MOTIVO, ADMIN)).ok).toBe(true);
     expect(usu.ultimaCandidaturaDe(tomas.id)?.motivo).toBe(MOTIVO);
     const nova = usu.candidatar(form, tomas);
     expect(nova.ok).toBe(true);
     if (!nova.ok) return;
-    expect(usu.decidirCandidatura(nova.valor.id, "aprovar", undefined, ADMIN).ok).toBe(true);
+    expect((await usu.decidirCandidatura(nova.valor.id, "aprovar", undefined, ADMIN)).ok).toBe(true);
     expect(conta(CONTA_CANDIDATA_DEMONSTRACAO.email).papel).toBe("anfitriao");
     expect(acervo().perfis.get(tomas.id)?.credencial).toBe(form.credencial);
     expect(
@@ -419,54 +425,54 @@ describe("candidatura, convite e rebaixamento", () => {
     ).toEqual(["Sua candidatura de anfitrião foi aprovada", "Sua candidatura de anfitrião foi recusada"]);
   });
 
-  it("convite cria a conta já como anfitrião, com o e-mail do convite, e não serve duas vezes", () => {
-    const c = usu.convidar("ana.lins@exemplo.com", ADMIN);
+  it("convite cria a conta já como anfitrião, com o e-mail do convite, e não serve duas vezes", async () => {
+    const c = await usu.convidar("ana.lins@exemplo.com", ADMIN);
     if (!c.ok) throw new Error(c.mensagem);
     const email = listarEmails({ para: "ana.lins@exemplo.com" })[0];
     expect(email?.corpo).toContain(c.valor.link);
     const token = new URL(c.valor.link).searchParams.get("convite") ?? "";
-    const r = usu.aceitarConvite(token, { pseudonimo: "Ana Lins", senha: "1234567890" });
+    const r = await usu.aceitarConvite(token, { pseudonimo: "Ana Lins", senha: "1234567890" });
     expect(r).toMatchObject({ ok: true, valor: { email: "ana.lins@exemplo.com", papel: "anfitriao" } });
-    expect(usu.aceitarConvite(token, { pseudonimo: "Outra", senha: "1234567890" })).toMatchObject({
+    expect(await usu.aceitarConvite(token, { pseudonimo: "Outra", senha: "1234567890" })).toMatchObject({
       ok: false,
       mensagem: expect.stringMatching(/já foi usado/),
     });
   });
 
-  it("convite expirado ou revogado é recusado", () => {
+  it("convite expirado ou revogado é recusado", async () => {
     const antes = new Date(Date.now() - 8 * 86_400_000);
-    const velho = usu.convidar("bia.reis@exemplo.com", ADMIN, antes);
+    const velho = await usu.convidar("bia.reis@exemplo.com", ADMIN, antes);
     if (!velho.ok) throw new Error(velho.mensagem);
     const tokenVelho = new URL(velho.valor.link).searchParams.get("convite") ?? "";
-    expect(usu.aceitarConvite(tokenVelho, { pseudonimo: "Bia", senha: "1234567890" })).toMatchObject({
+    expect(await usu.aceitarConvite(tokenVelho, { pseudonimo: "Bia", senha: "1234567890" })).toMatchObject({
       ok: false,
       mensagem: expect.stringMatching(/venceu/),
     });
-    const novo = usu.convidar("caio.reis@exemplo.com", ADMIN);
+    const novo = await usu.convidar("caio.reis@exemplo.com", ADMIN);
     if (!novo.ok) throw new Error(novo.mensagem);
     expect(usu.revogarConvite(novo.valor.id, ADMIN).ok).toBe(true);
     const token = new URL(novo.valor.link).searchParams.get("convite") ?? "";
-    expect(usu.aceitarConvite(token, { pseudonimo: "Caio", senha: "1234567890" }).ok).toBe(false);
+    expect((await usu.aceitarConvite(token, { pseudonimo: "Caio", senha: "1234567890" })).ok).toBe(false);
   });
 
-  it("rebaixar com “Despublicar tudo” arquiva Sala e artigos, volta o que estava em revisão e faz da pessoa membro", () => {
-    expect(usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "despublicar" }, ADMIN).ok).toBe(true);
+  it("rebaixar com “Despublicar tudo” arquiva Sala e artigos, volta o que estava em revisão e faz da pessoa membro", async () => {
+    expect((await usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "despublicar" }, ADMIN)).ok).toBe(true);
     expect(helena().papel).toBe("membro");
     expect(todasAsSalas().some((s) => s.origem === "anfitriao")).toBe(false);
     expect(acervo().salas.get(SALA_PEROLA_ID)?.status).toBe("arquivado");
     expect(acervo().conteudos.get("c-anf-dito-3")?.status).toBe("arquivado");
   });
 
-  it("rebaixar com “Manter publicado e congelado”: nada sai do ar e nada é editado", () => {
-    expect(usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "manter" }, ADMIN).ok).toBe(true);
+  it("rebaixar com “Manter publicado e congelado”: nada sai do ar e nada é editado", async () => {
+    expect((await usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "manter" }, ADMIN)).ok).toBe(true);
     expect(salaPorSlug("leituras-do-evangelho-de-tome")).toBeDefined();
     expect(acervo().salas.get(SALA_PEROLA_ID)?.status).toBe("rascunho");
     expect(acervo().conteudos.get("c-anf-dito-3")?.revisao?.congelado).toBe(true);
   });
 
-  it("transferir muda o dono; os publicados mantêm a assinatura original", () => {
-    const b = criarAnfitriaoB();
-    expect(usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "transferir", para: b.id }, ADMIN).ok).toBe(true);
+  it("transferir muda o dono; os publicados mantêm a assinatura original", async () => {
+    const b = await criarAnfitriaoB();
+    expect((await usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "transferir", para: b.id }, ADMIN)).ok).toBe(true);
     expect(acervo().salas.get(SALA_TOME_ID)?.revisao?.donoId).toBe(b.id);
     expect(acervo().conteudos.get("c-anf-dito-3")).toMatchObject({
       revisao: { donoId: b.id },
@@ -482,14 +488,5 @@ describe("candidatura, convite e rebaixamento", () => {
       ).ok,
     ).toBe(true);
     expect(listarEmails({ para: b.email })[0]?.assunto).toBe("Você recebeu Salas na Sala dos Buscadores");
-  });
-
-  it("“Restaurar acervo” recompõe anfitriões, candidaturas, convites e as contas de demonstração", () => {
-    usu.rebaixar(ANFITRIA_DEMO_ID, { tipo: "despublicar" }, ADMIN);
-    restaurarAcervo(ADMIN);
-    expect(helena().papel).toBe("anfitriao");
-    expect(salaPorSlug("leituras-do-evangelho-de-tome")).toBeDefined();
-    expect(acervo().candidaturas.get("cand-tomas-arruda")?.status).toBe("pendente");
-    expect(acervo().convites.size).toBe(1);
   });
 });

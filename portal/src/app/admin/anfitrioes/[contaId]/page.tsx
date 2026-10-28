@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { ListaSalasRevisao } from "@/features/admin/ui/anfitrioes/ListaSalasRevisao";
-import { contaPorId } from "@/features/auth/contas";
 import { painelDoAnfitriao, salasDoAnfitriaoParaRevisao } from "@/server/anfitriao/consultas";
+import { contaNoDiretorio as contaPorId } from "@/server/store";
 
 export const metadata: Metadata = { title: "Salas do anfitrião" };
 

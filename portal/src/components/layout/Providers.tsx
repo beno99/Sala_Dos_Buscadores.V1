@@ -6,8 +6,8 @@ import { instalarRegistroSalas } from "@/data/catalogo";
 import type { Sala } from "@/data/types";
 import { ConversaProvider } from "@/features/assistente/ConversaProvider";
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
-import type { Membro } from "@/features/auth/contas";
 import { SessaoProvider } from "@/features/auth/SessaoProvider";
+import type { Membro } from "@/modules/conta/conta.contratos";
 
 /**
  * No navegador, o catálogo de Salas lê a lista que o servidor mandou (as Salas

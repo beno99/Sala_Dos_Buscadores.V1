@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import type { FormArtigo, FormFonte, FormVideo } from "@/features/admin/formularios";
 import type { FormSalaOficial } from "@/features/admin/regras/sala";
-import type { Membro } from "@/features/auth/contas";
 import type { GrupoVaga } from "@/features/destaques/vagas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { AcessoNegado, exigirAdmin } from "../sessao";
+import { aguardarGravacoes } from "../store";
 import * as destaques from "./destaques";
 import type { AcaoStatus, ModoSalvar, ResultadoAcao } from "./editorial";
 import * as editorial from "./editorial";
@@ -19,7 +20,7 @@ import * as salas from "./salas";
  */
 
 async function comAdmin<T>(
-  fazer: (quem: string) => ResultadoAcao<T>,
+  fazer: (quem: string) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
   opcoes: { revalidar?: boolean } = {},
 ): Promise<ResultadoAcao<T>> {
   return comConta((admin) => fazer(admin.pseudonimo), opcoes);
@@ -27,7 +28,7 @@ async function comAdmin<T>(
 
 /** Como comAdmin, mas entrega a conta (id e pseudônimo): imagens enviadas são da conta. */
 async function comConta<T>(
-  fazer: (admin: Membro) => ResultadoAcao<T>,
+  fazer: (admin: Membro) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
   { revalidar = true }: { revalidar?: boolean } = {},
 ): Promise<ResultadoAcao<T>> {
   let admin: Membro;
@@ -41,7 +42,8 @@ async function comConta<T>(
       };
     throw e;
   }
-  const resultado = fazer(admin);
+  const resultado = await fazer(admin);
+  await aguardarGravacoes();
   if (resultado.ok && revalidar) revalidatePath("/", "layout");
   return resultado;
 }
@@ -100,10 +102,6 @@ export async function salvarFonteAcao(form: FormFonte) {
 
 export async function excluirFonteAcao(id: string) {
   return comAdmin((quem) => editorial.excluirFonte(id, quem));
-}
-
-export async function restaurarAcervoAcao() {
-  return comAdmin((quem) => editorial.restaurarAcervo(quem));
 }
 
 export async function definirVagaDestaqueAcao(grupo: GrupoVaga, indice: number, id: string | null) {

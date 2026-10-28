@@ -1,15 +1,17 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SALA_PEROLA_ID, SALA_TOME_ID } from "@/data/mock/anfitrioes";
-import { artigoVazio, salaVazia } from "@/features/anfitriao/regras/artigo";
+
 import {
   abrirSessao,
   CONTA_ADMIN_DEMONSTRACAO,
   CONTA_ANFITRIAO_DEMONSTRACAO,
   CONTA_DEMONSTRACAO,
-  reiniciarContas,
-} from "@/features/auth/contas";
-import { acervo, restaurarAcervoInicial } from "../store";
+  prepararDemonstracao,
+  SALA_PEROLA_ID,
+  SALA_TOME_ID,
+} from "@tests/support/demonstracao";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { artigoVazio, salaVazia } from "@/features/anfitriao/regras/artigo";
+import { acervo } from "../store";
 
 /*
  * Permissões nas Server Actions e no upload: o que a interface esconde não
@@ -24,20 +26,19 @@ vi.mock("next/headers", () => ({
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 const MOTIVO = "Falta indicar a edição usada nas citações do segundo parágrafo.";
-const entrarComo = (email?: string) => {
-  token = email ? abrirSessao(email) : undefined;
+const entrarComo = async (email?: string) => {
+  token = email ? await abrirSessao(email) : undefined;
 };
 
-beforeEach(() => {
-  reiniciarContas();
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
   token = undefined;
 });
 
 describe("ações da curadoria sobre anfitriões", () => {
   it("o anfitrião não chama ações do admin", async () => {
     const admin = await import("./acoes-admin");
-    entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     const respostas = await Promise.all([
       admin.aprovarSalaAcao(SALA_PEROLA_ID),
       admin.reprovarArtigoAcao("c-anf-perola-origem", MOTIVO),
@@ -54,15 +55,15 @@ describe("ações da curadoria sobre anfitriões", () => {
 
   it("membro e visitante sem sessão também não", async () => {
     const admin = await import("./acoes-admin");
-    entrarComo(CONTA_DEMONSTRACAO.email);
+    await entrarComo(CONTA_DEMONSTRACAO.email);
     expect((await admin.aprovarSalaAcao(SALA_PEROLA_ID)).ok).toBe(false);
-    entrarComo();
+    await entrarComo();
     expect((await admin.aprovarSalaAcao(SALA_PEROLA_ID)).ok).toBe(false);
   });
 
   it("o admin aprova pelas ações dele", async () => {
     const admin = await import("./acoes-admin");
-    entrarComo(CONTA_ADMIN_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ADMIN_DEMONSTRACAO.email);
     expect(await admin.aprovarSalaAcao(SALA_PEROLA_ID)).toMatchObject({ ok: true });
   });
 });
@@ -70,7 +71,7 @@ describe("ações da curadoria sobre anfitriões", () => {
 describe("ações do anfitrião", () => {
   it("o admin não edita conteúdo de anfitrião (nem pelas ações do anfitrião)", async () => {
     const anf = await import("./acoes");
-    entrarComo(CONTA_ADMIN_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ADMIN_DEMONSTRACAO.email);
     const r = await anf.salvarArtigoAnfitriaoAcao(
       { ...artigoVazio(SALA_TOME_ID), id: "c-anf-dito-3", titulo: "Editado pela curadoria" },
       "manual",
@@ -84,7 +85,7 @@ describe("ações do anfitrião", () => {
 
   it("membro não age como anfitrião", async () => {
     const anf = await import("./acoes");
-    entrarComo(CONTA_DEMONSTRACAO.email);
+    await entrarComo(CONTA_DEMONSTRACAO.email);
     expect(await anf.salvarSalaAcao({ ...salaVazia(), nome: "Sala de membro" }, "manual")).toMatchObject({
       ok: false,
       mensagem: expect.stringMatching(/restrito a anfitriões/),
@@ -94,7 +95,7 @@ describe("ações do anfitrião", () => {
 
   it("o anfitrião dono age; tipo de item inválido é recusado", async () => {
     const anf = await import("./acoes");
-    entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     expect(
       await anf.salvarSalaAcao({ ...salaVazia(), nome: "Leituras de Valentino", descricao: "x" }, "manual"),
     ).toMatchObject({
@@ -116,7 +117,7 @@ describe("upload de imagem", () => {
   it("sem sessão não envia; o membro envia para o próprio Perfil, e a imagem fica com o dono", async () => {
     token = undefined;
     expect((await enviar(png())).status).toBe(401);
-    entrarComo(CONTA_DEMONSTRACAO.email);
+    await entrarComo(CONTA_DEMONSTRACAO.email);
     const r = await enviar(png());
     expect(r.status).toBe(201);
     const { id } = (await r.json()) as { id: string };
@@ -125,7 +126,7 @@ describe("upload de imagem", () => {
   });
 
   it("o tipo vem dos magic bytes: um GIF chamado .png é recusado", async () => {
-    entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     const gif = new Blob([new Uint8Array([0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0, 0])]);
     const r = await enviar(gif, "foto.png");
     expect(r.status).toBe(422);
@@ -133,7 +134,7 @@ describe("upload de imagem", () => {
   });
 
   it("aceita PNG e serve de volta com o tipo certo", async () => {
-    entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    await entrarComo(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     const r = await enviar(png());
     expect(r.status).toBe(201);
     const { id } = (await r.json()) as { id: string };

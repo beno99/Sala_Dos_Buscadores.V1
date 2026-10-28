@@ -10,8 +10,8 @@ import { solicitarRedefinicaoAcao } from "./acoes";
 import { useEnvio } from "./useEnvio";
 import { validarEmail } from "./validacao";
 
-/** Recuperação de senha por link temporário (RF-03), simulada. */
-export function FormRecuperar({ voltar }: { voltar: string }) {
+/** Recuperação de senha por link temporário (RF-03). */
+export function FormRecuperar({ voltar, linkVencido = false }: { voltar: string; linkVencido?: boolean }) {
   const { enviando, enviar } = useEnvio();
   const [email, setEmail] = useState("");
   const [erro, setErro] = useState<string>();
@@ -37,10 +37,13 @@ export function FormRecuperar({ voltar }: { voltar: string }) {
         <p className="sdb-conta__lead">Enviamos um link temporário para o e-mail da conta.</p>
       </div>
 
+      {linkVencido && validade === null && (
+        <Alerta variant="error" title="Erro: este link expirou ou já foi usado. Peça um novo abaixo." />
+      )}
+
       {validade !== null ? (
         <Alerta title="Link enviado">
-          Se houver uma conta com {email.trim()}, ela recebe um link válido por {validade} minutos. Neste
-          protótipo nenhum e-mail é enviado de verdade.
+          Se houver uma conta com {email.trim()}, ela recebe um link válido por {validade} minutos.
         </Alerta>
       ) : (
         <>

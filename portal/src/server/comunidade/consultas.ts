@@ -21,7 +21,7 @@ export async function consultarComunidade() {
   const dados = acervo().comunidade;
   const publicacoes = publicacoesVisiveisComunidade();
   const pessoas = pessoasPublicasComunidade();
-  const progresso = progressoDe(membro.email);
+  const progresso = progressoDe(membro.id);
   const contexto = {
     pessoaId: membro.id,
     seguindo: dados.seguindo,

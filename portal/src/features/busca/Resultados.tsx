@@ -35,7 +35,11 @@ export async function Resultados({ filtros }: { filtros: FiltrosBusca }) {
   const resultado = buscar(filtros, acervo);
   const buscou = Boolean(filtros.q.trim()) || contarFiltrosAtivos(filtros) > 0;
   const barra = (
-    <BarraBusca key={paraQueryString(filtros)} filtros={filtros} className="sdb-journey-compare__search" />
+    <BarraBusca
+      key={`barra${paraQueryString(filtros)}`}
+      filtros={filtros}
+      className="sdb-journey-compare__search"
+    />
   );
 
   if (!buscou) {

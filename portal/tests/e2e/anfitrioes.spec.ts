@@ -289,7 +289,7 @@ test("candidatura recusada e reenviada, aprovação e rebaixamento com “Despub
 
   // A ex-anfitriã vira membro e não acessa mais /anfitriao.
   const helena = await novaPagina(browser, baseURL);
-  const fonte = readFileSync("src/features/auth/contas.ts", "utf8");
+  const fonte = readFileSync("tests/support/demonstracao/contas.ts", "utf8");
   const bloco = fonte.slice(fonte.indexOf("CONTA_ANFITRIAO_DEMONSTRACAO = {"));
   const senha = /senha: "([^"]+)"/.exec(bloco)?.[1] ?? "";
   await entrar(helena, "helena.varga@exemplo.com", senha, "/anfitriao");

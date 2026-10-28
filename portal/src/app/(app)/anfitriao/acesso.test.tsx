@@ -1,13 +1,12 @@
 import { screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   abrirSessao,
   CONTA_ADMIN_DEMONSTRACAO,
   CONTA_ANFITRIAO_DEMONSTRACAO,
   CONTA_DEMONSTRACAO,
-  reiniciarContas,
-} from "@/features/auth/contas";
-import { restaurarAcervoInicial } from "@/server/store";
+  prepararDemonstracao,
+} from "@tests/support/demonstracao";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderComProviders } from "../../../../tests/support/render";
 
 /* Área do anfitrião: só o papel anfitrião entra; o resto vê "Acesso restrito". */
@@ -26,9 +25,8 @@ vi.mock("next/navigation", async (original) => ({
   },
 }));
 
-beforeEach(() => {
-  reiniciarContas();
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
   token = undefined;
 });
 
@@ -39,7 +37,7 @@ async function renderLayout() {
 
 describe("layout /anfitriao", () => {
   it("membro não acessa /anfitriao: vê o acesso restrito e o caminho para se candidatar", async () => {
-    token = abrirSessao(CONTA_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_DEMONSTRACAO.email);
     await renderLayout();
     expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
     expect(screen.queryByText("Painel do anfitrião")).not.toBeInTheDocument();
@@ -47,14 +45,14 @@ describe("layout /anfitriao", () => {
   });
 
   it("o administrador não tem painel de anfitrião", async () => {
-    token = abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ADMIN_DEMONSTRACAO.email);
     await renderLayout();
     expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
     expect(screen.queryByText("Painel do anfitrião")).not.toBeInTheDocument();
   });
 
   it("o anfitrião entra", async () => {
-    token = abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     await renderLayout();
     expect(screen.getByText("Painel do anfitrião")).toBeInTheDocument();
   });
@@ -62,7 +60,7 @@ describe("layout /anfitriao", () => {
 
 describe("páginas de item", () => {
   it("Sala de outra pessoa é 404, mesmo digitando o endereço", async () => {
-    token = abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     const { default: Pagina } = await import("./salas/[id]/page");
     await expect(
       Pagina({ params: Promise.resolve({ id: "nag-hammadi" }), searchParams: Promise.resolve({}) }),
@@ -70,13 +68,13 @@ describe("páginas de item", () => {
   });
 
   it("membro que chama a página direto também recebe 404", async () => {
-    token = abrirSessao(CONTA_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_DEMONSTRACAO.email);
     const { default: Pagina } = await import("./page");
     await expect(Pagina()).rejects.toThrow("NEXT_NOT_FOUND");
   });
 
   it("o painel mostra as Salas da anfitriã de demonstração", async () => {
-    token = abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
+    token = await abrirSessao(CONTA_ANFITRIAO_DEMONSTRACAO.email);
     const { default: Pagina } = await import("./page");
     renderComProviders(await Pagina());
     expect(screen.getByRole("heading", { name: "Minhas Salas" })).toBeInTheDocument();

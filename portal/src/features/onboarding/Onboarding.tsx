@@ -118,11 +118,13 @@ export function Onboarding({
   const acoes = (comecar: () => void, bloqueado = false) => (
     <div className="sdb-onboarding__actions">
       <Button variant="gold" aria-disabled={bloqueado} loading={salvando} onClick={comecar}>
-        Começar
+        {etapa === 0 ? "Começar" : etapa === TOTAL - 1 ? "Ir ao Portal" : "Continuar"}
       </Button>
-      <Button variant="warm" onClick={pularTudo} disabled={salvando}>
-        Pular e ir ao Portal
-      </Button>
+      {etapa < TOTAL - 1 && (
+        <Button variant="warm" onClick={pularTudo} disabled={salvando}>
+          Pular e ir ao Portal
+        </Button>
+      )}
     </div>
   );
 

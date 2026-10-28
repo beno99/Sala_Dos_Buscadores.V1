@@ -1,12 +1,12 @@
 import { screen } from "@testing-library/react";
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { expect, it } from "vitest";
 import { publicacaoComunidadePorId } from "@/data/repositorio";
-import { restaurarAcervoInicial } from "@/server/store";
 import { renderComProviders } from "../../../../tests/support/render";
 import { PublicacoesPerfil } from "./PublicacoesPerfil";
 
 it("mantém o estado pessoal ao abrir a aba de publicações de outra pessoa", async () => {
-  restaurarAcervoInicial();
+  await prepararDemonstracao();
   const p = publicacaoComunidadePorId("p-demo-4");
   if (!p) throw new Error("Seed ausente");
   const { user } = renderComProviders(

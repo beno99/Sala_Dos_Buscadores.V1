@@ -9,7 +9,7 @@ import {
 } from "@/features/admin/regras/sala";
 import { slugUnico } from "@/features/admin/regras/slug";
 import { salaVisivel } from "@/features/anfitriao/regras/visibilidade";
-import type { Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { registrar } from "../auditoria";
 import { midiaDoDono, urlDaMidia } from "../midia";
 import { acervo } from "../store";

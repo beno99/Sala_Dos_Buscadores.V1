@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { acervo, restaurarAcervoInicial } from "@/server/store";
+import { acervo } from "@/server/store";
 import { renderComProviders } from "../../../../../tests/support/render";
 
 /* Página da Sala: cabeçalho em duas colunas, banner, conteúdos e a coluna lateral. */
@@ -16,8 +17,8 @@ vi.mock("@/features/estudo/RegistrarEstudo", () => ({ RegistrarEstudo: () => nul
 
 const TOME = "leituras-do-evangelho-de-tome";
 
-beforeEach(() => {
-  restaurarAcervoInicial();
+beforeEach(async () => {
+  await prepararDemonstracao();
 });
 
 async function abrir(slug: string) {

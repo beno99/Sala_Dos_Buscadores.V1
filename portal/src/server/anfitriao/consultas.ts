@@ -11,9 +11,9 @@ import type {
   StatusEditorial,
 } from "@/data/types";
 import { statusDoConvite } from "@/features/anfitriao/regras/convite";
-import { listarContas, type Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { artigoDoDono, salaDoDono } from "../sessao";
-import { acervo } from "../store";
+import { acervo, contasDoDiretorio } from "../store";
 
 /*
  * Leitura do que é de anfitriões. Dois lados:
@@ -161,7 +161,7 @@ function pendentesDe(donoId: string) {
  */
 export function listarAnfitrioes(filtro: { soComPendencias?: boolean } = {}): LinhaAnfitriao[] {
   const donos = new Set([...acervo().salas.values()].flatMap((s) => (s.revisao ? [s.revisao.donoId] : [])));
-  const linhas = listarContas()
+  const linhas = contasDoDiretorio()
     .filter((c) => c.papel === "anfitriao" || donos.has(c.id))
     .map((conta) => {
       const p = pendentesDe(conta.id);
@@ -215,7 +215,7 @@ export function salaParaRevisao(salaId: string) {
       return f ? [{ ...clone(f), nova: Boolean(f.proposta?.pendente) }] : [];
     }),
   }));
-  const dono = sala.revisao ? listarContas().find((c) => c.id === sala.revisao?.donoId) : undefined;
+  const dono = sala.revisao ? contasDoDiretorio().find((c) => c.id === sala.revisao?.donoId) : undefined;
   return { sala: clone(sala), dono, artigos };
 }
 

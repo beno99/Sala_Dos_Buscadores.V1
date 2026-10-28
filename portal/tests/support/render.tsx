@@ -1,10 +1,10 @@
 import { type RenderOptions, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { Membro } from "@tests/support/demonstracao";
 import type { ReactElement, ReactNode } from "react";
 import { ToastProvider } from "@/components/ds/Toast";
 import { ConversaProvider } from "@/features/assistente/ConversaProvider";
 import type { OpcoesConsulta, Resposta } from "@/features/assistente/motor";
-import type { Membro } from "@/features/auth/contas";
 import { SessaoProvider } from "@/features/auth/SessaoProvider";
 
 interface Opcoes extends Omit<RenderOptions, "wrapper"> {

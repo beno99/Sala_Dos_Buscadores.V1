@@ -13,7 +13,7 @@ import { useEnvio } from "./useEnvio";
 import { validarEmail } from "./validacao";
 
 /** Entrar com e-mail e senha (RF-02). A conta é obrigatória para usar o portal. */
-export function FormEntrar({ voltar, dica }: { voltar: string; dica?: { email: string; senha: string } }) {
+export function FormEntrar({ voltar }: { voltar: string }) {
   const router = useRouter();
   const toast = useToast();
   const { entrar } = useSessao();
@@ -97,13 +97,6 @@ export function FormEntrar({ voltar, dica }: { voltar: string; dica?: { email: s
           Criar conta
         </Link>
       </p>
-      {dica && (
-        <p className="sdb-help sdb-conta__dica">
-          Protótipo: use {dica.email} e a senha {dica.senha}, ou crie uma conta. As contas ficam na memória do
-          servidor e somem quando ele reinicia.
-        </p>
-      )}
-      {/* TODO(produção): autenticação real com JWT de expiração configurável e senhas com bcrypt (RNF-01). */}
     </form>
   );
 }

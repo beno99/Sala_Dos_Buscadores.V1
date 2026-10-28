@@ -1,3 +1,4 @@
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it } from "vitest";
 import { acervoPublico, conteudosDaSala, listarSalas, obterConteudo, videosDaSala } from "@/data/repositorio";
 import { artigoParaForm } from "@/features/admin/formularios";
@@ -5,7 +6,7 @@ import { artigoCompleto, videoCompleto } from "@/features/admin/regras/fixtures"
 import { buscar, FILTROS_VAZIOS } from "@/features/busca/busca";
 import { listarAuditoria } from "../auditoria";
 import { guardarImagem } from "../midia";
-import { acervo, restaurarAcervoInicial } from "../store";
+import { acervo } from "../store";
 import { excluirFonte, mudarStatusArtigo, mudarStatusVideo, salvarArtigo, salvarVideo } from "./editorial";
 
 const QUEM = "Editoria do acervo";
@@ -19,7 +20,7 @@ function criarEPublicar(parcial = {}) {
 }
 
 describe("curadoria no servidor", () => {
-  beforeEach(() => restaurarAcervoInicial());
+  beforeEach(() => prepararDemonstracao());
 
   it("RF-13: rascunho não aparece no portal; publicado aparece na Sala, na página e na busca", async () => {
     const antes = conteudosDaSala("corpus-hermeticum").length;
@@ -134,7 +135,7 @@ describe("curadoria no servidor", () => {
 
   it("corpo em blocos: destaque e imagem enviada pela curadoria chegam à página publicada", async () => {
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
-    const img = guardarImagem(png, "admin-1");
+    const img = await guardarImagem(png, "admin-1");
     if (!img.ok) throw new Error(img.erro);
     const corpo = [
       "Segundo o _Tratado X_, o conhecimento de Deus é *silêncio divino*.",
@@ -162,9 +163,9 @@ describe("curadoria no servidor", () => {
     expect(acoes).toEqual(expect.arrayContaining(["criou", "publicou"]));
   });
 
-  it("imagem enviada por outra conta é recusada; a imagem do acervo que o item já tinha continua", () => {
+  it("imagem enviada por outra conta é recusada; a imagem do acervo que o item já tinha continua", async () => {
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
-    const alheia = guardarImagem(png, "outra-conta");
+    const alheia = await guardarImagem(png, "outra-conta");
     if (!alheia.ok) throw new Error(alheia.erro);
     const imagem = {
       tipo: "imagem" as const,

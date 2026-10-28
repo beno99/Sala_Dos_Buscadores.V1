@@ -1,6 +1,7 @@
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { ItemAcervo } from "@/features/estudo/tipos";
-import { progressoDe, registrarEvento, reiniciarProgresso } from "./progresso";
+import { progressoDe, registrarEvento } from "./progresso";
 
 const acervo: ItemAcervo[] = [
   {
@@ -13,10 +14,11 @@ const acervo: ItemAcervo[] = [
   },
   { sala: "caibalion", slug: "b", temas: ["morte"], tipo: "artigo", nivel: 1, publicadoEm: "2026-09-02" },
 ];
-const email = "nova@exemplo.com";
+// Conta da demonstração sem histórico de estudo (o progresso é guardado pelo id da conta).
+const email = "u-candidato-demo";
 
 describe("progresso", () => {
-  beforeEach(reiniciarProgresso);
+  beforeEach(() => prepararDemonstracao());
 
   it("abrir registra a leitura e a Sala; a rolagem só sobe; o fim marca lida", () => {
     expect(
@@ -52,7 +54,7 @@ describe("progresso", () => {
   });
 
   it("a conta de demonstração já tem histórico", () => {
-    const p = progressoDe("buscador@exemplo.com");
+    const p = progressoDe("u-buscador");
     expect(p.salasVisitadas).toHaveLength(3);
     expect(p.leituras.filter((l) => !l.concluidaEm)).toHaveLength(1);
   });

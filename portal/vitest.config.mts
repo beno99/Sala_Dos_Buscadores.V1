@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
       // Módulos de servidor são testados direto no Node; o marcador só vale no build do Next.
       "server-only": fileURLToPath(new URL("./tests/support/vazio.ts", import.meta.url)),
     },
@@ -16,6 +17,9 @@ export default defineConfig({
     setupFiles: ["./tests/support/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}", "tests/unit/**/*.test.{ts,tsx}"],
     css: false,
+    // Cada teste de servidor sobe um Postgres em memória (PGlite) com as migrações.
+    hookTimeout: 60_000,
+    testTimeout: 30_000,
     restoreMocks: true,
     coverage: {
       provider: "v8",

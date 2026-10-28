@@ -7,7 +7,6 @@ import { Icon } from "@/components/ds/Icon";
 import { PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type { Proveniencia } from "@/data/types";
 import { DIAS_RASCUNHO_PARADO } from "@/features/admin/regras/config";
-import { RestaurarAcervo } from "@/features/admin/ui/RestaurarAcervo";
 import { resumoPainel } from "@/server/admin/consultas";
 import { rotaDoArtigo, rotaDoVideo } from "@/server/admin/rotas";
 import { listarCandidaturas, totalPendenteRevisao } from "@/server/anfitriao/consultas";
@@ -267,23 +266,7 @@ export default function PainelCuradoria() {
             Ver histórico completo
           </ButtonLink>
         </div>
-        <ListaHistorico
-          registros={r.ultimasAcoes}
-          vazio="Nenhuma ação registrada desde que o servidor iniciou."
-        />
-      </section>
-
-      <section className="flex flex-col gap-3" aria-labelledby="titulo-demo">
-        <h2 id="titulo-demo" className="sdb-headline">
-          Acervo de demonstração
-        </h2>
-        <p className="sdb-footnote">
-          Os dados ficam na memória do servidor e voltam ao estado inicial quando ele reinicia ou quando você
-          restaura.
-        </p>
-        <div>
-          <RestaurarAcervo />
-        </div>
+        <ListaHistorico registros={r.ultimasAcoes} vazio="Nenhuma ação registrada ainda." />
       </section>
     </>
   );

@@ -8,15 +8,15 @@ test("biblioteca independente: marcas, desfazer, propriedades, fontes e teclado"
   page.on("pageerror", (e) => erros.push(e.message));
   await page.goto(exemplo);
   const campo = page.locator("#fmt-vazio");
-  const barra = page.getByRole("toolbar", { name: "Formatação do vazio", exact: true });
+  const barra = page.getByRole("toolbar", { name: "Formatação do campo vazio", exact: true });
   await campo.fill("Uma linha\nOutra linha");
   await campo.evaluate((el: HTMLTextAreaElement) => {
     el.focus();
     el.setSelectionRange(0, 3);
   });
-  await barra.getByRole("button", { name: "Negrito no vazio", exact: true }).click();
+  await barra.getByRole("button", { name: "Negrito no campo vazio", exact: true }).click();
   await expect(campo).toHaveValue("**Uma** linha\nOutra linha");
-  await expect(barra.getByRole("button", { name: "Negrito no vazio", exact: true })).toHaveAttribute(
+  await expect(barra.getByRole("button", { name: "Negrito no campo vazio", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
@@ -26,7 +26,7 @@ test("biblioteca independente: marcas, desfazer, propriedades, fontes e teclado"
     el.focus();
     el.setSelectionRange(0, 3);
   });
-  await barra.getByRole("button", { name: "Negrito no vazio", exact: true }).click();
+  await barra.getByRole("button", { name: "Negrito no campo vazio", exact: true }).click();
   await campo.evaluate((el: HTMLTextAreaElement) => {
     const i = el.value.indexOf("Outra");
     el.focus();
@@ -38,23 +38,22 @@ test("biblioteca independente: marcas, desfazer, propriedades, fontes e teclado"
   await expect(campo).toHaveValue("**Uma** linha\nOutra linha");
   await campo.press("ControlOrMeta+z");
   await expect(campo).toHaveValue("Uma linha\nOutra linha");
-  await barra.getByRole("button", { name: "Centralizar no vazio", exact: true }).click();
+  await barra.getByRole("button", { name: "Centralizar no campo vazio", exact: true }).click();
   await expect(page.locator('[data-fmt-preview-for="fmt-vazio"] .sdb-texto--centro')).toContainText(
     "Uma linha",
   );
-  await barra.getByRole("button", { name: "Lista numerada no vazio", exact: true }).click();
+  await barra.getByRole("button", { name: "Lista numerada no campo vazio", exact: true }).click();
   await expect(page.locator('[data-fmt-preview-for="fmt-vazio"] ol li')).toHaveCount(2);
-  await barra.getByRole("button", { name: "Lista numerada no vazio", exact: true }).click();
+  await barra.getByRole("button", { name: "Lista numerada no campo vazio", exact: true }).click();
   await expect(campo).toHaveValue("Uma linha\nOutra linha");
   await barra.getByRole("combobox").selectOption("titulo-3");
   await expect(page.locator('[data-fmt-preview-for="fmt-vazio"] h3')).toContainText("Uma linha");
-  await expect(barra.getByRole("button", { name: "Lista numerada no vazio", exact: true })).toHaveAttribute(
-    "aria-disabled",
-    "true",
-  );
+  await expect(
+    barra.getByRole("button", { name: "Lista numerada no campo vazio", exact: true }),
+  ).toHaveAttribute("aria-disabled", "true");
   await barra.getByRole("combobox").focus();
   await page.keyboard.press("ArrowRight");
-  await expect(barra.getByRole("button", { name: "Negrito no vazio", exact: true })).toBeFocused();
+  await expect(barra.getByRole("button", { name: "Negrito no campo vazio", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(campo).toBeFocused();
   await campo.fill("Veja [obra](javascript:alert(1)) **_literal_** [3]");
@@ -73,13 +72,13 @@ test("quatro temas e campo estreito conservam funções sem rolagem horizontal",
   await page.goto(exemplo);
   for (const tema of ["solido-claro", "solido-escuro", "vidro-claro", "vidro-escuro"]) {
     await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), tema);
-    const barra = page.getByRole("toolbar", { name: "Formatação do vazio", exact: true });
+    const barra = page.getByRole("toolbar", { name: "Formatação do campo vazio", exact: true });
     for (const nome of [
-      "Sublinhado no vazio",
-      "Tachado no vazio",
-      "Lista numerada no vazio",
-      "Alinhar à direita no vazio",
-      "Limpar formatação no vazio",
+      "Sublinhado no campo vazio",
+      "Tachado no campo vazio",
+      "Lista numerada no campo vazio",
+      "Alinhar à direita no campo vazio",
+      "Limpar formatação no campo vazio",
     ])
       await expect(barra.getByRole("button", { name: nome, exact: true })).toBeVisible();
     const largura = await page.evaluate(() => ({

@@ -8,7 +8,6 @@ import { imagem, imagemDoCard } from "@/server/imagens";
 import { acervo } from "@/server/store";
 import { salaPorSlug, todasAsSalas } from "./catalogo";
 import { copiarCorpo } from "./corpo";
-import { BUSCAS_30_DIAS } from "./mock/buscas";
 import type {
   Citacao,
   Conteudo,
@@ -28,9 +27,8 @@ import type {
  * e só itens com status "publicado" saem daqui (Salas, conteúdo, busca,
  * contadores e nível predominante).
  *
- * Hoje lê o store em memória do servidor (src/server/store.ts). Para ligar
- * a um backend real, troque o corpo destas funções por chamadas à API,
- * mantendo os tipos de retorno, que são os contratos das telas.
+ * Lê o snapshot do acervo no servidor (src/server/store.ts), carregado do
+ * Postgres. Os tipos de retorno são os contratos das telas.
  */
 
 export interface SalaResumo extends Sala {
@@ -337,7 +335,8 @@ export async function listarMaisPesquisados(): Promise<ItemMaisPesquisado[]> {
     publicados().map((c) => ({
       ...paraVitrine(c),
       titulo: c.titulo,
-      buscas: BUSCAS_30_DIAS[`${c.sala}/${c.slug}`] ?? 0,
+      // TODO(buscas): contar as buscas reais dos últimos 30 dias; sem registro de buscas, vale a ordem de publicação.
+      buscas: 0,
     })),
   ).map(({ titulo: _t, ...item }) => item);
 }

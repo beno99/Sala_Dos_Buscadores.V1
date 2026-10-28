@@ -102,7 +102,7 @@ export function AreaTexto({
               setTextoLocal(texto);
               setTamanhoLocal(texto.length);
             }}
-            alvo={typeof label === "string" ? label.toLowerCase() : "campo de texto"}
+            alvo={typeof label === "string" ? `campo ${label.toLowerCase()}` : "campo de texto"}
             desabilitada={disabled || rest.readOnly}
           />
         )}

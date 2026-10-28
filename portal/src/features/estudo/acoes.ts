@@ -10,6 +10,7 @@ import {
   registrarEvento,
 } from "@/server/progresso";
 import { membroAtual } from "@/server/sessao";
+import { aguardarGravacoes } from "@/server/store";
 import { TIPOS_ESTANTE, type TipoEstante } from "./estante";
 import type { EventoEstudo } from "./tipos";
 
@@ -20,14 +21,17 @@ export async function registrarEstudoAcao(
 ): Promise<(ResultadoEvento & { mostrarNiveis: boolean }) | null> {
   const membro = await membroAtual();
   if (!membro) return null;
-  const r = registrarEvento(membro.email, evento, acervoDeEstudo());
+  const r = registrarEvento(membro.id, evento, acervoDeEstudo());
   if (!r) return null;
-  return { ...r, mostrarNiveis: progressoDe(membro.email).mostrarNiveis };
+  await aguardarGravacoes();
+  return { ...r, mostrarNiveis: progressoDe(membro.id).mostrarNiveis };
 }
 
 export async function dispensarContinuarAcao(chave: string): Promise<void> {
   const membro = await membroAtual();
-  if (membro) dispensarContinuar(membro.email, String(chave).slice(0, 200));
+  if (!membro) return;
+  dispensarContinuar(membro.id, String(chave).slice(0, 200));
+  await aguardarGravacoes();
 }
 
 /** Só entra na Estante o que está publicado: Sala visível, conteúdo ou vídeo no ar. */
@@ -48,5 +52,7 @@ export async function alternarEstanteAcao(
   const t = String(tipo) as TipoEstante;
   const r = String(ref).slice(0, 200);
   if (!TIPOS_ESTANTE.includes(t) || !existe(t, r)) return null;
-  return { salvo: alternarNaEstante(membro.email, t, r) };
+  const salvo = alternarNaEstante(membro.id, t, r);
+  await aguardarGravacoes();
+  return { salvo };
 }

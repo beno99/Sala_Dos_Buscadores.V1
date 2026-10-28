@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { AcessoNegado, exigirAdmin } from "../sessao";
+import { aguardarGravacoes } from "../store";
 import type { ResultadoAcao } from "./comum";
 import * as revisao from "./revisao";
 import * as usuarios from "./usuarios";
@@ -12,7 +13,9 @@ import * as usuarios from "./usuarios";
  * administrador antes de qualquer coisa. Nenhuma edita conteúdo de anfitrião.
  */
 
-async function comAdmin<T>(fazer: (quem: string) => ResultadoAcao<T>): Promise<ResultadoAcao<T>> {
+async function comAdmin<T>(
+  fazer: (quem: string) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
+): Promise<ResultadoAcao<T>> {
   let quem: string;
   try {
     quem = (await exigirAdmin()).pseudonimo;
@@ -25,7 +28,8 @@ async function comAdmin<T>(fazer: (quem: string) => ResultadoAcao<T>): Promise<R
     }
     throw e;
   }
-  const r = fazer(quem);
+  const r = await fazer(quem);
+  await aguardarGravacoes();
   if (r.ok) revalidatePath("/", "layout");
   return r;
 }

@@ -1,6 +1,6 @@
 import "server-only";
 import { notFound } from "next/navigation";
-import type { Membro } from "@/features/auth/contas";
+import type { Membro } from "@/modules/conta/conta.contratos";
 import { AcessoNegado, acessoAtual } from "../sessao";
 
 /*

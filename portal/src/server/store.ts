@@ -1,20 +1,5 @@
 import "server-only";
 import { instalarRegistroSalas } from "@/data/catalogo";
-import {
-  artigosDeAnfitrioesIniciais,
-  candidaturasIniciais,
-  convitesIniciais,
-  fontesPropostasIniciais,
-  perfisIniciais,
-  salasDeAnfitrioesIniciais,
-} from "@/data/mock/anfitrioes";
-import { CITACOES } from "@/data/mock/citacoes";
-import { comunidadeInicial } from "@/data/mock/comunidade";
-import { CONTEUDOS } from "@/data/mock/conteudos";
-import { DESTAQUES_INICIAIS } from "@/data/mock/destaques";
-import { FONTES } from "@/data/mock/fontes";
-import { SALAS } from "@/data/mock/salas";
-import { VIDEOS } from "@/data/mock/videos";
 import type {
   Candidatura,
   Citacao,
@@ -27,26 +12,71 @@ import type {
   RegistroAuditoria,
   Sala,
   SalaEditorial,
-  SituacaoJuridica,
   VideoEditorial,
 } from "@/data/types";
-import { migrarTextoLegado } from "@/design-system/marcacao.mjs";
-import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
 import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilidade";
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
-import type { EscolhaDestaques } from "@/features/destaques/vagas";
+import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
+import type { ProgressoEstudo } from "@/features/estudo/tipos";
+import type {
+  AcervoRepositorio,
+  Colecoes,
+  DadosCarregados,
+  Gravacao,
+  MidiaGuardada,
+  NomeColecao,
+  PerfilBuscador,
+} from "@/modules/acervo/acervo.contratos";
+import { acervoRepositorio } from "@/modules/acervo/acervo.repositorio";
+import type { Membro } from "@/modules/conta/conta.contratos";
+import { aoMudarConta } from "@/modules/conta/conta.repositorio";
+
+export type { MidiaGuardada, PerfilBuscador } from "@/modules/acervo/acervo.contratos";
 
 /*
- * Store do acervo em memória, no servidor. Começa com uma cópia dos dados
- * de demonstração e se perde ao reiniciar o servidor.
+ * Snapshot do acervo no servidor, carregado do Postgres (modules/acervo).
  *
- * Fica em globalThis para ser o mesmo objeto para páginas, Server Actions e
- * Route Handlers (e sobreviver ao recarregamento do código em `next dev`).
- * Só funciona com um único processo Node (`next dev` ou `next start`); em
- * ambiente serverless cada instância teria o seu. Para produção, troque este
- * módulo por um banco mantendo as funções de src/data/repositorio.ts e
- * src/server/admin/.
+ * As regras de negócio leem e escrevem nos Maps abaixo de forma síncrona,
+ * como antes; cada `set`/`delete` entra numa fila que grava no banco na
+ * ordem em que aconteceu. As Server Actions esperam a fila esvaziar
+ * (`aguardarGravacoes`) antes de responder, então um erro de banco chega a
+ * quem agiu, e o snapshot é recarregado.
+ *
+ * Toda gravação soma 1 na versão dos dados. No começo de cada pedido,
+ * `sincronizarAcervo` compara a versão do banco com a deste processo e
+ * recarrega se outra instância gravou.
+ *
+ * ponytail: o acervo inteiro fica na memória de cada instância e a última
+ * gravação vence entre instâncias; trocar por consultas paginadas no banco
+ * quando o acervo passar de alguns milhares de itens.
  */
+
+/** Map que grava cada mudança no banco. */
+class MapPersistido<K extends NomeColecao> extends Map<string, Colecoes[K]> {
+  readonly #colecao: K;
+
+  constructor(colecao: K, inicial: Map<string, Colecoes[K]>) {
+    super();
+    this.#colecao = colecao;
+    for (const [id, valor] of inicial) super.set(id, valor);
+  }
+
+  override set(id: string, valor: Colecoes[K]): this {
+    super.set(id, valor);
+    enfileirar({ tipo: "gravar", colecao: this.#colecao, id, valor: structuredClone(valor) } as Gravacao);
+    return this;
+  }
+
+  override delete(id: string): boolean {
+    const tinha = super.delete(id);
+    if (tinha) enfileirar({ tipo: "apagar", colecao: this.#colecao, id });
+    return tinha;
+  }
+
+  override clear(): never {
+    throw new Error("o acervo não é apagado em bloco.");
+  }
+}
 
 export interface Acervo {
   comunidade: DadosComunidade;
@@ -56,159 +86,134 @@ export interface Acervo {
   citacoes: Map<string, Citacao>;
   videos: Map<string, VideoEditorial>;
   fontes: Map<string, FonteEditorial>;
-  /** Vagas da página Destaques escolhidas pela curadoria (null = automática). */
+  /** Vagas da página Destaques escolhidas pela curadoria (null = automática). Atribuir grava. */
   destaques: EscolhaDestaques;
   /** Perfis públicos dos anfitriões, pelo id da conta. */
   perfis: Map<string, PerfilAnfitriao>;
   candidaturas: Map<string, Candidatura>;
   convites: Map<string, Convite>;
-  /** Imagens enviadas por anfitriões (servidas por /midia/[id]). */
+  /** Imagens enviadas (metadados; os bytes ficam no armazenamento S3). */
   midias: Map<string, MidiaGuardada>;
 }
 
-export interface MidiaGuardada {
-  id: string;
-  tipo: TipoImagem;
-  bytes: Uint8Array;
-  /** Id da conta que enviou. */
-  donoId: string;
-  criadoEm: string;
-}
-
 interface Store {
-  versaoMarcacao?: 2;
+  versao: number;
+  /** Diretório de contas, só de leitura (as contas mudam por modules/conta). */
+  contas: Map<string, Membro>;
+  /** Uma gravação falhou ou outra instância gravou entre as nossas: recarregar no próximo pedido. */
+  desatualizado: boolean;
   acervo: Acervo;
+  /** Progresso de estudo, pelo id da conta. Privado. */
+  progresso: Map<string, ProgressoEstudo>;
+  /** Perfil do buscador (foto, capa, "Sobre"), pelo id da conta. Privado. */
+  perfisBuscador: Map<string, PerfilBuscador>;
   /** Só inclusão (RNF-04). Ver src/server/auditoria.ts. */
   auditoria: RegistroAuditoria[];
-  /** Caixa de saída simulada (src/server/caixa-saida.ts). Sobrevive a "Restaurar acervo". */
+  /** Caixa de saída (src/server/caixa-saida.ts). */
   caixaSaida: EmailEnviado[];
 }
 
-export const AUTOR_IMPORTACAO = "Importação do acervo de demonstração";
-
-/** Situação jurídica dos textos de demonstração: trechos curtos com referência. */
-const SITUACAO_DEMO: SituacaoJuridica = { tipo: "trecho-permitido" };
-
-function acervoInicial(): Acervo {
-  const clone = <T>(v: T): T => structuredClone(v);
-  const conteudos = new Map<string, ConteudoEditorial>(
-    CONTEUDOS.map((c) => {
-      const id = `c-${c.slug}`;
-      return [
-        id,
-        {
-          ...clone(c),
-          id,
-          status: "publicado",
-          criadoEm: `${c.publicadoEm}T09:00:00.000Z`,
-          atualizadoEm: `${c.publicadoEm}T09:00:00.000Z`,
-          criadoPor: AUTOR_IMPORTACAO,
-          atualizadoPor: AUTOR_IMPORTACAO,
-          situacaoJuridica:
-            c.proveniencia === "primaria" && c.sala === "caibalion"
-              ? { tipo: "dominio-publico" }
-              : SITUACAO_DEMO,
-          temaDivergente: Boolean(c.divergencia),
-          notaDivergencia: c.divergencia ?? "",
-          producaoIA: c.proveniencia === "ia",
-        },
-      ];
-    }),
-  );
-  const videos = new Map<string, VideoEditorial>(
-    VIDEOS.map((v) => [
-      v.id,
-      {
-        ...clone(v),
-        status: "publicado",
-        criadoEm: `${v.publicadoEm}T09:00:00.000Z`,
-        atualizadoEm: `${v.publicadoEm}T09:00:00.000Z`,
-        criadoPor: AUTOR_IMPORTACAO,
-        atualizadoPor: AUTOR_IMPORTACAO,
-        // As URLs de demonstração são buscas provisórias no YouTube, sem ID de vídeo.
-        youtubeId: "",
-        artigos: (v.conteudos ?? []).map((slug) => `c-${slug}`),
-      },
-    ]),
-  );
-  const fontes = new Map<string, FonteEditorial>([
-    ...FONTES.map((f): [string, FonteEditorial] => [
-      f.id,
-      {
-        ...clone(f),
-        criadoEm: "2026-06-01T09:00:00.000Z",
-        atualizadoEm: "2026-06-01T09:00:00.000Z",
-        criadoPor: AUTOR_IMPORTACAO,
-        atualizadoPor: AUTOR_IMPORTACAO,
-      },
-    ]),
-    ...fontesPropostasIniciais().map((f): [string, FonteEditorial] => [f.id, f]),
-  ]);
-  for (const c of artigosDeAnfitrioesIniciais()) conteudos.set(c.id, c);
-  const citacoes = new Map<string, Citacao>(CITACOES.map((c) => [c.id, clone(c)]));
-  const salas = new Map<string, SalaEditorial>(
-    SALAS.map((s) => [
-      s.slug,
-      {
-        ...clone(s),
-        id: s.slug,
-        status: "publicado",
-        publicadaEm: s.atualizadaEm,
-        criadoEm: `${s.atualizadaEm}T09:00:00.000Z`,
-        atualizadoEm: `${s.atualizadaEm}T09:00:00.000Z`,
-        criadoPor: AUTOR_IMPORTACAO,
-        atualizadoPor: AUTOR_IMPORTACAO,
-      },
-    ]),
-  );
-  for (const s of salasDeAnfitrioesIniciais()) salas.set(s.id, s);
-  return {
-    comunidade: comunidadeInicial(),
-    salas,
-    conteudos,
-    citacoes,
-    videos,
-    fontes,
-    destaques: clone(DESTAQUES_INICIAIS),
-    perfis: new Map(perfisIniciais().map((p) => [p.contaId, p])),
-    candidaturas: new Map(candidaturasIniciais().map((c) => [c.id, c])),
-    convites: new Map(convitesIniciais().map((c) => [c.id, c])),
-    midias: new Map(),
-  };
+interface Estado {
+  repositorio: AcervoRepositorio;
+  store?: Store;
+  carregando?: Promise<void>;
+  fila: Promise<void>;
+  erros: unknown[];
 }
 
 const chave = Symbol.for("sala-dos-buscadores.store");
-type ComStore = typeof globalThis & { [chave]?: Store };
+type ComEstado = typeof globalThis & { [chave]?: Estado };
+
+function estado(): Estado {
+  const g = globalThis as ComEstado;
+  g[chave] ??= { repositorio: acervoRepositorio, fila: Promise.resolve(), erros: [] };
+  return g[chave];
+}
+
+function enfileirar(gravacao: Gravacao) {
+  const e = estado();
+  const alvo = e.store;
+  e.fila = e.fila
+    .then(async () => {
+      const nova = await e.repositorio.aplicar(gravacao);
+      if (!alvo) return;
+      if (nova === alvo.versao + 1) alvo.versao = nova;
+      else alvo.desatualizado = true;
+    })
+    .catch((erro) => {
+      console.error("Falha ao gravar no banco; o acervo será recarregado.", erro);
+      if (alvo) alvo.desatualizado = true;
+      e.erros.push(erro);
+    });
+}
+
+function montar(d: DadosCarregados): Store {
+  const c = d.colecoes;
+  let destaques = d.destaques ?? structuredClone(VAGAS_VAZIAS);
+  const acervo: Acervo = {
+    comunidade: d.comunidade,
+    destaques,
+    salas: new MapPersistido("salas", c.salas),
+    conteudos: new MapPersistido("conteudos", c.conteudos),
+    citacoes: new MapPersistido("citacoes", c.citacoes),
+    videos: new MapPersistido("videos", c.videos),
+    fontes: new MapPersistido("fontes", c.fontes),
+    perfis: new MapPersistido("perfis", c.perfis),
+    candidaturas: new MapPersistido("candidaturas", c.candidaturas),
+    convites: new MapPersistido("convites", c.convites),
+    midias: new MapPersistido("midias", c.midias),
+  };
+  Object.defineProperty(acervo, "destaques", {
+    enumerable: true,
+    get: () => destaques,
+    set: (nova: EscolhaDestaques) => {
+      destaques = nova;
+      enfileirar({ tipo: "destaques", valor: structuredClone(nova) });
+    },
+  });
+  return {
+    versao: d.versao,
+    contas: d.contas,
+    desatualizado: false,
+    acervo,
+    progresso: new MapPersistido("progresso", c.progresso),
+    perfisBuscador: new MapPersistido("perfisBuscador", c.perfisBuscador),
+    auditoria: d.auditoria,
+    caixaSaida: d.caixaSaida,
+  };
+}
+
+/**
+ * Garante o snapshot em dia com o banco. Chamado no começo de cada pedido
+ * (src/server/sessao.ts, rotas de mídia, layout raiz).
+ */
+export async function sincronizarAcervo(): Promise<void> {
+  const e = estado();
+  await e.fila;
+  if (e.store && !e.store.desatualizado && (await e.repositorio.versao()) === e.store.versao) return;
+  e.carregando ??= e.repositorio
+    .carregar()
+    .then((d) => {
+      e.store = montar(d);
+    })
+    .finally(() => {
+      e.carregando = undefined;
+    });
+  await e.carregando;
+}
+
+/** Espera as gravações pendentes; repassa a primeira falha. */
+export async function aguardarGravacoes(): Promise<void> {
+  const e = estado();
+  await e.fila;
+  const [erro] = e.erros.splice(0);
+  if (erro) throw erro;
+}
 
 function store(): Store {
-  const g = globalThis as ComStore;
-  g[chave] ??= { acervo: acervoInicial(), auditoria: [], caixaSaida: [], versaoMarcacao: 2 };
-  // Um store criado por uma versão anterior do código (recarga em `next dev`) volta ao acervo
-  // de demonstração quando o formato mudou (Salas e anfitriões chegaram depois).
-  if (!g[chave].acervo.salas || !g[chave].acervo.perfis) g[chave].acervo = acervoInicial();
-  if (g[chave].versaoMarcacao !== 2) {
-    // Migra uma única vez o acervo vivo de uma versão anterior, sem reiniciar nem apagar rascunhos.
-    for (const c of g[chave].acervo.conteudos.values()) {
-      c.corpo = c.corpo.map((b) => {
-        if (typeof b === "string") return { tipo: "paragrafo", texto: migrarTextoLegado(b) };
-        if (b.tipo === "imagem") return b;
-        if (b.tipo === "lista") return { ...b, itens: b.itens.map(migrarTextoLegado) };
-        if (b.tipo === "destaque")
-          return { ...b, texto: migrarTextoLegado(b.texto), atribuicao: migrarTextoLegado(b.atribuicao) };
-        return { ...b, texto: migrarTextoLegado(b.texto) };
-      });
-    }
-    g[chave].versaoMarcacao = 2;
-  }
-  // Migração aditiva: preserva os rascunhos e as edições da sessão.
-  if (!g[chave].acervo.comunidade) {
-    g[chave].acervo.comunidade = comunidadeInicial();
-    for (const perfil of perfisIniciais()) {
-      if (!g[chave].acervo.perfis.has(perfil.contaId)) g[chave].acervo.perfis.set(perfil.contaId, perfil);
-    }
-  }
-  g[chave].caixaSaida ??= [];
-  return g[chave];
+  const s = estado().store;
+  if (!s) throw new Error("Acervo não carregado: chame sincronizarAcervo() no começo do pedido.");
+  return s;
 }
 
 /** Só os campos públicos da Sala (sem status nem autoria editorial). */
@@ -257,6 +262,9 @@ export function leiturasParaAssistente(): LeituraParaAssistente[] {
     }));
 }
 
+// Contas mudam pelo módulo de conta; o diretório deste processo acompanha na hora.
+aoMudarConta((membro) => estado().store?.contas.set(membro.id, membro));
+
 // O catálogo (src/data/catalogo.ts) lê as Salas visíveis daqui, no servidor; o assistente, as leituras.
 instalarRegistroSalas(salasVisiveis);
 instalarLeiturasDoAssistente(leiturasParaAssistente);
@@ -265,15 +273,49 @@ export function acervo(): Acervo {
   return store().acervo;
 }
 
-export function auditoriaBruta(): RegistroAuditoria[] {
+/** Conta pelo id, do diretório do snapshot (para leituras síncronas; quem age usa modules/conta). */
+export function contaNoDiretorio(id: string): Membro | null {
+  return store().contas.get(id) ?? null;
+}
+
+export function contasDoDiretorio(): Membro[] {
+  return [...store().contas.values()];
+}
+
+export function progressos(): Map<string, ProgressoEstudo> {
+  return store().progresso;
+}
+
+export function perfisBuscador(): Map<string, PerfilBuscador> {
+  return store().perfisBuscador;
+}
+
+export function auditoriaBruta(): readonly RegistroAuditoria[] {
   return store().auditoria;
 }
 
-export function caixaSaidaBruta(): EmailEnviado[] {
+export function incluirAuditoria(registro: RegistroAuditoria) {
+  store().auditoria.push(registro);
+  enfileirar({ tipo: "auditoria", valor: registro });
+}
+
+export function caixaSaidaBruta(): readonly EmailEnviado[] {
   return store().caixaSaida;
 }
 
-/** Volta o acervo aos dados de demonstração. O histórico de auditoria é mantido. */
-export function restaurarAcervoInicial(): void {
-  store().acervo = acervoInicial();
+export function incluirEmail(email: EmailEnviado) {
+  store().caixaSaida.push(email);
+  enfileirar({ tipo: "email", valor: email });
+}
+
+/** Só para testes: troca o repositório (o snapshot é recarregado no próximo sincronizarAcervo). */
+export function usarRepositorioDoAcervo(repositorio: AcervoRepositorio) {
+  const e = estado();
+  e.repositorio = repositorio;
+  e.store = undefined;
+}
+
+/** Só para testes: força recarregar do banco. */
+export function esquecerAcervo() {
+  estado().store = undefined;
 }

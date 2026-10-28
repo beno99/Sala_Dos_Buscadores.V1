@@ -1,6 +1,7 @@
+import { prepararDemonstracao } from "@tests/support/demonstracao";
 import { beforeEach, describe, expect, it } from "vitest";
 import { gravarPerfil } from "@/server/perfilBuscador";
-import { acervo, restaurarAcervoInicial } from "@/server/store";
+import { acervo } from "@/server/store";
 import {
   pessoaPublicaComunidade,
   publicacaoComunidadePorId,
@@ -11,7 +12,7 @@ function exigir<T>(valor: T | undefined): T {
   if (!valor) throw new Error("Seed ausente");
   return valor;
 }
-beforeEach(() => restaurarAcervoInicial());
+beforeEach(() => prepararDemonstracao());
 describe("leitura pública da Comunidade", () => {
   it("projeta só identificação, sem e-mail, convicção, descrição ou progresso privado", () => {
     gravarPerfil("u-buscador", { sobre: "Descrição privada" });

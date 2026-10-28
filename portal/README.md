@@ -1,35 +1,38 @@
 # A Sala dos Buscadores · portal (MVP)
 
-Protótipo funcional com dados simulados: conta obrigatória com onboarding, acervo em Salas, busca comparativa, assistente de IA e a área de curadoria, onde a equipe editorial cadastra, publica e arquiva artigos, vídeos e fontes. Não há banco de dados nem chamada a API de IA: o acervo vive na memória do servidor.
+Conta obrigatória com onboarding, acervo em Salas, busca comparativa, assistente de IA e a área de curadoria, onde a equipe editorial cadastra, publica e arquiva artigos, vídeos e fontes. Contas, acervo, estudo e auditoria ficam no **PostgreSQL**; as imagens enviadas, num armazenamento **S3** (MinIO no local). O assistente ainda não chama uma API de IA.
 
 ## Rodar
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000 (sincroniza o design system antes)
+cp .env.example .env.local   # ajuste SEED_ADMIN_EMAIL e SEED_ADMIN_SENHA
+npm run db:setup             # docker compose up -d (Postgres + MinIO), migrações e semente
+npm run dev                  # http://localhost:3000 (sincroniza o design system antes)
 ```
+
+A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações, fontes e vídeos). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria. O console do MinIO fica em http://localhost:9001.
 
 Fluxo para demonstrar: **Criar conta** → onboarding (interesses e, se quiser, religião ou convicção) → Portal (“Comece por aqui”) → **Salas** → abrir uma Sala (conquista “Porta aberta”) → abrir um conteúdo (entra em “Continue de onde parou”) → lupa ou ⌘K / Ctrl K: “vida após a morte” → **Comparar** → **Perguntar ao assistente sobre este tema** → enviar. O botão flutuante abre o assistente por cima de qualquer página.
 
-Conta de demonstração de membro: `buscador@exemplo.com` / `escada-de-quem-sobe` (onboarding já feito: Alma, Corpus Hermeticum e “Prefiro não informar”).
+Entre por `/entrar` com a conta de administrador e use **Curadoria** no grupo Conta da lateral ou no menu da conta.
 
-Conta de demonstração de **administrador**: e-mail e senha estão em `CONTA_ADMIN_DEMONSTRACAO`, no arquivo `src/features/auth/contas.ts` (a senha não aparece na interface). Entre por `/entrar` e use **Curadoria** no grupo Conta da lateral ou no menu da conta.
-
-Conta de demonstração de **anfitriã** (Helena Varga, fictícia): e-mail e senha em `CONTA_ANFITRIAO_DEMONSTRACAO`, no mesmo arquivo. Ela tem uma Sala publicada (“Leituras do Evangelho de Tomé”, fora da comparação até a curadoria ligar) e uma em revisão (“O Hino da Pérola”, com uma fonte nova proposta). Há também uma candidatura pendente (Tomás Arruda, fictício) e um convite pendente; “Restaurar acervo de demonstração” recompõe tudo isso.
-
-As contas, as sessões e o acervo ficam na memória do servidor: sobrevivem a recarregar a página e somem quando o servidor reinicia.
+O cenário de demonstração (Buscador com histórico, a anfitriã fictícia Helena Varga, candidatura de Tomás Arruda, comunidade) existe só nos testes: no PGlite do Vitest e no banco `sala_dos_buscadores_e2e` do Playwright (`tests/support/demonstracao/`).
 
 ## Scripts
 
 | Script | O que faz |
 | --- | --- |
 | `npm run dev` / `build` / `start` | Next.js 16 (Turbopack) |
+| `npm run db:setup` | `db:up` (docker compose), `db:migrate` e `db:seed` |
+| `npm run db:generate` | gera a migração SQL em `drizzle/` a partir dos `*.schema.ts` |
+| `npm run e2e:banco` | migra e põe o cenário de demonstração no banco de E2E (`DATABASE_URL_E2E`) |
 | `npm run check` | tudo abaixo, menos E2E |
 | `npm run ds:sync` / `ds:check` | copia `../design-system` para `src/design-system` e gera ícones e URL das fontes / confere se está em dia |
 | `npm run lint` / `lint:fix` | Biome (lint + formatação + organização de imports) |
 | `npm run typecheck` | `next typegen` + `tsc` |
-| `npm test` / `test:watch` / `test:coverage` | Vitest + Testing Library (jsdom) |
-| `npm run test:e2e` / `test:e2e:ui` | Playwright, desktop e celular, um teste por vez (o acervo em memória é compartilhado). Reaproveita o `npm run dev` que estiver no ar na porta 3000. Na primeira vez: `npx playwright install chromium` |
+| `npm test` / `test:watch` / `test:coverage` | Vitest + Testing Library (jsdom), cada arquivo com um Postgres em memória (PGlite) |
+| `npm run test:e2e` / `test:e2e:ui` | Playwright, desktop e celular, um teste por vez, contra o banco de E2E (pare o `npm run dev` antes). Na primeira vez: `npx playwright install chromium` |
 
 `SIMULAR_LATENCIA_MS` (padrão 600) controla a espera simulada da busca; `E2E_BASE_URL` roda o E2E contra um ambiente já no ar.
 
@@ -44,13 +47,12 @@ As contas, as sessões e o acervo ficam na memória do servidor: sobrevivem a re
 ## Portal e progresso de estudo
 
 - **Portal (`/`)**, montado em `server/estudo.ts` a partir do acervo publicado e das regras puras de `features/estudo/`: banner rotativo (marca, episódios do canal e anúncios; 7 s, pausa, parado com movimento reduzido), Salas recomendadas com chips de tema (filtram o carrossel e levam a “Comparar {tema} entre as Salas”), e o painel de progresso: um contêiner só com os indicadores pessoais em cima e, embaixo, a coluna de leitura (“Continue de onde parou” com a leitura mais recente, ou “Comece por aqui” numa conta sem leituras; “Publicados recentemente” em lista com selo; “Para ampliar o olhar”) ao lado do anúncio em banner (`PainelProgresso`, `ListaConteudos`, `EspacoPublicitario --painel`). A lateral mostra “Continuar”, “Salvos para depois”, o nível no assunto em foco e as conquistas.
-- **Progresso** (`server/progresso.ts`, em memória, por conta): Salas visitadas, leituras com porcentagem, temas comparados, verbetes abertos, fontes conferidas, trilhas, estante e conquistas. As telas emitem eventos de estudo (`features/estudo/eventos.ts`) e a Moldura grava por Server Action; abrir um conteúdo registra a leitura, a rolagem atualiza a porcentagem e o fim do texto marca como lida.
+- **Progresso** (`server/progresso.ts`, tabela `progresso_estudo`, por conta): Salas visitadas, leituras com porcentagem, temas comparados, verbetes abertos, fontes conferidas, trilhas, estante e conquistas. As telas emitem eventos de estudo (`features/estudo/eventos.ts`) e a Moldura grava por Server Action; abrir um conteúdo registra a leitura, a rolagem atualiza a porcentagem e o fim do texto marca como lida.
 - **Níveis por assunto** (Sala ou tema): Iniciante → Intermediário com metade dos conteúdos lidos → Avançado com todos. **Conquistas**: Porta aberta, Cinco Salas, Lado a lado, Na fonte, Vocabulário, Com as fontes, Degrau III; Toast “Conquista: X.”. Sem pontos, sem nível global, sem comparação entre pessoas.
 - **Recomendação**: interesses primeiro, convicção só como desempate, e sempre uma Sala e um conteúdo “Para ampliar o olhar” fora do perfil declarado.
-- **Destaques (`/destaques`)**: vitrine editorial com duas lógicas. A escolha da curadoria (vídeo principal, quatro cards e cinco artigos) vem das vagas em `/admin/destaques`, guardadas no store (`acervo().destaques`, escolha inicial em `data/mock/destaques.ts`); regras puras em `features/destaques/vagas.ts` (sem repetição na página; vaga vazia ou com item despublicado vira automática e recebe o publicado mais recente). A lista "Mais pesquisados" é ranking de conteúdo, nunca de pessoas, a partir das buscas simuladas dos últimos 30 dias (`data/mock/buscas.ts`, `features/destaques/ranking.ts`). Peças: `CardConteudoVitrine` (modo destaque compacto do Card de conteúdo) e `ListaDestaques`.
-- **Anúncios** fictícios em `data/mock/anuncios.ts`; episódios em destaque em `data/mock/banner.ts`; trilhas em `data/mock/trilhas.ts`.
+- **Destaques (`/destaques`)**: vitrine editorial com duas lógicas. A escolha da curadoria (vídeo principal, quatro cards e cinco artigos) vem das vagas em `/admin/destaques`, guardadas na tabela `destaques`; regras puras em `features/destaques/vagas.ts` (sem repetição na página; vaga vazia ou com item despublicado vira automática e recebe o publicado mais recente). A lista "Mais pesquisados" é ranking de conteúdo, nunca de pessoas, a partir das buscas dos últimos 30 dias (`features/destaques/ranking.ts`; o registro de buscas ainda não existe, então vale a ordem de publicação). Peças: `CardConteudoVitrine` (modo destaque compacto do Card de conteúdo) e `ListaDestaques`.
+- **Anúncios**: nenhum por ora (entram com anunciantes reais e aprovação da curadoria); episódios em destaque em `data/referencia/banner.ts`; trilhas em `data/referencia/trilhas.ts`.
 - **Imagens**: `server/imagens.ts` usa a foto de `public/imagens/` quando o arquivo existe e cai na placa da marca quando não.
-- “Restaurar acervo de demonstração” (curadoria) também devolve a conta de demonstração de membro ao histórico inicial; contas criadas no cadastro não são tocadas.
 
 ## Divergências do DRS v1 (levar ao documento)
 
@@ -66,7 +68,7 @@ As contas, as sessões e o acervo ficam na memória do servidor: sobrevivem a re
 
 | Rota | O que é | Requisitos |
 | --- | --- | --- |
-| `/admin` | Painel: totais por Sala, status e proveniência, vídeos por Sala, pendências, rascunhos parados há mais de 14 dias, últimas ações e "Restaurar acervo de demonstração" | RF-37, RNF-DOM-05 |
+| `/admin` | Painel: totais por Sala, status e proveniência, vídeos por Sala, pendências, rascunhos parados há mais de 14 dias e últimas ações | RF-37, RNF-DOM-05 |
 | `/admin/artigos` · `/novo` · `/[id]` | Lista com busca, filtros, ordenação, paginação e ações em linha; formulário em seções com checklist, salvamento automático do rascunho e aba Histórico | RF-11 a RF-13, RF-15, RNF-DOM-01, RNF-DOM-03, RNF-DOM-04 |
 | `/admin/artigos/[id]/previa` | "Pré-visualizar como buscador": a página pública do conteúdo, com aviso fixo | RF-11 |
 | `/admin/videos` · `/novo` · `/[id]` | Vídeos do canal: URL do YouTube validada (watch, youtu.be, shorts), duração mm:ss, ligação a artigos da mesma Sala | RF-16 |
@@ -92,7 +94,7 @@ Terceiro papel: o anfitrião mantém Salas próprias e escreve artigos nelas; na
 | `/anfitrioes/[slug]` | página pública do anfitrião, com as Salas dele no ar |
 | `/admin/anfitrioes` | revisão em três níveis: anfitriões (quem espera há mais tempo primeiro) › Salas › Sala em revisão (prévia de cada artigo, aprovar ou reprovar Sala e artigo, “Incluir na comparação e no assistente”) |
 | `/admin/usuarios` | contas (promover, tirar o papel com manter congelado, despublicar tudo ou transferir), candidaturas e convites |
-| `/admin/caixa-saida` | e-mails simulados (`server/caixa-saida.ts`, com `enviarEmail()` pronta para um serviço real) |
+| `/admin/caixa-saida` | e-mails registrados (tabela `emails_enviados`; `enviarEmail()` em `server/caixa-saida.ts` está pronta para um serviço real) |
 
 - **Ciclo** (`features/anfitriao/regras/ciclo.ts`): rascunho → em revisão → publicado ou reprovado (motivo de pelo menos 20 caracteres). Editar algo publicado tira do ar até a nova aprovação; o salvamento automático nunca faz isso. Só se exclui o que nunca foi publicado.
 - **Visibilidade** (`regras/visibilidade.ts`): Sala de anfitrião aparece se, e só se, está publicada e tem pelo menos um artigo publicado. `/salas` mostra “Salas da curadoria” e “Salas de anfitriões”.
@@ -101,15 +103,31 @@ Terceiro papel: o anfitrião mantém Salas próprias e escreve artigos nelas; na
 - **Fontes propostas:** o anfitrião cadastra uma fonte nova; só ele a vê até o artigo ser aprovado, quando ela entra no catálogo.
 - **Servidor:** `server/anfitriao/` (`editorial.ts` lado do anfitrião, `revisao.ts` decisões da curadoria, `usuarios.ts` papéis, candidaturas, convites e perfil, `consultas.ts` leitura, `acoes.ts` e `acoes-admin.ts` Server Actions que conferem papel e posse).
 
-## Dados em memória
+## Persistência
 
-- `src/server/store.ts` guarda Salas, conteúdos, citações, vídeos, fontes, perfis de anfitrião, candidaturas, convites e imagens num objeto em `globalThis`, iniciado com uma cópia de `src/data/mock/`. É o mesmo para páginas, Server Actions e Route Handlers, e só funciona com um processo Node (`next dev` ou `next start`).
+Diagrama: [`../docs/banco/diagrama.md`](../docs/banco/diagrama.md). Cada módulo em `src/modules/<módulo>/` segue controller → caso de uso → repositório (interface) com contratos:
+
+| Módulo | Contratos | Persistência | Casos de uso | Entrada |
+| --- | --- | --- | --- | --- |
+| `conta` | `conta.contratos.ts` (`Membro`, `ContaRepositorio`, `SessaoRepositorio`) | `conta.repositorio.ts`, `conta.schema.ts` | `casos-de-uso/` (autenticar, registrar, sessão, preferências, papel), ligados em `index.ts` | `conta.controller.ts`, usado pelas Server Actions (`features/auth/acoes.ts`) e por `app/api/conta/*` |
+| `acervo` | `acervo.contratos.ts` (`AcervoRepositorio`, `Gravacao`) | `acervo.repositorio.ts`, `acervo.schema.ts`, `semente.ts` | as regras de `src/server/admin/` e `src/server/anfitriao/` | Server Actions de `server/admin/acoes.ts`, `server/anfitriao/acoes*.ts` |
+| `midia` | `midia.contratos.ts` (`ArmazenamentoDeArquivos`) | `armazenamento.s3.ts`, `midia.schema.ts` | `server/midia.ts` | `app/midia/route.ts`, `app/midia/[id]/route.ts` |
+| `anfitriao`, `estudo`, `comunidade`, `operacao` | tipos de `data/types.ts` | `*.schema.ts` | `server/anfitriao`, `server/progresso.ts`, `server/auditoria.ts`, `server/caixa-saida.ts` | Server Actions |
+
+- **Snapshot do acervo** (`src/server/store.ts`): as regras leem e escrevem Maps síncronos carregados do Postgres; cada `set`/`delete` vira uma gravação em fila, na ordem em que aconteceu, e as Server Actions esperam a fila (`aguardarGravacoes`) antes de responder. Toda gravação soma 1 em `versao_dados`; no começo de cada pedido (`membroAtual` em `server/sessao.ts`) o processo compara a versão e recarrega se outra instância gravou. `src/instrumentation.ts` carrega o snapshot ao subir. Limite conhecido: o acervo inteiro fica na memória de cada instância (bom para alguns milhares de itens).
+- **Contas** não passam pelo snapshot: senha em bcrypt (custo 12), sessão com token aleatório no cookie httpOnly e só o hash sha256 no banco, validade de 30 dias. Recuperação de senha por link de uso único (30 minutos, só o hash no banco), que encerra as outras sessões.
+- **Driver**: `pg` (node-postgres), que nunca manda duas consultas na mesma conexão. Todas as tabelas têm RLS ligado e nenhuma policy, para a API pública do Supabase não ler nada.
 - `src/data/repositorio.ts` é a leitura pública: só sai o que está com status `publicado` (Salas, página do conteúdo, busca, contadores e nível predominante).
 - `src/server/admin/consultas.ts` (leitura editorial), `editorial.ts` (regras de escrita) e `acoes.ts` (Server Actions finas que conferem o papel e chamam `revalidatePath("/", "layout")`).
 - `src/server/auditoria.ts` só acrescenta registros congelados; não existe função para editar ou apagar.
-- Temas, glossário, comparações curadas e respostas do assistente continuam estáticos (`src/data/catalogo.ts` e `data/mock`). As Salas vêm do store por um registro (`instalarRegistroSalas`). Conteúdos novos da curadoria aparecem na Sala, na página e na busca, mas **ainda não entram na grade comparativa nem no assistente** (há uma nota no painel); as Salas de anfitrião entram quando a curadoria liga a comparação.
+- Temas, glossário, comparações curadas, trilhas, episódios do banner e respostas do assistente são conteúdo editorial em código (`src/data/referencia/`), lido por `src/data/catalogo.ts`; entram no banco quando ganharem tela de edição. As Salas vêm do store por um registro (`instalarRegistroSalas`). Conteúdos novos da curadoria aparecem na Sala, na página e na busca, mas **ainda não entram na grade comparativa nem no assistente** (há uma nota no painel); as Salas de anfitrião entram quando a curadoria liga a comparação.
 
-**Para ligar a um backend real:** troque o corpo de `src/server/store.ts` por um banco e mantenha as assinaturas de `repositorio.ts`, `server/admin/consultas.ts` e `server/admin/editorial.ts`; em `features/auth/contas.ts`, troque contas e sessões por autenticação real (bcrypt e JWT com expiração, RNF-01). As telas não mudam.
+
+## Homologação
+
+- Banco e imagens no Supabase (projeto `sala-dos-buscadores-homolog`, São Paulo); site na Vercel (`https://sala-dos-buscadores-homolog.vercel.app`, funções em `gru1` por `vercel.json`). O projeto da Vercel usa `portal` como diretório raiz e sobe o repositório inteiro, porque o `prebuild` confere `../design-system`; o `.vercelignore` da raiz deixa de fora os `.env*` e o material de referência.
+- Credenciais locais em `portal/.env.homolog` (fora do Git). `DATABASE_URL` aponta para o pooler em modo transação (porta 6543); o modo sessão (5432) aceita só 15 clientes e esgota com as instâncias da Vercel.
+- Seed: `npx tsx --env-file=.env.homolog --conditions=react-server scripts/seed.ts`. Deploy: `vercel deploy --prod` na raiz do repositório.
 
 ## Estrutura
 
@@ -124,12 +142,14 @@ src/
   components/layout/   moldura, navegação (regras testadas), rodapé, providers
   features/            acervo, busca (lógica pura + UI + painel), assistente (motor simulado + UI), auth, onboarding,
                        aparencia, admin (regras + telas da curadoria)
-  data/                tipos, rótulos, catálogo estático, repositório público e dados simulados (mock/)
-  server/              store em memória, sessão (DAL), auditoria e a curadoria (consultas, regras, Server Actions)
+  data/                tipos, rótulos, catálogo, repositório público, referencia/ (conteúdo editorial em código)
+                       e semente/ (acervo oficial importado pelo db:seed)
+  modules/             persistência por módulo: contratos, schema Drizzle, repositório Postgres, casos de uso, controller
+  server/              snapshot do acervo, sessão (DAL), auditoria e as regras da curadoria e dos anfitriões
   design-system/       CÓPIA GERADA de ../design-system (não edite aqui)
   lib/                 utilitários de texto e classes
 tests/
-  support/             setup do Vitest, mock de next/navigation, render com providers
+  support/             setup do Vitest, PGlite (banco.ts), cenário de demonstração, mock de next/navigation, render
   e2e/                 Jornada do Buscador (DRS 7.2) e fluxos da curadoria
 ```
 
@@ -143,9 +163,9 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 - Tailwind é para layout de elementos de estrutura. Numa peça `sdb-*`, a classe da biblioteca vence o utilitário; quando o exemplo da biblioteca usa um ajuste em linha (`style="gap:8px"`), o componente repete o mesmo ajuste.
 - `bundle.js` não é carregado: seus comportamentos foram portados para React (`Segmented`, `Accordion`, `Menu`, `Drawer`, `Toast`, `useCopiar`), e os ícones são gerados dele em `icons.generated.ts`.
 
-## Dados simulados
+## Dados iniciais
 
-Os dados iniciais ficam em `src/data/mock/` (copiados para o store ao iniciar o servidor). O assistente continua simulado em `consultar`, em `features/assistente/motor.ts`. Obras e referências citadas são reais; autores dos artigos são fictícios.
+O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. O assistente continua simulado em `consultar`, em `features/assistente/motor.ts`. Obras e referências citadas são reais; os autores dos artigos do acervo inicial são fictícios.
 
 ## Fora desta etapa
 

@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { FONTES } from "@/data/mock/fontes";
+import { FONTES } from "@/data/semente/fontes";
 import { renderComProviders } from "../../../../tests/support/render";
 import { artigoVazio } from "../formularios";
 import { artigoCompleto } from "../regras/fixtures";
