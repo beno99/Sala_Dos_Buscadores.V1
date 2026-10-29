@@ -19,6 +19,11 @@ const target = resolve(portal, "src/design-system");
 const check = process.argv.includes("--check");
 
 const FILES = [
+  ["components/Comunidade/comunidade.css", "components/Comunidade/comunidade.css"],
+  ["components/Comunidade/assets/heart.svg", "components/Comunidade/assets/heart.svg"],
+  ["components/Comunidade/assets/comment.svg", "components/Comunidade/assets/comment.svg"],
+  ["components/Comunidade/assets/quote.svg", "components/Comunidade/assets/quote.svg"],
+
   ["conteudo.json", "conteudo.json"],
   ["components/BarraFormatacao/marcacao.mjs", "marcacao.mjs"],
   ["components/BarraFormatacao/marcacao.d.mts", "marcacao.d.mts"],

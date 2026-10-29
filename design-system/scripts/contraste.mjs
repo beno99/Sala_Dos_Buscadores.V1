@@ -55,6 +55,9 @@ function razao(a, b) {
 const FUNDOS = ["bg-canvas", "material-thin", "material-regular", "material-thick", "float-fill", "nav-fill", "card-warm", "nav-card", "overlay-from", "overlay-to"];
 const TEXTOS = ["label", "label-secondary", "accent", "critical"];
 const PARES = [
+  ...["community-canvas", "community-surface", "community-inset", "community-notice"].flatMap(f => ["label", "label-secondary", "community-link"].map(t => [t,f])),
+  ["community-question-ink", "community-question"],
+  ["community-action-ink", "community-action"],
   ["level-beginner-ink", "level-beginner-fill"],
   ["level-intermediate-ink", "level-intermediate-fill"],
   ["level-advanced-ink", "level-advanced-fill"],

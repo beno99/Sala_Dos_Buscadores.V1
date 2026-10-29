@@ -41,6 +41,9 @@ export function FeedComunidade({
           <h1 className="sdb-title-1">Comunidade</h1>
           <p className="sdb-body-sm">Um caderno de estudos em voz alta.</p>
         </div>
+        <Button variant="gold" disabled title="Publicação ainda indisponível neste portal">
+          Nova publicação
+        </Button>
       </header>
       <div className="sdb-community__layout">
         <div className="sdb-community__feed">
@@ -56,16 +59,28 @@ export function FeedComunidade({
               ]}
             />
             <Button
-              variant="secondary"
+              className="sdb-community__search-toggle"
+              variant="plain"
               icon="busca"
               iconOnly
+              data-tip-align="end"
               aria-label="Buscar na comunidade"
               aria-expanded={buscar}
               aria-controls={`${id}-busca`}
               onClick={() => setBuscar(!buscar)}
             />
+            <label className="sdb-searchfield sdb-community__search">
+              <Icon name="busca" />
+              <span className="sdb-sr">Buscar publicações</span>
+              <input
+                type="search"
+                placeholder="Buscar publicações"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+              />
+            </label>
           </div>
-          <label id={`${id}-busca`} hidden={!buscar} className="sdb-searchfield">
+          <label id={`${id}-busca`} hidden={!buscar} className="sdb-searchfield sdb-community__search-mobile">
             <Icon name="busca" />
             <span className="sdb-sr">Buscar publicações</span>
             <input
@@ -100,29 +115,46 @@ export function FeedComunidade({
                 variant="plain"
                 icon="fechar"
                 iconOnly
+                data-tip-align="end"
                 aria-label="Dispensar aviso de neutralidade"
                 onClick={() => setAviso(false)}
               />
             </aside>
           )}
-          <section className="sdb-composer" aria-label="Publicações em leitura">
+          <section className="sdb-composer sdb-composer--launcher" aria-label="Publicações em leitura">
             <div className="sdb-composer__prompt">
               <Avatar iniciais={m.pessoa.iniciais} foto={m.pessoa.foto} />
-              <p className="sdb-headline">O que você está estudando?</p>
+              <Button variant="secondary" disabled>
+                O que você está estudando?
+              </Button>
             </div>
             <div className="sdb-composer__types">
-              {Object.values(TIPOS_PUBLICACAO).map((tipo) => (
-                <span className="sdb-chip" key={tipo}>
+              {Object.entries(TIPOS_PUBLICACAO).map(([chave, tipo]) => (
+                <Button
+                  variant="plain"
+                  disabled
+                  key={tipo}
+                  icon={
+                    (
+                      {
+                        reflexao: "editar",
+                        citacao: "fontePrimaria",
+                        pergunta: "assistente",
+                        achado: "biblioteca",
+                      } as const
+                    )[chave as keyof typeof TIPOS_PUBLICACAO]
+                  }
+                >
                   {tipo}
-                </span>
+                </Button>
               ))}
             </div>
-            <p className="sdb-footnote">
+            <p className="sdb-composer__unavailable">
               Por enquanto, explore os estudos e as conversas. Novas publicações e respostas serão habilitadas
               em breve.
             </p>
           </section>
-          <p className="sdb-footnote" role="status">
+          <p className="sdb-sr" role="status">
             {filtrar(aba === "para-voce" ? m.publicacoes : m.seguindo).length} publicações
             {aba === "para-voce"
               ? " · Recentes, com prioridade leve às Salas, anfitriões acompanhados e trilhas."

@@ -10,7 +10,7 @@ import { Icon } from "@/components/ds/Icon";
 import { LinhaComentario } from "@/components/ds/LinhaComentario";
 import { Menu } from "@/components/ds/Menu";
 import { PainelComentarios } from "@/components/ds/PainelComentarios";
-import { SeloProveniencia } from "@/components/ds/Selos";
+import { ICONE_PROVENIENCIA, SeloProveniencia } from "@/components/ds/Selos";
 import { useCopiar } from "@/components/ds/Toast";
 import { temaPorSlug } from "@/data/catalogo";
 import type { PublicacaoPublica } from "@/data/repositorio-comunidade";
@@ -87,6 +87,7 @@ export function PublicacaoLeitura({
           <>
             {p.salaSlug && (
               <a className="sdb-chip" href={`/comunidade?sala=${p.salaSlug}`}>
+                <Icon name="salas" size="sm" />
                 {p.salaNome}
               </a>
             )}
@@ -130,6 +131,7 @@ export function PublicacaoLeitura({
             {p.tipo === "citacao" && p.citacao && (
               <BlocoCitacao
                 estreito
+                comunidade
                 citacao={{
                   id: p.id,
                   sala: p.salaSlug ?? "",
@@ -147,27 +149,36 @@ export function PublicacaoLeitura({
             )}
             {p.tipo === "pergunta" && (
               <div className="sdb-post__question">
-                <strong>Pergunta à Sala</strong>
-                <p>
-                  {p.dirigidaA ? (
-                    <>
-                      Dirigida a <a href={p.dirigidaA.href}>{p.dirigidaA.nome}</a>
-                    </>
-                  ) : (
-                    p.salaNome
-                  )}
-                </p>
+                <Icon name="assistente" />
+                <div>
+                  <strong>Pergunta à Sala</strong>
+                  <p>
+                    {p.dirigidaA ? (
+                      <>
+                        Dirigida a <a href={p.dirigidaA.href}>{p.dirigidaA.nome}</a>
+                      </>
+                    ) : (
+                      p.salaNome
+                    )}
+                  </p>
+                </div>
               </div>
             )}
             {p.tipo === "achado" &&
               (p.conteudo ? (
                 <article className="sdb-card sdb-community-linked">
                   <div className="sdb-card__body">
-                    <p className="sdb-footnote">{p.salaNome}</p>
-                    <h3 className="sdb-headline">
-                      <a href={`/salas/${p.conteudo.sala}/${p.conteudo.slug}`}>{p.conteudo.titulo}</a>
-                    </h3>
-                    <SeloProveniencia tipo={p.conteudo.proveniencia} />
+                    <Icon name={ICONE_PROVENIENCIA[p.conteudo.proveniencia]} size="lg" />
+                    <div className="sdb-community-linked__content">
+                      <SeloProveniencia tipo={p.conteudo.proveniencia} />
+                      <p className="sdb-footnote">{p.salaNome}</p>
+                      <h3 className="sdb-headline">
+                        <a href={`/salas/${p.conteudo.sala}/${p.conteudo.slug}`}>{p.conteudo.titulo}</a>
+                      </h3>
+                      <a className="sdb-link" href={`/salas/${p.conteudo.sala}/${p.conteudo.slug}`}>
+                        Abrir no acervo →
+                      </a>
+                    </div>
                   </div>
                 </article>
               ) : (
@@ -179,16 +190,24 @@ export function PublicacaoLeitura({
           !completa && (
             <>
               {p.comentarios.slice(0, 2).map((c) => (
-                <p key={c.id} className="sdb-footnote sdb-post__preview">
-                  <strong>{c.autor.nome}</strong> {c.texto}
-                </p>
+                <LinhaComentario
+                  key={c.id}
+                  autor={c.autor}
+                  texto={c.texto}
+                  data={c.criadaEm}
+                  tempo={tempoComunidade(c.criadaEm, agora)}
+                />
               ))}
-              <Button variant="plain" onClick={() => setAberto(true)}>
-                Ver todos os comentários ({p.comentarios.length})
-              </Button>
-              <ButtonLink variant="plain" href={href}>
-                Abrir publicação
-              </ButtonLink>
+              <div className="sdb-post__links">
+                {p.comentarios.length > 0 && (
+                  <Button variant="plain" onClick={() => setAberto(true)}>
+                    Ver todos os comentários ({p.comentarios.length})
+                  </Button>
+                )}
+                <ButtonLink variant="plain" href={href}>
+                  Abrir publicação
+                </ButtonLink>
+              </div>
             </>
           )
         }

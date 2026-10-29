@@ -1,0 +1,50 @@
+OK quatro tipos React reais no feed único, com fixture isolada
+OK card branco, feed de 776 px no frame de 1280
+OK conteúdo antes das ações na ordem do DOM
+OK publicação indisponível não simula escrita
+OK aba Seguindo usa os dados fornecidos
+OK abas operáveis com setas
+OK busca filtra publicações
+OK estado vazio de busca
+OK comentários reais do contrato no painel
+OK Escape fecha e devolve o foco ao botão
+OK reações abrem e mantêm a indisponibilidade atual
+OK salvar mantém estado sem serviço
+OK superfície opaca em solido-claro
+OK superfície opaca em solido-escuro
+OK superfície opaca em vidro-claro
+OK superfície opaca em vidro-escuro
+OK React sem overflow em 1504
+OK React sem overflow em 1280
+OK React sem overflow em 1024
+OK React sem overflow em 768
+OK React sem overflow em 390
+OK React sem overflow em 360
+OK busca mobile acessível
+OK busca mobile funcional
+OK texto longo expande
+OK texto longo recolhe
+OK movimento reduzido nas ações
+OK layout legível sem overflow com zoom 200%
+OK rota real autenticada
+OK portal real: estado vazio de Seguindo
+OK portal real sem overflow em 1024
+OK portal real sem overflow em 768
+OK portal real sem overflow em 390
+OK portal real sem overflow em 360
+OK reflexão: texto habilita envio demonstrativo
+OK citação exige fonte
+OK citação: trecho, obra e passagem preservados
+OK pergunta exige Sala
+OK pergunta com Sala habilita demonstração
+OK achado exige conteúdo vinculado
+OK achado com conteúdo válido
+OK limite de três temas preservado
+OK anexo de imagem mantido
+OK compositor mobile sem overflow
+OK demo: curtida anuncia seleção
+OK demo: salvar anuncia seleção
+OK comentário vazio desabilitado
+OK comentário com texto, na demonstração
+OK sem erros JavaScript na validação
+TOTAL 49 verificações aprovadas

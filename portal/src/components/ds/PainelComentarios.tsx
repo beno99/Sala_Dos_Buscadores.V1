@@ -23,7 +23,14 @@ export function PainelComentarios({
         <h2 id={id} className="sdb-title-2">
           Comentários
         </h2>
-        <Button variant="plain" iconOnly icon="fechar" aria-label="Fechar comentários" onClick={onFechar} />
+        <Button
+          variant="plain"
+          iconOnly
+          icon="fechar"
+          data-tip-align="end"
+          aria-label="Fechar comentários"
+          onClick={onFechar}
+        />
       </header>
       <div className="sdb-community-dialog__body">{children}</div>
       <footer className="sdb-community-dialog__foot">{campo}</footer>

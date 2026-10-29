@@ -10,3 +10,7 @@ Obra e localização (capítulo, dito, verso), selo de proveniência, original c
 - Lado a lado quebra em uma coluna abaixo de ~520 px.
 - "Copiar citação" copia trecho + referência e confirma com toast; se a área de transferência for recusada, seleciona o texto e avisa.
 - Sem original disponível, diga isso no rótulo e omita o segmentado.
+
+## Variante de Comunidade
+
+`figure.sdb-quote.sdb-quote--community` é a composição sólida de uma citação compartilhada: ícone de citação, trecho editorial, obra/passagem, referência e procedência declarada. O componente React `BlocoCitacao` aceita `comunidade` para a variante sem original; conserva a cópia com referência. Não representa revisão editorial. A variante usa os tokens e o CSS de Comunidade e está demonstrada em `CardPublicacao/preview.html`.

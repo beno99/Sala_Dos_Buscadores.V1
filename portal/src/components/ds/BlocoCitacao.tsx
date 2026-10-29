@@ -14,10 +14,43 @@ type Vista = "orig" | "trad" | "both";
  * Trecho de fonte primária com original, tradução, referência e ação de copiar (BlocoCitacao, RF-15).
  * `estreito`: numa coluna lateral, começa em "Tradução" (lado a lado empilharia) e o segmentado ocupa a largura.
  */
-export function BlocoCitacao({ citacao, estreito }: { citacao: Citacao; estreito?: boolean }) {
+export function BlocoCitacao({
+  citacao,
+  estreito,
+  comunidade,
+}: {
+  citacao: Citacao;
+  estreito?: boolean;
+  comunidade?: boolean;
+}) {
   const temOriginal = Boolean(citacao.original);
   const [vista, setVista] = useState<Vista>(temOriginal && !estreito ? "both" : "trad");
   const copiar = useCopiar();
+
+  if (comunidade && !temOriginal)
+    return (
+      <figure className="sdb-quote sdb-quote--community">
+        <span className="sdb-community-icon sdb-community-icon--quote" aria-hidden="true" />
+        <blockquote className="sdb-quote__text">{citacao.traducao}</blockquote>
+        <p className="sdb-quote__source">
+          {citacao.obra} · {citacao.localizacao}
+        </p>
+        <figcaption className="sdb-quote__foot">
+          <cite>{citacao.referencia}</cite>
+          <Button
+            variant="plain"
+            size="sm"
+            icon="copiar"
+            onClick={() =>
+              copiar(`${citacao.traducao} ${citacao.referencia}`, "Citação copiada com a referência.")
+            }
+          >
+            Copiar citação
+          </Button>
+        </figcaption>
+        <SeloProveniencia tipo={citacao.proveniencia} rotulo={citacao.rotuloSelo} />
+      </figure>
+    );
 
   return (
     <figure className="sdb-quote m-0">

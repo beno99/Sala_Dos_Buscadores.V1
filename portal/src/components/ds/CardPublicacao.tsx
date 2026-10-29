@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useId, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import type { Nivel } from "@/data/types";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
@@ -37,6 +37,18 @@ export function CardPublicacao({
 }) {
   const id = useId();
   const [expandida, setExpandida] = useState(false);
+  const textoRef = useRef<HTMLParagraphElement>(null);
+  const [excede, setExcede] = useState(false);
+  useEffect(() => {
+    if (expandida) return;
+    const elemento = textoRef.current;
+    if (!elemento) return;
+    const medir = () => setExcede(elemento.scrollHeight > elemento.clientHeight + 1);
+    const observer = new ResizeObserver(medir);
+    observer.observe(elemento);
+    medir();
+    return () => observer.disconnect();
+  }, [expandida]);
   return (
     <article className="sdb-post" aria-label={`${tipo} de ${autor.nome}`}>
       <header className="sdb-post__head">
@@ -51,18 +63,16 @@ export function CardPublicacao({
           <p className="sdb-footnote sdb-post__meta">
             <time dateTime={data}>{tempo}</time> · {tipo}
           </p>
-          {nivel && (
-            <div className="sdb-post__tags">
-              <SeloNivel nivel={nivel.valor} />
-              <span className="sdb-footnote">em {nivel.assunto}</span>
-            </div>
-          )}
+          <span className="sdb-sr">Publicado por um {autor.anfitriao ? "anfitrião" : "buscador"}</span>
         </div>
+        {nivel && (
+          <div className="sdb-post__level" role="group" aria-label={`Nível em ${nivel.assunto}`}>
+            <SeloNivel nivel={nivel.valor} />
+            <span className="sdb-sr">em {nivel.assunto}</span>
+          </div>
+        )}
         {menu}
       </header>
-      <p className="sdb-footnote sdb-post__origin">
-        Publicado por um {autor.anfitriao ? "anfitrião" : "buscador"}
-      </p>
       {tags && <div className="sdb-post__tags">{tags}</div>}
       {imagem && (
         <figure className="sdb-post__media">
@@ -71,20 +81,22 @@ export function CardPublicacao({
           {imagem.credito && <figcaption className="sdb-footnote">{imagem.credito}</figcaption>}
         </figure>
       )}
-      {acoes}
-      <p id={id} className="sdb-body-sm sdb-post__text" data-collapsed={!expandida}>
-        <strong>{autor.nome}</strong> {texto}
+      <p ref={textoRef} id={id} className="sdb-body-sm sdb-post__text" data-collapsed={!expandida}>
+        {texto}
       </p>
-      <Button
-        variant="plain"
-        className="sdb-post__more"
-        aria-expanded={expandida}
-        aria-controls={id}
-        onClick={() => setExpandida(!expandida)}
-      >
-        {expandida ? "Ver menos" : "Ver mais"}
-      </Button>
+      {(excede || expandida) && (
+        <Button
+          variant="plain"
+          className="sdb-post__more"
+          aria-expanded={expandida}
+          aria-controls={id}
+          onClick={() => setExpandida(!expandida)}
+        >
+          {expandida ? "Ver menos" : "Ver mais"}
+        </Button>
+      )}
       {bloco && <div className="sdb-post__block">{bloco}</div>}
+      {acoes}
       {comentarios && <div className="sdb-post__previews">{comentarios}</div>}
     </article>
   );

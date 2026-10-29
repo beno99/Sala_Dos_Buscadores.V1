@@ -1,0 +1,64 @@
+
+> sala-dos-buscadores-portal@0.1.0 check
+> npm run ds:check && npm run ds:test && npm run lint && npm run typecheck
+
+
+> sala-dos-buscadores-portal@0.1.0 ds:check
+> node scripts/sync-design-system.mjs --check
+
+Design system em dia.
+
+> sala-dos-buscadores-portal@0.1.0 ds:test
+> node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs
+
+✔ cada sinal produz apenas o elemento permitido, na ordem correta (2.353541ms)
+✔ texto simples e HTML do autor permanecem texto (0.211834ms)
+✔ marcas aninhadas ficam integralmente visíveis (0.188583ms)
+✔ links aceitam apenas https e caminhos realmente internos (0.274459ms)
+✔ referência sem fontes continua representada e numerada (0.142083ms)
+✔ cursor dentro e seleção parcial detectam e removem a marca inteira (0.2045ms)
+✔ marca, modelo, endereço e limpeza devolvem seleções úteis (0.295083ms)
+✔ conversão em lista e retorno preservam todas as linhas (0.215625ms)
+✔ migração da gramática antiga preserva links e transforma somente obras (0.226916ms)
+✔ um link existente pode ser desmarcado com cursor no endereço (0.191ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.438542
+
+> sala-dos-buscadores-portal@0.1.0 lint
+> biome check
+
+src/components/ds/CampoImagem.tsx:38:9 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━
+
+  ! Change to an optional chain.
+
+    36 │     bitmap.close();
+    37 │     const blob = await new Promise<Blob | null>((ok) => tela.toBlob(ok, "image/webp", QUALIDADE_WEBP));
+  > 38 │     if (!blob || blob.type !== "image/webp" || blob.size >= f.size) return f;
+       │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    39 │     return new File([blob], `${f.name.replace(/\.[^.]+$/, "")}.webp`, { type: "image/webp" });
+    40 │   } catch {
+
+  i Unsafe fix: Change to an optional chain.
+
+     36  36 │       bitmap.close();
+     37  37 │       const blob = await new Promise<Blob | null>((ok) => tela.toBlob(ok, "image/webp", QUALIDADE_WEBP));
+     38     │ - ····if·(!blob·||·blob.type·!==·"image/webp"·||·blob.size·>=·f.size)·return·f;
+         38 │ + ····if·(blob?.type·!==·"image/webp"·||·blob.size·>=·f.size)·return·f;
+     39  39 │       return new File([blob], `${f.name.replace(/\.[^.]+$/, "")}.webp`, { type: "image/webp" });
+     40  40 │     } catch {
+
+
+Checked 376 files in 216ms. No fixes applied.
+Found 1 warning.
+
+> sala-dos-buscadores-portal@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully

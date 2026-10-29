@@ -16,6 +16,7 @@ import "@/design-system/card-conquista.css";
 import "@/design-system/conta.css";
 import "@/design-system/estados-interface.css";
 import "@/design-system/components/TelaAssistente/tela-assistente.css";
+import "@/design-system/components/Comunidade/comunidade.css";
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";

@@ -46,8 +46,8 @@ export function BarraAcoesComunidade({
         disabled={bloqueada}
         onClick={onCurtir}
       >
-        <Icon name="util" />
-        Curtir <span>{curtidas}</span>
+        <span className="sdb-community-icon sdb-community-icon--heart" aria-hidden="true" />
+        <span>{curtidas}</span>
       </button>
       <button
         type="button"
@@ -55,8 +55,11 @@ export function BarraAcoesComunidade({
         aria-label={`Comentar, ${comentarios} comentários`}
         onClick={onComentar}
       >
-        <Icon name="assistente" />
-        Comentar <span>{comentarios}</span>
+        <span className="sdb-community-icon sdb-community-icon--comment" aria-hidden="true" />
+        <span>
+          {comentarios}
+          <span className="sdb-community-actions__desktop"> comentários</span>
+        </span>
       </button>
       <button
         type="button"

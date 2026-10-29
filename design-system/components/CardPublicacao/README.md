@@ -2,11 +2,11 @@
 
 ## Anatomia
 
-`article.sdb-post`. Cabeçalho `.sdb-post__head` com Avatar, `.sdb-post__identity`, nome, tempo em `time[datetime]`, SeloNivel contextualizado por Sala, Badge Anfitrião e Menu. A identificação `.sdb-post__origin` é texto simples. Em seguida: chips, imagem opcional, BarraAcoesComunidade, texto, bloco do tipo e duas prévias de comentário.
+`article.sdb-post`. Cabeçalho `.sdb-post__head` com Avatar, `.sdb-post__identity`, nome, tempo em `time[datetime]`, SeloNivel contextualizado por Sala, Badge Anfitrião e Menu. A identificação `.sdb-post__origin` é texto simples. Em seguida: chips, imagem opcional, texto, bloco do tipo, BarraAcoesComunidade e duas prévias de comentário.
 
 ## Uso e estados
 
-Use `data-collapsed="true"` em `.sdb-post__text` para três linhas; botão com `aria-expanded` e `aria-controls` revela o texto inteiro. A imagem usa `community-media-ratio` (4:3), alt descritivo e crédito. O achado usa CardConteudo com `.sdb-community-linked`; citação usa BlocoCitacao. Nunca aplique selo editorial à publicação; a fonte declarada leva “Fonte informada pelo autor”. O Menu do exemplo é de leitor; Editar/Excluir só aparecem para o autor quando o servidor autorizar.
+Use `data-collapsed="true"` em `.sdb-post__text` para até oito linhas, preservando parágrafos; no React o botão só aparece quando o texto excede o limite; botão com `aria-expanded` e `aria-controls` revela o texto inteiro. A imagem usa `community-media-ratio` (4:3), alt descritivo e crédito. O achado usa CardConteudo com `.sdb-community-linked`; citação usa BlocoCitacao. Nunca aplique selo editorial à publicação; a fonte declarada leva “Fonte informada pelo autor”. O Menu do exemplo é de leitor; Editar/Excluir só aparecem para o autor quando o servidor autorizar.
 
 ## Temas, acessibilidade e contrato
 
@@ -15,3 +15,11 @@ Cores: `material-regular`, `material-thick`, `fill`, `label`, `label-secondary`,
 Use elementos nativos, rótulos explícitos, foco visível e alvos de 44 px. Controles não dependem de hover. Estados de carregamento, vazio e erro pertencem ao container e usam CarregamentoSala/EstadoSecao. Esconder ação não confere permissão: sessão, papel e posse são verificados no servidor nas fases seguintes.
 
 [Exemplo gerado](../../exemplos/CardPublicacao.html). Fonte: `preview.html`; comportamento de demonstração: `../Comunidade/demo.js`. Gere com `node design-system/scripts/build.mjs`. React em `portal/src/components/ds/` emite as mesmas classes, com dados e callbacks do consumidor; não importa o JavaScript de demonstração.
+
+## Refinamento visual · 29/10/2026
+
+Referências inspecionadas: Figma `WtsqtkYXDtEKBZ3pYiBOE4`, desktop `103:615`, mobile `104:710`, comentários/composição `104:574` e biblioteca editável `104:933`. O CSS canônico complementar é `../Comunidade/comunidade.css`, carregado **depois** de `refinement.css`; os exemplos são gerados pelo build. Tokens `community-*` em `tokens.json`: superfície branca/escura opaca, interior neutro, contorno discreto, contexto lilás de pergunta, ritmo de 20 px e geometria de 776/352 px. General Sans e Gambetta são locais e ficam restritas à família Comunidade. Botões usam raio de 12 px; cards 24 px, interiores 16 px, tags 8 px. Os níveis mantêm os tokens aprovados e seus rótulos.
+
+Os temas de vidro também usam cards sólidos nesta família. Não substituir globalmente os materiais do portal. O texto dourado foi ajustado de #8B652F para #825D29 no tema claro para atingir AA sobre areia e sobre o aviso. Ícones de coração, comentário e citação foram exportados do Figma e ficam em `Comunidade/assets`, como máscaras que acompanham o token de texto.
+
+O portal deste checkout oferece **leitura**: busca, abas, perfis, links, expansão e painel de comentários. Publicação, resposta, seguir, reações e salvar ainda não possuem serviço de escrita conectado; os controles indisponíveis não simulam persistência. Os formulários interativos do catálogo são apenas demonstração e não foram transportados para produção.
