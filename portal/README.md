@@ -121,9 +121,9 @@ Diagrama: [`../docs/banco/diagrama.md`](../docs/banco/diagrama.md). Cada módulo
 
 ## Homologação
 
-- Banco e imagens no Supabase (projeto `sala-dos-buscadores-homolog`, São Paulo); site na Vercel (`https://sala-dos-buscadores-homolog.vercel.app`, funções em `gru1` por `vercel.json`). O projeto da Vercel usa `portal` como diretório raiz e sobe o repositório inteiro, porque o `prebuild` confere `../design-system`; o `.vercelignore` da raiz deixa de fora os `.env*` e o material de referência.
-- Credenciais locais em `portal/.env.homolog` (fora do Git). `DATABASE_URL` aponta para o pooler em modo transação (porta 6543); o modo sessão (5432) aceita só 15 clientes e esgota com as instâncias da Vercel.
-- Seed: `npx tsx --env-file=.env.homolog --conditions=react-server scripts/seed.ts`. Deploy: `vercel deploy --prod` na raiz do repositório.
+- Banco e imagens no Supabase (projeto `sala-dos-buscadores-homolog`, São Paulo); site na Vercel (projeto `sala-dos-buscadores`, `https://sala-dos-buscadores.vercel.app`, funções em `gru1` por `vercel.json`). O projeto da Vercel usa `portal` como diretório raiz e sobe o repositório inteiro, porque o `prebuild` confere `../design-system`; o `.vercelignore` da raiz deixa de fora os `.env*` e o material de referência.
+- Variáveis locais só em `portal/.env.local` (fora do Git); o site usa as variáveis cadastradas na Vercel. `DATABASE_URL` aponta para o pooler em modo transação (porta 6543); o modo sessão (5432) aceita só 15 clientes e esgota com as instâncias da Vercel.
+- Seed: `npm run db:seed`, que lê o `.env.local`. Deploy: `vercel deploy --prod` na raiz do repositório.
 
 ## Estrutura
 
