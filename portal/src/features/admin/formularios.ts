@@ -55,6 +55,8 @@ export interface FormArtigo {
   situacaoJuridica: SituacaoJuridica | null;
   temaDivergente: boolean;
   notaDivergencia: string;
+  imagemCard: string | null;
+  thumb: string | null;
 }
 
 export interface FormVideo {
@@ -119,6 +121,8 @@ export function artigoVazio(sala: SalaSlug | "" = ""): FormArtigo {
     situacaoJuridica: null,
     temaDivergente: false,
     notaDivergencia: "",
+    imagemCard: null,
+    thumb: null,
   };
 }
 
@@ -188,6 +192,8 @@ export function artigoParaForm(c: ConteudoEditorial, citacao?: Citacao): FormArt
     situacaoJuridica: c.situacaoJuridica ? { ...c.situacaoJuridica } : null,
     temaDivergente: c.temaDivergente,
     notaDivergencia: c.notaDivergencia,
+    imagemCard: c.midias?.card ?? null,
+    thumb: c.midias?.thumb ?? null,
   };
 }
 

@@ -6,6 +6,7 @@ import { Alerta } from "@/components/ds/Alerta";
 import { BlocoCitacao } from "@/components/ds/BlocoCitacao";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { Button } from "@/components/ds/Button";
+import { CampoImagem } from "@/components/ds/CampoImagem";
 import { CampoTexto, Checkbox } from "@/components/ds/Campos";
 import { AreaTexto, RadioGrupo } from "@/components/ds/CamposExtras";
 import { Chip } from "@/components/ds/Chip";
@@ -581,6 +582,32 @@ export function EditorArtigo({
                     }))}
                     somenteLeitura={arquivado}
                     onChange={(corpo) => mudar({ corpo }, ...errosDoCorpoResolvidos(erros, corpo))}
+                  />
+                </div>
+              </section>
+
+              <section className="sdb-material sdb-panel" aria-labelledby="sec-imagens">
+                <h2 id="sec-imagens" className="sdb-headline">
+                  Imagens
+                </h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <CampoImagem
+                    id="campo-imagem-card"
+                    label="Imagem do card"
+                    opcional
+                    help="Aparece no card do artigo. Sem ela, a imagem da Sala."
+                    valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
+                    disabled={arquivado}
+                    onMudar={(img) => mudar({ imagemCard: img?.id ?? null })}
+                  />
+                  <CampoImagem
+                    id="campo-imagem-thumb"
+                    label="Imagem de topo"
+                    opcional
+                    help="Topo da página do artigo. Sem ela, a imagem do card."
+                    valor={form.thumb ? { id: form.thumb, url: `/midia/${form.thumb}` } : null}
+                    disabled={arquivado}
+                    onMudar={(img) => mudar({ thumb: img?.id ?? null })}
                   />
                 </div>
               </section>

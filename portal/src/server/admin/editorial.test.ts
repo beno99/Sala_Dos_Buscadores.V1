@@ -188,4 +188,25 @@ describe("curadoria no servidor", () => {
     expect(r.ok).toBe(true);
     expect(acervo().conteudos.get("c-sete-principios-hermeticos")?.corpo).toEqual(original.corpo);
   });
+
+  it("imagem do card e de topo: a da curadoria entra no artigo; a de outra conta é ignorada", async () => {
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
+    const minha = await guardarImagem(png, "admin-1");
+    const alheia = await guardarImagem(png, "outra-conta");
+    if (!minha.ok || !alheia.ok) throw new Error("upload");
+    const r = salvarArtigo(
+      { ...artigoCompleto(), imagemCard: minha.id, thumb: alheia.id },
+      QUEM,
+      "manual",
+      "admin-1",
+    );
+    if (!r.ok) throw new Error(r.mensagem);
+    const salvo = acervo().conteudos.get(r.valor.id);
+    expect(salvo).toMatchObject({ imagem: `/midia/${minha.id}`, midias: { card: minha.id } });
+    expect(salvo?.thumb).toBeUndefined();
+    expect(artigoParaForm(salvo as NonNullable<typeof salvo>)).toMatchObject({
+      imagemCard: minha.id,
+      thumb: null,
+    });
+  });
 });

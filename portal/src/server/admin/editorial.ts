@@ -31,7 +31,7 @@ import { gerarSlug, slugUnico, validarSlug } from "@/features/admin/regras/slug"
 import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtube";
 import { plural } from "@/lib/texto";
 import { registrar } from "../auditoria";
-import { conferirImagensDoCorpo } from "../midia";
+import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { acervo, auditoriaBruta } from "../store";
 import { podarDestaques } from "./destaques";
 import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
@@ -144,6 +144,7 @@ function montarArtigo(
   anterior: ConteudoEditorial | undefined,
   quem: string,
   corpo: BlocoCorpo[],
+  donoId?: string,
 ): ConteudoEditorial {
   const id = anterior?.id ?? f.id ?? novoId("c");
   const sala = f.sala as ConteudoEditorial["sala"];
@@ -212,6 +213,13 @@ function montarArtigo(
     producaoIA: Boolean(f.producaoIA),
   };
   if (citacao) artigo.citacao = citacao;
+  const midia = (nova: string | null, atual?: string) =>
+    nova && nova === atual ? atual : nova && donoId ? midiaDoDono(nova, donoId) : undefined;
+  const card = midia(f.imagemCard, anterior?.midias?.card);
+  const thumb = midia(f.thumb, anterior?.midias?.thumb);
+  if (card || thumb) artigo.midias = { ...(card ? { card } : {}), ...(thumb ? { thumb } : {}) };
+  if (card) artigo.imagem = urlDaMidia(card);
+  if (thumb) artigo.thumb = urlDaMidia(thumb);
   return artigo;
 }
 
@@ -253,7 +261,7 @@ export function salvarArtigo(
     }
   }
 
-  const artigo = montarArtigo(f, anterior, quem, imagens.corpo);
+  const artigo = montarArtigo(f, anterior, quem, imagens.corpo, donoId);
   acervo().conteudos.set(artigo.id, artigo);
 
   if (!anterior) {

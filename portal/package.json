@@ -32,6 +32,7 @@
     "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "@aws-sdk/client-s3": "^3.913.0",
     "bcryptjs": "^3.0.2",
     "drizzle-orm": "^0.44.7",
@@ -39,7 +40,8 @@
     "pg": "^8.16.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
