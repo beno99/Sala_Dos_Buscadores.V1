@@ -1,6 +1,4 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { salaPorSlug } from "@/data/catalogo";
 import { acervoPublico } from "@/data/repositorio";
@@ -128,51 +126,79 @@ export function montarResposta(
   };
 }
 
-const servicoClaude: ServicoAssistente = {
+const ESQUEMA = {
+  type: "object",
+  properties: {
+    semFonte: { type: "boolean" },
+    trechos: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          tipo: { type: "string", enum: ["doc", "editorial", "ai"] },
+          texto: { type: "string" },
+          refs: { type: "array", items: { type: "integer" } },
+        },
+        required: ["tipo", "texto", "refs"],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ["semFonte", "trechos"],
+  additionalProperties: false,
+};
+
+const ERRO_GERAL = "Erro: não foi possível consultar o acervo agora. Tente novamente.";
+
+const servicoGrok: ServicoAssistente = {
   async consultar(pedido, { signal }) {
     const docs = documentosDoEscopo(pedido.escopo);
     const modo = MODOS_ESTUDO[pedido.modo];
+    let r: Response;
     try {
-      const r = await new Anthropic().beta.messages.parse(
-        {
-          model: "claude-opus-5-5",
-          max_tokens: 16000,
-          betas: ["server-side-fallback-2026-07-01"],
-          fallbacks: "default",
-          output_config: { effort: "medium", format: betaZodOutputFormat(Saida) },
-          system: [{ type: "text", text: SISTEMA }],
+      r = await fetch("https://api.x.ai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.XAI_API_KEY}` },
+        body: JSON.stringify({
+          model: "grok-4.7",
           messages: [
+            { role: "system", content: SISTEMA },
+            { role: "user", content: `Documentos do acervo:\n\n${blocoDeDocumentos(docs)}` },
             {
               role: "user",
-              content: [
-                {
-                  type: "text",
-                  text: `Documentos do acervo:\n\n${blocoDeDocumentos(docs)}`,
-                  cache_control: { type: "ephemeral" },
-                },
-                {
-                  type: "text",
-                  text: `Modo de estudo: ${modo.nome}. ${modo.descricao}\n\nPergunta: ${pedido.pergunta}`,
-                },
-              ],
+              content: `Modo de estudo: ${modo.nome}. ${modo.descricao}\n\nPergunta: ${pedido.pergunta}`,
             },
           ],
-        },
-        { signal },
-      );
-      if (r.stop_reason === "refusal" || !r.parsed_output)
-        return {
-          ok: false,
-          erro: "Erro: o assistente não conseguiu responder a esta pergunta. Reformule e tente de novo.",
-        };
-      return { ok: true, resposta: montarResposta(pedido, docs, r.parsed_output) };
+          response_format: {
+            type: "json_schema",
+            json_schema: { name: "resposta_do_acervo", schema: ESQUEMA, strict: true },
+          },
+        }),
+        signal,
+      });
     } catch (e) {
-      if (e instanceof Anthropic.APIUserAbortError) throw e;
-      if (e instanceof Anthropic.RateLimitError)
-        return { ok: false, erro: "Erro: muitas perguntas ao mesmo tempo. Espere um pouco e tente de novo." };
-      if (e instanceof Anthropic.AuthenticationError) return { ok: false, erro: ASSISTENTE_INDISPONIVEL };
-      return { ok: false, erro: "Erro: não foi possível consultar o acervo agora. Tente novamente." };
+      if (signal.aborted) throw e;
+      return { ok: false, erro: ERRO_GERAL };
     }
+    if (r.status === 429)
+      return { ok: false, erro: "Erro: muitas perguntas ao mesmo tempo. Espere um pouco e tente de novo." };
+    if (r.status === 401 || r.status === 403) return { ok: false, erro: ASSISTENTE_INDISPONIVEL };
+    if (!r.ok) return { ok: false, erro: ERRO_GERAL };
+    const corpo = (await r.json()) as {
+      choices?: { message?: { content?: string | null; refusal?: string | null } }[];
+    };
+    const mensagem = corpo.choices?.[0]?.message;
+    let json: unknown = null;
+    try {
+      json = JSON.parse(mensagem?.content ?? "");
+    } catch {}
+    const saida = Saida.safeParse(json);
+    if (mensagem?.refusal || !saida.success)
+      return {
+        ok: false,
+        erro: "Erro: o assistente não conseguiu responder a esta pergunta. Reformule e tente de novo.",
+      };
+    return { ok: true, resposta: montarResposta(pedido, docs, saida.data) };
   },
 };
 
@@ -182,6 +208,4 @@ const indisponivel: ServicoAssistente = {
   },
 };
 
-export const servicoAssistente: ServicoAssistente = process.env.ANTHROPIC_API_KEY
-  ? servicoClaude
-  : indisponivel;
+export const servicoAssistente: ServicoAssistente = process.env.XAI_API_KEY ? servicoGrok : indisponivel;

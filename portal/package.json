@@ -32,7 +32,6 @@
     "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.133.0",
     "@aws-sdk/client-s3": "^3.913.0",
     "bcryptjs": "^3.0.2",
     "drizzle-orm": "^0.44.7",
