@@ -49,7 +49,7 @@ import { agora, comPosse, erro, falha, hoje, novoId, ok, type ResultadoAcao } fr
  * histórico de auditoria.
  */
 
-const TEMAS_VALIDOS = new Set<string>(todosOsTemas().map((t) => t.slug));
+const temaValido = (slug: string) => todosOsTemas().some((t) => t.slug === slug);
 
 export function perfilDe(contaId: string): PerfilAnfitriao | undefined {
   return acervo().perfis.get(contaId);
@@ -223,7 +223,7 @@ export function salvarArtigo(
     const erros = { ...validarArtigoParaSalvar(f), ...imagens.erros };
     const erroFontes = conferirFontes(f.fontes, dono.id);
     if (erroFontes) erros["campo-fontes"] = erroFontes;
-    if (f.temas.some((t) => !TEMAS_VALIDOS.has(t))) erros["campo-temas"] = "escolha os temas da lista.";
+    if (f.temas.some((t) => !temaValido(t))) erros["campo-temas"] = "escolha os temas da lista.";
     if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
 
     let status: StatusEditorial = "rascunho";

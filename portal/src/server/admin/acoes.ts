@@ -96,6 +96,10 @@ export async function mudarStatusVideoAcao(id: string, acao: AcaoStatus) {
   return comAdmin((quem) => editorial.mudarStatusVideo(id, acao, quem));
 }
 
+export async function criarTemaAcao(nome: string) {
+  return comAdmin((quem) => editorial.criarTema(nome, quem));
+}
+
 export async function salvarFonteAcao(form: FormFonte) {
   return comAdmin((quem) => editorial.salvarFonte(form, quem));
 }

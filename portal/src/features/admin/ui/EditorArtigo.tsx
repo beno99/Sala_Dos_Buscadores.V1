@@ -30,9 +30,10 @@ import type {
   SalaSlug,
   SituacaoJuridica,
   StatusEditorial,
+  Tema,
 } from "@/data/types";
 import { normalizar } from "@/lib/texto";
-import { salvarArtigoAcao, salvarFonteAcao } from "@/server/admin/acoes";
+import { criarTemaAcao, salvarArtigoAcao, salvarFonteAcao } from "@/server/admin/acoes";
 import { type FormArtigo, type FormFonte, fonteVazia, type TipoArtigo } from "../formularios";
 import {
   checklistArtigo,
@@ -260,6 +261,28 @@ export function EditorArtigo({
       "campo-temas",
     );
 
+  const [novoTema, setNovoTema] = useState("");
+  const [erroNovoTema, setErroNovoTema] = useState<string>();
+  const [criandoTema, setCriandoTema] = useState(false);
+  const [temasCriados, setTemasCriados] = useState<Tema[]>([]);
+  const temas = [
+    ...todosOsTemas(),
+    ...temasCriados.filter((n) => !todosOsTemas().some((t) => t.slug === n.slug)),
+  ];
+  const adicionarTema = async () => {
+    setCriandoTema(true);
+    const r = await criarTemaAcao(novoTema);
+    setCriandoTema(false);
+    if (!r.ok) {
+      setErroNovoTema(r.erros?.["campo-novo-tema"] ?? r.mensagem.replace(/^Erro: /, ""));
+      return;
+    }
+    setTemasCriados((x) => [...x, r.valor]);
+    if (!form.temas.includes(r.valor.slug)) mudar({ temas: [...form.temas, r.valor.slug] }, "campo-temas");
+    setNovoTema("");
+    toast(r.mensagem);
+  };
+
   const mudarSituacao = (tipo: TipoSituacao) => {
     const anterior = form.situacaoJuridica;
     const nova: SituacaoJuridica =
@@ -428,10 +451,11 @@ export function EditorArtigo({
                 >
                   <legend className="sdb-caption">Temas</legend>
                   <p id="campo-temas-ajuda" className="sdb-help">
-                    Ao menos um. São os temas transversais que alimentam a busca comparativa.
+                    Ao menos um. São os temas transversais que alimentam a busca comparativa. Se faltar um,
+                    crie abaixo: ele passa a valer para todo o acervo e já fica marcado neste artigo.
                   </p>
                   <div className="sdb-row">
-                    {todosOsTemas().map((t) => (
+                    {temas.map((t) => (
                       <Chip
                         key={t.slug}
                         small
@@ -443,6 +467,40 @@ export function EditorArtigo({
                     ))}
                   </div>
                   {erros["campo-temas"] && <ErroCampo id="campo-temas-erro" texto={erros["campo-temas"]} />}
+                  {!arquivado && (
+                    <div className="flex items-end gap-2">
+                      <div className="min-w-0 flex-1">
+                        <CampoTexto
+                          id="campo-novo-tema"
+                          label="Novo tema"
+                          placeholder="Ex.: Sabedoria"
+                          maxLength={40}
+                          value={novoTema}
+                          error={erroNovoTema}
+                          onChange={(e) => {
+                            setNovoTema(e.target.value);
+                            setErroNovoTema(undefined);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key !== "Enter") return;
+                            e.preventDefault();
+                            if (novoTema.trim() && !criandoTema) void adicionarTema();
+                          }}
+                        />
+                      </div>
+                      <Button
+                        variant="tinted"
+                        icon="mais"
+                        loading={criandoTema}
+                        aria-disabled={!novoTema.trim()}
+                        onClick={() => {
+                          if (novoTema.trim() && !criandoTema) void adicionarTema();
+                        }}
+                      >
+                        Adicionar tema
+                      </Button>
+                    </div>
+                  )}
                 </fieldset>
                 <RadioGrupo<`${Nivel}`>
                   id="campo-nivel"

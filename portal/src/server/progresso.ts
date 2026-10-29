@@ -28,8 +28,6 @@ export function progressoDe(contaId: string): ProgressoEstudo {
   return doMembro(contaId);
 }
 
-const TEMAS = new Set<string>(todosOsTemas().map((t) => t.slug));
-
 export interface ResultadoEvento {
   /** Conquistas obtidas agora. */
   novas: ConquistaId[];
@@ -77,7 +75,7 @@ export function registrarEvento(
       break;
     }
     case "comparacao": {
-      if (!TEMAS.has(evento.tema)) return null;
+      if (!todosOsTemas().some((t) => t.slug === evento.tema)) return null;
       if (p.temasComparados.includes(evento.tema)) mudouResumo = false;
       else p.temasComparados.push(evento.tema);
       break;

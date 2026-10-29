@@ -9,6 +9,7 @@ import { CITACOES } from "@/data/semente/citacoes";
 import { CONTEUDOS } from "@/data/semente/conteudos";
 import { FONTES } from "@/data/semente/fontes";
 import { SALAS } from "@/data/semente/salas";
+import { TEMAS } from "@/data/semente/temas";
 import type { Gravacao } from "@/modules/acervo/acervo.contratos";
 import { acervoRepositorio } from "@/modules/acervo/acervo.repositorio";
 import { CUSTO_BCRYPT, novoIdConta } from "@/modules/conta/casos-de-uso/registrar";
@@ -33,6 +34,14 @@ async function criarAdmin({ email, senha }: { email: string; senha: string }, re
 function gravacoesDoAcervo(): Gravacao[] {
   const g: Gravacao[] = [];
   const dia = (d: string) => `${d}T09:00:00.000Z`;
+  TEMAS.forEach((t, i) => {
+    g.push({
+      tipo: "gravar",
+      colecao: "temas",
+      id: t.slug,
+      valor: { ...t, criadoEm: `2026-06-01T09:00:0${i}.000Z`, criadoPor: AUTOR },
+    });
+  });
   for (const s of SALAS) {
     g.push({
       tipo: "gravar",

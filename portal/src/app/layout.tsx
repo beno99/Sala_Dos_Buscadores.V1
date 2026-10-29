@@ -21,7 +21,7 @@ import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";
 import { COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie, temaDoCookie } from "@/features/aparencia/tema";
 import { membroAtual } from "@/server/sessao";
-import { leiturasParaAssistente, salasVisiveis } from "@/server/store";
+import { leiturasParaAssistente, salasVisiveis, temasDoAcervo } from "@/server/store";
 
 export const metadata: Metadata = {
   title: { default: "A Sala dos Buscadores", template: "%s · A Sala dos Buscadores" },
@@ -61,6 +61,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <Providers
           membro={membro}
           salas={salasVisiveis()}
+          temas={temasDoAcervo()}
           leituras={leiturasParaAssistente().filter((l) =>
             salasVisiveis().some((s) => s.slug === l.sala && s.naComparacao),
           )}

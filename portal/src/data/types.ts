@@ -19,7 +19,7 @@ export type TipoConteudo = "artigo" | "fonte-primaria" | "verbete" | "video";
 /** Placa da marca usada como fundo de mídia (cards de Sala, vídeo e grade). */
 export type Placa = "bordo" | "grafite" | "bege";
 
-export type TemaSlug = "morte" | "alma" | "meditacao" | "origem-do-universo" | "conhecimento-interior";
+export type TemaSlug = string;
 
 /**
  * Endereço de uma Sala. As oficiais vêm do acervo de demonstração; as de
@@ -43,6 +43,11 @@ export interface Tema {
   nome: string;
   /** Termos que, digitados na busca, levam a este tema (sem acento, minúsculos). */
   sinonimos: string[];
+}
+
+export interface TemaEditorial extends Tema {
+  criadoEm: string;
+  criadoPor: string;
 }
 
 export interface Sala {
@@ -400,7 +405,8 @@ export type TipoItemAuditado =
   | "sala"
   | "usuario"
   | "candidatura"
-  | "convite";
+  | "convite"
+  | "tema";
 
 export type AcaoAuditada =
   | "criou"

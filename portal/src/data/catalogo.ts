@@ -1,6 +1,5 @@
 import { COMPARACOES } from "./referencia/comparacoes";
 import { GLOSSARIO } from "./referencia/glossario";
-import { TEMAS } from "./referencia/temas";
 import type { Comparacao, Sala, SalaSlug, Tema, TemaSlug, Verbete } from "./types";
 
 /*
@@ -50,12 +49,19 @@ export function salasNaComparacao(): Sala[] {
   return todasAsSalas().filter((s) => s.naComparacao);
 }
 
+const CHAVE_TEMAS = Symbol.for("sala-dos-buscadores.registro-temas");
+type ComTemas = typeof globalThis & { [CHAVE_TEMAS]?: () => Tema[] };
+
+export function instalarRegistroTemas(fonte: () => Tema[]): void {
+  (globalThis as ComTemas)[CHAVE_TEMAS] = fonte;
+}
+
 export function todosOsTemas(): Tema[] {
-  return TEMAS;
+  return (globalThis as ComTemas)[CHAVE_TEMAS]?.() ?? [];
 }
 
 export function temaPorSlug(slug: string): Tema | undefined {
-  return TEMAS.find((t) => t.slug === slug);
+  return todosOsTemas().find((t) => t.slug === slug);
 }
 
 export function verbetesDaSala(sala: SalaSlug): Verbete[] {

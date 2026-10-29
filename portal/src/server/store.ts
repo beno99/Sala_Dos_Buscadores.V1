@@ -1,5 +1,5 @@
 import "server-only";
-import { instalarRegistroSalas } from "@/data/catalogo";
+import { instalarRegistroSalas, instalarRegistroTemas } from "@/data/catalogo";
 import type {
   Candidatura,
   Citacao,
@@ -12,6 +12,8 @@ import type {
   RegistroAuditoria,
   Sala,
   SalaEditorial,
+  Tema,
+  TemaEditorial,
   VideoEditorial,
 } from "@/data/types";
 import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilidade";
@@ -94,6 +96,7 @@ export interface Acervo {
   convites: Map<string, Convite>;
   /** Imagens enviadas (metadados; os bytes ficam no armazenamento S3). */
   midias: Map<string, MidiaGuardada>;
+  temas: Map<string, TemaEditorial>;
 }
 
 interface Store {
@@ -162,6 +165,7 @@ function montar(d: DadosCarregados): Store {
     candidaturas: new MapPersistido("candidaturas", c.candidaturas),
     convites: new MapPersistido("convites", c.convites),
     midias: new MapPersistido("midias", c.midias),
+    temas: new MapPersistido("temas", c.temas),
   };
   Object.defineProperty(acervo, "destaques", {
     enumerable: true,
@@ -267,7 +271,14 @@ aoMudarConta((membro) => estado().store?.contas.set(membro.id, membro));
 
 // O catálogo (src/data/catalogo.ts) lê as Salas visíveis daqui, no servidor; o assistente, as leituras.
 instalarRegistroSalas(salasVisiveis);
+instalarRegistroTemas(temasDoAcervo);
 instalarLeiturasDoAssistente(leiturasParaAssistente);
+
+export function temasDoAcervo(): Tema[] {
+  return [...store().acervo.temas.values()]
+    .sort((a, b) => a.criadoEm.localeCompare(b.criadoEm) || a.nome.localeCompare(b.nome, "pt-BR"))
+    .map(({ slug, nome, sinonimos }) => ({ slug, nome, sinonimos: [...sinonimos] }));
+}
 
 export function acervo(): Acervo {
   return store().acervo;

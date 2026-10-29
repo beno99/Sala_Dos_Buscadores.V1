@@ -18,7 +18,7 @@ import { perfisBuscador, progressoEstudo } from "@/modules/estudo/estudo.schema"
 import { midias } from "@/modules/midia/midia.schema";
 import { auditoria, emailsEnviados } from "@/modules/operacao/operacao.schema";
 import type { AcervoRepositorio, Colecoes, DadosCarregados, NomeColecao } from "./acervo.contratos";
-import { citacoes, conteudos, destaques, fontes, salas, videos } from "./acervo.schema";
+import { citacoes, conteudos, destaques, fontes, salas, temas, videos } from "./acervo.schema";
 
 /* Implementação Postgres do repositório do acervo. */
 
@@ -85,6 +85,7 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
     deLinha: (l) => [String(l.usuarioId), l.dados as Colecoes["progresso"]],
   },
   perfisBuscador: mapaDireto(perfisBuscador, perfisBuscador.usuarioId, { omitir: ["usuarioId"] }),
+  temas: mapaDireto(temas, temas.slug),
 };
 
 async function lerVersao(): Promise<number> {

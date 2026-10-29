@@ -170,6 +170,13 @@ erDiagram
     integer id PK "linha única"
     jsonb escolha "vagas da curadoria"
   }
+  temas {
+    text slug PK
+    text nome
+    text_arr sinonimos "termos da busca, sem acento"
+    text criado_em
+    text criado_por
+  }
 ```
 
 ## Anfitriões (`modules/anfitriao`)

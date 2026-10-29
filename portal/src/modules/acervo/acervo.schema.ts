@@ -148,6 +148,14 @@ export const videos = pgTable("videos", {
   ...meta,
 }).enableRLS();
 
+export const temas = pgTable("temas", {
+  slug: text("slug").primaryKey(),
+  nome: text("nome").notNull(),
+  sinonimos: text("sinonimos").array().notNull(),
+  criadoEm: text("criado_em").notNull(),
+  criadoPor: text("criado_por").notNull(),
+}).enableRLS();
+
 export const fontes = pgTable("fontes", {
   id: text("id").primaryKey(),
   titulo: text("titulo").notNull(),

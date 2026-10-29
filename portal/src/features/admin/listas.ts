@@ -69,7 +69,6 @@ const um = <T extends string>(v: string, validos: readonly T[]): T | "" =>
 const ORDENS = ["atualizado-desc", "atualizado-asc", "titulo-asc", "titulo-desc"] as const;
 /** Salas não são fixas: o slug só precisa ter o formato de endereço. */
 const slugDeSala = (v: string): SalaSlug | "" => (/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v) ? v : "");
-const TEMAS = ["morte", "alma", "meditacao", "origem-do-universo", "conhecimento-interior"] as const;
 const STATUS = ["rascunho", "em_revisao", "publicado", "reprovado", "arquivado"] as const;
 const PROVENIENCIAS = ["primaria", "curado", "especialista", "comunidade", "ia"] as const;
 
@@ -85,7 +84,7 @@ export function lerFiltrosArtigos(p: Params): FiltrosArtigos {
     status: um(ler(p, "status"), STATUS),
     proveniencia: um(ler(p, "proveniencia"), PROVENIENCIAS),
     nivel: nivel(ler(p, "nivel")),
-    tema: um(ler(p, "tema"), TEMAS),
+    tema: slugDeSala(ler(p, "tema")),
     ordem: ordem(ler(p, "ordem")),
     pagina: pagina(ler(p, "pagina")),
   };
@@ -95,7 +94,7 @@ export function lerFiltrosVideos(p: Params): FiltrosVideos {
   return {
     q: ler(p, "q").slice(0, 120),
     sala: slugDeSala(ler(p, "sala")),
-    tema: um(ler(p, "tema"), TEMAS),
+    tema: slugDeSala(ler(p, "tema")),
     nivel: nivel(ler(p, "nivel")),
     status: um(ler(p, "status"), STATUS),
     ordem: ordem(ler(p, "ordem")),

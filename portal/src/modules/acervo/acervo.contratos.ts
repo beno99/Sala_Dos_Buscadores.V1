@@ -9,6 +9,7 @@ import type {
   PerfilAnfitriao,
   RegistroAuditoria,
   SalaEditorial,
+  TemaEditorial,
   VideoEditorial,
 } from "@/data/types";
 import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
@@ -52,6 +53,7 @@ export interface Colecoes {
   midias: MidiaGuardada;
   progresso: ProgressoEstudo;
   perfisBuscador: PerfilBuscador;
+  temas: TemaEditorial;
 }
 
 export type NomeColecao = keyof Colecoes;

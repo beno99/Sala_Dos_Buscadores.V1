@@ -9,6 +9,8 @@ import type {
   FonteEditorial,
   SituacaoJuridica,
   StatusEditorial,
+  Tema,
+  TemaEditorial,
   VideoEditorial,
 } from "@/data/types";
 import {
@@ -29,7 +31,7 @@ import {
 import { rotuloSituacao } from "@/features/admin/regras/csv";
 import { gerarSlug, slugUnico, validarSlug } from "@/features/admin/regras/slug";
 import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtube";
-import { plural } from "@/lib/texto";
+import { normalizar, plural } from "@/lib/texto";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { acervo, auditoriaBruta } from "../store";
@@ -47,6 +49,38 @@ export type ResultadoAcao<T = undefined> =
   | { ok: false; mensagem: string; erros?: Record<string, string>; pendencias?: ItemChecklist[] };
 
 export type ModoSalvar = "automatico" | "manual";
+
+export function criarTema(nome: string, quem: string): ResultadoAcao<Tema> {
+  const limpo = nome.trim().replace(/\s+/g, " ");
+  if (limpo.length < 3 || limpo.length > 40)
+    return falha("Erro: confira o nome do tema.", { "campo-novo-tema": "use de 3 a 40 caracteres." });
+  const slug = gerarSlug(limpo);
+  if (!slug) return falha("Erro: confira o nome do tema.", { "campo-novo-tema": "use letras ou números." });
+  const publico = ({ slug, nome, sinonimos }: TemaEditorial): Tema => ({
+    slug,
+    nome,
+    sinonimos: [...sinonimos],
+  });
+  const existente = [...acervo().temas.values()].find(
+    (t) => t.slug === slug || normalizar(t.nome) === normalizar(limpo),
+  );
+  if (existente)
+    return {
+      ok: true,
+      valor: publico(existente),
+      mensagem: `O tema “${existente.nome}” já existe e foi marcado.`,
+    };
+  const tema: TemaEditorial = {
+    slug,
+    nome: limpo,
+    sinonimos: [normalizar(limpo)],
+    criadoEm: agora(),
+    criadoPor: quem,
+  };
+  acervo().temas.set(slug, tema);
+  registrar({ quem, acao: "criou", tipoItem: "tema", itemId: slug, itemTitulo: limpo });
+  return { ok: true, valor: publico(tema), mensagem: `Tema “${limpo}” criado.` };
+}
 export type AcaoStatus = "publicar" | "despublicar" | "arquivar" | "restaurar";
 
 const agora = () => new Date().toISOString();
