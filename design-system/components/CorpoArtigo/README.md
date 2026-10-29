@@ -23,7 +23,7 @@ Ritmo: `--space-5` entre blocos; intertítulo, destaque e imagem ganham mais res
 `article.sdb-article` organiza a página:
 - `h1.sdb-large-title.sdb-article__title`: o título, nunca truncado.
 - `.sdb-article__byline`: a [Autoria do conteúdo](../AutoriaConteudo/README.md).
-- `.sdb-article__body`: o corpo (até 46rem, alinhado à esquerda; o que sobra fica à direita).
+- `.sdb-article__body`: o corpo (até 46rem, centralizado na coluna junto com o título; o texto continua alinhado à esquerda).
 - `aside.sdb-article__extras`: blocos `section.sdb-article__block` ("Vídeos do assunto" em `.sdb-article__videos`, "Trecho de fonte primária", "Fontes" em `.sdb-article__stack`), com `--space-8` entre eles. Cada bloco some quando está vazio.
 
 A ordem no HTML é título, autoria, texto e extras: é a ordem do leitor de tela e do celular. No desktop a grade usa as áreas `"autor titulo" "autor texto" "extras texto"` e as linhas `auto auto 1fr`, então o título fica alinhado ao topo da autoria e os extras começam logo abaixo dos dados. Lateral de 20rem, `--space-8` entre as colunas.

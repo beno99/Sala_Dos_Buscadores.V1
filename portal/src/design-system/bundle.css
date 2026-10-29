@@ -1867,11 +1867,11 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 /* ---------- Corpo do artigo (CorpoArtigo) ----------
    Blocos na ordem gravada: lead, parágrafo, intertítulo, destaque e imagem, com --space-5 entre eles
    e um pouco mais antes de intertítulo, destaque e imagem. Inclui a leitura em duas colunas
-   (.sdb-article): autoria e extras à esquerda (20rem), título e texto à direita (até 46rem). */
+   (.sdb-article): autoria e extras à esquerda (20rem), título e texto centralizados na coluna da direita (até 46rem). */
 .sdb-article { display: grid; grid-template-columns: 20rem minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "autor titulo" "autor texto" "extras texto"; gap: var(--space-5) var(--space-8); align-items: start; min-width: 0; }
-.sdb-article__title { grid-area: titulo; max-width: 46rem; margin: 0; overflow-wrap: anywhere; }
+.sdb-article__title { grid-area: titulo; justify-self: center; width: 100%; max-width: 46rem; margin: 0; overflow-wrap: anywhere; }
 .sdb-article__byline { grid-area: autor; }
-.sdb-article__body { grid-area: texto; max-width: 46rem; min-width: 0; }
+.sdb-article__body { grid-area: texto; justify-self: center; width: 100%; max-width: 46rem; min-width: 0; }
 .sdb-article__extras { grid-area: extras; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; padding-top: var(--space-5); }
 .sdb-article__block { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .sdb-article__block > h2 { margin: 0; }
