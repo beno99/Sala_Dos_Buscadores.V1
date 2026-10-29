@@ -640,6 +640,10 @@ function initFormatacao(bar) {
     if ('alinhamento' in bar._bloco) bar._bloco.alinhamento='esquerda';
     escrever(limparMarcacoes(campo.value,campo.selectionStart,campo.selectionEnd));
   });
+  if (bar.hasAttribute('data-fmt-inline')) {
+    const seps = bar.querySelectorAll(':scope > .sdb-fmt__sep');
+    for (const el of [estilo, ...Object.values(listas), grupo, seps[0], seps[1], seps[2]]) el.hidden = true;
+  }
   function escrever(edicao) {
     campo.focus(); campo.setSelectionRange(edicao.inicio,edicao.fim);
     let entrada = false;
@@ -707,7 +711,7 @@ function initFormatacao(bar) {
     if (marca && (e.metaKey || e.ctrlKey) && !e.altKey) {e.preventDefault();e.stopPropagation();marcar(marca);}
   });
   estilo.tabIndex = -1;
-  const controles=Array.from(bar.querySelectorAll('select,button')).filter(b => !b.closest('[role=menu]') && !b.disabled);
+  const controles=Array.from(bar.querySelectorAll('select,button')).filter(b => !b.closest('[role=menu]') && !b.closest('[hidden]') && !b.disabled);
   controles.forEach((b,i) => {b.tabIndex=i ? -1 : 0;});
   bar.addEventListener('focusin',e => {if(controles.includes(e.target)) controles.forEach(b => {b.tabIndex=b === e.target ? 0 : -1;});});
   bar.addEventListener('keydown',e => {

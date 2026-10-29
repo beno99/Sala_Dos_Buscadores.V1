@@ -53,7 +53,7 @@ O runtime monta os controles com as classes da biblioteca. `data-fmt-bloco` acei
 
 A ordem é estilo · ênfase · listas · alinhamento · inserir e limpar. Termo, Obra e Citar fonte usam palavras; os demais usam ícones Phosphor. Sem fontes, Citar fonte usa `aria-disabled` e continua alcançável pelas setas para explicar “Escolha uma obra em Fontes”.
 
-`data-fmt-inline` fixa a estrutura em um parágrafo: variante para descrição da Sala e apresentação do anfitrião. Estilo, listas e alinhamento ficam indisponíveis; nunca são guardados como sinais na string. No React, é `AreaTexto formatacao`.
+`data-fmt-inline` fixa a estrutura em um parágrafo: variante para descrição da Sala e apresentação do anfitrião. Estilo, listas e alinhamento não aparecem (ficam ocultos e fora da navegação por teclado); nunca são guardados como sinais na string. No React, é `AreaTexto formatacao`. A pré-visualização quebra palavras longas para não vazar do campo.
 
 - Um Tab entra na barra; setas esquerda/direita, Home e End navegam. Setas verticais continuam disponíveis no select e no menu nativos.
 - `aria-pressed` acompanha o cursor e a seleção, inclusive dentro de uma marca. Acionar de novo remove a marca completa.

@@ -1065,6 +1065,7 @@ li.is-done .sdb-mark .sdb-icon path { stroke: currentColor; stroke-width: 10; st
 .sdb-control .sdb-fmt__estilo { appearance: auto; max-width: 100%; }
 .sdb-fmt__btn--icone { padding: 0; }
 .sdb-fmt__grupo { display: flex; gap: var(--space-1); }
+.sdb-fmt [hidden] { display: none; }
 @media (hover: hover) { .sdb-fmt__btn:hover, .sdb-fmt__estilo:hover { background: var(--fill); } }
 .sdb-fmt__btn:active { transform: scale(var(--fmt-press-scale)); transition-duration: var(--duration-press); }
 .sdb-fmt__btn[aria-pressed="true"] { background: var(--thumb); color: var(--accent); box-shadow: var(--shadow-card); }
@@ -1098,7 +1099,7 @@ li.is-done .sdb-mark .sdb-icon path { stroke: currentColor; stroke-width: 10; st
 .sdb-editor__bar cite { font-style: italic; }
 .sdb-editor__tools { display: flex; flex-direction: column; gap: 4px; }
 .sdb-editor__up { transform: rotate(180deg); }
-.sdb-editor__preview { margin: 0; padding: 8px 16px; border-radius: var(--radius-sm); background: var(--fill); font-family: var(--font-reading); font-size: 16px; line-height: 1.55; color: var(--label); }
+.sdb-editor__preview { margin: 0; padding: 8px 16px; border-radius: var(--radius-sm); background: var(--fill); font-family: var(--font-reading); font-size: 16px; line-height: 1.55; color: var(--label); min-width: 0; overflow-wrap: anywhere; }
 .sdb-editor__preview dfn { font-style: italic; font-weight: 600; color: var(--accent); }
 .sdb-editor__preview:empty::before { content: "A pré-visualização aparece aqui."; color: var(--label-tertiary); }
 @media (max-width: 560px) {

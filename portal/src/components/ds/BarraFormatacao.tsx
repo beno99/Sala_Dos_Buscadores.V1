@@ -192,106 +192,116 @@ export function BarraFormatacao({
           });
       }}
     >
-      <select
-        className="sdb-fmt__estilo"
-        tabIndex={-1}
-        aria-label={`Estilo do ${alvo}`}
-        value={
-          bloco?.tipo === "intertitulo"
-            ? `titulo-${bloco.nivel ?? 2}`
-            : bloco?.tipo === "destaque"
-              ? "destaque"
-              : bloco?.tipo === "lista"
-                ? bloco.ordenada
-                  ? "numerada"
-                  : "lista"
-                : "paragrafo"
-        }
-        disabled={desabilitada || !onBloco}
-        onChange={(e) => converter(e.target.value)}
-      >
-        <option value="paragrafo">Parágrafo</option>
-        <option value="titulo-2">Título</option>
-        <option value="titulo-3">Subtítulo</option>
-        <option value="destaque">Citação</option>
-        <option value="lista">Lista com marcadores</option>
-        <option value="numerada">Lista numerada</option>
-      </select>
-      {sep}
+      {onBloco && (
+        <>
+          <select
+            className="sdb-fmt__estilo"
+            tabIndex={-1}
+            aria-label={`Estilo do ${alvo}`}
+            value={
+              bloco?.tipo === "intertitulo"
+                ? `titulo-${bloco.nivel ?? 2}`
+                : bloco?.tipo === "destaque"
+                  ? "destaque"
+                  : bloco?.tipo === "lista"
+                    ? bloco.ordenada
+                      ? "numerada"
+                      : "lista"
+                    : "paragrafo"
+            }
+            disabled={desabilitada || !onBloco}
+            onChange={(e) => converter(e.target.value)}
+          >
+            <option value="paragrafo">Parágrafo</option>
+            <option value="titulo-2">Título</option>
+            <option value="titulo-3">Subtítulo</option>
+            <option value="destaque">Citação</option>
+            <option value="lista">Lista com marcadores</option>
+            <option value="numerada">Lista numerada</option>
+          </select>
+          {sep}
+        </>
+      )}
       {botao("negrito", "Negrito", "B")}
       {botao("italico", "Itálico", "I")}
       {botao("sublinhado", "Sublinhado", "U")}
       {botao("tachado", "Tachado")}
-      {sep}
-      {([false, true] as const).map((ordenada) => (
-        <button
-          key={String(ordenada)}
-          type="button"
-          tabIndex={-1}
-          className="sdb-fmt__btn sdb-fmt__btn--icone"
-          aria-label={`Lista ${ordenada ? "numerada" : "com marcadores"} no ${alvo}`}
-          data-tip={
-            listaPermitida
-              ? `Lista ${ordenada ? "numerada" : "com marcadores"} no ${alvo}`
-              : bloco?.tipo === "intertitulo"
-                ? "Títulos não têm lista. Escolha Parágrafo primeiro."
-                : "Este campo aceita apenas parágrafos."
-          }
-          aria-disabled={!listaPermitida || desabilitada}
-          aria-pressed={bloco?.tipo === "lista" && bloco.ordenada === ordenada}
-          onClick={() => {
-            if (listaPermitida)
-              converter(
-                bloco?.tipo === "lista" && bloco.ordenada === ordenada
-                  ? "paragrafo"
-                  : ordenada
-                    ? "numerada"
-                    : "lista",
-              );
-          }}
-        >
-          <Icon name={ordenada ? "listaNumerada" : "listaMarcadores"} size="sm" />
-        </button>
-      ))}
-      {sep}
-      <div className="sdb-fmt__grupo" role="group" aria-label={`Alinhamento do ${alvo}`}>
-        {(["esquerda", "centro", "direita"] as const).map((a, i) => (
-          <button
-            key={a}
-            type="button"
-            tabIndex={-1}
-            className="sdb-fmt__btn sdb-fmt__btn--icone"
-            aria-label={`${["Alinhar à esquerda", "Centralizar", "Alinhar à direita"][i]} no ${alvo}`}
-            data-tip={
-              alinhamentoPermitido
-                ? `${["Alinhar à esquerda", "Centralizar", "Alinhar à direita"][i]} no ${alvo}`
-                : "Alinhamento disponível em parágrafos e títulos."
-            }
-            aria-disabled={!alinhamentoPermitido || desabilitada}
-            aria-pressed={
-              alinhamentoPermitido &&
-              ("alinhamento" in (bloco ?? {})
-                ? ((bloco as { alinhamento?: string }).alinhamento ?? "esquerda")
-                : "esquerda") === a
-            }
-            onClick={() => {
-              if (
-                !desabilitada &&
-                onBloco &&
-                (bloco?.tipo === "paragrafo" || bloco?.tipo === "intertitulo")
-              ) {
-                onBloco({ ...bloco, alinhamento: a });
-                area.current?.focus();
+      {onBloco && (
+        <>
+          {sep}
+          {([false, true] as const).map((ordenada) => (
+            <button
+              key={String(ordenada)}
+              type="button"
+              tabIndex={-1}
+              className="sdb-fmt__btn sdb-fmt__btn--icone"
+              aria-label={`Lista ${ordenada ? "numerada" : "com marcadores"} no ${alvo}`}
+              data-tip={
+                listaPermitida
+                  ? `Lista ${ordenada ? "numerada" : "com marcadores"} no ${alvo}`
+                  : bloco?.tipo === "intertitulo"
+                    ? "Títulos não têm lista. Escolha Parágrafo primeiro."
+                    : "Este campo aceita apenas parágrafos."
               }
-            }}
-          >
-            <Icon
-              name={(["alinharEsquerda", "alinharCentro", "alinharDireita"] as const)[i] ?? "alinharEsquerda"}
-              size="sm"
-            />
-          </button>
-        ))}
-      </div>
+              aria-disabled={!listaPermitida || desabilitada}
+              aria-pressed={bloco?.tipo === "lista" && bloco.ordenada === ordenada}
+              onClick={() => {
+                if (listaPermitida)
+                  converter(
+                    bloco?.tipo === "lista" && bloco.ordenada === ordenada
+                      ? "paragrafo"
+                      : ordenada
+                        ? "numerada"
+                        : "lista",
+                  );
+              }}
+            >
+              <Icon name={ordenada ? "listaNumerada" : "listaMarcadores"} size="sm" />
+            </button>
+          ))}
+          {sep}
+          <div className="sdb-fmt__grupo" role="group" aria-label={`Alinhamento do ${alvo}`}>
+            {(["esquerda", "centro", "direita"] as const).map((a, i) => (
+              <button
+                key={a}
+                type="button"
+                tabIndex={-1}
+                className="sdb-fmt__btn sdb-fmt__btn--icone"
+                aria-label={`${["Alinhar à esquerda", "Centralizar", "Alinhar à direita"][i]} no ${alvo}`}
+                data-tip={
+                  alinhamentoPermitido
+                    ? `${["Alinhar à esquerda", "Centralizar", "Alinhar à direita"][i]} no ${alvo}`
+                    : "Alinhamento disponível em parágrafos e títulos."
+                }
+                aria-disabled={!alinhamentoPermitido || desabilitada}
+                aria-pressed={
+                  alinhamentoPermitido &&
+                  ("alinhamento" in (bloco ?? {})
+                    ? ((bloco as { alinhamento?: string }).alinhamento ?? "esquerda")
+                    : "esquerda") === a
+                }
+                onClick={() => {
+                  if (
+                    !desabilitada &&
+                    onBloco &&
+                    (bloco?.tipo === "paragrafo" || bloco?.tipo === "intertitulo")
+                  ) {
+                    onBloco({ ...bloco, alinhamento: a });
+                    area.current?.focus();
+                  }
+                }}
+              >
+                <Icon
+                  name={
+                    (["alinharEsquerda", "alinharCentro", "alinharDireita"] as const)[i] ?? "alinharEsquerda"
+                  }
+                  size="sm"
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       {sep}
       {botao("link", "Link", "K")}
       {botao("termo", "Marcar termo da tradição")}
