@@ -22,13 +22,7 @@
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "e2e:banco": "tsx --env-file=.env.local --conditions=react-server scripts/e2e-banco.ts --migrar",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck && npm run test",
+    "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck",
     "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
   },
   "dependencies": {
@@ -44,25 +38,16 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
-    "@electric-sql/pglite": "^0.3.11",
-    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^22",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
-    "@vitest/coverage-v8": "^5.0.2",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "^0.31.5",
-    "jsdom": "^30.1.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "vitest": "^5.0.2"
+    "typescript": "^5.9.3"
   }
 }

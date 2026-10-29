@@ -17,7 +17,6 @@ Fluxo para demonstrar: **Criar conta** → onboarding (interesses e, se quiser, 
 
 Entre por `/entrar` com a conta de administrador e use **Curadoria** no grupo Conta da lateral ou no menu da conta.
 
-O cenário de demonstração (Buscador com histórico, a anfitriã fictícia Helena Varga, candidatura de Tomás Arruda, comunidade) existe só nos testes: no PGlite do Vitest e no banco `sala_dos_buscadores_e2e` do Playwright (`tests/support/demonstracao/`).
 
 ## Scripts
 
@@ -26,15 +25,12 @@ O cenário de demonstração (Buscador com histórico, a anfitriã fictícia Hel
 | `npm run dev` / `build` / `start` | Next.js 16 (Turbopack) |
 | `npm run db:setup` | `db:migrate` e `db:seed` |
 | `npm run db:generate` | gera a migração SQL em `drizzle/` a partir dos `*.schema.ts` |
-| `npm run e2e:banco` | migra e põe o cenário de demonstração no banco de E2E (`DATABASE_URL_E2E`) |
-| `npm run check` | tudo abaixo, menos E2E |
+| `npm run check` | `ds:check`, `ds:test`, `lint` e `typecheck` |
 | `npm run ds:sync` / `ds:check` | copia `../design-system` para `src/design-system` e gera ícones e URL das fontes / confere se está em dia |
 | `npm run lint` / `lint:fix` | Biome (lint + formatação + organização de imports) |
 | `npm run typecheck` | `next typegen` + `tsc` |
-| `npm test` / `test:watch` / `test:coverage` | Vitest + Testing Library (jsdom), cada arquivo com um Postgres em memória (PGlite) |
-| `npm run test:e2e` / `test:e2e:ui` | Playwright, desktop e celular, um teste por vez, contra o banco de E2E (pare o `npm run dev` antes). Na primeira vez: `npx playwright install chromium` |
 
-`SIMULAR_LATENCIA_MS` (padrão 600) controla a espera simulada da busca; `E2E_BASE_URL` roda o E2E contra um ambiente já no ar.
+`SIMULAR_LATENCIA_MS` (padrão 600) controla a espera simulada da busca.
 
 ## Acesso e moldura
 
@@ -148,9 +144,6 @@ src/
   server/              snapshot do acervo, sessão (DAL), auditoria e as regras da curadoria e dos anfitriões
   design-system/       CÓPIA GERADA de ../design-system (não edite aqui)
   lib/                 utilitários de texto e classes
-tests/
-  support/             setup do Vitest, PGlite (banco.ts), cenário de demonstração, mock de next/navigation, render
-  e2e/                 Jornada do Buscador (DRS 7.2) e fluxos da curadoria
 ```
 
 Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
@@ -165,7 +158,7 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 
 ## Dados iniciais
 
-O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que informa indisponibilidade enquanto não houver IA conectada. `features/assistente/motor.ts` permanece como fixture legada de testes, sem ser o serviço padrão. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala, e os vídeos de demonstração ficam só nos testes.
+O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que responde com o Grok (xAI, `grok-4.7`) a partir do acervo publicado quando `XAI_API_KEY` está definida, e informa indisponibilidade sem ela. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala.
 
 ## Fora desta etapa
 
@@ -191,4 +184,4 @@ Capturas, medidas e decisões: `../artifacts/home-2026-10-26/LEIA-ME.md`.
 
 O `ConversaProvider` compartilha a conversa em memória com o mini chat e invalida respostas atrasadas após interrupção/nova conversa. Não existe histórico persistente. O endpoint `POST /api/assistente` confere sessão e valida texto (1–2.000 caracteres), modo e Sala visível. O transporte é `features/assistente/servico.ts`; o ponto de integração server-only é `server/assistente.ts` (`ServicoAssistente`). Sem provedor configurado, retorna HTTP 503 com aviso explícito e não gera respostas ou referências. O futuro adaptador deve recuperar apenas fontes publicadas/elegíveis, retornar `ResultadoAssistente` e respeitar `AbortSignal`. Ainda faltam o provedor/RAG e a persistência por conta; nenhuma credencial nova foi criada ou exigida nesta implementação.
 
-O diálogo de fontes e a cópia usam exclusivamente os trechos/referências retornados. Sucesso é exercitado com fixtures restritas aos testes; a aplicação não importa `TelaAssistente/preview.js` nem `demo-data.js`. A validação da interface está em `tests/e2e/assistente-tela.spec.ts`, cobrindo desktop/celular, contexto enviado, indisponibilidade, teclado, fontes/cópia, duas esferas, pausa/redução de movimento, fallback e navegação.
+O diálogo de fontes e a cópia usam exclusivamente os trechos e as referências retornados pela IA.

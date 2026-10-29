@@ -8,7 +8,4 @@ DESIGN SYSTEM
 *.pdf
 portal/node_modules
 portal/.next
-portal/test-results
-portal/playwright-report
-portal/coverage
 artifacts
