@@ -56,7 +56,6 @@ import { CamposFonte } from "./CamposFonte";
 import { MoverParaSala } from "./MoverParaSala";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
-import { type VideoResumo, VideosDoArtigo } from "./VideosDoArtigo";
 
 type TipoSituacao = SituacaoJuridica["tipo"];
 
@@ -99,8 +98,6 @@ interface EditorArtigoProps {
   sala: SalaDoItem;
   /** Outras Salas oficiais ativas, para "Mover para outra Sala". */
   salasDestino?: { slug: string; nome: string }[];
-  /** Vídeos da Sala: os ligados a este artigo e os que podem ser ligados. */
-  videos?: { ligados: VideoResumo[]; disponiveis: VideoResumo[] };
   historico?: ReactNode;
 }
 
@@ -116,7 +113,6 @@ export function EditorArtigo({
   fontes: fontesIniciais,
   sala,
   salasDestino = [],
-  videos,
   historico,
 }: EditorArtigoProps) {
   const toast = useToast();
@@ -980,14 +976,6 @@ export function EditorArtigo({
                 )}
               </section>
             </fieldset>
-            {form.id && videos && (
-              <VideosDoArtigo
-                salaSlug={sala.slug}
-                artigoId={form.id}
-                ligados={videos.ligados}
-                disponiveis={videos.disponiveis}
-              />
-            )}
           </form>
           <aside className="flex flex-col gap-4 xl:sticky xl:top-6" aria-label="Publicação">
             {avisoPublicar && bloqueado && (

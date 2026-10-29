@@ -4,7 +4,7 @@ import { ListaHistorico } from "@/components/ds/Curadoria";
 import { artigoParaForm } from "@/features/admin/formularios";
 import { EditorArtigo } from "@/features/admin/ui/EditorArtigo";
 import { historicoDoItem, listarFontes, obterArtigo } from "@/server/admin/consultas";
-import { destinosDe, salaDoItem, videosDoArtigo } from "@/server/admin/editores";
+import { destinosDe, salaDoItem } from "@/server/admin/editores";
 import { rotaDoArtigo, salaOficialDaRota } from "@/server/admin/rotas";
 
 export async function generateMetadata(
@@ -36,7 +36,6 @@ export default async function EditarArtigoNaSala(props: PageProps<"/admin/salas/
       fontes={listarFontes()}
       sala={salaDoItem(sala)}
       salasDestino={destinosDe(sala)}
-      videos={videosDoArtigo(sala.slug, artigo.id)}
       historico={<ListaHistorico registros={historicoDoItem(id)} mostrarItem={false} />}
     />
   );

@@ -63,10 +63,6 @@ export async function moverArtigoAcao(id: string, destino: string) {
   return comAdmin((quem) => editorial.moverArtigo(String(id), String(destino), quem));
 }
 
-export async function ligarVideoAcao(videoId: string, artigoId: string, ligar: boolean) {
-  return comAdmin((quem) => editorial.ligarVideo(String(videoId), String(artigoId), ligar === true, quem));
-}
-
 // ---------- Salas oficiais ----------
 
 export async function salvarSalaOficialAcao(form: FormSalaOficial, modo: ModoSalvar) {

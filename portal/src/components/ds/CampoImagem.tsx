@@ -20,7 +20,8 @@ function tamanho(n: number) {
     : `${Math.max(1, Math.round(n / 1024))} KB`;
 }
 
-const LADO_MAXIMO = 2000;
+const LADO_MAXIMO = 2560;
+const QUALIDADE_WEBP = 0.92;
 const REDUZIR_ACIMA = 600 * 1024;
 
 async function reduzir(f: File): Promise<File> {
@@ -33,9 +34,9 @@ async function reduzir(f: File): Promise<File> {
     tela.height = Math.round(bitmap.height * escala);
     tela.getContext("2d")?.drawImage(bitmap, 0, 0, tela.width, tela.height);
     bitmap.close();
-    const blob = await new Promise<Blob | null>((ok) => tela.toBlob(ok, "image/webp", 0.85));
+    const blob = await new Promise<Blob | null>((ok) => tela.toBlob(ok, "image/webp", QUALIDADE_WEBP));
     if (!blob || blob.type !== "image/webp" || blob.size >= f.size) return f;
-    return new File([blob], f.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+    return new File([blob], `${f.name.replace(/\.[^.]+$/, "")}.webp`, { type: "image/webp" });
   } catch {
     return f;
   }

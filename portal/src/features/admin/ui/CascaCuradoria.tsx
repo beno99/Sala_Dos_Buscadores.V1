@@ -41,6 +41,7 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       ativo: em("/admin/anfitrioes"),
       contagem: c.revisao || undefined,
     },
+    { href: "/admin/videos" as Route, rotulo: "Vídeos", icone: "video", ativo: em("/admin/videos") },
     {
       href: "/admin/fontes" as Route,
       rotulo: "Fontes",

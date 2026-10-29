@@ -498,38 +498,6 @@ export function moverArtigo(
   return { ok: true, valor: { sala: destino, slug }, mensagem: `Artigo movido para a Sala ${nomeDestino}.` };
 }
 
-/**
- * Liga (ou desliga) um vídeo a um artigo da mesma Sala, a partir do editor do
- * artigo ("Ligar vídeo existente da Sala"). Vídeo publicado muda o portal na hora.
- */
-export function ligarVideo(videoId: string, artigoId: string, ligar: boolean, quem: string): ResultadoAcao {
-  const video = acervo().videos.get(videoId);
-  const artigo = acervo().conteudos.get(artigoId);
-  if (!video || !artigo) return falha("Erro: o vídeo ou o artigo não existe mais.");
-  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
-  if (video.sala !== artigo.sala) return falha("Erro: o vídeo só se liga a artigos da mesma Sala.");
-  if (video.status === "arquivado") return falha("Erro: vídeo arquivado não é ligado. Restaure-o antes.");
-  const ja = video.artigos.includes(artigoId);
-  if (ja === ligar) return { ok: true, valor: undefined, mensagem: "" };
-  const artigos = ligar ? [...video.artigos, artigoId] : video.artigos.filter((a) => a !== artigoId);
-  acervo().videos.set(videoId, { ...video, artigos, atualizadoEm: agora(), atualizadoPor: quem });
-  registrar({
-    quem,
-    acao: "editou",
-    tipoItem: "video",
-    itemId: videoId,
-    itemTitulo: video.titulo,
-    mudancas: [
-      { campo: "Artigos ligados", antes: ligar ? "" : artigo.titulo, depois: ligar ? artigo.titulo : "" },
-    ],
-  });
-  return {
-    ok: true,
-    valor: undefined,
-    mensagem: ligar ? "Vídeo ligado ao artigo." : "Vídeo desligado do artigo.",
-  };
-}
-
 // ---------- vídeos ----------
 
 function montarVideo(f: FormVideo, anterior: VideoEditorial | undefined, quem: string): VideoEditorial {
