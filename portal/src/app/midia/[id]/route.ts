@@ -15,7 +15,7 @@ export async function GET(_pedido: Request, { params }: RouteContext<"/midia/[id
     headers: {
       "Content-Type": midia.tipo,
       "Content-Length": String(midia.bytes.byteLength),
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "private, max-age=31536000, immutable",
       "X-Content-Type-Options": "nosniff",
     },
   });

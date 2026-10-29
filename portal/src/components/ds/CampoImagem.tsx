@@ -20,6 +20,27 @@ function tamanho(n: number) {
     : `${Math.max(1, Math.round(n / 1024))} KB`;
 }
 
+const LADO_MAXIMO = 2000;
+const REDUZIR_ACIMA = 600 * 1024;
+
+async function reduzir(f: File): Promise<File> {
+  if (f.size <= REDUZIR_ACIMA) return f;
+  try {
+    const bitmap = await createImageBitmap(f, { imageOrientation: "from-image" });
+    const escala = Math.min(1, LADO_MAXIMO / Math.max(bitmap.width, bitmap.height));
+    const tela = document.createElement("canvas");
+    tela.width = Math.round(bitmap.width * escala);
+    tela.height = Math.round(bitmap.height * escala);
+    tela.getContext("2d")?.drawImage(bitmap, 0, 0, tela.width, tela.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((ok) => tela.toBlob(ok, "image/webp", 0.85));
+    if (!blob || blob.type !== "image/webp" || blob.size >= f.size) return f;
+    return new File([blob], f.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } catch {
+    return f;
+  }
+}
+
 /** Envia a imagem para o servidor, que confere os magic bytes e o tamanho de novo. */
 async function enviarImagem(
   arquivo: File,
@@ -69,18 +90,20 @@ export function CampoImagem({
   const [arrastando, setArrastando] = useState(false);
   const [arquivo, setArquivo] = useState<{ nome: string; tamanho: string } | null>(null);
 
-  const escolher = async (f: File | undefined) => {
-    if (!f || disabled) return;
-    if (!TIPOS.includes(f.type)) {
+  const escolher = async (original: File | undefined) => {
+    if (!original || disabled) return;
+    if (!TIPOS.includes(original.type)) {
       setErro("o arquivo precisa ser JPEG, PNG ou WebP.");
-      return;
-    }
-    if (f.size > LIMITE_MB * 1048576) {
-      setErro(`a imagem tem ${tamanho(f.size)}; o limite é ${LIMITE_MB} MB.`);
       return;
     }
     setErro(null);
     setEnviando(true);
+    const f = await reduzir(original);
+    if (f.size > LIMITE_MB * 1048576) {
+      setEnviando(false);
+      setErro(`a imagem tem ${tamanho(f.size)}; o limite é ${LIMITE_MB} MB.`);
+      return;
+    }
     const r = await enviarImagem(f);
     setEnviando(false);
     if (entrada.current) entrada.current.value = "";
