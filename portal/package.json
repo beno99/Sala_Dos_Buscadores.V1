@@ -4,7 +4,7 @@
   "private": true,
   "description": "MVP de A Sala dos Buscadores: acervo em Salas, busca comparativa e assistente de IA, com Postgres e armazenamento S3.",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "24.x"
   },
   "scripts": {
     "predev": "npm run ds:sync",
