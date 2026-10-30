@@ -48,7 +48,8 @@ export function ModeracaoComunidade({ fila }: { fila: FilaDeModeracao }) {
           <article key={d.id} className="sdb-card">
             <div className="sdb-card__body flex flex-col gap-3">
               <p className="sdb-footnote">
-                {d.rotulo} de {d.autor} · denunciada por {d.denunciante} em {formatarData(d.criadaEm)}
+                {d.rotulo} de {d.autor} · denúncia de {d.denunciante} em{" "}
+                {formatarData(d.criadaEm.slice(0, 10))}
               </p>
               <p className="sdb-body-sm">{d.texto}</p>
               <p className="sdb-footnote">
