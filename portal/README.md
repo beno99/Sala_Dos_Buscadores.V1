@@ -162,7 +162,7 @@ O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o m
 
 ## Fora desta etapa
 
-- No portal: o Portal novo (Fase C) e as versões funcionais de Destaques, Biblioteca, Trilhas, Estante e Ajustes (Fase D), marcados com `TODO(redesign)`; notificações (`TODO(notificacoes)`); comentários/comunidade (`TODO(comunidade)`); qualquer ranking entre pessoas continua vedado (RNF-DOM-05).
+- No portal: o Portal novo (Fase C) e as versões funcionais de Destaques, Biblioteca, Trilhas, Estante e Ajustes (Fase D), marcados com `TODO(redesign)`; notificações (`TODO(notificacoes)`); qualquer ranking entre pessoas continua vedado (RNF-DOM-05).
 - Na curadoria (`src/features/admin/ui/CascaCuradoria.tsx` e `src/data/catalogo.ts`): edição de Salas e temas (`TODO(admin-salas)`), glossário (`TODO(admin-glossario)`), usuários e papéis, RF-08 (`TODO(admin-usuarios)`), moderação (`TODO(admin-moderacao)`), comparações e respostas do assistente (`TODO(admin-comparacoes)`). Nenhum upload de arquivo binário.
 
 ### Home · Retomar e descobrir (26/10/2026)

@@ -5,6 +5,7 @@ import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { LinhaPessoa } from "@/components/ds/LinhaPessoa";
 import type { ModeloComunidade } from "@/server/comunidade/consultas";
+import { BotaoSeguir } from "./BotaoSeguir";
 export function PessoasComunidade({
   modelo: m,
   seguindo = false,
@@ -39,7 +40,19 @@ export function PessoasComunidade({
       </p>
       <div className="sdb-community-side">
         {lista.map((p) => (
-          <LinhaPessoa key={p.id} pessoa={p} />
+          <LinhaPessoa
+            key={p.id}
+            pessoa={p}
+            acao={
+              p.id !== m.pessoa.id && (
+                <BotaoSeguir
+                  alvo={{ tipo: "pessoa", id: p.id }}
+                  nome={p.nome}
+                  seguindo={m.visao.seguindoPessoas.includes(p.id)}
+                />
+              )
+            }
+          />
         ))}
         {!lista.length && (
           <EstadoSecao

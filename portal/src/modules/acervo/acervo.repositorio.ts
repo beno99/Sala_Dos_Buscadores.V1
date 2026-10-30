@@ -1,6 +1,7 @@
 import "server-only";
-import { asc, eq, getTableColumns } from "drizzle-orm";
+import { and, asc, eq, getTableColumns } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import type { DenunciaComunidade } from "@/data/types";
 import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
@@ -86,7 +87,25 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
   },
   perfisBuscador: mapaDireto(perfisBuscador, perfisBuscador.usuarioId, { omitir: ["usuarioId"] }),
   temas: mapaDireto(temas, temas.slug),
+  publicacoes: mapaDireto(publicacoes, publicacoes.id),
+  comentarios: mapaDireto(comentarios, comentarios.id),
+  denuncias: mapaDenuncias(),
 };
+
+/** O domínio guarda o alvo como objeto; a tabela, em duas colunas. */
+function mapaDenuncias(): Mapa<DenunciaComunidade> {
+  const base = mapaDireto<DenunciaComunidade>(denuncias, denuncias.id, {
+    derivar: (d) => ({ alvoTipo: d.alvo.tipo, alvoId: d.alvo.id }),
+    omitir: ["alvoTipo", "alvoId"],
+  });
+  return {
+    ...base,
+    deLinha: (linha) => {
+      const [id, d] = base.deLinha(linha);
+      return [id, { ...d, alvo: { tipo: linha.alvoTipo, id: linha.alvoId } as DenunciaComunidade["alvo"] }];
+    },
+  };
+}
 
 async function lerVersao(): Promise<number> {
   const [linha] = await banco().select().from(versaoDados).where(eq(versaoDados.id, 1));
@@ -109,14 +128,11 @@ export const acervoRepositorio: AcervoRepositorio = {
     const colecoes = Object.fromEntries(nomes.map((n, i) => [n, mapas[i]])) as DadosCarregados["colecoes"];
     const db = banco();
     const [escolha] = await db.select().from(destaques).where(eq(destaques.id, 1));
-    const [contas, pubs, coms, reas, segs, salvs, dens, auds, emails] = await Promise.all([
+    const [contas, reas, segs, salvs, auds, emails] = await Promise.all([
       contaRepositorio.listar(),
-      db.select().from(publicacoes),
-      db.select().from(comentarios),
       db.select().from(reacoes),
       db.select().from(seguindo),
       db.select().from(salvos),
-      db.select().from(denuncias),
       // ponytail: o histórico inteiro vai para a memória; paginar no banco quando passar de algumas dezenas de milhares.
       db.select().from(auditoria).orderBy(asc(auditoria.quando)),
       db.select().from(emailsEnviados).orderBy(asc(emailsEnviados.quando)),
@@ -127,8 +143,6 @@ export const acervoRepositorio: AcervoRepositorio = {
       contas: new Map(contas.map((c) => [c.id, c])),
       destaques: escolha?.escolha ?? null,
       comunidade: {
-        publicacoes: new Map(pubs.map((p) => [p.id, semNulos(p)])),
-        comentarios: new Map(coms.map((c) => [c.id, semNulos(c)])),
         reacoes: reas.map((r) => ({
           alvo: { tipo: r.alvoTipo, id: r.alvoId },
           pessoa: r.pessoa,
@@ -136,13 +150,7 @@ export const acervoRepositorio: AcervoRepositorio = {
         })),
         seguindo: segs.map((s) => ({ seguidor: s.seguidor, alvo: { tipo: s.alvoTipo, id: s.alvoId } })),
         salvos: salvs,
-        denuncias: new Map(
-          dens.map(({ alvoTipo, alvoId, ...d }) => [
-            d.id,
-            { ...semNulos(d), alvo: { tipo: alvoTipo, id: alvoId } },
-          ]),
-        ),
-      } as DadosCarregados["comunidade"],
+      },
       auditoria: auds.map((a) => semNulos(a)),
       caixaSaida: emails,
     };
@@ -174,6 +182,52 @@ export const acervoRepositorio: AcervoRepositorio = {
           break;
         case "email":
           await tx.insert(emailsEnviados).values(g.valor);
+          break;
+        case "reacao": {
+          const { alvo, pessoa, tipo } = g.valor;
+          if (g.acao === "incluir")
+            await tx
+              .insert(reacoes)
+              .values({ alvoTipo: alvo.tipo, alvoId: alvo.id, pessoa, tipo })
+              .onConflictDoNothing();
+          else
+            await tx
+              .delete(reacoes)
+              .where(
+                and(
+                  eq(reacoes.alvoTipo, alvo.tipo),
+                  eq(reacoes.alvoId, alvo.id),
+                  eq(reacoes.pessoa, pessoa),
+                  eq(reacoes.tipo, tipo),
+                ),
+              );
+          break;
+        }
+        case "seguir": {
+          const { seguidor, alvo } = g.valor;
+          if (g.acao === "incluir")
+            await tx
+              .insert(seguindo)
+              .values({ seguidor, alvoTipo: alvo.tipo, alvoId: alvo.id })
+              .onConflictDoNothing();
+          else
+            await tx
+              .delete(seguindo)
+              .where(
+                and(
+                  eq(seguindo.seguidor, seguidor),
+                  eq(seguindo.alvoTipo, alvo.tipo),
+                  eq(seguindo.alvoId, alvo.id),
+                ),
+              );
+          break;
+        }
+        case "salvo":
+          if (g.acao === "incluir") await tx.insert(salvos).values(g.valor).onConflictDoNothing();
+          else
+            await tx
+              .delete(salvos)
+              .where(and(eq(salvos.pessoa, g.valor.pessoa), eq(salvos.publicacaoId, g.valor.publicacaoId)));
           break;
       }
       return somarVersao(tx);

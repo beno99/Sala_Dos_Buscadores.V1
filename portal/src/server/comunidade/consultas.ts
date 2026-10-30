@@ -1,16 +1,22 @@
 import "server-only";
-import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
+import { salaPorSlug, temaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
 import {
   acervoDeEstudo,
   pessoaPublicaComunidade,
   pessoasPublicasComunidade,
   publicacoesVisiveisComunidade,
 } from "@/data/repositorio";
-import { emDebate, ordenarFeed } from "@/features/comunidade/regras";
+import { emDebate, ordenarFeed, type VisaoComunidade } from "@/features/comunidade/regras";
 import { nivelNoAssunto } from "@/features/estudo/niveis";
 import { progressoDe } from "@/server/progresso";
 import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
 import { acervo } from "@/server/store";
+
+export interface OpcoesCompositor {
+  salas: { slug: string; nome: string; anfitriao?: string }[];
+  temas: { slug: string; nome: string }[];
+  conteudos: { id: string; titulo: string; salaNome: string }[];
+}
 
 /** Cada página obtém a sessão no servidor; nenhuma consulta aceita identidade vinda do cliente. */
 export async function consultarComunidade() {
@@ -47,6 +53,36 @@ export async function consultarComunidade() {
       const sala = salaPorSlug(s.alvo.id);
       return sala ? [{ nome: sala.nome, slug: sala.slug }] : [];
     });
+  const minhasReacoes = dados.reacoes.filter((r) => r.pessoa === membro.id);
+  const reacoes: VisaoComunidade["reacoes"] = {};
+  for (const r of minhasReacoes.filter((r) => r.alvo.tipo === "publicacao"))
+    reacoes[r.alvo.id] = [...(reacoes[r.alvo.id] ?? []), r.tipo];
+  const visao: VisaoComunidade = {
+    pessoaId: membro.id,
+    papel: membro.papel,
+    salvos: dados.salvos.filter((s) => s.pessoa === membro.id).map((s) => s.publicacaoId),
+    reacoes,
+    comentariosCurtidos: minhasReacoes
+      .filter((r) => r.alvo.tipo === "comentario" && r.tipo === "curtir")
+      .map((r) => r.alvo.id),
+    salasProprias: [...acervo().salas.values()]
+      .filter((s) => s.revisao?.donoId === membro.id)
+      .map((s) => s.slug),
+    seguindoPessoas: seguindoPessoas.map((p) => p.id),
+    seguindoSalas: seguindoSalas.map((s) => s.slug),
+  };
+  const salasDisponiveis = todasAsSalas();
+  const opcoes: OpcoesCompositor = {
+    salas: salasDisponiveis.map((s) => ({
+      slug: s.slug,
+      nome: s.nome,
+      anfitriao: s.anfitriao?.nome,
+    })),
+    temas: todosOsTemas().map((t) => ({ slug: t.slug, nome: t.nome })),
+    conteudos: [...acervo().conteudos.values()]
+      .filter((c) => c.status === "publicado" && salasDisponiveis.some((s) => s.slug === c.sala))
+      .map((c) => ({ id: c.id, titulo: c.titulo, salaNome: salaPorSlug(c.sala)?.nome ?? c.sala })),
+  };
   const salaFoco = Object.keys(progresso.trilhas)[0] ?? progresso.salasVisitadas[0];
   const sala = salaFoco ? salaPorSlug(salaFoco) : undefined;
   const nivel = sala
@@ -66,9 +102,8 @@ export async function consultarComunidade() {
         const p = porId.get(s.publicacaoId);
         return p ? [p] : [];
       }),
-    curtidas: dados.reacoes
-      .filter((r) => r.pessoa === membro.id && r.alvo.tipo === "publicacao" && r.tipo === "curtir")
-      .map((r) => r.alvo.id),
+    visao,
+    opcoes,
     numeros: {
       publicacoes: publicacoes.filter((p) => p.autorId === membro.id).length,
       seguidores: dados.seguindo.filter((s) => s.alvo.tipo === "pessoa" && s.alvo.id === membro.id).length,

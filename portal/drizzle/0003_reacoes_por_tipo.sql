@@ -1,0 +1,2 @@
+ALTER TABLE "reacoes" DROP CONSTRAINT "reacoes_alvo_tipo_alvo_id_pessoa_pk";--> statement-breakpoint
+ALTER TABLE "reacoes" ADD CONSTRAINT "reacoes_alvo_tipo_alvo_id_pessoa_tipo_pk" PRIMARY KEY("alvo_tipo","alvo_id","pessoa","tipo");

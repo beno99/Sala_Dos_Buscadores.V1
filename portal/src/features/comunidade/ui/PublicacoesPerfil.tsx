@@ -2,21 +2,23 @@
 import { type ReactNode, useId, useState } from "react";
 import { Segmented } from "@/components/ds/Segmented";
 import type { PublicacaoPublica } from "@/data/repositorio-comunidade";
+import type { VisaoComunidade } from "@/features/comunidade/regras";
+import type { OpcoesCompositor } from "@/server/comunidade/consultas";
 import { ListaPublicacoes } from "./ListaPublicacoes";
 export function PublicacoesPerfil({
   publicacoes,
   agora,
   children,
   rotulo = "Sobre e Salas",
-  curtidas = [],
-  salvos = [],
+  visao,
+  opcoes,
 }: {
   publicacoes: PublicacaoPublica[];
   agora: string;
   children?: ReactNode;
   rotulo?: string;
-  curtidas?: string[];
-  salvos?: string[];
+  visao: VisaoComunidade;
+  opcoes: OpcoesCompositor;
 }) {
   const [aba, setAba] = useState<"sobre" | "publicacoes">(children ? "sobre" : "publicacoes");
   const id = useId();
@@ -51,8 +53,8 @@ export function PublicacoesPerfil({
       >
         <ListaPublicacoes
           publicacoes={publicacoes}
-          curtidas={curtidas}
-          salvos={salvos}
+          visao={visao}
+          opcoes={opcoes}
           agora={agora}
           descricao="Este perfil ainda não compartilhou estudos na comunidade."
         />

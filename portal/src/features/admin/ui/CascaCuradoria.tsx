@@ -13,6 +13,8 @@ interface Contagens {
   fontes: number;
   /** Salas e artigos de anfitriões esperando decisão. */
   revisao: number;
+  /** Denúncias da Comunidade esperando decisão. */
+  denuncias: number;
 }
 
 /*
@@ -20,7 +22,6 @@ interface Contagens {
  * vídeos vivem dentro de cada Sala (/admin/salas/[slug]); não há listas soltas.
  * Fora desta etapa, cada seção entra aqui quando existir:
  * TODO(admin-glossario): "Glossário" (RF-14).
- * TODO(admin-moderacao): "Moderação" de comentários (RF-32 a RF-36).
  * TODO(admin-comparacoes): "Comparações e assistente" (edição da grade e das respostas curadas).
  */
 function itens(caminho: string, c: Contagens): ItemNavegacao[] {
@@ -40,6 +41,13 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       icone: "anfitriao",
       ativo: em("/admin/anfitrioes"),
       contagem: c.revisao || undefined,
+    },
+    {
+      href: "/admin/comunidade" as Route,
+      rotulo: "Comunidade",
+      icone: "comunidade",
+      ativo: em("/admin/comunidade"),
+      contagem: c.denuncias || undefined,
     },
     { href: "/admin/videos" as Route, rotulo: "Vídeos", icone: "video", ativo: em("/admin/videos") },
     {

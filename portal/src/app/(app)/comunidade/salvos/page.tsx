@@ -15,8 +15,8 @@ export default async function Salvos() {
       <ListaPublicacoes
         publicacoes={m.salvos}
         agora={m.agora}
-        salvos={m.salvos.map((p) => p.id)}
-        curtidas={m.curtidas}
+        visao={m.visao}
+        opcoes={m.opcoes}
         vazio="Você ainda não salvou publicações"
         descricao="As publicações que você salvar ficarão reunidas aqui, só para você."
       />

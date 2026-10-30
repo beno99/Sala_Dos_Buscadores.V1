@@ -9,9 +9,12 @@ import type {
   EmailEnviado,
   FonteEditorial,
   PerfilAnfitriao,
+  ReacaoComunidade,
   RegistroAuditoria,
   Sala,
   SalaEditorial,
+  SalvoComunidade,
+  SeguirComunidade,
   Tema,
   TemaEditorial,
   VideoEditorial,
@@ -21,6 +24,7 @@ import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/feat
 import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
 import type {
+  AcaoRelacao,
   AcervoRepositorio,
   Colecoes,
   DadosCarregados,
@@ -150,11 +154,58 @@ function enfileirar(gravacao: Gravacao) {
     });
 }
 
+/** Liga ou desliga uma relação da comunidade (reação, seguir, salvo). Devolve se ficou ligada. */
+function alternar<T>(
+  lista: T[],
+  valor: T,
+  igual: (item: T) => boolean,
+  gravacao: (acao: AcaoRelacao) => Gravacao,
+): boolean {
+  const i = lista.findIndex(igual);
+  if (i >= 0) lista.splice(i, 1);
+  else lista.push(valor);
+  enfileirar(gravacao(i >= 0 ? "remover" : "incluir"));
+  return i < 0;
+}
+
+export function alternarReacao(r: ReacaoComunidade): boolean {
+  return alternar(
+    store().acervo.comunidade.reacoes,
+    r,
+    (x) =>
+      x.alvo.tipo === r.alvo.tipo && x.alvo.id === r.alvo.id && x.pessoa === r.pessoa && x.tipo === r.tipo,
+    (acao) => ({ tipo: "reacao", acao, valor: r }),
+  );
+}
+
+export function alternarSeguir(s: SeguirComunidade): boolean {
+  return alternar(
+    store().acervo.comunidade.seguindo,
+    s,
+    (x) => x.seguidor === s.seguidor && x.alvo.tipo === s.alvo.tipo && x.alvo.id === s.alvo.id,
+    (acao) => ({ tipo: "seguir", acao, valor: s }),
+  );
+}
+
+export function alternarSalvo(s: SalvoComunidade): boolean {
+  return alternar(
+    store().acervo.comunidade.salvos,
+    s,
+    (x) => x.pessoa === s.pessoa && x.publicacaoId === s.publicacaoId,
+    (acao) => ({ tipo: "salvo", acao, valor: s }),
+  );
+}
+
 function montar(d: DadosCarregados): Store {
   const c = d.colecoes;
   let destaques = d.destaques ?? structuredClone(VAGAS_VAZIAS);
   const acervo: Acervo = {
-    comunidade: d.comunidade,
+    comunidade: {
+      ...d.comunidade,
+      publicacoes: new MapPersistido("publicacoes", c.publicacoes),
+      comentarios: new MapPersistido("comentarios", c.comentarios),
+      denuncias: new MapPersistido("denuncias", c.denuncias),
+    },
     destaques,
     salas: new MapPersistido("salas", c.salas),
     conteudos: new MapPersistido("conteudos", c.conteudos),

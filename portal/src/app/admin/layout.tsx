@@ -9,6 +9,7 @@ import { aparenciaDoCookie, COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie } from 
 import { listarFontes } from "@/server/admin/consultas";
 import { listarSalasAdmin } from "@/server/admin/salas";
 import { totalPendenteRevisao } from "@/server/anfitriao/consultas";
+import { totalDenunciasPendentes } from "@/server/comunidade/moderacao";
 import { acessoAtual, redirecionarParaEntrar } from "@/server/sessao";
 
 export const metadata: Metadata = {
@@ -65,6 +66,7 @@ function AreaCuradoria({ children }: { children: ReactNode }) {
     salas: listarSalasAdmin().length,
     fontes: listarFontes().length,
     revisao: totalPendenteRevisao(),
+    denuncias: totalDenunciasPendentes(),
   };
   return <CascaCuradoria contagens={contagens}>{children}</CascaCuradoria>;
 }

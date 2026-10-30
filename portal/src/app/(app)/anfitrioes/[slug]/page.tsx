@@ -11,6 +11,7 @@ import { TextoMarcado } from "@/components/ds/TextoMarcado";
 import { todosOsTemas } from "@/data/catalogo";
 import { listarSalas, temasDaSala } from "@/data/repositorio";
 import { GradeSalas } from "@/features/acervo/GradeSalas";
+import { BotaoSeguir } from "@/features/comunidade/ui/BotaoSeguir";
 import { PublicacoesPerfil } from "@/features/comunidade/ui/PublicacoesPerfil";
 import { formatarData, iniciais } from "@/lib/texto";
 import { perfilPorSlug } from "@/server/anfitriao/consultas";
@@ -86,6 +87,13 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
             </ul>
           </div>
           <div className="sdb-profilehead__actions">
+            {perfil.contaId !== comunidade.pessoa.id && (
+              <BotaoSeguir
+                alvo={{ tipo: "pessoa", id: perfil.contaId }}
+                nome={perfil.nome}
+                seguindo={comunidade.visao.seguindoPessoas.includes(perfil.contaId)}
+              />
+            )}
             <BotaoCompartilhar titulo={perfil.nome} />
           </div>
         </div>
@@ -93,8 +101,8 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
       <PublicacoesPerfil
         publicacoes={comunidade.publicacoes.filter((p) => p.autorId === perfil.contaId)}
         agora={comunidade.agora}
-        curtidas={comunidade.curtidas}
-        salvos={comunidade.salvos.map((p) => p.id)}
+        visao={comunidade.visao}
+        opcoes={comunidade.opcoes}
         rotulo="Sobre e Salas"
       >
         <section className="sdb-publicprofile__section" aria-labelledby="titulo-sobre-anfitriao">

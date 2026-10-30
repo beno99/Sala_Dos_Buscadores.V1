@@ -93,8 +93,8 @@ export default async function Perfil() {
       <PublicacoesPerfil
         publicacoes={comunidade.publicacoes.filter((p) => p.autorId === membro.id)}
         agora={comunidade.agora}
-        curtidas={comunidade.curtidas}
-        salvos={comunidade.salvos.map((p) => p.id)}
+        visao={comunidade.visao}
+        opcoes={comunidade.opcoes}
         rotulo="Meu estudo"
       >
         <section className="flex flex-col gap-4" aria-labelledby="titulo-busca">

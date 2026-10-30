@@ -406,7 +406,9 @@ export type TipoItemAuditado =
   | "usuario"
   | "candidatura"
   | "convite"
-  | "tema";
+  | "tema"
+  | "publicacao"
+  | "comentario";
 
 export type AcaoAuditada =
   | "criou"
@@ -430,7 +432,8 @@ export type AcaoAuditada =
   | "transferiu"
   | "incluiu-na-comparacao"
   | "removeu-da-comparacao"
-  | "editou-perfil";
+  | "editou-perfil"
+  | "ocultou";
 
 /** Registro do histórico de auditoria (RNF-04). Só inclusão, nunca edição. */
 export interface RegistroAuditoria {

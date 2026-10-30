@@ -1,14 +1,20 @@
 import type {
   Candidatura,
   Citacao,
+  ComentarioComunidade,
   ConteudoEditorial,
   Convite,
   DadosComunidade,
+  DenunciaComunidade,
   EmailEnviado,
   FonteEditorial,
   PerfilAnfitriao,
+  Publicacao,
+  ReacaoComunidade,
   RegistroAuditoria,
   SalaEditorial,
+  SalvoComunidade,
+  SeguirComunidade,
   TemaEditorial,
   VideoEditorial,
 } from "@/data/types";
@@ -54,6 +60,9 @@ export interface Colecoes {
   progresso: ProgressoEstudo;
   perfisBuscador: PerfilBuscador;
   temas: TemaEditorial;
+  publicacoes: Publicacao;
+  comentarios: ComentarioComunidade;
+  denuncias: DenunciaComunidade;
 }
 
 export type NomeColecao = keyof Colecoes;
@@ -64,17 +73,22 @@ export interface DadosCarregados {
   contas: Map<string, Membro>;
   colecoes: { [K in NomeColecao]: Map<string, Colecoes[K]> };
   destaques: EscolhaDestaques | null;
-  comunidade: DadosComunidade;
+  comunidade: Pick<DadosComunidade, "reacoes" | "seguindo" | "salvos">;
   auditoria: RegistroAuditoria[];
   caixaSaida: EmailEnviado[];
 }
+
+export type AcaoRelacao = "incluir" | "remover";
 
 export type Gravacao =
   | { [K in NomeColecao]: { tipo: "gravar"; colecao: K; id: string; valor: Colecoes[K] } }[NomeColecao]
   | { tipo: "apagar"; colecao: NomeColecao; id: string }
   | { tipo: "destaques"; valor: EscolhaDestaques }
   | { tipo: "auditoria"; valor: RegistroAuditoria }
-  | { tipo: "email"; valor: EmailEnviado };
+  | { tipo: "email"; valor: EmailEnviado }
+  | { tipo: "reacao"; acao: AcaoRelacao; valor: ReacaoComunidade }
+  | { tipo: "seguir"; acao: AcaoRelacao; valor: SeguirComunidade }
+  | { tipo: "salvo"; acao: AcaoRelacao; valor: SalvoComunidade };
 
 export interface AcervoRepositorio {
   versao(): Promise<number>;

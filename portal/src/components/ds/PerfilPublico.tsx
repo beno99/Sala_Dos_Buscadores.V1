@@ -7,9 +7,11 @@ import { Badge } from "./Selos";
 export function CabecalhoPerfilPublico({
   pessoa,
   publicacoes,
+  acao,
 }: {
   pessoa: PessoaComunidadeVisual;
   publicacoes: number;
+  acao?: ReactNode;
 }) {
   return (
     <header className="sdb-profilehead">
@@ -34,6 +36,7 @@ export function CabecalhoPerfilPublico({
             </li>
           </ul>
         </div>
+        {acao && <div className="sdb-profilehead__actions">{acao}</div>}
       </div>
     </header>
   );

@@ -302,7 +302,7 @@ erDiagram
     text alvo_tipo PK
     text alvo_id PK
     text pessoa PK
-    text tipo "curtir | util | pensar | aprofundar"
+    text tipo PK "curtir | util | pensar | aprofundar"
   }
   seguindo {
     text seguidor PK
@@ -328,4 +328,4 @@ erDiagram
   }
 ```
 
-A comunidade ainda não tem escrita no portal: as tabelas existem e são lidas, e nascem vazias.
+A escrita passa pelas Server Actions em `portal/src/server/comunidade/acoes.ts`. `reacoes` guarda uma linha por tipo: a mesma pessoa pode curtir e marcar "Útil" no mesmo item. Publicação e comentário excluídos ficam com estado `removida`; `moderacao` é só leitura da fila, e toda decisão entra em `auditoria`.

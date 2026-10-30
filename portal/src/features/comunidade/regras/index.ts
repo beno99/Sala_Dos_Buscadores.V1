@@ -1,13 +1,47 @@
-import type { ComentarioComunidade, EstadoComunidade, Publicacao, SeguirComunidade } from "@/data/types";
+import type {
+  ComentarioComunidade,
+  EstadoComunidade,
+  MotivoDenunciaComunidade,
+  Publicacao,
+  SeguirComunidade,
+  TipoReacaoComunidade,
+} from "@/data/types";
 import type { Papel } from "@/modules/conta/conta.contratos";
 
 export const LIMITES_COMUNIDADE = {
   texto: 1500,
   comentario: 600,
   temas: 3,
+  referencia: 160,
+  descricaoImagem: 200,
+  nota: 500,
   publicacoesPorDia: 10,
   comentariosPorDia: 60,
 } as const;
+export const TIPOS_PUBLICACAO = {
+  reflexao: "Reflexão",
+  citacao: "Citação com fonte",
+  pergunta: "Pergunta",
+  achado: "Achado do acervo",
+} as const;
+export const MOTIVOS_DENUNCIA: Record<MotivoDenunciaComunidade, string> = {
+  desrespeito: "Desrespeito a pessoas ou tradições",
+  proselitismo: "Proselitismo ou desqualificação de crenças",
+  saude: "Conteúdo médico ou promessa de cura",
+  "dados-pessoais": "Dados pessoais de terceiros",
+  "sem-fonte": "Afirmação sem fonte",
+};
+/** O que a tela precisa saber de quem está vendo. O servidor confere tudo de novo em cada ação. */
+export interface VisaoComunidade {
+  pessoaId: string;
+  papel: Papel;
+  salvos: string[];
+  reacoes: Record<string, TipoReacaoComunidade[]>;
+  comentariosCurtidos: string[];
+  salasProprias: string[];
+  seguindoPessoas: string[];
+  seguindoSalas: string[];
+}
 export const normalizarTextoComunidade = (texto: string) =>
   texto
     .replace(/<[^>]*>/g, "")
@@ -31,6 +65,13 @@ export function validarPublicacao(
       !normalizarTextoComunidade(p.citacao?.passagem ?? ""))
   )
     erros.push("Informe trecho, obra e passagem.");
+  if (
+    p.tipo === "citacao" &&
+    ((p.citacao?.trecho.length ?? 0) > LIMITES_COMUNIDADE.texto ||
+      (p.citacao?.obra.length ?? 0) > LIMITES_COMUNIDADE.referencia ||
+      (p.citacao?.passagem.length ?? 0) > LIMITES_COMUNIDADE.referencia)
+  )
+    erros.push("Encurte o trecho, a obra ou a passagem.");
   if (p.tipo === "pergunta" && !p.salaSlug?.trim()) erros.push("Escolha a Sala da pergunta.");
   if (p.tipo === "achado" && !p.conteudoId?.trim()) erros.push("Escolha um conteúdo do acervo.");
   return erros;

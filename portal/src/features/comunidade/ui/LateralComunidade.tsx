@@ -6,6 +6,7 @@ import { Icon } from "@/components/ds/Icon";
 import { LinhaPessoa } from "@/components/ds/LinhaPessoa";
 import { SeloNivel } from "@/components/ds/Selos";
 import type { ModeloComunidade } from "@/server/comunidade/consultas";
+import { BotaoSeguir } from "./BotaoSeguir";
 export function LateralComunidade({ modelo: m }: { modelo: ModeloComunidade }) {
   const [busca, setBusca] = useState("");
   const pessoas = m.pessoas.filter(
@@ -56,7 +57,17 @@ export function LateralComunidade({ modelo: m }: { modelo: ModeloComunidade }) {
         </label>
         <div className="sdb-community-side__list">
           {pessoas.slice(0, busca ? 6 : 2).map((p) => (
-            <LinhaPessoa key={p.id} pessoa={p} />
+            <LinhaPessoa
+              key={p.id}
+              pessoa={p}
+              acao={
+                <BotaoSeguir
+                  alvo={{ tipo: "pessoa", id: p.id }}
+                  nome={p.nome}
+                  seguindo={m.visao.seguindoPessoas.includes(p.id)}
+                />
+              }
+            />
           ))}
         </div>
         <p className="sdb-footnote" role="status">

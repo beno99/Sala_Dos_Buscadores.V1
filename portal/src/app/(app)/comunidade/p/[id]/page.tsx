@@ -16,13 +16,7 @@ export default async function Publicacao({ params }: { params: Promise<{ id: str
           Voltar à Comunidade
         </ButtonLink>
       </header>
-      <PublicacaoLeitura
-        p={p}
-        agora={m.agora}
-        completa
-        curtida={m.curtidas.includes(id)}
-        salva={m.salvos.some((p) => p.id === id)}
-      />
+      <PublicacaoLeitura p={p} agora={m.agora} completa visao={m.visao} opcoes={m.opcoes} />
     </div>
   );
 }

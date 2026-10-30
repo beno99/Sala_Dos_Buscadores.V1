@@ -5,10 +5,13 @@ import { Button, ButtonLink } from "@/components/ds/Button";
 import { Icon } from "@/components/ds/Icon";
 import { Segmented } from "@/components/ds/Segmented";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
+import type { TipoPublicacao } from "@/data/types";
+import { TIPOS_PUBLICACAO } from "@/features/comunidade/regras";
 import type { ModeloComunidade } from "@/server/comunidade/consultas";
+import { BotaoSeguir } from "./BotaoSeguir";
+import { CompositorPublicacao, ICONES_TIPO } from "./CompositorPublicacao";
 import { LateralComunidade } from "./LateralComunidade";
 import { ListaPublicacoes } from "./ListaPublicacoes";
-import { TIPOS_PUBLICACAO } from "./PublicacaoLeitura";
 
 export function FeedComunidade({
   modelo: m,
@@ -23,7 +26,13 @@ export function FeedComunidade({
   const [buscar, setBuscar] = useState(false);
   const [busca, setBusca] = useState("");
   const [aviso, setAviso] = useState(true);
+  const [compondo, setCompondo] = useState(false);
+  const [tipoCompositor, setTipoCompositor] = useState<TipoPublicacao>("reflexao");
   const id = useId();
+  const abrir = (tipo: TipoPublicacao) => {
+    setTipoCompositor(tipo);
+    setCompondo(true);
+  };
   const filtrar = (lista: ModeloComunidade["publicacoes"]) =>
     lista.filter(
       (p) =>
@@ -41,7 +50,7 @@ export function FeedComunidade({
           <h1 className="sdb-title-1">Comunidade</h1>
           <p className="sdb-body-sm">Um caderno de estudos em voz alta.</p>
         </div>
-        <Button variant="gold" disabled title="Publicação ainda indisponível neste portal">
+        <Button variant="gold" onClick={() => abrir("reflexao")}>
           Nova publicação
         </Button>
       </header>
@@ -97,6 +106,13 @@ export function FeedComunidade({
                   .filter(Boolean)
                   .join(" · ")}
               </span>
+              {sala && salaPorSlug(sala) && (
+                <BotaoSeguir
+                  alvo={{ tipo: "sala", id: sala }}
+                  nome={salaPorSlug(sala)?.nome ?? sala}
+                  seguindo={m.visao.seguindoSalas.includes(sala)}
+                />
+              )}
               <ButtonLink href="/comunidade" variant="plain">
                 Limpar filtros
               </ButtonLink>
@@ -121,38 +137,20 @@ export function FeedComunidade({
               />
             </aside>
           )}
-          <section className="sdb-composer sdb-composer--launcher" aria-label="Publicações em leitura">
+          <section className="sdb-composer sdb-composer--launcher" aria-label="Começar publicação">
             <div className="sdb-composer__prompt">
               <Avatar iniciais={m.pessoa.iniciais} foto={m.pessoa.foto} />
-              <Button variant="secondary" disabled>
+              <Button variant="secondary" onClick={() => abrir("reflexao")}>
                 O que você está estudando?
               </Button>
             </div>
             <div className="sdb-composer__types">
-              {Object.entries(TIPOS_PUBLICACAO).map(([chave, tipo]) => (
-                <Button
-                  variant="plain"
-                  disabled
-                  key={tipo}
-                  icon={
-                    (
-                      {
-                        reflexao: "editar",
-                        citacao: "fontePrimaria",
-                        pergunta: "assistente",
-                        achado: "biblioteca",
-                      } as const
-                    )[chave as keyof typeof TIPOS_PUBLICACAO]
-                  }
-                >
-                  {tipo}
+              {(Object.keys(TIPOS_PUBLICACAO) as TipoPublicacao[]).map((chave) => (
+                <Button variant="plain" key={chave} icon={ICONES_TIPO[chave]} onClick={() => abrir(chave)}>
+                  {TIPOS_PUBLICACAO[chave]}
                 </Button>
               ))}
             </div>
-            <p className="sdb-composer__unavailable">
-              Por enquanto, explore os estudos e as conversas. Novas publicações e respostas serão habilitadas
-              em breve.
-            </p>
           </section>
           <p className="sdb-sr" role="status">
             {filtrar(aba === "para-voce" ? m.publicacoes : m.seguindo).length} publicações
@@ -171,8 +169,8 @@ export function FeedComunidade({
               <ListaPublicacoes
                 publicacoes={filtrar(valor === "para-voce" ? m.publicacoes : m.seguindo)}
                 agora={m.agora}
-                curtidas={m.curtidas}
-                salvos={m.salvos.map((p) => p.id)}
+                visao={m.visao}
+                opcoes={m.opcoes}
                 vazio={
                   busca || sala || tema
                     ? "Nenhuma publicação encontrada"
@@ -191,6 +189,12 @@ export function FeedComunidade({
         </div>
         <LateralComunidade modelo={m} />
       </div>
+      <CompositorPublicacao
+        aberto={compondo}
+        tipo={tipoCompositor}
+        opcoes={m.opcoes}
+        onFechar={() => setCompondo(false)}
+      />
     </div>
   );
 }

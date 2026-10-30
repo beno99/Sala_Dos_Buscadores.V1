@@ -42,7 +42,7 @@ export const reacoes = pgTable(
     pessoa: text("pessoa").notNull(),
     tipo: text("tipo").notNull().$type<"curtir" | "util" | "pensar" | "aprofundar">(),
   },
-  (t) => [primaryKey({ columns: [t.alvoTipo, t.alvoId, t.pessoa] })],
+  (t) => [primaryKey({ columns: [t.alvoTipo, t.alvoId, t.pessoa, t.tipo] })],
 ).enableRLS();
 
 export const seguindo = pgTable(
