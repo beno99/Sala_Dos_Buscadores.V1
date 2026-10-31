@@ -1,6 +1,14 @@
 <!-- @dsCard group="Estrutura do portal" height=900 subtitle="Entrar, recuperar senha e criar conta com gravuras de domínio público do acervo." -->
 <main class="sdb-conta sdb-conta--entrada">
-  <div class="sdb-conta__imagem" aria-hidden="true"><img class="is-current" src="../assets/images/conta-entrada.webp" alt=""></div>
+  <div class="sdb-conta__imagem" role="group" aria-roledescription="carrossel" aria-label="Imagens do acervo">
+    <img class="is-current" src="../assets/images/conta-entrada.webp" alt="">
+    <div class="sdb-conta__imagem-controls">
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" aria-label="Cena anterior"><span data-icon="chevronEsquerda" class="sdb-icon--sm"></span></button>
+      <div class="sdb-dots" role="group" aria-label="Escolher cena"><button type="button" aria-label="Cena 1" aria-current="true"></button><button type="button" aria-label="Cena 2"></button><button type="button" aria-label="Cena 3"></button></div>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" aria-label="Próxima cena"><span data-icon="chevronDireita" class="sdb-icon--sm"></span></button>
+      <button class="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm" type="button" aria-label="Pausar giro" data-tip="Pausar"><span data-icon="pausar" class="sdb-icon--sm"></span></button>
+    </div>
+  </div>
   <div class="sdb-conta__conteudo">
     <p class="sdb-conta__marca">A Sala dos Buscadores</p>
     <form class="sdb-conta__form sdb-conta__form--entrar" aria-labelledby="conta-titulo" onsubmit="event.preventDefault();SalaBuscadores.toast('Prévia do formulário de acesso.')">

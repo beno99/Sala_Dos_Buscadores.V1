@@ -17,10 +17,38 @@
   align-self: stretch;
   position: relative;
   display: grid;
-  min-height: 600px;
+  min-height: 440px;
+  max-height: calc(100dvh - 2 * var(--space-4));
   overflow: hidden;
   border: 6px solid var(--material-thin);
   border-radius: var(--radius-xl);
+}
+
+.sdb-conta__imagem-controls {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sdb-conta__imagem-controls .sdb-dots {
+  background: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  padding: 8px 8px;
+}
+.sdb-conta__imagem-controls .sdb-btn--icon {
+  background: var(--bege-damasco);
+  color: var(--grafite-profundo);
+}
+.sdb-conta__imagem-controls .sdb-dots button {
+  background: rgb(204 180 142 / 60%);
+}
+.sdb-conta__imagem-controls .sdb-dots button[aria-current="true"] {
+  background: var(--progress-from);
 }
 
 .sdb-conta__imagem img {
@@ -173,6 +201,8 @@
   }
 
   .sdb-conta__imagem img { object-position: 50% 27%; }
+  .sdb-conta__imagem-controls { left: 8px; bottom: 8px; gap: 4px; }
+  .sdb-conta__imagem-controls .sdb-dots { padding: 4px; }
   .sdb-conta__conteudo { justify-self: center; padding-block: 0 var(--space-4); }
   .sdb-conta__marca { max-width: none; font-size: 36px; margin-bottom: var(--space-4); }
   .sdb-conta__form--entrar .sdb-conta__lead { font-size: 20px; }
