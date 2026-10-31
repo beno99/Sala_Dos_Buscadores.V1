@@ -15,7 +15,7 @@ import type { Conteudo, Nivel, Placa, SalaSlug, TemaSlug } from "@/data/types";
 import { avaliarConquistas, type EstadoConquista } from "@/features/estudo/conquistas";
 import { chaveEstante } from "@/features/estudo/estante";
 import { assuntoEmFoco, NOME_NIVEL, nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
-import { leiturasEmAndamento, resumoDoPainel } from "@/features/estudo/painel";
+import { leiturasEmAndamento, resumoDoPainel, ultimaLeituraConcluida } from "@/features/estudo/painel";
 import {
   comecePorAqui,
   conteudoParaAmpliar,
@@ -109,6 +109,8 @@ export interface ModeloPortal {
   indicadores: Indicador[];
   emAndamento: (ConteudoComImagem & { pct: number })[];
   comecePorAqui: ConteudoComImagem[];
+  /** Última leitura concluída, para quem já leu tudo que começou. */
+  ultimaLida?: ConteudoComImagem;
   recentes: ConteudoComImagem[];
   ampliar?: ConteudoComImagem & { motivo: string };
   anuncioPainel?: AnuncioVisual;
@@ -251,6 +253,11 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
           return x ? [comImagem(x)] : [];
         })
       : [];
+  // Quem já leu tudo que começou (nada em andamento, mas já leu algo): mostra a última
+  // leitura concluída em vez de tratar como se nunca tivesse lido nada.
+  const concluida = ultimaLeituraConcluida(p);
+  const conteudoConcluido = concluida && porChave(concluida.sala, concluida.slug);
+  const ultimaLida = conteudoConcluido ? comImagem(conteudoConcluido) : undefined;
   const sugestao = conteudoParaAmpliar(
     acervo,
     p.leituras,
@@ -313,6 +320,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
     indicadores,
     emAndamento,
     comecePorAqui: comeceItens,
+    ultimaLida,
     recentes,
     ...(conteudoAmpliar
       ? {

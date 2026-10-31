@@ -46,7 +46,7 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
   const [politica, setPolitica] = useState(false);
   const temaEscolhido = modelo.temas.find((t) => t.slug === tema);
   const salas = tema ? modelo.salas.filter((s) => s.temas.includes(tema)) : modelo.salas;
-  const { retomada, inicio, sugestoes, novidades } = comporLeituras(modelo);
+  const { retomada, inicio, revisao, sugestoes, novidades } = comporLeituras(modelo);
   const marca: SlideBanner = {
     id: "marca",
     tipo: "marca",
@@ -136,27 +136,34 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
           <section className="sdb-home__section" aria-labelledby="home-retomada">
             <Cabecalho
               id="home-retomada"
-              titulo={retomada ? "Continue sua busca" : "Comece sua busca"}
+              titulo={
+                retomada ? "Continue sua busca" : revisao ? "Seu progresso de leitura" : "Comece sua busca"
+              }
               acao={retomada ? "Ver minha Estante" : "Explorar o acervo"}
               href={retomada ? "/estante" : "/biblioteca"}
             />
             {retomada ? (
               <RetomadaPortal {...retomada} />
-            ) : (
+            ) : revisao ? (
+              <>
+                <p className="sdb-home__intro">
+                  Você já concluiu leituras no acervo. Continue explorando ou leia de novo.
+                </p>
+                <RetomadaPortal {...revisao} pct={100} cta="Ler de novo" />
+              </>
+            ) : inicio ? (
               <>
                 <p className="sdb-home__intro">Escolha uma leitura para começar.</p>
-                {inicio ? (
-                  <RetomadaPortal {...inicio} />
-                ) : (
-                  <EstadoSecao
-                    compacto
-                    simbolo="busca"
-                    titulo="O acervo está aberto à sua busca."
-                    descricao="Conheça as leituras disponíveis na Biblioteca."
-                    acao={{ rotulo: "Explorar o acervo", href: "/biblioteca" }}
-                  />
-                )}
+                <RetomadaPortal {...inicio} />
               </>
+            ) : (
+              <EstadoSecao
+                compacto
+                simbolo="busca"
+                titulo="O acervo está aberto à sua busca."
+                descricao="Conheça as leituras disponíveis na Biblioteca."
+                acao={{ rotulo: "Explorar o acervo", href: "/biblioteca" }}
+              />
             )}
           </section>
           <Carrossel

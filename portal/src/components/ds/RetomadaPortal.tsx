@@ -14,10 +14,13 @@ export function RetomadaPortal({
   conteudo,
   imagem,
   pct,
+  cta,
 }: {
   conteudo: Conteudo;
   imagem?: string;
   pct?: number;
+  /** Sobrescreve o rótulo padrão ("Começar"/"Retomar a leitura"). */
+  cta?: string;
 }) {
   const sala = salaPorSlug(conteudo.sala);
   const percentual = pct === undefined ? undefined : percentualDeLeitura(pct);
@@ -43,7 +46,7 @@ export function RetomadaPortal({
             </div>
           )}
           <Link className="sdb-retomada__cta" href={`/salas/${conteudo.sala}/${conteudo.slug}` as Route}>
-            {pct === undefined ? "Começar a leitura" : "Retomar leitura"}
+            {cta ?? (pct === undefined ? "Começar a leitura" : "Retomar leitura")}
             <Icon name="seta" />
             <span className="sdb-sr">: {conteudo.titulo}</span>
           </Link>

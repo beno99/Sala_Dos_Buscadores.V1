@@ -32,3 +32,10 @@ export function leiturasEmAndamento(p: ProgressoEstudo): Leitura[] {
     .filter((l) => !l.concluidaEm && chaveLeitura(l.sala, l.slug) !== p.continuarDispensado)
     .sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
 }
+
+/** Última leitura concluída: para quem já leu tudo que começou, em vez de tratá-la como quem nunca leu nada. */
+export function ultimaLeituraConcluida(p: ProgressoEstudo): Leitura | undefined {
+  return p.leituras
+    .filter((l) => l.concluidaEm)
+    .sort((a, b) => (b.concluidaEm as string).localeCompare(a.concluidaEm as string))[0];
+}
