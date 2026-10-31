@@ -2,8 +2,14 @@ import "server-only";
 import { and, asc, eq, gt } from "drizzle-orm";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
-import type { ContaRepositorio, Membro, RedefinicaoRepositorio, SessaoRepositorio } from "./conta.contratos";
-import { redefinicoesSenha, sessoes, usuarios } from "./conta.schema";
+import type {
+  ContaRepositorio,
+  Membro,
+  RedefinicaoRepositorio,
+  SessaoRepositorio,
+  VerificacaoRepositorio,
+} from "./conta.contratos";
+import { redefinicoesSenha, sessoes, usuarios, verificacoesEmail } from "./conta.schema";
 
 /* Implementação Postgres dos contratos de conta. */
 
@@ -16,6 +22,7 @@ const paraMembro = (l: Linha): Membro => ({
   papel: l.papel,
   membroDesde: new Date(l.membroDesde).toISOString(),
   preferencias: l.preferencias ?? null,
+  emailVerificadoEm: l.emailVerificadoEm ? new Date(l.emailVerificadoEm).toISOString() : null,
 });
 
 const normalizar = (email: string) => email.trim().toLowerCase();
@@ -87,6 +94,9 @@ export const contaRepositorio: ContaRepositorio = {
   async definirSenha(id, senhaHash) {
     await banco().update(usuarios).set({ senhaHash }).where(eq(usuarios.id, id));
   },
+  async marcarEmailVerificado(id) {
+    return atualizar(id, { emailVerificadoEm: new Date().toISOString() });
+  },
 };
 
 export const sessaoRepositorio: SessaoRepositorio = {
@@ -135,5 +145,23 @@ export const redefinicaoRepositorio: RedefinicaoRepositorio = {
       )
       .limit(1);
     return Boolean(linha);
+  },
+};
+
+export const verificacaoRepositorio: VerificacaoRepositorio = {
+  async criar({ tokenHash, usuarioId, expiraEm }) {
+    await banco().transaction(async (tx) => {
+      await tx.delete(verificacoesEmail).where(eq(verificacoesEmail.usuarioId, usuarioId));
+      await tx.insert(verificacoesEmail).values({ tokenHash, usuarioId, expiraEm: expiraEm.toISOString() });
+    });
+  },
+  async consumir(tokenHash, agora) {
+    const [linha] = await banco()
+      .delete(verificacoesEmail)
+      .where(
+        and(eq(verificacoesEmail.tokenHash, tokenHash), gt(verificacoesEmail.expiraEm, agora.toISOString())),
+      )
+      .returning({ usuarioId: verificacoesEmail.usuarioId });
+    return linha?.usuarioId ?? null;
   },
 };

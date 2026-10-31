@@ -21,13 +21,15 @@ type Relato = (linha: string) => void;
 
 async function criarAdmin({ email, senha }: { email: string; senha: string }, relatar: Relato) {
   if (await contaRepositorio.porEmail(email)) return relatar(`Administrador ${email} já existe.`);
-  await contaRepositorio.criar({
+  const admin = await contaRepositorio.criar({
     id: novoIdConta(),
     pseudonimo: "Editoria do acervo",
     email,
     senhaHash: await bcrypt.hash(senha, CUSTO_BCRYPT),
     papel: "administrador",
   });
+  // Conta semeada pelo próprio servidor: não há e-mail de ninguém para confirmar.
+  await contaRepositorio.marcarEmailVerificado(admin.id);
   relatar(`Administrador ${email} criado.`);
 }
 

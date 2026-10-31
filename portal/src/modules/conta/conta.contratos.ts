@@ -21,6 +21,8 @@ export interface Membro {
   membroDesde: string;
   /** null até o onboarding ser concluído ou pulado (RF-07). */
   preferencias: Preferencias | null;
+  /** null até confirmar o e-mail; enquanto nulo, o app todo redireciona para /confirmar-email. */
+  emailVerificadoEm: string | null;
 }
 
 export type Resultado<T> =
@@ -45,6 +47,7 @@ export interface ContaRepositorio {
   definirPapel(id: string, papel: Papel): Promise<Membro | null>;
   definirPreferencias(id: string, preferencias: Preferencias | null): Promise<Membro | null>;
   definirSenha(id: string, senhaHash: string): Promise<void>;
+  marcarEmailVerificado(id: string): Promise<Membro | null>;
 }
 
 export interface SessaoRepositorio {
@@ -61,8 +64,14 @@ export interface RedefinicaoRepositorio {
   valido(tokenHash: string, agora: Date): Promise<boolean>;
 }
 
+export interface VerificacaoRepositorio {
+  criar(pedido: { tokenHash: string; usuarioId: string; expiraEm: Date }): Promise<void>;
+  consumir(tokenHash: string, agora: Date): Promise<string | null>;
+}
+
 export interface DepsConta {
   contas: ContaRepositorio;
   sessoes: SessaoRepositorio;
   redefinicoes: RedefinicaoRepositorio;
+  verificacoes: VerificacaoRepositorio;
 }

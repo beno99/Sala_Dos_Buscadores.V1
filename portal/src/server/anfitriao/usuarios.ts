@@ -434,17 +434,19 @@ export async function aceitarConvite(
     { papel: "anfitriao" },
   );
   if (!r.ok) return falha(`Erro: ${r.erro}`, r.campo ? { [r.campo]: r.erro } : undefined);
+  // O link do convite já provou o e-mail: não manda outra verificação.
+  const verificado = (await contas.marcarEmailVerificado(r.valor.id)) ?? r.valor;
   acervo().convites.set(convite.id, { ...convite, status: "usado", usadoEm: agoraData.toISOString() });
-  criarPerfil(r.valor.id, { nome: r.valor.pseudonimo });
+  criarPerfil(verificado.id, { nome: verificado.pseudonimo });
   registrar({
-    quem: r.valor.pseudonimo,
+    quem: verificado.pseudonimo,
     acao: "criou",
     tipoItem: "usuario",
-    itemId: r.valor.id,
-    itemTitulo: r.valor.pseudonimo,
+    itemId: verificado.id,
+    itemTitulo: verificado.pseudonimo,
     mudancas: [{ campo: "Papel", antes: "", depois: "anfitrião (por convite)" }],
   });
-  return ok(r.valor, "Conta criada. Complete seu perfil de anfitrião.");
+  return ok(verificado, "Conta criada. Complete seu perfil de anfitrião.");
 }
 
 // ---------- perfil (§2) ----------

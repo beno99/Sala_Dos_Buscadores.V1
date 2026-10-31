@@ -6,7 +6,7 @@ import { type NextRequest, NextResponse } from "next/server";
  * acontece no servidor (layout do grupo (app), app/admin/layout.tsx e cada
  * Server Action, em src/server/sessao.ts).
  */
-const ROTAS_DE_CONTA = ["/entrar", "/cadastro", "/recuperar-senha", "/api/conta"];
+const ROTAS_DE_CONTA = ["/entrar", "/cadastro", "/recuperar-senha", "/confirmar-email", "/api/conta"];
 
 export function precisaEntrar(caminho: string): boolean {
   return !ROTAS_DE_CONTA.some((r) => caminho === r || caminho.startsWith(`${r}/`));

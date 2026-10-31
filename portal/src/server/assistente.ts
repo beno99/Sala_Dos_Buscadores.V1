@@ -127,73 +127,86 @@ export function montarResposta(
 }
 
 const ESQUEMA = {
-  type: "object",
+  type: "OBJECT",
   properties: {
-    semFonte: { type: "boolean" },
+    semFonte: { type: "BOOLEAN" },
     trechos: {
-      type: "array",
+      type: "ARRAY",
       items: {
-        type: "object",
+        type: "OBJECT",
         properties: {
-          tipo: { type: "string", enum: ["doc", "editorial", "ai"] },
-          texto: { type: "string" },
-          refs: { type: "array", items: { type: "integer" } },
+          tipo: { type: "STRING", enum: ["doc", "editorial", "ai"] },
+          texto: { type: "STRING" },
+          refs: { type: "ARRAY", items: { type: "INTEGER" } },
         },
         required: ["tipo", "texto", "refs"],
-        additionalProperties: false,
       },
     },
   },
   required: ["semFonte", "trechos"],
-  additionalProperties: false,
 };
 
 const ERRO_GERAL = "Erro: não foi possível consultar o acervo agora. Tente novamente.";
 
-const servicoGrok: ServicoAssistente = {
+const servicoGemini: ServicoAssistente = {
   async consultar(pedido, { signal }) {
     const docs = documentosDoEscopo(pedido.escopo);
     const modo = MODOS_ESTUDO[pedido.modo];
     let r: Response;
     try {
-      r = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.XAI_API_KEY}` },
-        body: JSON.stringify({
-          model: "grok-4.7",
-          messages: [
-            { role: "system", content: SISTEMA },
-            { role: "user", content: `Documentos do acervo:\n\n${blocoDeDocumentos(docs)}` },
-            {
-              role: "user",
-              content: `Modo de estudo: ${modo.nome}. ${modo.descricao}\n\nPergunta: ${pedido.pergunta}`,
+      // ponytail: modelo gratuito oscila com "high demand" (503); uma retentativa cobre a maioria dos casos.
+      for (let tentativa = 0; ; tentativa++) {
+        r = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": process.env.GEMINI_API_KEY ?? "",
             },
-          ],
-          response_format: {
-            type: "json_schema",
-            json_schema: { name: "resposta_do_acervo", schema: ESQUEMA, strict: true },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: SISTEMA }] },
+              contents: [
+                { role: "user", parts: [{ text: `Documentos do acervo:\n\n${blocoDeDocumentos(docs)}` }] },
+                {
+                  role: "user",
+                  parts: [
+                    {
+                      text: `Modo de estudo: ${modo.nome}. ${modo.descricao}\n\nPergunta: ${pedido.pergunta}`,
+                    },
+                  ],
+                },
+              ],
+              generationConfig: { responseMimeType: "application/json", responseSchema: ESQUEMA },
+            }),
+            signal,
           },
-        }),
-        signal,
-      });
+        );
+        if (r.status !== 503 || tentativa >= 1) break;
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
     } catch (e) {
       if (signal.aborted) throw e;
       return { ok: false, erro: ERRO_GERAL };
     }
     if (r.status === 429)
       return { ok: false, erro: "Erro: muitas perguntas ao mesmo tempo. Espere um pouco e tente de novo." };
-    if (r.status === 401 || r.status === 403) return { ok: false, erro: ASSISTENTE_INDISPONIVEL };
+    if (r.status === 400 || r.status === 403) return { ok: false, erro: ASSISTENTE_INDISPONIVEL };
+    if (r.status === 503)
+      return {
+        ok: false,
+        erro: "Erro: o modelo de IA está com muita procura agora. Tente de novo em instantes.",
+      };
     if (!r.ok) return { ok: false, erro: ERRO_GERAL };
     const corpo = (await r.json()) as {
-      choices?: { message?: { content?: string | null; refusal?: string | null } }[];
+      candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[];
     };
-    const mensagem = corpo.choices?.[0]?.message;
     let json: unknown = null;
     try {
-      json = JSON.parse(mensagem?.content ?? "");
+      json = JSON.parse(corpo.candidates?.[0]?.content?.parts?.[0]?.text ?? "");
     } catch {}
     const saida = Saida.safeParse(json);
-    if (mensagem?.refusal || !saida.success)
+    if (!saida.success)
       return {
         ok: false,
         erro: "Erro: o assistente não conseguiu responder a esta pergunta. Reformule e tente de novo.",
@@ -208,4 +221,4 @@ const indisponivel: ServicoAssistente = {
   },
 };
 
-export const servicoAssistente: ServicoAssistente = process.env.XAI_API_KEY ? servicoGrok : indisponivel;
+export const servicoAssistente: ServicoAssistente = process.env.GEMINI_API_KEY ? servicoGemini : indisponivel;

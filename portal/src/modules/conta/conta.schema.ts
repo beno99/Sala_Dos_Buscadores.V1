@@ -13,6 +13,8 @@ export const usuarios = pgTable("usuarios", {
   membroDesde: timestamp("membro_desde", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   /** null até o onboarding; a convicção só entra com consentimento (LGPD art. 11). */
   preferencias: jsonb("preferencias").$type<Preferencias>(),
+  /** null até confirmar o e-mail; o cadastro é obrigatório, mas o acesso ao app também é (RF-01). */
+  emailVerificadoEm: timestamp("email_verificado_em", { withTimezone: true, mode: "string" }),
 }).enableRLS();
 
 export const sessoes = pgTable(
@@ -39,4 +41,16 @@ export const redefinicoesSenha = pgTable(
     expiraEm: timestamp("expira_em", { withTimezone: true, mode: "string" }).notNull(),
   },
   (t) => [index("redefinicoes_usuario_idx").on(t.usuarioId)],
+).enableRLS();
+
+export const verificacoesEmail = pgTable(
+  "verificacoes_email",
+  {
+    tokenHash: text("token_hash").primaryKey(),
+    usuarioId: text("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    expiraEm: timestamp("expira_em", { withTimezone: true, mode: "string" }).notNull(),
+  },
+  (t) => [index("verificacoes_usuario_idx").on(t.usuarioId)],
 ).enableRLS();

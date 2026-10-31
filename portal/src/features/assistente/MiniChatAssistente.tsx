@@ -108,8 +108,8 @@ export function MiniChatAssistente({
         <div className="assistant-chat__identity">
           <span className="assistant-chat__spark" aria-hidden="true" />
           <div>
-            <h2 id={`${id}-titulo`}>Assistente de IA</h2>
-            <p>Serviço de IA ainda não conectado</p>
+            <h2 id={`${id}-titulo`}>Assistente do acervo</h2>
+            <p>Uma conversa, novas perspectivas</p>
           </div>
         </div>
         <Link className="sdb-link px-2" style={{ fontSize: 12 }} href="/assistente" onClick={onFechar}>

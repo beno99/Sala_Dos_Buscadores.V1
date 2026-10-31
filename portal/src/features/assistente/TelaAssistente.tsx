@@ -304,7 +304,7 @@ export function TelaAssistente({
         <p>
           A IA organiza o que o acervo diz; não determina qual crença é verdadeira.
           <br />
-          <span>IA ainda não conectada. Histórico entre visitas ainda não disponível.</span>
+          <span>Histórico entre visitas ainda não disponível.</span>
         </p>
       </footer>
     </div>

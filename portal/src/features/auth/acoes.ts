@@ -28,3 +28,11 @@ export async function solicitarRedefinicaoAcao(email: string) {
 export async function redefinirSenhaAcao(token: string, senha: string): Promise<Resultado<Membro>> {
   return conta.redefinirSenha(token, senha);
 }
+
+export async function confirmarEmailAcao(token: string): Promise<Resultado<Membro>> {
+  return conta.confirmarEmail(token);
+}
+
+export async function reenviarVerificacaoAcao(): Promise<Resultado<true>> {
+  return conta.reenviarVerificacao();
+}

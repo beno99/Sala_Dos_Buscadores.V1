@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Moldura } from "@/components/layout/Moldura";
 import { listarConteudosBuscaveis } from "@/data/repositorio";
@@ -9,11 +10,13 @@ import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
 
 /**
  * Todo o app exige conta (RF-01, RF-05 revisto). O proxy só faz a checagem
- * otimista pelo cookie; aqui vale a sessão de verdade.
+ * otimista pelo cookie; aqui vale a sessão de verdade. E-mail não confirmado
+ * também não entra (RF-01): vai para /confirmar-email em vez da moldura.
  */
 export default async function LayoutApp({ children }: { children: ReactNode }) {
   const membro = await membroAtual();
   if (!membro) return redirecionarParaEntrar();
+  if (!membro.emailVerificadoEm) redirect("/confirmar-email");
   const jar = await cookies();
   const aparencia = aparenciaDoCookie(jar.get(COOKIE_TEMA)?.value);
   const lateralTranslucida = lateralDoCookie(jar.get(COOKIE_LATERAL)?.value);

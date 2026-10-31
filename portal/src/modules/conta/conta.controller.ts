@@ -6,7 +6,16 @@ import { aguardarGravacoes, sincronizarAcervo } from "@/server/store";
 import { VALIDADE_REDEFINICAO_MIN } from "./casos-de-uso/redefinir";
 import { DURACAO_SESSAO_MS } from "./casos-de-uso/sessao";
 import type { Membro, Resultado } from "./conta.contratos";
+import { emailVerificacao } from "./email-verificacao";
 import { contas } from "./index";
+
+async function enviarVerificacao(membro: Membro, token: string) {
+  const { assunto, corpo, html } = emailVerificacao({
+    pseudonimo: membro.pseudonimo,
+    link: `${URL_PUBLICA}/confirmar-email?token=${token}`,
+  });
+  enviarEmail({ para: membro.email, assunto, corpo, html });
+}
 
 /*
  * Controller de conta (RF-01 a RF-03): valida a entrada, chama os casos de
@@ -52,7 +61,15 @@ export async function cadastrar(dados: {
   const erroSenha = validarSenha(senha);
   if (erroSenha) return { ok: false, campo: "senha", erro: erroSenha };
   const r = await contas.registrar({ pseudonimo, email, senha });
-  if (r.ok) await gravarSessao(r.valor);
+  if (r.ok) {
+    await gravarSessao(r.valor);
+    const pedido = await contas.pedirVerificacao(r.valor.id);
+    if (pedido) {
+      await sincronizarAcervo();
+      await enviarVerificacao(pedido.membro, pedido.token);
+      await aguardarGravacoes();
+    }
+  }
   return r;
 }
 
@@ -94,4 +111,23 @@ export async function redefinirSenha(token: unknown, senha: unknown): Promise<Re
 
 export async function membroAtual(): Promise<Membro | null> {
   return contas.membroDaSessao(await tokenDaSessao());
+}
+
+/** Confirma o e-mail pelo token do link (RF-01); a conta já existe, só libera o acesso. */
+export async function confirmarEmail(token: unknown): Promise<Resultado<Membro>> {
+  return contas.confirmarEmail(String(token ?? ""));
+}
+
+/** Reenvia o link de verificação para quem já está com sessão aberta, mas ainda não confirmou. */
+export async function reenviarVerificacao(): Promise<Resultado<true>> {
+  const membro = await membroAtual();
+  if (!membro) return { ok: false, erro: "sessão expirada. Entre novamente." };
+  if (membro.emailVerificadoEm) return { ok: true, valor: true };
+  const pedido = await contas.pedirVerificacao(membro.id);
+  if (pedido) {
+    await sincronizarAcervo();
+    await enviarVerificacao(pedido.membro, pedido.token);
+    await aguardarGravacoes();
+  }
+  return { ok: true, valor: true };
 }

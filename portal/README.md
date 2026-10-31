@@ -158,7 +158,7 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 
 ## Dados iniciais
 
-O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que responde com o Grok (xAI, `grok-4.7`) a partir do acervo publicado quando `XAI_API_KEY` está definida, e informa indisponibilidade sem ela. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala.
+O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que responde com o Gemini (Google AI Studio, `gemini-3.5-flash-lite`) a partir do acervo publicado quando `GEMINI_API_KEY` está definida, e informa indisponibilidade sem ela. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala.
 
 ## Fora desta etapa
 

@@ -5,8 +5,14 @@ import { apagarConviccao, salvarPreferencias } from "./casos-de-uso/preferencias
 import { linkDeRedefinicaoValido, pedirRedefinicao, redefinirSenha } from "./casos-de-uso/redefinir";
 import { registrar } from "./casos-de-uso/registrar";
 import { abrirSessao, encerrarSessao, membroDaSessao } from "./casos-de-uso/sessao";
+import { confirmarEmail, pedirVerificacao } from "./casos-de-uso/verificar";
 import type { DepsConta } from "./conta.contratos";
-import { contaRepositorio, redefinicaoRepositorio, sessaoRepositorio } from "./conta.repositorio";
+import {
+  contaRepositorio,
+  redefinicaoRepositorio,
+  sessaoRepositorio,
+  verificacaoRepositorio,
+} from "./conta.repositorio";
 
 /* Composição do módulo: os casos de uso já ligados à persistência Postgres. */
 
@@ -14,6 +20,7 @@ const deps: DepsConta = {
   contas: contaRepositorio,
   sessoes: sessaoRepositorio,
   redefinicoes: redefinicaoRepositorio,
+  verificacoes: verificacaoRepositorio,
 };
 
 type SemDeps<F> = F extends (deps: never, ...args: infer A) => infer R ? (...args: A) => R : never;
@@ -32,9 +39,12 @@ export const contas = {
   pedirRedefinicao: ligar(pedirRedefinicao),
   redefinirSenha: ligar(redefinirSenha),
   linkDeRedefinicaoValido: ligar(linkDeRedefinicaoValido),
+  pedirVerificacao: ligar(pedirVerificacao),
+  confirmarEmail: ligar(confirmarEmail),
   porId: (id: string) => contaRepositorio.porId(id),
   porEmail: (email: string) => contaRepositorio.porEmail(email),
   listar: () => contaRepositorio.listar(),
+  marcarEmailVerificado: (id: string) => contaRepositorio.marcarEmailVerificado(id),
 };
 
 export type { Membro, Papel, Resultado } from "./conta.contratos";
