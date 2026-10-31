@@ -420,7 +420,7 @@ export function EditorArtigoAnfitriao({
                   <p id="campo-temas-ajuda" className="sdb-help">
                     Pelo menos um. São a sua trilha de conhecimento e ligam o artigo à busca por tema.
                   </p>
-                  <div className="sdb-row">
+                  <div className="sdb-row sdb-tag-picker">
                     {todosOsTemas().map((t) => (
                       <Chip
                         key={t.slug}

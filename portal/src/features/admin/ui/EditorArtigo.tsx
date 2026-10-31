@@ -456,7 +456,7 @@ export function EditorArtigo({
                     Ao menos um. São os temas transversais que alimentam a busca comparativa. Se faltar um,
                     crie abaixo: ele passa a valer para todo o acervo e já fica marcado neste artigo.
                   </p>
-                  <div className="sdb-row">
+                  <div className="sdb-row sdb-tag-picker">
                     {temas.map((t) => (
                       <Chip
                         key={t.slug}
