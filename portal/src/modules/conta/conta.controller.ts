@@ -63,11 +63,6 @@ export async function cadastrar(dados: {
   const r = await contas.registrar({ pseudonimo, email, senha });
   if (r.ok) {
     await gravarSessao(r.valor);
-    if (process.env.SDB_EXIGIR_CONFIRMACAO_EMAIL !== "1") {
-      const confirmado = await contas.marcarEmailVerificado(r.valor.id);
-      await aguardarGravacoes();
-      return confirmado ? { ok: true, valor: confirmado } : r;
-    }
     const pedido = await contas.pedirVerificacao(r.valor.id);
     if (pedido) {
       await sincronizarAcervo();
