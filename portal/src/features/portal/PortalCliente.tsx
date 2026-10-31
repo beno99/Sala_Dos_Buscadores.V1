@@ -93,7 +93,19 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       </a>
     ),
   };
-  const slides = intercalarSlides(marca, [destaque, ...episodios], modelo.slidesAnuncio);
+  const novoOlhar: SlideBanner = {
+    id: "destaque-novo-olhar",
+    tipo: "arte",
+    texto:
+      "Um novo olhar começa em você. Dê espaço à curiosidade, à reflexão e ao conhecimento de si. Explore diferentes tradições e construa seu percurso de descoberta, uma pergunta de cada vez.",
+    midia: { placa: "bordo", imagem: "/imagens/banner/novo-olhar.webp" },
+    acoes: (
+      <ButtonLink href="/biblioteca" variant="secondary">
+        Explorar o acervo
+      </ButtonLink>
+    ),
+  };
+  const slides = intercalarSlides(marca, [novoOlhar, destaque, ...episodios], modelo.slidesAnuncio);
 
   return (
     <div className="sdb-home">
