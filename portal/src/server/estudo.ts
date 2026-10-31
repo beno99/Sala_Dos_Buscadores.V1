@@ -4,7 +4,6 @@ import type { AnuncioVisual } from "@/components/ds/EspacoPublicitario";
 import type { Indicador } from "@/components/ds/PainelIndicadores";
 import { salaPorSlug, salasOficiais, temaPorSlug, todosOsTemas } from "@/data/catalogo";
 import { DESTAQUES_DO_CANAL } from "@/data/referencia/banner";
-import { trilhaDaSala } from "@/data/referencia/trilhas";
 import {
   acervoDeEstudo,
   acervoPublico,
@@ -212,8 +211,6 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
 
   const resumo = resumoDoPainel(p, acervo, salas.length);
   const naoVisitadas = salas.filter((s) => !p.salasVisitadas.includes(s.slug)).map((s) => s.nome);
-  const trilha = resumo.trilhas.salas[0];
-  const degraus = trilha ? trilhaDaSala(trilha)?.degraus.length : undefined;
   const indicadores: Indicador[] = [
     {
       rotulo: "Salas visitadas",
@@ -238,14 +235,6 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
       dica: resumo.temas.total
         ? lista(resumo.temas.slugs.map((t) => temaPorSlug(t)?.nome ?? t))
         : "Nenhum ainda. Escolha um tema para comparar.",
-    },
-    {
-      rotulo: "Trilhas em andamento",
-      valor: resumo.trilhas.emAndamento,
-      dica:
-        trilha && degraus
-          ? `${nomeDaSala(trilha)} · degrau ${p.trilhas[trilha] ?? 0} de ${degraus}`
-          : "Nenhuma ainda.",
     },
   ];
 

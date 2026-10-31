@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { cx } from "@/lib/cx";
 
 export interface Indicador {
   rotulo: string;
@@ -16,7 +17,11 @@ export interface Indicador {
  */
 export function PainelIndicadores({ rotulo, itens }: { rotulo: string; itens: Indicador[] }) {
   return (
-    <div className="sdb-stats" role="group" aria-label={rotulo}>
+    <div
+      className={cx("sdb-stats", itens.length === 3 && "sdb-stats--3", itens.length === 2 && "sdb-stats--2")}
+      role="group"
+      aria-label={rotulo}
+    >
       {itens.map((i) => (
         <div key={i.rotulo} className="sdb-stat">
           <span className="sdb-stat__label">{i.rotulo}</span>

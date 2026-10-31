@@ -102,6 +102,31 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       <PainelIndicadores rotulo="Seu progresso no acervo" itens={modelo.indicadores} />
       <div className="sdb-home__columns">
         <div className="sdb-home__editorial">
+          <section className="sdb-home__section" aria-labelledby="home-ferramentas">
+            <h2 id="home-ferramentas" className="sdb-sr">
+              Ferramentas de estudo
+            </h2>
+            <div className="sdb-home__perguntas">
+              <Link className="sdb-home__pergunta" href="/comparar">
+                <span>
+                  <span className="sdb-home__pergunta-titulo">Comparar um tema</span>
+                  <span className="sdb-home__pergunta-acao">
+                    Consulte leituras de diferentes Salas com suas fontes.
+                  </span>
+                </span>
+                <Icon name="seta" />
+              </Link>
+              <Link className="sdb-home__pergunta" href="/biblioteca">
+                <span>
+                  <span className="sdb-home__pergunta-titulo">Explorar a Biblioteca</span>
+                  <span className="sdb-home__pergunta-acao">
+                    Encontre conteúdo por tema, formato ou nível de leitura.
+                  </span>
+                </span>
+                <Icon name="seta" />
+              </Link>
+            </div>
+          </section>
           <section className="sdb-home__section" aria-labelledby="home-retomada">
             <Cabecalho
               id="home-retomada"

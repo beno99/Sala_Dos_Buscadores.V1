@@ -1257,6 +1257,8 @@ button.sdb-sidenav__cta { border: 0; cursor: pointer; }
 
 /* ---------- Painel de indicadores (várias células num card) ---------- */
 .sdb-stats { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); overflow: hidden; border-radius: var(--radius-lg); }
+.sdb-stats--3 { --cols: 3; }
+.sdb-stats--2 { --cols: 2; }
 .sdb-stats > .sdb-stat { gap: 8px; padding: 16px 24px 24px; border-radius: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: -1px 0 0 var(--separator), 0 -1px 0 var(--separator); }
 .sdb-stat__value small { margin-left: 4px; font: 500 15px/1 var(--font-ui); letter-spacing: -0.01em; color: var(--label-secondary); }
 .sdb-stat .sdb-progress__track { margin-top: 2px; }
