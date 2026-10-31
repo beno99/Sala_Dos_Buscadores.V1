@@ -6,35 +6,49 @@ import { createPortal } from "react-dom";
 import { Button } from "@/components/ds/Button";
 import { ModalConfirmacao } from "@/components/ds/Modal";
 import { useToast } from "@/components/ds/Toast";
-import { excluirSalaAcao, restaurarSalaDaLixeiraAcao } from "@/server/salas/acoes";
+import {
+  excluirSalaAcao,
+  excluirSalaPermanentementeAcao,
+  restaurarSalaDaLixeiraAcao,
+} from "@/server/salas/acoes";
+
+type Modo = "mover" | "restaurar" | "permanente";
 
 /** Confirmação compartilhada; as permissões são conferidas novamente no servidor. */
 export function AcaoLixeiraSala({
   id,
   nome,
   restaurar = false,
+  permanente = false,
   destino,
   aoConcluir,
 }: {
   id: string;
   nome: string;
   restaurar?: boolean;
+  permanente?: boolean;
   destino?: Route;
   aoConcluir?: () => void;
 }) {
+  const modo: Modo = permanente ? "permanente" : restaurar ? "restaurar" : "mover";
   const router = useRouter();
   const toast = useToast();
   const [aberto, setAberto] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState("");
   const enviando = useRef(false);
+  const acao = {
+    mover: excluirSalaAcao,
+    restaurar: restaurarSalaDaLixeiraAcao,
+    permanente: excluirSalaPermanentementeAcao,
+  }[modo];
   const confirmar = async () => {
     if (enviando.current) return;
     enviando.current = true;
     setOcupado(true);
     setErro("");
     try {
-      const r = await (restaurar ? restaurarSalaDaLixeiraAcao : excluirSalaAcao)(id);
+      const r = await acao(id);
       if (!r.ok) {
         setErro(r.mensagem.replace(/^Erro: /, ""));
         return;
@@ -51,27 +65,44 @@ export function AcaoLixeiraSala({
       setOcupado(false);
     }
   };
+  const rotuloBotao = {
+    mover: "Excluir Sala",
+    restaurar: "Restaurar Sala",
+    permanente: "Excluir definitivamente",
+  }[modo];
   return (
     <>
       <Button
-        variant={restaurar ? "secondary" : "destructive"}
-        icon={restaurar ? "regenerar" : "lixeira"}
-        aria-label={`${restaurar ? "Restaurar" : "Excluir"} Sala ${nome}`}
+        variant={modo === "restaurar" ? "secondary" : "destructive"}
+        icon={modo === "restaurar" ? "regenerar" : modo === "permanente" ? "aviso" : "lixeira"}
+        aria-label={`${rotuloBotao} ${nome}`}
         onClick={() => {
           setErro("");
           setAberto(true);
         }}
       >
-        {restaurar ? "Restaurar Sala" : "Excluir Sala"}
+        {rotuloBotao}
       </Button>
       {aberto &&
         createPortal(
           <ModalConfirmacao
             open={aberto}
-            titulo={restaurar ? "Restaurar esta Sala?" : "Mover esta Sala para a lixeira?"}
-            icone={restaurar ? "regenerar" : "lixeira"}
-            destrutivo={!restaurar}
-            rotuloConfirmar={restaurar ? "Restaurar Sala" : "Mover para a lixeira"}
+            titulo={
+              {
+                mover: "Mover esta Sala para a lixeira?",
+                restaurar: "Restaurar esta Sala?",
+                permanente: "Excluir esta Sala definitivamente?",
+              }[modo]
+            }
+            icone={modo === "restaurar" ? "regenerar" : modo === "permanente" ? "aviso" : "lixeira"}
+            destrutivo={modo !== "restaurar"}
+            rotuloConfirmar={
+              {
+                mover: "Mover para a lixeira",
+                restaurar: "Restaurar Sala",
+                permanente: "Excluir definitivamente",
+              }[modo]
+            }
             carregando={ocupado}
             onCancelar={() => {
               if (!enviando.current) setAberto(false);
@@ -80,9 +111,16 @@ export function AcaoLixeiraSala({
           >
             <b>{nome}</b>
             <p>
-              {restaurar
-                ? "A Sala volta às listas com o mesmo endereço e os estados anteriores. Se já estava publicada, ela e seus conteúdos publicados voltam ao portal. Rascunhos continuam rascunhos."
-                : "A Sala, seus artigos, vídeos e conversas saem do portal e das listas de trabalho. Os conteúdos e vínculos são preservados. Somente a curadoria poderá restaurar a Sala."}
+              {
+                {
+                  mover:
+                    "A Sala, seus artigos, vídeos e conversas saem do portal e das listas de trabalho. Os conteúdos e vínculos são preservados. Somente a curadoria poderá restaurar a Sala.",
+                  restaurar:
+                    "A Sala volta às listas com o mesmo endereço e os estados anteriores. Se já estava publicada, ela e seus conteúdos publicados voltam ao portal. Rascunhos continuam rascunhos.",
+                  permanente:
+                    "Esta ação não pode ser desfeita. A Sala, seus artigos, vídeos e citações são apagados para sempre do acervo. Conversas da comunidade sobre ela permanecem, sem o vínculo com a Sala.",
+                }[modo]
+              }
             </p>
             {erro && (
               <p className="sdb-error-msg" role="alert">

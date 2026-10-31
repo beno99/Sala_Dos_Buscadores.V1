@@ -23,7 +23,7 @@ import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilid
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
 import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
-import type { PedidoLixeiraSala } from "@/features/salas/lixeira";
+import type { PedidoExclusaoPermanenteSala, PedidoLixeiraSala } from "@/features/salas/lixeira";
 import type {
   AcaoRelacao,
   AcervoRepositorio,
@@ -191,6 +191,29 @@ export async function mudarLixeiraSalaNoAcervo(pedido: PedidoLixeiraSala) {
     if (resultado.versao === alvo.versao + 1) alvo.versao = resultado.versao;
     else alvo.desatualizado = true;
     return resultado.sala;
+  });
+  e.fila = tarefa.then(
+    () => {},
+    () => {
+      if (e.store) e.store.desatualizado = true;
+    },
+  );
+  return tarefa;
+}
+
+/** A Sala e os conteúdos, vídeos e citações dela saem do banco na mesma transação, antes do snapshot. */
+export async function excluirSalaPermanentementeNoAcervo(pedido: PedidoExclusaoPermanenteSala) {
+  const e = estado();
+  const tarefa = e.fila.then(async () => {
+    const alvo = store();
+    const resultado = await e.repositorio.excluirSalaPermanentemente(pedido);
+    for (const id of resultado.conteudosIds) Map.prototype.delete.call(alvo.acervo.conteudos, id);
+    for (const id of resultado.videosIds) Map.prototype.delete.call(alvo.acervo.videos, id);
+    for (const id of resultado.citacoesIds) Map.prototype.delete.call(alvo.acervo.citacoes, id);
+    Map.prototype.delete.call(alvo.acervo.salas, pedido.id);
+    alvo.auditoria.push(resultado.registro);
+    if (resultado.versao === alvo.versao + 1) alvo.versao = resultado.versao;
+    else alvo.desatualizado = true;
   });
   e.fila = tarefa.then(
     () => {},

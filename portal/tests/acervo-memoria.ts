@@ -1,6 +1,6 @@
 import type { SalaEditorial } from "../src/data/types";
 import { slugDaSala } from "../src/features/admin/regras/sala";
-import { planejarLixeiraSala } from "../src/features/salas/lixeira";
+import { planejarExclusaoPermanenteSala, planejarLixeiraSala } from "../src/features/salas/lixeira";
 import type { AcervoRepositorio, Colecoes, DadosCarregados } from "../src/modules/acervo/acervo.contratos";
 import { aguardarGravacoes, sincronizarAcervo, usarRepositorioDoAcervo } from "../src/server/store";
 
@@ -40,6 +40,21 @@ export async function prepararAcervoEmMemoria(): Promise<DadosCarregados> {
       dados.colecoes.salas.set(pedido.id, structuredClone(resultado.sala));
       dados.auditoria.push(resultado.registro);
       return { ...resultado, versao: ++dados.versao };
+    },
+    async excluirSalaPermanentemente(pedido) {
+      const { registro } = planejarExclusaoPermanenteSala(dados.colecoes.salas.get(pedido.id), pedido);
+      const slug = dados.colecoes.salas.get(pedido.id)?.slug;
+      const porSala = <T extends { sala: string }>(m: Map<string, T>) =>
+        [...m.entries()].filter(([, v]) => v.sala === slug).map(([id]) => id);
+      const conteudosIds = porSala(dados.colecoes.conteudos);
+      const videosIds = porSala(dados.colecoes.videos);
+      const citacoesIds = porSala(dados.colecoes.citacoes);
+      for (const id of conteudosIds) dados.colecoes.conteudos.delete(id);
+      for (const id of videosIds) dados.colecoes.videos.delete(id);
+      for (const id of citacoesIds) dados.colecoes.citacoes.delete(id);
+      dados.colecoes.salas.delete(pedido.id);
+      dados.auditoria.push(registro);
+      return { conteudosIds, videosIds, citacoesIds, registro, versao: ++dados.versao };
     },
     async versao() {
       return dados.versao;

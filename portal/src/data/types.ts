@@ -433,6 +433,7 @@ export type AcaoAuditada =
   | "restaurou"
   | "duplicou"
   | "excluiu"
+  | "excluiu-definitivamente"
   | "alterou-proveniencia"
   | "alterou-situacao-juridica"
   | "restaurou-acervo"

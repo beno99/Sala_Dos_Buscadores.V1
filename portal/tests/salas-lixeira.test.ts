@@ -30,11 +30,22 @@ test("Sala na lixeira não aparece no catálogo nem na lista editorial ativa", a
 });
 
 import { registerHooks } from "node:module";
-import type { ComentarioComunidade, ConteudoEditorial, Publicacao, SalaEditorial } from "../src/data/types";
+import type {
+  Citacao,
+  ComentarioComunidade,
+  ConteudoEditorial,
+  Publicacao,
+  SalaEditorial,
+  VideoEditorial,
+} from "../src/data/types";
 import { type AtorLixeira, planejarLixeiraSala } from "../src/features/salas/lixeira";
 import { moverArtigo, mudarStatusArtigo } from "../src/server/admin/editorial";
 import { mudarStatusSala, salaParaForm } from "../src/server/admin/salas";
-import { listarLixeiraSalas, mudarLixeiraSala } from "../src/server/salas/lixeira";
+import {
+  excluirSalaPermanentemente,
+  listarLixeiraSalas,
+  mudarLixeiraSala,
+} from "../src/server/salas/lixeira";
 import { auditoriaBruta, esquecerAcervo, salasVisiveis, sincronizarAcervo } from "../src/server/store";
 
 const admin: AtorLixeira = { id: "admin", papel: "administrador", pseudonimo: "Curadoria" };
@@ -234,4 +245,34 @@ test("editar perfil do anfitrião continua funcionando e não regrava Sala da li
   assert.equal(acervo().perfis.get(dono.id)?.nome, "Nome atualizado");
   assert.deepEqual(acervo().salas.get(sala.id), antes);
   await aguardarGravacoes();
+});
+
+test("só a curadoria exclui definitivamente, só o que já está na lixeira, e leva os conteúdos", async () => {
+  const sala = await criarSala();
+  const artigo = { id: "art-perm", sala: sala.slug, titulo: "Rascunho" } as ConteudoEditorial;
+  const video = { id: "vid-perm", sala: sala.slug, titulo: "Vídeo" } as VideoEditorial;
+  const citacao = { id: "cit-perm", sala: sala.slug, obra: "Obra" } as Citacao;
+  acervo().conteudos.set(artigo.id, artigo);
+  acervo().videos.set(video.id, video);
+  acervo().citacoes.set(citacao.id, citacao);
+  await aguardarGravacoes();
+
+  assert.equal(
+    (await excluirSalaPermanentemente(sala.id, admin)).ok,
+    false,
+    "Sala ainda não está na lixeira",
+  );
+  assert.ok((await mudarLixeiraSala(sala.id, "excluir", dono)).ok);
+  assert.equal(
+    (await excluirSalaPermanentemente(sala.id, dono)).ok,
+    false,
+    "anfitrião não exclui definitivamente",
+  );
+
+  assert.ok((await excluirSalaPermanentemente(sala.id, admin)).ok);
+  assert.equal(acervo().salas.get(sala.id), undefined);
+  assert.equal(acervo().conteudos.get(artigo.id), undefined);
+  assert.equal(acervo().videos.get(video.id), undefined);
+  assert.equal(acervo().citacoes.get(citacao.id), undefined);
+  assert.equal(auditoriaBruta().at(-1)?.acao, "excluiu-definitivamente");
 });

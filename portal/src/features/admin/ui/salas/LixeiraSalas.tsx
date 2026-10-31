@@ -16,7 +16,8 @@ export function LixeiraSalas({ salas }: { salas: ReturnType<typeof listarLixeira
         <h1 className="sdb-title-1">Lixeira de Salas</h1>
         <p className="sdb-body-sm">
           As Salas excluídas ficam fora do portal. Artigos, vídeos, conversas e vínculos permanecem guardados.
-          Só a curadoria pode restaurar; não há exclusão definitiva nesta tela.
+          Só a curadoria pode restaurar ou excluir definitivamente; a exclusão definitiva apaga a Sala, seus
+          artigos, vídeos e citações para sempre.
         </p>
         <ButtonLink href={"/admin/salas" as Route} variant="secondary">
           Voltar às Salas
@@ -52,7 +53,12 @@ export function LixeiraSalas({ salas }: { salas: ReturnType<typeof listarLixeira
             id: "acoes",
             cabecalho: "Ações",
             className: "sdb-table__actions",
-            celula: (s) => <AcaoLixeiraSala id={s.id} nome={s.nome} restaurar />,
+            celula: (s) => (
+              <div className="flex gap-2">
+                <AcaoLixeiraSala id={s.id} nome={s.nome} restaurar />
+                <AcaoLixeiraSala id={s.id} nome={s.nome} permanente />
+              </div>
+            ),
           },
         ]}
       />

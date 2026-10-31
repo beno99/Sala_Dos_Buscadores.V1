@@ -6,7 +6,7 @@ import {
   ErroLixeiraSala,
   planejarLixeiraSala,
 } from "@/features/salas/lixeira";
-import { acervo, mudarLixeiraSalaNoAcervo } from "../store";
+import { acervo, excluirSalaPermanentementeNoAcervo, mudarLixeiraSalaNoAcervo } from "../store";
 
 export const SALA_NA_LIXEIRA =
   "Esta Sala está na lixeira. Peça ao curador para restaurá-la antes de continuar.";
@@ -35,6 +35,24 @@ export async function mudarLixeiraSala(id: string, acao: AcaoLixeira, ator: Ator
     };
   }
 }
+export async function excluirSalaPermanentemente(id: string, ator: AtorLixeira) {
+  const pedido = { id, ator, quando: new Date().toISOString(), auditoriaId: `a-${randomUUID()}` };
+  try {
+    await excluirSalaPermanentementeNoAcervo(pedido);
+    return {
+      ok: true as const,
+      valor: undefined,
+      mensagem: "Sala excluída definitivamente. Artigos, vídeos e citações vinculados também foram apagados.",
+    };
+  } catch (e) {
+    if (e instanceof ErroLixeiraSala) return { ok: false as const, mensagem: `Erro: ${e.message}` };
+    return {
+      ok: false as const,
+      mensagem: "Erro: não foi possível excluir definitivamente. Atualize a página e tente novamente.",
+    };
+  }
+}
+
 export function listarLixeiraSalas() {
   return [...acervo().salas.values()]
     .filter((s) => s.lixeira)

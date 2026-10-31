@@ -198,6 +198,7 @@ const ACAO_ROTULO: Record<RegistroAuditoria["acao"], string> = {
   restaurou: "Restaurou",
   duplicou: "Criou por duplicação",
   excluiu: "Excluiu",
+  "excluiu-definitivamente": "Excluiu definitivamente",
   ocultou: "Ocultou",
   "alterou-proveniencia": "Alterou a proveniência",
   "alterou-situacao-juridica": "Alterou a situação jurídica",

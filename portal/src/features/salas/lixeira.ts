@@ -12,6 +12,13 @@ export interface PedidoLixeiraSala {
 }
 export class ErroLixeiraSala extends Error {}
 
+export interface PedidoExclusaoPermanenteSala {
+  id: string;
+  ator: AtorLixeira;
+  quando: string;
+  auditoriaId: string;
+}
+
 /** Mesma regra no caso de uso e dentro da transação que bloqueia a linha da Sala. */
 export function planejarLixeiraSala(
   sala: SalaEditorial | undefined,
@@ -57,6 +64,30 @@ export function planejarLixeiraSala(
           depois: acao === "excluir" ? "Na lixeira (conteúdos preservados)" : "Fora da lixeira",
         },
       ],
+    },
+  };
+}
+
+/** Mesma regra no caso de uso e dentro da transação que bloqueia a linha da Sala. */
+export function planejarExclusaoPermanenteSala(
+  sala: SalaEditorial | undefined,
+  pedido: PedidoExclusaoPermanenteSala,
+): { registro: RegistroAuditoria } {
+  const { ator, quando } = pedido;
+  if (!sala) throw new ErroLixeiraSala("Esta Sala não existe mais.");
+  if (ator.papel !== "administrador")
+    throw new ErroLixeiraSala("Somente a curadoria pode excluir uma Sala definitivamente.");
+  if (!sala.lixeira)
+    throw new ErroLixeiraSala("Mova a Sala para a lixeira antes de excluí-la definitivamente.");
+  return {
+    registro: {
+      id: pedido.auditoriaId,
+      quando,
+      quem: ator.pseudonimo,
+      acao: "excluiu-definitivamente",
+      tipoItem: "sala",
+      itemId: sala.id,
+      itemTitulo: sala.nome,
     },
   };
 }

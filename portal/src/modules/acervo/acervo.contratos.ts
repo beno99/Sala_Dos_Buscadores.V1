@@ -21,7 +21,7 @@ import type {
 import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
 import type { EscolhaDestaques } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
-import type { PedidoLixeiraSala } from "@/features/salas/lixeira";
+import type { PedidoExclusaoPermanenteSala, PedidoLixeiraSala } from "@/features/salas/lixeira";
 import type { Membro } from "@/modules/conta/conta.contratos";
 
 /*
@@ -95,6 +95,14 @@ export interface AcervoRepositorio {
   mudarLixeiraSala(
     pedido: PedidoLixeiraSala,
   ): Promise<{ sala: SalaEditorial; registro: RegistroAuditoria; versao: number }>;
+  /** Apaga a Sala e seus conteúdos, vídeos e citações; exige que já esteja na lixeira. */
+  excluirSalaPermanentemente(pedido: PedidoExclusaoPermanenteSala): Promise<{
+    conteudosIds: string[];
+    videosIds: string[];
+    citacoesIds: string[];
+    registro: RegistroAuditoria;
+    versao: number;
+  }>;
   /** Insere uma nova Sala com endereço reservado atomicamente no banco. */
   criarSala(sala: SalaEditorial): Promise<{ sala: SalaEditorial; versao: number }>;
   versao(): Promise<number>;

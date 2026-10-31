@@ -3,7 +3,11 @@ import { and, asc, eq, getTableColumns } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import type { DenunciaComunidade } from "@/data/types";
 import { candidatoSlugSala, SLUGS_SALA_RESERVADOS } from "@/features/admin/regras/sala";
-import { ErroLixeiraSala, planejarLixeiraSala } from "@/features/salas/lixeira";
+import {
+  ErroLixeiraSala,
+  planejarExclusaoPermanenteSala,
+  planejarLixeiraSala,
+} from "@/features/salas/lixeira";
 import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
@@ -139,6 +143,29 @@ export const acervoRepositorio: AcervoRepositorio = {
         .insert(auditoria)
         .values({ ...resultado.registro, mudancas: resultado.registro.mudancas ?? null });
       return { ...resultado, versao: await somarVersao(tx) };
+    });
+  },
+
+  async excluirSalaPermanentemente(pedido) {
+    return banco().transaction(async (tx) => {
+      const [linha] = await tx.select().from(salas).where(eq(salas.id, pedido.id)).for("update");
+      const sala = linha ? MAPAS.salas.deLinha(linha)[1] : undefined;
+      const { registro } = planejarExclusaoPermanenteSala(sala, pedido);
+      const slug = sala?.slug as string;
+      const [conteudosApagados, videosApagados, citacoesApagadas] = await Promise.all([
+        tx.delete(conteudos).where(eq(conteudos.sala, slug)).returning({ id: conteudos.id }),
+        tx.delete(videos).where(eq(videos.sala, slug)).returning({ id: videos.id }),
+        tx.delete(citacoes).where(eq(citacoes.sala, slug)).returning({ id: citacoes.id }),
+      ]);
+      await tx.delete(salas).where(eq(salas.id, pedido.id));
+      await tx.insert(auditoria).values({ ...registro, mudancas: registro.mudancas ?? null });
+      return {
+        conteudosIds: conteudosApagados.map((c) => c.id),
+        videosIds: videosApagados.map((v) => v.id),
+        citacoesIds: citacoesApagadas.map((c) => c.id),
+        registro,
+        versao: await somarVersao(tx),
+      };
     });
   },
 
