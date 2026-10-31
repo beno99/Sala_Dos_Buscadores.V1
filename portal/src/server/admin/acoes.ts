@@ -81,6 +81,10 @@ export async function mudarStatusArtigoAcao(id: string, acao: AcaoStatus) {
   return comAdmin((quem) => editorial.mudarStatusArtigo(id, acao, quem));
 }
 
+export async function excluirArtigoDefinitivamenteAcao(id: string) {
+  return comAdmin((quem) => editorial.excluirArtigoDefinitivamente(id, quem));
+}
+
 export async function duplicarArtigoAcao(id: string) {
   return comAdmin((quem) => editorial.duplicarArtigo(id, quem));
 }

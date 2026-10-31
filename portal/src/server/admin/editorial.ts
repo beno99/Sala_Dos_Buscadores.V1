@@ -428,6 +428,25 @@ export function mudarStatusArtigo(
   return { ok: true, valor: regra.para, mensagem: mensagens[acao] };
 }
 
+/** Lixeira de artigos: só o que já está arquivado, e some de vez (sem cascata: nada mais referencia o artigo). */
+export function excluirArtigoDefinitivamente(id: string, quem: string): ResultadoAcao {
+  const artigo = acervo().conteudos.get(id);
+  if (!artigo) return falha("Erro: este conteúdo não existe mais.");
+  if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
+  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
+  if (artigo.status !== "arquivado")
+    return falha("Erro: arquive o artigo antes de excluí-lo definitivamente.");
+  acervo().conteudos.delete(id);
+  registrar({
+    quem,
+    acao: "excluiu-definitivamente",
+    tipoItem: "artigo",
+    itemId: id,
+    itemTitulo: artigo.titulo,
+  });
+  return { ok: true, valor: undefined, mensagem: "Artigo excluído definitivamente." };
+}
+
 export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: string }> {
   const original = acervo().conteudos.get(id);
   if (!original) return falha("Erro: este conteúdo não existe mais.");

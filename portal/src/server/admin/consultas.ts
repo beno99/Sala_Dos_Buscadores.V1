@@ -17,6 +17,7 @@ import { artigosParaVincular } from "@/features/admin/regras/vinculos-video";
 import { listarAuditoria } from "../auditoria";
 import { salaNaLixeira } from "../salas/lixeira";
 import { acervo } from "../store";
+import { salaPorSlugNoStore } from "./salas";
 
 /*
  * Leitura editorial (todos os status). Só as páginas e ações de /admin usam
@@ -42,6 +43,13 @@ export function listarTodosOsArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
     .filter((c) => !salaNaLixeira(c.sala) && (c.tipo === "artigo" || c.tipo === "fonte-primaria"))
     .map(clone);
+}
+
+/** Artigos arquivados da curadoria (lixeira de artigos): restaurar ou excluir definitivamente. */
+export function listarArtigosArquivados(): (ConteudoEditorial & { salaNome: string })[] {
+  return listarArtigos()
+    .filter((a) => a.tipo === "artigo" && a.status === "arquivado")
+    .map((a) => ({ ...a, salaNome: salaPorSlugNoStore(a.sala)?.nome ?? a.sala }));
 }
 
 export function obterArtigo(id: string): { artigo: ConteudoEditorial; citacao?: Citacao } | undefined {

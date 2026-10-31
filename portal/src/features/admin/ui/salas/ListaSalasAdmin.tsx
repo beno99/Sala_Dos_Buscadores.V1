@@ -84,6 +84,9 @@ export function ListaSalasAdmin({
             <ButtonLink href={"/admin/lixeira/salas" as Route} variant="secondary" icon="lixeira">
               Lixeira de Salas
             </ButtonLink>
+            <ButtonLink href={"/admin/lixeira/artigos" as Route} variant="secondary" icon="lixeira">
+              Lixeira de Artigos
+            </ButtonLink>
             <ButtonLink href={"/admin/salas/nova" as Route} variant="primary" icon="mais">
               Nova Sala
             </ButtonLink>
