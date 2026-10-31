@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CarrosselImagemConta } from "./CarrosselImagemConta";
 
 /** Composição da Conta: imagem lateral no acesso e cenário completo no cadastro. */
 export function CenarioConta({ cadastro = false, children }: { cadastro?: boolean; children: ReactNode }) {
@@ -14,10 +15,7 @@ export function CenarioConta({ cadastro = false, children }: { cadastro?: boolea
 
   return (
     <div className="sdb-conta sdb-conta--entrada">
-      <div className="sdb-conta__imagem" aria-hidden="true">
-        {/* biome-ignore lint/performance/noImgElement: gravura decorativa servida de public/imagens. */}
-        <img src="/imagens/conta/entrada.webp" alt="" fetchPriority="high" />
-      </div>
+      <CarrosselImagemConta />
       <div className="sdb-conta__conteudo">
         <p className="sdb-conta__marca">A Sala dos Buscadores</p>
         {children}
