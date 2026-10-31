@@ -71,7 +71,7 @@ export function FormCadastro({ voltar }: { voltar: string }) {
       {erros.geral && <Alerta variant="error" title={`Erro: ${erros.geral}`} />}
 
       <CampoTexto
-        label="Pseudônimo"
+        label="Nome de exibição"
         autoComplete="nickname"
         maxLength={40}
         value={pseudonimo}

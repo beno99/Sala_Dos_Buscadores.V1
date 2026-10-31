@@ -22,3 +22,6 @@ Layout do Figma "Jornada do buscador": a imagem (ou a placa) ocupa o card inteir
 O frame `19537:21623` usa 1088 × 496 px no desktop. O texto começa a 48 px do topo, com 72 px reservados embaixo para os controles; a altura pode crescer com textos maiores. O desfoque e o véu ocupam camadas distintas para não escurecer a imagem duas vezes. O véu mantém sua intensidade em toda a largura do texto. A composição estreita responde à largura do próprio banner (container `sdb-banner`, até 760 px), inclusive em tablets com a lateral aberta.
 
 No banner cheio, a ação discreta “Por que estou vendo isto?” usa `on-media`, como os demais textos sobre a imagem.
+
+## Arte pronta (`.sdb-banner__slide--arte`, out 2026)
+Para peça que já traz o texto na imagem: sem véu nem desfoque, imagem ancorada à esquerda para o texto não ser cortado, e o mesmo texto em `h2.sdb-sr` para leitor de tela. As ações ficam na base, logo acima dos controles. Mantenha o texto da arte na metade esquerda e fora dessa faixa. Até 480 px de largura do banner, a arte aparece inteira (`contain`) sobre a placa grafite.

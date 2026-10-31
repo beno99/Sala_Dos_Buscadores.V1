@@ -23,7 +23,7 @@ export function PublicacoesPerfil({
   const [aba, setAba] = useState<"sobre" | "publicacoes">(children ? "sobre" : "publicacoes");
   const id = useId();
   return (
-    <div className="sdb-community sdb-community-stack">
+    <div className="sdb-community sdb-community--embutida sdb-community-stack">
       <Segmented
         abas={id}
         label="Seções do perfil"

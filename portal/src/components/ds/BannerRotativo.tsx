@@ -15,6 +15,7 @@ export interface MidiaBanner {
 
 export type SlideBanner =
   | { id: string; tipo: "marca"; acoes: ReactNode; midia: MidiaBanner }
+  | { id: string; tipo: "arte"; texto: string; acoes: ReactNode; midia: MidiaBanner }
   | {
       id: string;
       tipo: "episodio";
@@ -44,6 +45,14 @@ function Midia({ midia }: { midia: MidiaBanner }) {
 }
 
 function Conteudo({ slide, onPorQue }: { slide: SlideBanner; onPorQue: () => void }) {
+  if (slide.tipo === "arte") {
+    return (
+      <div className="sdb-banner__text">
+        <h2 className="sdb-sr">{slide.texto}</h2>
+        <div className="sdb-banner__actions">{slide.acoes}</div>
+      </div>
+    );
+  }
   if (slide.tipo === "marca") {
     return (
       <div className="sdb-banner__text">
@@ -159,6 +168,7 @@ export function BannerRotativo({ slides, onPorQue }: { slides: SlideBanner[]; on
             className={cx(
               "sdb-banner__slide",
               s.tipo === "anuncio" && "sdb-banner__slide--ad",
+              s.tipo === "arte" && "sdb-banner__slide--arte",
               i === atual && "is-current",
             )}
             role="group"

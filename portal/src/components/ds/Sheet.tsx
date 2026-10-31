@@ -1,8 +1,11 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { cx } from "@/lib/cx";
 import { useFocoPreso } from "./useFocoPreso";
+
+const semAssinatura = () => () => {};
 
 /**
  * Modal em sheet (Modal › sheet) com foco preso. `onFechar` vale para Esc e
@@ -23,6 +26,11 @@ export function Sheet({
   children: ReactNode;
 }) {
   const painel = useRef<HTMLDivElement>(null);
+  const noCliente = useSyncExternalStore(
+    semAssinatura,
+    () => true,
+    () => false,
+  );
   useFocoPreso(painel, aberto);
 
   useEffect(() => {
@@ -49,7 +57,10 @@ export function Sheet({
     return () => document.removeEventListener("keydown", esc);
   }, [aberto, onFechar]);
 
-  return (
+  if (!noCliente) return null;
+
+  // backdrop-filter em ancestral (barra superior ao rolar) prenderia o position: fixed do véu.
+  return createPortal(
     <div
       className={cx("sdb-overlay", aberto && "is-open")}
       aria-hidden={!aberto}
@@ -68,6 +79,7 @@ export function Sheet({
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

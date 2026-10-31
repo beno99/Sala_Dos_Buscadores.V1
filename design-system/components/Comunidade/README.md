@@ -31,3 +31,5 @@ Referências inspecionadas: Figma `WtsqtkYXDtEKBZ3pYiBOE4`, desktop `103:615`, m
 Os temas de vidro também usam cards sólidos nesta família. Não substituir globalmente os materiais do portal. O texto dourado foi ajustado de #8B652F para #825D29 no tema claro para atingir AA sobre areia e sobre o aviso. Ícones de coração, comentário e citação foram exportados do Figma e ficam em `Comunidade/assets`, como máscaras que acompanham o token de texto.
 
 O portal conecta publicação, comentários, reações, salvar, seguir, denúncia e moderação em `portal/src/server/comunidade/`. Os formulários interativos do catálogo continuam sendo demonstração.
+
+- `.sdb-community--embutida`: para peças da Comunidade dentro de outra tela (abas do Perfil); tira a superfície própria e herda o fundo da página.

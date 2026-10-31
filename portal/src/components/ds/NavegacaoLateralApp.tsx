@@ -4,7 +4,6 @@ import type { Route } from "next";
 import Link from "next/link";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { cx } from "@/lib/cx";
-import { Arc } from "./Arc";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
 import { Icon, type IconName } from "./Icon";
@@ -99,7 +98,8 @@ export function NavegacaoLateralApp({
       aria-label="Navegação principal"
     >
       <div className="sdb-sidenav__brand">
-        <Arc on="bege" />
+        {/* biome-ignore lint/performance/noImgElement: logo fixa, sem necessidade de otimização do next/image */}
+        <img src="/imagens/logo_sala.png" alt="" className="sdb-sidenav__logo" aria-hidden="true" />
         <Link href="/" className="sdb-sidenav__name">
           A Sala dos Buscadores
         </Link>

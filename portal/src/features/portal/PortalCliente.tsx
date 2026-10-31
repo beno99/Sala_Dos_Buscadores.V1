@@ -76,7 +76,24 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       </a>
     ),
   }));
-  const slides = intercalarSlides(marca, episodios, modelo.slidesAnuncio);
+  const destaque: SlideBanner = {
+    id: "destaque-espiral",
+    tipo: "arte",
+    texto: "Novo vídeo da Sala dos Buscadores: e se o tempo fosse uma espiral?",
+    midia: { placa: "grafite", imagem: "/imagens/banner/destaque-espiral.webp" },
+    acoes: (
+      <a
+        className="sdb-btn sdb-btn--secondary"
+        href="https://www.youtube.com/watch?v=WdfozbD1Lyo"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="play" size="sm" />
+        Assistir no YouTube
+      </a>
+    ),
+  };
+  const slides = intercalarSlides(marca, [destaque, ...episodios], modelo.slidesAnuncio);
 
   return (
     <div className="sdb-home">

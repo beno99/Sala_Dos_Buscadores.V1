@@ -1,6 +1,5 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Arc } from "@/components/ds/Arc";
 import { TEXTO_NEUTRALIDADE } from "@/components/ds/AvisoNeutralidade";
 
 /* Rodapé global (Rodape). "Sobre" e "Legal" apontam para as seções de /sobre. */
@@ -42,7 +41,9 @@ export function Rodape() {
       <div className="sdb-footer__top">
         <div className="sdb-footer__brand">
           <span className="sdb-footer__mark">
-            <Arc on="bege" />A Sala dos Buscadores
+            {/* biome-ignore lint/performance/noImgElement: logo fixa, sem necessidade de otimização do next/image */}
+            <img src="/imagens/logo_sala.png" alt="" className="sdb-footer__logo" aria-hidden="true" />A Sala
+            dos Buscadores
           </span>
           <p className="sdb-footer__tagline">
             Biblioteca digital de estudos comparados. A porta está aberta; a escada é de quem sobe.
