@@ -47,10 +47,12 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
   const temaEscolhido = modelo.temas.find((t) => t.slug === tema);
   const salas = tema ? modelo.salas.filter((s) => s.temas.includes(tema)) : modelo.salas;
   const { retomada, inicio, revisao, sugestoes, novidades } = comporLeituras(modelo);
-  const marca: SlideBanner = {
-    id: "marca",
-    tipo: "marca",
-    midia: { placa: "bordo", imagem: modelo.imagemMarca },
+  const buscaAbrePortas: SlideBanner = {
+    id: "destaque-busca-portas",
+    tipo: "arte",
+    texto:
+      "Biblioteca digital de estudos comparados. Sua busca abre novas portas. Entre nas Salas, explore artigos e encontre diferentes maneiras de compreender a existência. Cada leitura é um convite para ampliar seu olhar.",
+    midia: { placa: "bordo", imagem: "/imagens/banner/busca-novas-portas.webp" },
     acoes: (
       <>
         <ButtonLink href="/comparar" variant="primary">
@@ -105,7 +107,23 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       </ButtonLink>
     ),
   };
-  const slides = intercalarSlides(marca, [novoOlhar, destaque, ...episodios], modelo.slidesAnuncio);
+  const horizonte: SlideBanner = {
+    id: "destaque-horizonte",
+    tipo: "arte",
+    texto:
+      "Amplie o horizonte das suas perguntas. Conheça a visão de universo apresentada pelo Livro de Urântia. Explore sua cosmologia e suas narrativas espirituais com curiosidade e discernimento.",
+    midia: { placa: "grafite", imagem: "/imagens/banner/horizonte-perguntas.webp" },
+    acoes: (
+      <ButtonLink href={"/salas/urantia" as Route} variant="secondary">
+        Explorar a Sala
+      </ButtonLink>
+    ),
+  };
+  const slides = intercalarSlides(
+    buscaAbrePortas,
+    [novoOlhar, horizonte, destaque, ...episodios],
+    modelo.slidesAnuncio,
+  );
 
   return (
     <div className="sdb-home">
