@@ -33,10 +33,16 @@ async function uma(where: ReturnType<typeof eq>): Promise<Linha | undefined> {
 }
 
 const ouvintes = new Set<(membro: Membro) => void>();
+const ouvintesApagar = new Set<(id: string) => void>();
 
 /** Avisa a cada conta criada ou alterada (o diretório de contas do snapshot se mantém em dia). */
 export function aoMudarConta(ouvinte: (membro: Membro) => void) {
   ouvintes.add(ouvinte);
+}
+
+/** Avisa a cada conta apagada (o diretório de contas do snapshot se mantém em dia). */
+export function aoApagarConta(ouvinte: (id: string) => void) {
+  ouvintesApagar.add(ouvinte);
 }
 
 function avisar(linha: Linha | undefined): Membro | null {
@@ -96,6 +102,14 @@ export const contaRepositorio: ContaRepositorio = {
   },
   async marcarEmailVerificado(id) {
     return atualizar(id, { emailVerificadoEm: new Date().toISOString() });
+  },
+  async excluir(id) {
+    const apagou = await banco().transaction(async (tx) => {
+      const [linha] = await tx.delete(usuarios).where(eq(usuarios.id, id)).returning({ id: usuarios.id });
+      if (linha) await somarVersao(tx);
+      return Boolean(linha);
+    });
+    if (apagou) for (const ouvinte of ouvintesApagar) ouvinte(id);
   },
 };
 

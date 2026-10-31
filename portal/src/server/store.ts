@@ -36,7 +36,7 @@ import type {
 } from "@/modules/acervo/acervo.contratos";
 import { acervoRepositorio } from "@/modules/acervo/acervo.repositorio";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { aoMudarConta } from "@/modules/conta/conta.repositorio";
+import { aoApagarConta, aoMudarConta } from "@/modules/conta/conta.repositorio";
 
 export type { MidiaGuardada, PerfilBuscador } from "@/modules/acervo/acervo.contratos";
 
@@ -389,6 +389,7 @@ export function leiturasParaAssistente(): LeituraParaAssistente[] {
 
 // Contas mudam pelo módulo de conta; o diretório deste processo acompanha na hora.
 aoMudarConta((membro) => estado().store?.contas.set(membro.id, membro));
+aoApagarConta((id) => estado().store?.contas.delete(id));
 
 // O catálogo (src/data/catalogo.ts) lê as Salas visíveis daqui, no servidor; o assistente, as leituras.
 instalarRegistroSalas(salasVisiveis);

@@ -85,20 +85,25 @@ function itensDoDono(donoId: string) {
 }
 
 /**
- * Tira o papel de anfitrião. Em todos os casos, o que estava em revisão volta
- * a rascunho e a pessoa vira membro. Depois:
+ * O que acontece com as Salas e artigos de um anfitrião ao perder o papel (§9) ou
+ * ter a conta apagada, em qualquer caso:
  * - manter: nada sai do ar e tudo fica congelado (ninguém edita; o admin só despublica ou transfere);
  * - despublicar: tudo vai para arquivado, nada é apagado;
  * - transferir: Salas e artigos mudam de dono; os já publicados mantêm a assinatura do autor original.
+ * Usado por `rebaixar` e por `excluirConta`.
  */
-export async function rebaixar(
+async function disporItensDoAnfitriao(
   contaId: string,
   opcao: OpcaoRebaixamento,
   quem: string,
-): Promise<ResultadoAcao> {
-  const conta = await contas.porId(contaId);
-  if (!conta) return erro("esta conta não existe mais.");
-  if (conta.papel !== "anfitriao") return erro("esta conta não é de anfitrião.");
+): Promise<
+  ResultadoAcao<{
+    salas: SalaEditorial[];
+    artigos: ConteudoEditorial[];
+    destino: Membro | null;
+    perfilDestino: PerfilAnfitriao | undefined;
+  }>
+> {
   let destino: Membro | null = null;
   let perfilDestino: PerfilAnfitriao | undefined;
   if (opcao.tipo === "transferir") {
@@ -162,6 +167,48 @@ export async function rebaixar(
       if (m.donoId === contaId) acervo().midias.set(m.id, { ...m, donoId: destino.id });
     }
   }
+  return ok({ salas, artigos, destino, perfilDestino }, "");
+}
+
+/** Audita e avisa por e-mail quem recebeu as Salas na transferência. */
+function notificarDestino(destino: Membro, origem: string, nomesSalas: string, quem: string) {
+  registrar({
+    quem,
+    acao: "transferiu",
+    tipoItem: "usuario",
+    itemId: destino.id,
+    itemTitulo: destino.pseudonimo,
+    mudancas: [{ campo: "Origem", antes: origem, depois: destino.pseudonimo }],
+  });
+  enviarEmail({
+    para: destino.email,
+    assunto: "Você recebeu Salas na Sala dos Buscadores",
+    corpo: [
+      `A curadoria transferiu para você as Salas de ${origem}. A partir de agora, você responde por elas.`,
+      "Os artigos já publicados continuam assinados pelo autor original.",
+      nomesSalas ? `Salas recebidas:\n${nomesSalas}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+  });
+}
+
+/**
+ * Tira o papel de anfitrião: a conta continua, mas volta a ser membro. Veja
+ * `disporItensDoAnfitriao` para o que acontece com as Salas e artigos.
+ */
+export async function rebaixar(
+  contaId: string,
+  opcao: OpcaoRebaixamento,
+  quem: string,
+): Promise<ResultadoAcao> {
+  const conta = await contas.porId(contaId);
+  if (!conta) return erro("esta conta não existe mais.");
+  if (conta.papel !== "anfitriao") return erro("esta conta não é de anfitrião.");
+
+  const r = await disporItensDoAnfitriao(contaId, opcao, quem);
+  if (!r.ok) return r;
+  const { salas, artigos, destino, perfilDestino } = r.valor;
 
   await contas.definirPapel(contaId, "membro");
   const rotulo = {
@@ -198,33 +245,70 @@ export async function rebaixar(
       .filter(Boolean)
       .join("\n\n"),
   });
-  if (destino) {
-    registrar({
-      quem,
-      acao: "transferiu",
-      tipoItem: "usuario",
-      itemId: destino.id,
-      itemTitulo: destino.pseudonimo,
-      mudancas: [{ campo: "Origem", antes: conta.pseudonimo, depois: destino.pseudonimo }],
-    });
-    enviarEmail({
-      para: destino.email,
-      assunto: "Você recebeu Salas na Sala dos Buscadores",
-      corpo: [
-        `A curadoria transferiu para você as Salas de ${conta.pseudonimo}. A partir de agora, você responde por elas.`,
-        "Os artigos já publicados continuam assinados pelo autor original.",
-        nomesSalas ? `Salas recebidas:\n${nomesSalas}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-    });
-  }
+  if (destino) notificarDestino(destino, conta.pseudonimo, nomesSalas, quem);
   const mensagens = {
     manter: "Papel retirado. O conteúdo continua no ar, congelado.",
     despublicar: "Papel retirado. Todo o conteúdo foi arquivado.",
     transferir: `Papel retirado. As Salas passaram para ${destino?.pseudonimo ?? "outro anfitrião"}.`,
   };
   return ok(undefined, mensagens[opcao.tipo]);
+}
+
+/**
+ * Apaga de vez a conta de um anfitrião (sessões, redefinições e verificações
+ * saem junto). Veja `disporItensDoAnfitriao` para o que acontece com as Salas
+ * e artigos antes de a conta sumir.
+ */
+export async function excluirConta(
+  contaId: string,
+  opcao: OpcaoRebaixamento,
+  quem: string,
+): Promise<ResultadoAcao> {
+  const conta = await contas.porId(contaId);
+  if (!conta) return erro("esta conta não existe mais.");
+  if (conta.papel !== "anfitriao") return erro("só contas de anfitrião são excluídas por aqui.");
+
+  const r = await disporItensDoAnfitriao(contaId, opcao, quem);
+  if (!r.ok) return r;
+  const { salas, artigos, destino, perfilDestino } = r.valor;
+  const nomesSalas = salas.map((s) => `- ${s.nome}`).join("\n");
+
+  const email = conta.email;
+  const pseudonimo = conta.pseudonimo;
+  await contas.excluir(contaId);
+  const rotulo = {
+    manter: "manter publicado e congelado",
+    despublicar: "despublicar tudo",
+    transferir: "transferir",
+  }[opcao.tipo];
+  registrar({
+    quem,
+    acao: "excluiu-definitivamente",
+    tipoItem: "usuario",
+    itemId: contaId,
+    itemTitulo: pseudonimo,
+    mudancas: [
+      { campo: "Conteúdo", antes: `${salas.length} Salas, ${artigos.length} artigos`, depois: rotulo },
+    ],
+  });
+  const textos = {
+    manter: "Suas Salas publicadas continuam no ar, assinadas por você, mas não podem mais ser editadas.",
+    despublicar: "Suas Salas e artigos saíram do ar e foram arquivados. Nada foi apagado.",
+    transferir: `Suas Salas passaram a ser mantidas por ${perfilDestino?.nome ?? "outro anfitrião"}. Os artigos já publicados continuam assinados por você.`,
+  };
+  enviarEmail({
+    para: email,
+    assunto: "Sua conta na Sala dos Buscadores foi excluída",
+    corpo: [
+      "A curadoria excluiu sua conta. Isso não pode ser desfeito; para voltar a usar o portal, é preciso criar uma conta nova.",
+      textos[opcao.tipo],
+      nomesSalas ? `Salas afetadas:\n${nomesSalas}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+  });
+  if (destino) notificarDestino(destino, pseudonimo, nomesSalas, quem);
+  return ok(undefined, `Conta excluída. ${pseudonimo} não acessa mais o portal.`);
 }
 
 // ---------- candidatura (§2.2) ----------

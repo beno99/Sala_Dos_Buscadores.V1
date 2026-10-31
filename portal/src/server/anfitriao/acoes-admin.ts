@@ -62,15 +62,24 @@ export async function promoverAcao(contaId: string) {
   return comAdmin((quem) => usuarios.promover(String(contaId), quem));
 }
 
+function validarOpcaoRebaixamento(opcao: usuarios.OpcaoRebaixamento) {
+  return opcao?.tipo === "manter" || opcao?.tipo === "despublicar"
+    ? { tipo: opcao.tipo }
+    : opcao?.tipo === "transferir"
+      ? { tipo: "transferir" as const, para: String(opcao.para) }
+      : null;
+}
+
 export async function rebaixarAcao(contaId: string, opcao: usuarios.OpcaoRebaixamento) {
-  const valida =
-    opcao?.tipo === "manter" || opcao?.tipo === "despublicar"
-      ? { tipo: opcao.tipo }
-      : opcao?.tipo === "transferir"
-        ? { tipo: "transferir" as const, para: String(opcao.para) }
-        : null;
+  const valida = validarOpcaoRebaixamento(opcao);
   if (!valida) return { ok: false as const, mensagem: "Erro: escolha o que acontece com as Salas." };
   return comAdmin((quem) => usuarios.rebaixar(String(contaId), valida, quem));
+}
+
+export async function excluirUsuarioAcao(contaId: string, opcao: usuarios.OpcaoRebaixamento) {
+  const valida = validarOpcaoRebaixamento(opcao);
+  if (!valida) return { ok: false as const, mensagem: "Erro: escolha o que acontece com as Salas." };
+  return comAdmin((quem) => usuarios.excluirConta(String(contaId), valida, quem));
 }
 
 export async function decidirCandidaturaAcao(id: string, decisao: "aprovar" | "recusar", motivo?: string) {

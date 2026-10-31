@@ -18,6 +18,7 @@ import { formatarData } from "@/lib/texto";
 import {
   convidarAcao,
   decidirCandidaturaAcao,
+  excluirUsuarioAcao,
   promoverAcao,
   rebaixarAcao,
   revogarConviteAcao,
@@ -113,6 +114,7 @@ function SituacaoCandidatura({ s }: { s: StatusCandidatura }) {
 type Pedido =
   | { tipo: "promover"; usuario: UsuarioVisual }
   | { tipo: "rebaixar"; usuario: UsuarioVisual }
+  | { tipo: "excluir"; usuario: UsuarioVisual }
   | { tipo: "aprovar"; candidatura: CandidaturaVisual }
   | { tipo: "recusar"; candidatura: CandidaturaVisual }
   | { tipo: "revogar"; convite: ConviteVisual };
@@ -239,13 +241,22 @@ export function UsuariosAdmin({
                     Promover a anfitrião
                   </Button>
                 ) : u.papel === "anfitriao" ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setPedido({ tipo: "rebaixar", usuario: u })}
-                  >
-                    Tirar o papel
-                  </Button>
+                  <>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setPedido({ tipo: "rebaixar", usuario: u })}
+                    >
+                      Tirar o papel
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setPedido({ tipo: "excluir", usuario: u })}
+                    >
+                      Remover usuário
+                    </Button>
+                  </>
                 ) : null,
             },
           ]}
@@ -464,6 +475,7 @@ export function UsuariosAdmin({
       </SheetMotivo>
 
       <SheetRebaixar
+        modo="rebaixar"
         usuario={pedido?.tipo === "rebaixar" ? pedido.usuario : null}
         destinos={usuarios.filter(
           (u) => u.papel === "anfitriao" && u.id !== (pedido?.tipo === "rebaixar" ? pedido.usuario.id : ""),
@@ -474,20 +486,38 @@ export function UsuariosAdmin({
           pedido?.tipo === "rebaixar" && executar(() => rebaixarAcao(pedido.usuario.id, opcao))
         }
       />
+
+      <SheetRebaixar
+        modo="excluir"
+        usuario={pedido?.tipo === "excluir" ? pedido.usuario : null}
+        destinos={usuarios.filter(
+          (u) => u.papel === "anfitriao" && u.id !== (pedido?.tipo === "excluir" ? pedido.usuario.id : ""),
+        )}
+        carregando={ocupado}
+        onFechar={() => setPedido(null)}
+        onConfirmar={(opcao) =>
+          pedido?.tipo === "excluir" && executar(() => excluirUsuarioAcao(pedido.usuario.id, opcao))
+        }
+      />
     </div>
   );
 }
 
 type Opcao = "manter" | "despublicar" | "transferir";
 
-/** Tirar o papel de anfitrião (§9): a curadoria escolhe o que acontece com as Salas. */
+/**
+ * Tirar o papel de anfitrião (§9) ou excluir a conta de vez: nos dois casos a
+ * curadoria escolhe antes o que acontece com as Salas.
+ */
 function SheetRebaixar({
+  modo,
   usuario,
   destinos,
   carregando,
   onFechar,
   onConfirmar,
 }: {
+  modo: "rebaixar" | "excluir";
   usuario: UsuarioVisual | null;
   destinos: UsuarioVisual[];
   carregando: boolean;
@@ -526,16 +556,25 @@ function SheetRebaixar({
           Cancelar
         </Button>
         <h2 id={`${id}-titulo`} className="sdb-sheet__title">
-          Tirar o papel de anfitrião
+          {modo === "excluir" ? "Excluir usuário" : "Tirar o papel de anfitrião"}
         </h2>
         <Button variant="destructive" size="sm" loading={carregando} onClick={confirmar}>
-          Confirmar
+          {modo === "excluir" ? "Excluir conta" : "Confirmar"}
         </Button>
       </div>
       <div className="sdb-sheet__body">
         <p className="sdb-body-sm m-0">
-          {usuario?.nomePublico ?? usuario?.pseudonimo} volta a ser membro. O que estava em revisão volta a
-          rascunho em qualquer opção.
+          {modo === "excluir" ? (
+            <>
+              A conta de {usuario?.nomePublico ?? usuario?.pseudonimo} é apagada para sempre; isso não pode
+              ser desfeito. O que estava em revisão volta a rascunho antes de a conta sumir.
+            </>
+          ) : (
+            <>
+              {usuario?.nomePublico ?? usuario?.pseudonimo} volta a ser membro. O que estava em revisão volta
+              a rascunho em qualquer opção.
+            </>
+          )}
         </p>
         <RadioGrupo<Opcao>
           id={`${id}-opcao`}

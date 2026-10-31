@@ -48,6 +48,8 @@ export interface ContaRepositorio {
   definirPreferencias(id: string, preferencias: Preferencias | null): Promise<Membro | null>;
   definirSenha(id: string, senhaHash: string): Promise<void>;
   marcarEmailVerificado(id: string): Promise<Membro | null>;
+  /** Apaga a conta de vez (sessões, redefinições e verificações saem junto). */
+  excluir(id: string): Promise<void>;
 }
 
 export interface SessaoRepositorio {

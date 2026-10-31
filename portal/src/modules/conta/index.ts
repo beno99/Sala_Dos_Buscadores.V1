@@ -45,6 +45,7 @@ export const contas = {
   porEmail: (email: string) => contaRepositorio.porEmail(email),
   listar: () => contaRepositorio.listar(),
   marcarEmailVerificado: (id: string) => contaRepositorio.marcarEmailVerificado(id),
+  excluir: (id: string) => contaRepositorio.excluir(id),
 };
 
 export type { Membro, Papel, Resultado } from "./conta.contratos";
