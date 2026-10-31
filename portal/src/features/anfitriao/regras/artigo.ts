@@ -1,4 +1,4 @@
-import { paragrafosDoCorpo, textoDoCorpo } from "@/data/corpo";
+import { corpoParaForm, paragrafosDoCorpo, textoDoCorpo } from "@/data/corpo";
 import type { BlocoCorpo, LinkArtigo, Nivel, Placa, TemaSlug, TipoFonte } from "@/data/types";
 import conteudo from "@/design-system/conteudo.json";
 import { textoSemMarcas } from "@/design-system/marcacao.mjs";
@@ -21,8 +21,10 @@ export interface FormSalaAnfitriao {
   periodo: string;
   /** Link geral da Sala (site ou canal), só https. */
   link: string;
-  /** Id de mídia da imagem enviada. */
+  /** Id de mídia do banner enviado. */
   imagem: string | null;
+  /** Id de mídia da imagem do card (sem ela, o card usa o banner). */
+  imagemCard: string | null;
 }
 
 export const salaVazia = (): FormSalaAnfitriao => ({
@@ -32,6 +34,7 @@ export const salaVazia = (): FormSalaAnfitriao => ({
   periodo: "",
   link: "",
   imagem: null,
+  imagemCard: null,
 });
 
 export const LIMITE_NOME_SALA = 80;
@@ -110,7 +113,7 @@ export const artigoVazio = (salaId: string): FormArtigoAnfitriao => ({
   id: null,
   salaId,
   titulo: "",
-  corpo: [""],
+  corpo: corpoParaForm([]),
   temas: [],
   fontes: [],
   nivel: null,

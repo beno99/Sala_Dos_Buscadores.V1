@@ -1,4 +1,5 @@
 import "server-only";
+import { videoParaPublico } from "@/data/repositorio";
 import type {
   Citacao,
   ConteudoEditorial,
@@ -12,6 +13,7 @@ import type {
 import { artigoParaForm, videoParaForm } from "@/features/admin/formularios";
 import { checklistArtigo, checklistVideo, temPendencia } from "@/features/admin/regras/checklist";
 import { DIAS_RASCUNHO_PARADO } from "@/features/admin/regras/config";
+import { artigosParaVincular } from "@/features/admin/regras/vinculos-video";
 import { listarAuditoria } from "../auditoria";
 import { acervo } from "../store";
 
@@ -48,6 +50,26 @@ export function obterArtigo(id: string): { artigo: ConteudoEditorial; citacao?: 
 
 export function listarVideos(): VideoEditorial[] {
   return [...acervo().videos.values()].map(clone);
+}
+
+/** Seleção por ID, na mesma Sala oficial, com ordem de criação estável. */
+export function listarArtigosParaVideo(sala: string) {
+  return artigosParaVincular(listarArtigos(), sala).map(({ id, titulo, sala, status, criadoEm }) => ({
+    id,
+    titulo,
+    sala,
+    status,
+    criadoEm,
+  }));
+}
+
+/** Uso exclusivo da prévia administrativa, após autorização da página. */
+export function videosDaPreviaDoArtigo(id: string) {
+  const artigo = acervo().conteudos.get(id);
+  if (!artigo || artigo.revisao) return [];
+  return [...acervo().videos.values()]
+    .filter((v) => v.sala === artigo.sala && v.status !== "arquivado" && v.artigos.includes(id))
+    .map(videoParaPublico);
 }
 
 export function obterVideo(id: string): VideoEditorial | undefined {

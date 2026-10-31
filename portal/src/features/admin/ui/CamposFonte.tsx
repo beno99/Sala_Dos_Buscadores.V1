@@ -4,7 +4,10 @@ import { CampoTexto } from "@/components/ds/Campos";
 import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
 import { CardFonte } from "@/components/ds/CardFonte";
 import type { Placa, TipoFonte } from "@/data/types";
+import { inicialDoTitulo } from "@/lib/texto";
 import type { FormFonte } from "../formularios";
+import { checklistFonte } from "../regras/fonte";
+import { OrientacaoCadastro } from "./OrientacaoCadastro";
 
 const TIPOS: TipoFonte[] = ["Fonte primária", "Tradução comentada", "Estudo acadêmico", "Edição crítica"];
 
@@ -30,6 +33,11 @@ export function CamposFonte({
   const erro = (c: string) => erros[`campo-fonte-${c}`];
   return (
     <div className="flex flex-col gap-5">
+      <OrientacaoCadastro
+        itens={checklistFonte(form)}
+        salvar="Para cadastrar a fonte, preencha título, autor ou responsável, tradição, tipo e referência. O link é opcional; a cor da capa pode ser escolhida e a inicial vem do título."
+        publicar="A fonte não tem botão Publicar nem rascunho separado: aparece quando citada por um artigo publicado. Propostas de anfitrião precisam de aprovação."
+      />
       <CampoTexto
         id={id("titulo")}
         label="Título da obra"
@@ -95,24 +103,23 @@ export function CamposFonte({
       <CampoTexto
         id={id("inicial")}
         label="Inicial da capa"
-        maxLength={1}
-        placeholder={form.titulo.trim()[0]?.toUpperCase() ?? "N"}
-        help="Uma letra. Em branco, usa a primeira letra do título."
-        value={form.inicial}
-        onChange={(e) => mudar({ inicial: e.target.value.toUpperCase() })}
+        readOnly
+        placeholder="Sem título utilizável"
+        help="Inicial gerada automaticamente a partir do título da fonte."
+        value={inicialDoTitulo(form.titulo)}
       />
       <div className="flex flex-col gap-2">
         <span className="sdb-caption">Pré-visualização</span>
         <CardFonte
           fonte={{
             id: form.id ?? "previa",
-            titulo: form.titulo || "Título da obra",
+            titulo: form.titulo,
             autor: form.autor || "Autor (papel)",
             tradicao: form.tradicao || "Tradição",
             tipo: form.tipo,
             referencia: form.referencia || "Editora, ano",
             capa: form.capa,
-            inicial: (form.inicial || form.titulo.trim()[0] || "?").toUpperCase(),
+            inicial: inicialDoTitulo(form.titulo),
           }}
         />
       </div>

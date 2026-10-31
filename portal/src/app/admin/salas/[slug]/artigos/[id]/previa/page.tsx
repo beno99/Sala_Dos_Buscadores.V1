@@ -1,24 +1,20 @@
 import type { Metadata, Route } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Alerta } from "@/components/ds/Alerta";
-import {
-  conteudoParaPublico,
-  fontesPorId,
-  relacionadosDoConteudo,
-  resumirSala,
-  videosDoConteudo,
-} from "@/data/repositorio";
+import { conteudoParaPublico, fontesPorId, relacionadosDoConteudo, resumirSala } from "@/data/repositorio";
 import { LeituraConteudo } from "@/features/acervo/LeituraConteudo";
 import { STATUS_ROTULO } from "@/features/admin/regras/csv";
-import { obterArtigo } from "@/server/admin/consultas";
+import { obterArtigo, videosDaPreviaDoArtigo } from "@/server/admin/consultas";
 import { rotaDoArtigo, salaOficialDaRota } from "@/server/admin/rotas";
 import { imagemDoCard } from "@/server/imagens";
+import { exigirAdmin } from "@/server/sessao";
 import { salaParaPublico } from "@/server/store";
 
 export const metadata: Metadata = { title: "Pré-visualização" };
 
 /** "Pré-visualizar como buscador": a página pública do conteúdo, em qualquer status, dentro da Sala. */
 export default async function PreviaNaSala(props: PageProps<"/admin/salas/[slug]/artigos/[id]/previa">) {
+  await exigirAdmin();
   const { slug, id } = await props.params;
   const item = obterArtigo(id);
   if (!item) notFound();
@@ -35,6 +31,7 @@ export default async function PreviaNaSala(props: PageProps<"/admin/salas/[slug]
         <Alerta variant="warning" title={`Pré-visualização · ${STATUS_ROTULO[item.artigo.status]}`}>
           É assim que o buscador vai ver este conteúdo
           {item.artigo.status === "publicado" ? "" : " quando for publicado"}. Esta página não é pública.
+          Vídeos ligados em rascunho também aparecem nesta prévia.
         </Alerta>
       </div>
       <LeituraConteudo
@@ -42,7 +39,7 @@ export default async function PreviaNaSala(props: PageProps<"/admin/salas/[slug]
         conteudo={{ ...conteudo, publicadoEm: conteudo.publicadoEm || new Date().toISOString().slice(0, 10) }}
         citacao={item.citacao}
         fontes={fontesPorId(conteudo.fontes)}
-        videos={videosDoConteudo(sala.slug, conteudo.slug)}
+        videos={videosDaPreviaDoArtigo(id)}
         relacionados={relacionadosDoConteudo(conteudo)}
         imagemCard={imagemDoCard(conteudo)}
       />

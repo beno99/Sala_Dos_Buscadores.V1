@@ -29,9 +29,11 @@ import {
   temPendencia,
 } from "@/features/admin/regras/checklist";
 import { rotuloSituacao } from "@/features/admin/regras/csv";
+import { errosDaFonte } from "@/features/admin/regras/fonte";
 import { gerarSlug, slugUnico, validarSlug } from "@/features/admin/regras/slug";
+import { idsDeArtigosValidos } from "@/features/admin/regras/vinculos-video";
 import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtube";
-import { normalizar, plural } from "@/lib/texto";
+import { inicialDoTitulo, normalizar, plural } from "@/lib/texto";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { acervo, auditoriaBruta } from "../store";
@@ -504,8 +506,9 @@ function montarVideo(f: FormVideo, anterior: VideoEditorial | undefined, quem: s
   const id = anterior?.id ?? f.id ?? novoId("v");
   const url = extrairIdYoutube(f.url);
   const sala = f.sala as VideoEditorial["sala"];
-  const artigos = f.artigos.filter((a) => acervo().conteudos.get(a)?.sala === sala);
+  const artigos = f.artigos;
   return {
+    ...anterior,
     id,
     sala,
     titulo: f.titulo.trim(),
@@ -533,11 +536,26 @@ export function salvarVideo(
 ): ResultadoAcao<{ id: string; salvoEm: string; status: StatusEditorial }> {
   const anterior = f.id ? acervo().videos.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: este vídeo não existe mais.");
+  if (anterior?.status === "publicado" && modo !== "manual")
+    return falha("Erro: use Salvar alterações para atualizar um vídeo publicado.");
   if (anterior?.status === "arquivado")
     return falha("Erro: vídeo arquivado não é editado. Restaure-o antes.");
   const erroSala = conferirSala(f.sala, anterior?.sala);
   if (erroSala) return erroSala;
   const erros: Record<string, string> = {};
+  if (!Array.isArray(f.artigos) || f.artigos.some((id) => typeof id !== "string"))
+    return falha("Erro: confira os artigos ligados.", {
+      "campo-artigos": "A seleção de artigos é inválida.",
+    });
+  const validos = new Set(idsDeArtigosValidos(f.artigos, [...acervo().conteudos.values()], f.sala));
+  // Um artigo arquivado continua ligado, mas oculto no portal, até desmarcação explícita.
+  for (const id of anterior?.artigos ?? []) {
+    const artigo = acervo().conteudos.get(id);
+    if (artigo?.sala === f.sala && artigo.status === "arquivado" && !artigo.revisao) validos.add(id);
+  }
+  if (f.artigos.some((id) => !validos.has(id)))
+    erros["campo-artigos"] =
+      "Um artigo não está mais disponível nesta Sala. Atualize a lista e revise a seleção.";
   if (!f.titulo.trim()) erros["campo-titulo"] = "escreva o título para salvar o rascunho.";
   if (f.url.trim()) {
     const url = extrairIdYoutube(f.url);
@@ -577,6 +595,7 @@ export function salvarVideo(
 }
 
 export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): ResultadoAcao<StatusEditorial> {
+  if (!Object.hasOwn(STATUS_DESTINO, acao)) return falha("Erro: ação desconhecida.");
   const video = acervo().videos.get(id);
   if (!video) return falha("Erro: este vídeo não existe mais.");
   if (acao === "publicar") {
@@ -617,23 +636,11 @@ export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): Re
 const ERRO_FONTE_PROPOSTA =
   "Erro: esta fonte foi proposta por um anfitrião e ainda está em revisão com o artigo que a usa.";
 
-const TIPOS_FONTE = ["Fonte primária", "Tradução comentada", "Estudo acadêmico", "Edição crítica"] as const;
-
 export function salvarFonte(f: FormFonte, quem: string): ResultadoAcao<{ id: string }> {
   const anterior = f.id ? acervo().fontes.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: esta fonte não existe mais.");
   if (anterior?.proposta?.pendente) return falha(ERRO_FONTE_PROPOSTA);
-  const erros: Record<string, string> = {};
-  if (!f.titulo.trim()) erros["campo-fonte-titulo"] = "escreva o título da obra.";
-  if (!f.autor.trim())
-    erros["campo-fonte-autor"] = "escreva o autor, editor ou tradutor, com o papel entre parênteses.";
-  if (!f.tradicao.trim()) erros["campo-fonte-tradicao"] = "diga a tradição ou o corpus da obra.";
-  if (!f.referencia.trim())
-    erros["campo-fonte-referencia"] = "escreva editora e ano, ou o documento de origem.";
-  if (!TIPOS_FONTE.includes(f.tipo)) erros["campo-fonte-tipo"] = "escolha o tipo de fonte.";
-  if (f.url.trim() && !/^https?:\/\/[^\s]+\.[^\s]+/.test(f.url.trim())) {
-    erros["campo-fonte-url"] = "use um endereço completo, começando por https://";
-  }
+  const erros = errosDaFonte(f);
   if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
   const id =
     anterior?.id ?? (gerarSlug(`${f.autor.split(" ")[0] ?? ""} ${f.titulo}`).slice(0, 40) || novoId("f"));
@@ -646,7 +653,7 @@ export function salvarFonte(f: FormFonte, quem: string): ResultadoAcao<{ id: str
     tipo: f.tipo,
     referencia: f.referencia.trim(),
     capa: f.capa,
-    inicial: (f.inicial.trim() || f.titulo.trim()[0] || "?").slice(0, 1).toUpperCase(),
+    inicial: inicialDoTitulo(f.titulo),
     criadoEm: anterior?.criadoEm ?? agora(),
     atualizadoEm: agora(),
     criadoPor: anterior?.criadoPor ?? quem,

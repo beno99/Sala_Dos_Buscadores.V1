@@ -14,6 +14,7 @@ import type {
   TipoFonte,
   VideoEditorial,
 } from "@/data/types";
+import { inicialDoTitulo } from "@/lib/texto";
 
 /*
  * Formato dos formulários da curadoria. É o que viaja entre o navegador e as
@@ -114,7 +115,7 @@ export function artigoVazio(sala: SalaSlug | "" = ""): FormArtigo {
     producaoIA: false,
     autoriaNaoIdentificada: false,
     autoria: { nome: "", credencial: "" },
-    corpo: [""],
+    corpo: corpoParaForm([]),
     temCitacao: false,
     citacao: { ...CITACAO_VAZIA },
     fontes: [],
@@ -223,6 +224,6 @@ export function fonteParaForm(f: FonteEditorial): FormFonte {
     referencia: f.referencia,
     url: f.url ?? "",
     capa: f.capa,
-    inicial: f.inicial,
+    inicial: inicialDoTitulo(f.titulo),
   };
 }

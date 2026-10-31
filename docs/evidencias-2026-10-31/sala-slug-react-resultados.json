@@ -1,0 +1,94 @@
+[
+  {
+    "phase": "antes",
+    "initial": {
+      "value": "",
+      "readOnly": false,
+      "disabled": false
+    },
+    "saved": {
+      "value": "corpus-hermeticum",
+      "readOnly": false
+    },
+    "renamed": {
+      "value": "corpus-hermeticum",
+      "readOnly": false
+    },
+    "errors": [],
+    "forms": [
+      {
+        "id": null,
+        "nome": "Corpus Hermeticum",
+        "slug": "",
+        "tradicao": "Textos herméticos",
+        "tradicaoCurta": "Hermetismo",
+        "descricao": "Leituras de textos herméticos com fontes e contexto histórico.",
+        "periodo": "Antiguidade tardia",
+        "placa": "bordo",
+        "inicial": "H",
+        "imagem": null,
+        "link": ""
+      },
+      {
+        "id": "s-teste-ui",
+        "nome": "Textos Herméticos",
+        "slug": "corpus-hermeticum",
+        "tradicao": "Textos herméticos",
+        "tradicaoCurta": "Hermetismo",
+        "descricao": "Leituras de textos herméticos com fontes e contexto histórico.",
+        "periodo": "Antiguidade tardia",
+        "placa": "bordo",
+        "inicial": "H",
+        "imagem": null,
+        "link": ""
+      }
+    ],
+    "overflow": false
+  },
+  {
+    "phase": "depois",
+    "initial": {
+      "value": "/salas/tradicao-hermetica",
+      "readOnly": true,
+      "disabled": false
+    },
+    "saved": {
+      "value": "/salas/corpus-hermeticum",
+      "readOnly": true
+    },
+    "renamed": {
+      "value": "/salas/corpus-hermeticum",
+      "readOnly": true
+    },
+    "errors": [],
+    "forms": [
+      {
+        "id": null,
+        "nome": "Corpus Hermeticum",
+        "slug": "",
+        "tradicao": "Textos herméticos",
+        "tradicaoCurta": "Hermetismo",
+        "descricao": "Leituras de textos herméticos com fontes e contexto histórico.",
+        "periodo": "Antiguidade tardia",
+        "placa": "bordo",
+        "inicial": "H",
+        "imagem": null,
+        "link": ""
+      },
+      {
+        "id": "s-teste-ui",
+        "nome": "Textos Herméticos",
+        "slug": "corpus-hermeticum",
+        "tradicao": "Textos herméticos",
+        "tradicaoCurta": "Hermetismo",
+        "descricao": "Leituras de textos herméticos com fontes e contexto histórico.",
+        "periodo": "Antiguidade tardia",
+        "placa": "bordo",
+        "inicial": "H",
+        "imagem": null,
+        "link": ""
+      }
+    ],
+    "overflow": false
+  }
+]

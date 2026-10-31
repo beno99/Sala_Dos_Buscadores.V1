@@ -15,6 +15,7 @@ import { salaPorSlug } from "@/data/catalogo";
 import type { SalaSlug, StatusEditorial } from "@/data/types";
 import { excluirFonteAcao, salvarFonteAcao } from "@/server/admin/acoes";
 import type { FormFonte } from "../formularios";
+import { errosDaFonte } from "../regras/fonte";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { CamposFonte } from "./CamposFonte";
 
@@ -48,6 +49,13 @@ export function EditorFonte({
   const publicados = usos.filter((u) => u.status === "publicado");
 
   const salvar = async () => {
+    const pendencias = errosDaFonte(form);
+    if (Object.keys(pendencias).length) {
+      setErros(pendencias);
+      const primeiro = ORDEM.find((c) => pendencias[c]);
+      if (primeiro) focarCampo(primeiro);
+      return;
+    }
     setSalvando(true);
     const r = await salvarFonteAcao(form);
     setSalvando(false);

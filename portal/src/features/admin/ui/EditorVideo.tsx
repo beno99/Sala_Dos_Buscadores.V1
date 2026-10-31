@@ -17,7 +17,7 @@ import { useToast } from "@/components/ds/Toast";
 import { todosOsTemas } from "@/data/catalogo";
 import { NIVEL_AJUDA } from "@/data/rotulos";
 import type { Nivel, Placa, SalaSlug, StatusEditorial, TemaSlug } from "@/data/types";
-import { salvarVideoAcao } from "@/server/admin/acoes";
+import { atualizarArtigosParaVideoAcao, salvarVideoAcao } from "@/server/admin/acoes";
 import type { FormVideo } from "../formularios";
 import {
   checklistVideo,
@@ -26,19 +26,15 @@ import {
   primeiroCampoComErro,
   temPendencia,
 } from "../regras/checklist";
+import type { ArtigoLigavel } from "../regras/vinculos-video";
 import { extrairIdYoutube } from "../regras/youtube";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { PLACAS } from "./CamposFonte";
 import type { SalaDoItem } from "./EditorArtigo";
+import { OrientacaoCadastro } from "./OrientacaoCadastro";
+import { SeletorArtigosVideo } from "./SeletorArtigosVideo";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
-
-export interface ArtigoLigavel {
-  id: string;
-  titulo: string;
-  sala: SalaSlug;
-  status: StatusEditorial;
-}
 
 interface EditorVideoProps {
   inicial: FormVideo;
@@ -72,11 +68,10 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
   const publicado = status === "publicado";
   const arquivado = status === "arquivado";
   const url = extrairIdYoutube(form.url);
-  const doMesmoSala = artigos.filter((a) => a.sala === sala.slug && a.status !== "arquivado");
 
   const mostrarErros = (novos: Record<string, string>, mensagem: string) => {
     setErros(novos);
-    const primeiro = primeiroCampoComErro(novos, ORDEM_CAMPOS_VIDEO);
+    const primeiro = primeiroCampoComErro(novos, [...ORDEM_CAMPOS_VIDEO, "campo-artigos"]);
     if (primeiro) requestAnimationFrame(() => focarCampo(primeiro));
     toast("O foco foi para o primeiro campo com erro.", { variant: "erro", title: mensagem });
   };
@@ -112,6 +107,11 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
 
   return (
     <div className="flex flex-col gap-6">
+      <OrientacaoCadastro
+        itens={checklist}
+        salvar="Sala e título permitem salvar o rascunho. Um link preenchido precisa ser válido; a duração pode ficar vazia até publicar."
+        publicar="Para publicar, complete identificação, link YouTube e duração. Vincular artigos é opcional; somente artigos da mesma Sala podem ser associados."
+      />
       <Breadcrumbs
         itens={[
           { href: "/admin/salas" as Route, rotulo: "Salas" },
@@ -198,7 +198,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
                   help={
                     url.ok
                       ? `Código do vídeo: ${url.id}`
-                      : "Aceitamos youtube.com/watch, youtu.be e youtube.com/shorts. Não usamos a API do YouTube."
+                      : "Aceitamos youtube.com/watch, youtu.be e youtube.com/shorts e youtube.com/embed. Não usamos a API do YouTube."
                   }
                   value={form.url}
                   error={erros["campo-url"]}
@@ -270,51 +270,14 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
                 />
               </section>
 
-              <section className="sdb-material sdb-panel" aria-labelledby="sec-artigos">
-                <h2 id="sec-artigos" className="sdb-headline">
-                  Artigos ligados
-                </h2>
-                <p className="sdb-help">
-                  O vídeo aparece em “Vídeos relacionados” na página de cada artigo publicado escolhido.
-                </p>
-                {doMesmoSala.length === 0 ? (
-                  <p className="sdb-hint">
-                    Esta Sala ainda não tem artigos ativos. Sem artigo, o vídeo fica só na Sala.
-                  </p>
-                ) : (
-                  <fieldset className="sdb-fieldset">
-                    <legend className="sdb-caption">Artigos da Sala {sala.nome}</legend>
-                    <div className="sdb-list">
-                      {doMesmoSala.map((a) => {
-                        const marcado = form.artigos.includes(a.id);
-                        return (
-                          <button
-                            key={a.id}
-                            type="button"
-                            className="sdb-option"
-                            aria-pressed={marcado}
-                            onClick={() =>
-                              mudar({
-                                artigos: marcado
-                                  ? form.artigos.filter((x) => x !== a.id)
-                                  : [...form.artigos, a.id],
-                              })
-                            }
-                          >
-                            <span>
-                              {a.titulo}
-                              {a.status !== "publicado" && (
-                                <span className="sdb-table__sub">Rascunho: aparece quando for publicado</span>
-                              )}
-                            </span>
-                            <Icon name="check" className="sdb-option__check" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                )}
-              </section>
+              <SeletorArtigosVideo
+                artigos={artigos}
+                sala={sala}
+                selecionados={form.artigos}
+                onMudar={(artigos) => mudar({ artigos }, "campo-artigos")}
+                erro={erros["campo-artigos"]}
+                atualizar={atualizarArtigosParaVideoAcao}
+              />
 
               <section className="sdb-material sdb-panel" aria-labelledby="sec-previa-video">
                 <h2 id="sec-previa-video" className="sdb-headline">
@@ -322,6 +285,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
                 </h2>
                 <div className="max-w-form">
                   <CardVideo
+                    previa
                     video={{
                       id: form.id ?? "previa",
                       sala: sala.slug as SalaSlug,

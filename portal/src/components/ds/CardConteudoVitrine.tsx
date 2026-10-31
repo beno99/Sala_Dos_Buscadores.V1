@@ -5,7 +5,7 @@ import { salaPorSlug } from "@/data/catalogo";
 import { TIPO_ROTULO } from "@/data/rotulos";
 import type { Conteudo, Placa } from "@/data/types";
 import { cx } from "@/lib/cx";
-import { Arc } from "./Arc";
+import { InicialCapa } from "./InicialCapa";
 import { SeloProveniencia } from "./Selos";
 
 export type FormatoVitrine = "alto" | "horizontal" | "normal";
@@ -64,7 +64,7 @@ export function CardConteudoVitrine({
           <img className="sala__image" src={imagem} alt="" decoding="async" />
         ) : (
           <div className={`sala__placa sdb-plate--${placa}`} aria-hidden="true">
-            <Arc on={placa} />
+            <InicialCapa titulo={conteudo.titulo} />
           </div>
         )}
         <div className="sala__tools">

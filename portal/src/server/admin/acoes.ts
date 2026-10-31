@@ -7,6 +7,7 @@ import type { GrupoVaga } from "@/features/destaques/vagas";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { AcessoNegado, exigirAdmin } from "../sessao";
 import { aguardarGravacoes } from "../store";
+import { listarArtigosParaVideo } from "./consultas";
 import * as destaques from "./destaques";
 import type { AcaoStatus, ModoSalvar, ResultadoAcao } from "./editorial";
 import * as editorial from "./editorial";
@@ -82,6 +83,17 @@ export async function mudarStatusArtigoAcao(id: string, acao: AcaoStatus) {
 
 export async function duplicarArtigoAcao(id: string) {
   return comAdmin((quem) => editorial.duplicarArtigo(id, quem));
+}
+
+export async function atualizarArtigosParaVideoAcao(sala: string) {
+  return comAdmin(
+    () => ({
+      ok: true,
+      valor: listarArtigosParaVideo(String(sala)),
+      mensagem: "Artigos atualizados.",
+    }),
+    { revalidar: false },
+  );
 }
 
 export async function salvarVideoAcao(form: FormVideo, modo: ModoSalvar) {

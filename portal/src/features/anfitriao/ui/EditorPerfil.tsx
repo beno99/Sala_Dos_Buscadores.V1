@@ -168,8 +168,8 @@ export function EditorPerfil({
           id="campo-avatar"
           label="Avatar"
           opcional
-          quadrado
-          help="Quadrado, JPEG, PNG ou WebP, até 5 MB. Sem avatar, suas iniciais."
+          finalidade="avatar"
+          help="Sem avatar, suas iniciais."
           valor={avatar}
           onMudar={(img) => {
             setAvatar(img);

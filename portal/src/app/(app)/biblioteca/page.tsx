@@ -8,7 +8,7 @@ import { CatalogoBiblioteca } from "@/features/biblioteca/CatalogoBiblioteca";
 import { FaixaBiblioteca, type ItemDaFaixa } from "@/features/biblioteca/FaixaBiblioteca";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { plural } from "@/lib/texto";
-import { imagemDaSala } from "@/server/imagens";
+import { imagemDoCardDaSala } from "@/server/imagens";
 
 export const metadata: Metadata = { title: "Biblioteca" };
 
@@ -41,7 +41,7 @@ export default async function Biblioteca(props: PageProps<"/biblioteca">) {
       card: (
         <CardSala
           sala={s}
-          imagem={imagemDaSala(s)}
+          imagem={imagemDoCardDaSala(s)}
           acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.slug} titulo={s.nome} />}
         />
       ),

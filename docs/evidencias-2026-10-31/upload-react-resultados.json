@@ -1,0 +1,11 @@
+{
+  "originalBytes": 736274,
+  "upload": {
+    "name": "original.png",
+    "size": 736274,
+    "type": "image/png",
+    "last": 83
+  },
+  "warning": "Resolução abaixo da recomendada: pode perder nitidez na largura máxima em telas 2×. Prefira um original maior; ampliar o arquivo não recupera detalhes.",
+  "helpBefore": true
+}

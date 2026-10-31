@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { salaPorSlug } from "@/data/catalogo";
 import { acervoPublico, resumirSala } from "@/data/repositorio";
 import { EstanteCliente, type ItemNaEstante } from "@/features/estante/EstanteCliente";
-import { imagemDaSala } from "@/server/imagens";
+import { imagemDoCardDaSala } from "@/server/imagens";
 import { progressoDe } from "@/server/progresso";
 import { membroAtual } from "@/server/sessao";
 
@@ -19,7 +19,7 @@ export default async function Estante() {
   const itens = estante.flatMap((e): ItemNaEstante[] => {
     if (e.tipo === "sala") {
       const sala = salaPorSlug(e.ref);
-      return sala ? [{ tipo: "sala", sala: resumirSala(sala), imagem: imagemDaSala(sala) }] : [];
+      return sala ? [{ tipo: "sala", sala: resumirSala(sala), imagem: imagemDoCardDaSala(sala) }] : [];
     }
     if (e.tipo === "video") {
       const video = publico.videos.find((v) => v.id === e.ref);

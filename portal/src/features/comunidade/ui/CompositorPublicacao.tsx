@@ -225,7 +225,8 @@ function Formulario({
           <CampoImagem
             label="Imagem"
             opcional
-            help="Envie apenas imagens que você tem direito de usar. JPEG, PNG ou WebP, até 5 MB."
+            finalidade="comunidade"
+            help="Envie apenas imagens que você tem direito de usar."
             valor={imagem}
             onMudar={(i) => {
               setImagem(i);

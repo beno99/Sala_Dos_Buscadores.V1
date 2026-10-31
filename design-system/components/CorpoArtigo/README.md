@@ -23,7 +23,7 @@ Ritmo: `--space-5` entre blocos; intertítulo, destaque e imagem ganham mais res
 `article.sdb-article` organiza a página:
 - `h1.sdb-large-title.sdb-article__title`: o título, nunca truncado.
 - `.sdb-article__byline`: a [Autoria do conteúdo](../AutoriaConteudo/README.md).
-- `.sdb-article__body`: o corpo (até 46rem, centralizado na coluna junto com o título; o texto continua alinhado à esquerda).
+- `.sdb-article__body`: o corpo (até 46rem, centralizado na coluna junto com o título; parágrafos justificados com última linha à esquerda).
 - `aside.sdb-article__extras`: blocos `section.sdb-article__block` ("Vídeos do assunto" em `.sdb-article__videos`, "Trecho de fonte primária", "Fontes" em `.sdb-article__stack`), com `--space-8` entre eles. Cada bloco some quando está vazio.
 
 A ordem no HTML é título, autoria, texto e extras: é a ordem do leitor de tela e do celular. No desktop a grade usa as áreas `"autor titulo" "autor texto" "extras texto"` e as linhas `auto auto 1fr`, então o título fica alinhado ao topo da autoria e os extras começam logo abaixo dos dados. Lateral de 20rem, `--space-8` entre as colunas.
@@ -35,5 +35,9 @@ Na largura toda, depois da leitura: `section.sdb-carousel.sdb-article__continue`
 
 ## Regras
 - Imagens só de domínio público, de licença aberta ou enviadas pelo anfitrião com o aceite registrado; nunca geradas por IA. Atribuição incerta fica incerta.
-- Texto alinhado à esquerda; sem capitular, sem caixa-alta nos títulos.
+- Parágrafos de leitura, incluindo o lead, são justificados com última linha à esquerda e `hyphens: auto`, sob `lang="pt-BR"`. A hifenização depende do dicionário do navegador; `overflow-wrap: anywhere` protege URLs. Títulos, listas, citações, destaques, legendas e metadados continuam à esquerda. Não inserir quebras manuais para compor linhas; quebras de versos/citações em destaques são preservadas com `white-space: pre-line`. A formatação é visual, sem alterar textos gravados.
+- A imagem ocupa a mesma coluna do texto, com `width: 100%`, `height: auto`, sem altura máxima, `cover` ou recorte, inclusive na prévia. A coluna máxima de 46rem equivale a 736 px na base de 16 px; arquivos com 1472 px de largura atendem densidade 2×. Altura e proporção são livres.
+- Sem capitular, sem caixa-alta nos títulos.
 - A nota de divergência ([Alerta](../Alerta/README.md) de aviso) e "Ler no site" vêm depois dos blocos, no fim da coluna do texto.
+
+A largura dos parágrafos é a mesma da coluna e das imagens (`width: 100%; max-width: none` neste contexto), sem herdar o limite tipográfico genérico de `68ch`. A moldura da leitura continua limitada pelo token `article-reading-width`.

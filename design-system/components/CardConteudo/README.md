@@ -51,3 +51,7 @@ preferência da conta. Salvar continua sobre o link, com `.sdb-over`.
 Temas usam `.sdb-badge--topic` com ícone; nível e procedência reutilizam SeloNivel e SeloProveniencia. A barra de leitura, inclusive `.sala__barra` na imagem, segue o trilho escuro e o dourado luminoso compartilhados. Preserve os dados reais, o percentual textual e a distinção entre leitura de um conteúdo e estudo completo de uma Sala.
 
 As classes `.sala--conteudo` preservam seus formatos editorial, compacto e acervo; a nova composição única de imagem e vidro do CardSala aplica-se aos cards de Sala.
+
+## Inicial editorial automática (31/10/2026)
+
+A capa de fonte e o fallback de capa de artigo usam a primeira letra ou número Unicode do próprio título, em maiúscula, ignorando pontuação e espaços iniciais. Acentos e artigos gramaticais permanecem. A inicial não é editável; sem título utilizável usa o ícone neutro da biblioteca. Imagens disponíveis têm precedência. No BannerSala a variante de artigo recebe `tituloFallback`; o banner de Sala conserva o arco.

@@ -2,7 +2,7 @@ import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
 import type { Video } from "@/data/types";
 import { extrairIdYoutube } from "@/features/admin/regras/youtube";
 import { formatarData } from "@/lib/texto";
-import { Arc } from "./Arc";
+import { MiniaturaVideo } from "./MiniaturaVideo";
 
 /** "24:10" → "24 minutos e 10 segundos", para o leitor de tela. */
 export function duracaoPorExtenso(duracao: string): string {
@@ -19,7 +19,7 @@ export function duracaoPorExtenso(duracao: string): string {
  * ação abre o vídeo no YouTube em nova aba, e só vira link com o endereço de
  * um vídeo específico (links de busca não contam).
  */
-export function CardVideo({ video }: { video: Video }) {
+export function CardVideo({ video, previa = false }: { video: Video; previa?: boolean }) {
   const sala = salaPorSlug(video.sala);
   const tema = temaPorSlug(video.tema);
   const destino = extrairIdYoutube(video.url);
@@ -37,14 +37,14 @@ export function CardVideo({ video }: { video: Video }) {
   return (
     <article className="video" aria-labelledby={id}>
       <div className="video__media">
-        {video.imagem ? (
-          // biome-ignore lint/performance/noImgElement: miniatura decorativa servida de public/imagens.
-          <img className="video__image" src={video.imagem} alt="" width={736} height={414} decoding="async" />
-        ) : (
-          <div className={`video__placa sdb-plate--${video.placa}`} aria-hidden="true">
-            <Arc line on={video.placa} />
-          </div>
-        )}
+        <MiniaturaVideo
+          key={`${destino.ok ? destino.id : "sem-video"}-${video.imagem ?? ""}`}
+          id={destino.ok ? destino.id : undefined}
+          imagem={video.imagem}
+          placa={video.placa}
+          titulo={video.titulo}
+          mostrarEstado={previa && destino.ok}
+        />
         <div className="video__blur" aria-hidden="true">
           <i />
           <i />

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CardVideo · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=59ab3ed333f6">
-<link rel="stylesheet" href="../components/bundle.css?v=b6fa2c922c99">
+<link rel="stylesheet" href="../tokens.css?v=4cf1fc2bfdcb">
+<link rel="stylesheet" href="../components/bundle.css?v=a4f4985e9678">
 <link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
 <link rel="stylesheet" href="../components/refined-layout.css?v=bfd6c90bac79">
-<link rel="stylesheet" href="../components/CardSala/card-sala.css?v=f76d81a7d585">
-<link rel="stylesheet" href="../components/CardVideo/card-video.css?v=75418677e79a">
+<link rel="stylesheet" href="../components/CardSala/card-sala.css?v=2c5eda482236">
+<link rel="stylesheet" href="../components/CardVideo/card-video.css?v=5174617e9b8f">
 <link rel="stylesheet" href="../components/CardComparativo/card-comparativo.css?v=3d8729d83a38">
 <link rel="stylesheet" href="../components/AssistenteOrb/assistant-orb.css?v=ab5b3e82252b">
 
@@ -19,7 +19,7 @@
 
 
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=a05973182158"></script>
+<script src="../components/bundle.js?v=03a64e383163"></script>
 </head>
 <body>
 <div class="sdb-stage refined-preview">
@@ -62,6 +62,14 @@
       <figure class="video-embed" style="max-width:720px"><div class="video-embed__frame"><div class="sdb-plate sdb-plate--grafite"><span data-arc="line" class="sdb-arc--on-grafite"></span></div></div><figcaption class="video-embed__legenda">Vídeo indicado pelo anfitrião, no YouTube. No portal, o player do YouTube ocupa esta moldura.</figcaption></figure></section>
 <div class="feedback" role="status" aria-live="polite" hidden></div>
 <dialog id="sala-corpus-hermeticum" aria-labelledby="dialog-title"><p class="eyebrow">Prévia de navegação</p><h2 id="dialog-title">Corpus Hermeticum</h2><p data-dialog-description></p><p>Esta é uma demonstração. A sala completa pertence ao portal.</p><form method="dialog"><button>Voltar aos cards</button></form></dialog></div>
+<section class="sdb-stage" aria-labelledby="miniatura-erro-titulo">
+  <h3 id="miniatura-erro-titulo" class="sdb-headline">Prévia editorial · miniatura indisponível</h3>
+  <article class="video"><div class="video__media">
+    <div class="video__placa sdb-plate--grafite" aria-hidden="true"><span data-arc="line" class="sdb-arc--on-grafite"></span></div>
+    <div class="video__thumbnail-status sdb-footnote" role="status">Miniatura indisponível. <button type="button" class="sdb-btn sdb-btn--plain">Tentar novamente</button></div>
+    <div class="video__content"><h3 class="video__title">Poimandres, a mente que fala</h3></div>
+  </div></article>
+</section>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>
 <script>
 window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});

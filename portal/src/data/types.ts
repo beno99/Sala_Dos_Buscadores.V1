@@ -67,8 +67,10 @@ export interface Sala {
   origem: OrigemSala;
   /** Grade comparativa e acervo do assistente. Nas oficiais, sempre true; nas de anfitrião, só o admin liga. */
   naComparacao: boolean;
-  /** Imagem da Sala (card e topo da página); sem ela, a placa da marca com a inicial. */
+  /** Banner da Sala (topo da página e, sem imagem do card, o card); sem ela, a placa da marca com a inicial. */
   imagem?: string;
+  /** Imagem própria do card vertical da Sala; sem ela, o card usa o banner. */
+  imagemCard?: string;
   /** Link geral da Sala (site ou canal do anfitrião), só https. */
   link?: string;
   /** Nas Salas de anfitrião: quem responde por ela. */
@@ -89,8 +91,16 @@ export type TextoMarcado = string;
  */
 export type BlocoCorpo =
   | TextoMarcado // Leitura de dados legados; edições novas usam objetos.
-  | BlocoTexto
-  | { tipo: "imagem"; src: string; alt: string; credito: string; legenda?: string; midia?: string };
+  | (BlocoTexto & { id?: string })
+  | {
+      id?: string;
+      tipo: "imagem";
+      src: string;
+      alt: string;
+      credito: string;
+      legenda?: string;
+      midia?: string;
+    };
 
 export interface Conteudo {
   slug: string;
@@ -310,12 +320,14 @@ export interface ConteudoEditorial extends Conteudo, MetaEditorial {
 export interface SalaEditorial extends Sala, MetaEditorial {
   /** Só nas Salas de anfitrião. */
   revisao?: RevisaoAnfitriao;
-  /** Sala oficial: data da primeira publicação. Depois dela, o slug fica travado. */
+  /** Sala oficial: data da primeira publicação. O slug já é estável desde o primeiro salvamento. */
   publicadaEm?: string;
   /** Sala oficial arquivada: o status de antes, para "Restaurar" devolver tudo como estava. */
   statusAntesDeArquivar?: StatusEditorial;
-  /** Id de mídia da imagem enviada pelo anfitrião. */
+  /** Id de mídia do banner enviado. */
   midia?: string;
+  /** Id de mídia da imagem do card enviada. */
+  midiaCard?: string;
 }
 
 export interface VideoEditorial extends Video, MetaEditorial {

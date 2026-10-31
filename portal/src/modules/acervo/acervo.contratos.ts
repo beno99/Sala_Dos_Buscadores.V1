@@ -91,6 +91,8 @@ export type Gravacao =
   | { tipo: "salvo"; acao: AcaoRelacao; valor: SalvoComunidade };
 
 export interface AcervoRepositorio {
+  /** Insere uma nova Sala com endereço reservado atomicamente no banco. */
+  criarSala(sala: SalaEditorial): Promise<{ sala: SalaEditorial; versao: number }>;
   versao(): Promise<number>;
   carregar(): Promise<DadosCarregados>;
   /** Aplica a gravação e devolve a nova versão dos dados. */

@@ -27,7 +27,7 @@ export function RetomadaPortal({
   return (
     <article className="sdb-retomada">
       <div className="sdb-retomada__media">
-        <ImagemAcervo src={imagem} placa={sala?.placa ?? "bordo"} />
+        <ImagemAcervo tituloFallback={conteudo.titulo} src={imagem} placa={sala?.placa ?? "bordo"} />
         <div className="sdb-retomada__selo">
           <SeloProveniencia tipo={conteudo.proveniencia} />
         </div>

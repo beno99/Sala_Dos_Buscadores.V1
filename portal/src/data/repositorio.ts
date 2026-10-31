@@ -4,6 +4,7 @@ import type { ConteudoBuscavel } from "@/features/busca/sugestoes";
 import { ordenarRanking } from "@/features/destaques/ranking";
 import { type Candidato, type GrupoVaga, montarVagas } from "@/features/destaques/vagas";
 import type { ItemAcervo } from "@/features/estudo/tipos";
+import { inicialDoTitulo } from "@/lib/texto";
 import { imagem, imagemDoCard } from "@/server/imagens";
 import { acervo } from "@/server/store";
 import { salaPorSlug, todasAsSalas } from "./catalogo";
@@ -185,7 +186,10 @@ export function fontesPorId(ids: string[]): Fonte[] {
   return ids
     .map((id) => acervo().fontes.get(id))
     .filter((f): f is NonNullable<typeof f> => Boolean(f) && !f?.proposta?.pendente)
-    .map(({ criadoEm: _a, atualizadoEm: _b, criadoPor: _c, atualizadoPor: _d, proposta: _e, ...f }) => f);
+    .map(({ criadoEm: _a, atualizadoEm: _b, criadoPor: _c, atualizadoPor: _d, proposta: _e, ...f }) => ({
+      ...f,
+      inicial: inicialDoTitulo(f.titulo),
+    }));
 }
 
 export function fontesDaSala(sala: SalaSlug): Fonte[] {

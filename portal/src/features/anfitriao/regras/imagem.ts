@@ -4,6 +4,8 @@
  * nem pelo tipo que o navegador declara.
  */
 
+export const TIPOS_IMAGEM: readonly string[] = ["image/jpeg", "image/png", "image/webp"];
+
 export const LIMITE_IMAGEM_BYTES = 5 * 1024 * 1024;
 
 export type TipoImagem = "image/jpeg" | "image/png" | "image/webp";

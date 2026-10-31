@@ -10,7 +10,7 @@ import { avaliarConquistas } from "@/features/estudo/conquistas";
 import { nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
 import { leiturasEmAndamento } from "@/features/estudo/painel";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { imagem, imagemDaSala } from "./imagens";
+import { imagem, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
 
@@ -109,6 +109,6 @@ export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
     conquistas,
     minhasSalas: salas
       .filter((s) => visitadas.has(s.slug))
-      .map((s) => ({ sala: s, temas: temasDaSala(s.slug), imagem: imagemDaSala(s) })),
+      .map((s) => ({ sala: s, temas: temasDaSala(s.slug), imagem: imagemDoCardDaSala(s) })),
   };
 }

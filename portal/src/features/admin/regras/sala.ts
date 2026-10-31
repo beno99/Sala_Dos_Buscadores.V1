@@ -1,7 +1,7 @@
 import type { Placa } from "@/data/types";
 import { validarLinkHttps } from "@/features/anfitriao/regras/artigo";
 import type { ItemChecklist } from "./checklist";
-import { gerarSlug, validarSlug } from "./slug";
+import { gerarSlug } from "./slug";
 
 /*
  * Sala oficial da curadoria (curadoria a partir da Sala, §4). Funções puras:
@@ -12,7 +12,7 @@ import { gerarSlug, validarSlug } from "./slug";
 export interface FormSalaOficial {
   id: string | null;
   nome: string;
-  /** Gerado do nome; travado depois da primeira publicação. */
+  /** Gerado no servidor no primeiro salvamento; somente leitura daí em diante. */
   slug: string;
   tradicao: string;
   /** Rótulo curto da coluna na grade comparativa. */
@@ -21,8 +21,10 @@ export interface FormSalaOficial {
   periodo: string;
   placa: Placa;
   inicial: string;
-  /** Id de mídia da imagem enviada (opcional; sem ela, a placa). */
+  /** Id de mídia do banner enviado (opcional; sem ele, a placa). */
   imagem: string | null;
+  /** Id de mídia da imagem do card (opcional; sem ela, o card usa o banner). */
+  imagemCard: string | null;
   /** Link geral, só https (opcional). */
   link: string;
 }
@@ -38,6 +40,7 @@ export const salaOficialVazia = (): FormSalaOficial => ({
   placa: "bordo",
   inicial: "",
   imagem: null,
+  imagemCard: null,
   link: "",
 });
 
@@ -45,34 +48,24 @@ export const LIMITE_NOME_SALA_OFICIAL = 80;
 export const LIMITE_TRADICAO_CURTA = 40;
 export const LIMITE_DESCRICAO_SALA_OFICIAL = 600;
 
-/** Endereços que são rotas da curadoria (/admin/salas/nova). */
-const SLUGS_RESERVADOS = ["nova"];
+/** Endereços usados por rotas de criação, comuns às Salas oficiais e de anfitriões. */
+export const SLUGS_SALA_RESERVADOS: ReadonlySet<string> = new Set(["nova"]);
 
-export const slugDaSala = (nome: string) => gerarSlug(nome).slice(0, 60);
+export const slugDaSala = (nome: string) => gerarSlug(nome).slice(0, 60).replace(/-+$/g, "") || "sala";
 
-/** Validações de qualquer salvamento, inclusive o rascunho automático. */
-export function validarSalaOficial(
-  f: FormSalaOficial,
-  slugsOcupados: Iterable<string>,
-  slugTravado: boolean,
-) {
+/** Candidato determinístico; a reserva definitiva é feita pelo UNIQUE do Postgres. */
+export function candidatoSlugSala(nome: string, tentativa = 1): string {
+  const base = slugDaSala(nome);
+  return tentativa === 1 ? base : `${base}-${tentativa}`;
+}
+
+/** Validações de qualquer salvamento. O endereço não é uma entrada do usuário. */
+export function validarSalaOficial(f: FormSalaOficial) {
   const erros: Record<string, string> = {};
   const nome = f.nome.trim();
   if (!nome) erros["campo-sala-nome"] = "escreva o nome da Sala para salvar o rascunho.";
   else if (nome.length > LIMITE_NOME_SALA_OFICIAL) {
     erros["campo-sala-nome"] = `use até ${LIMITE_NOME_SALA_OFICIAL} caracteres no nome.`;
-  }
-  if (!slugTravado) {
-    const slug = f.slug.trim() || slugDaSala(nome);
-    if (slug) {
-      const erroSlug = validarSlug(slug);
-      if (erroSlug) erros["campo-sala-slug"] = erroSlug;
-      else if (SLUGS_RESERVADOS.includes(slug))
-        erros["campo-sala-slug"] = "este endereço é reservado. Escolha outro.";
-      else if (new Set(slugsOcupados).has(slug)) {
-        erros["campo-sala-slug"] = "já existe uma Sala com este endereço. Mude o final, por exemplo com -2.";
-      }
-    }
   }
   if (f.tradicaoCurta.trim().length > LIMITE_TRADICAO_CURTA) {
     erros["campo-sala-tradicao-curta"] =

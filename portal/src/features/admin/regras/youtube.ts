@@ -1,6 +1,6 @@
 /*
  * Vídeos do canal (RF-16). Aceita youtube.com/watch, youtu.be e
- * youtube.com/shorts, extrai o ID e recusa outros domínios. Não chama a API
+ * youtube.com/shorts e /embed, extrai o ID e recusa outros domínios. Não chama a API
  * do YouTube.
  */
 
@@ -22,12 +22,17 @@ export function extrairIdYoutube(entrada: string): ResultadoUrl {
   } catch {
     return { ok: false, erro: "o endereço não é válido. Ex.: https://www.youtube.com/watch?v=…" };
   }
+  if (!["https:", "http:"].includes(url.protocol) || url.username || url.password || url.port) {
+    return { ok: false, erro: "use um link público do YouTube, sem credenciais ou porta." };
+  }
   const host = url.hostname.toLowerCase();
   let id: string | null = null;
-  if (host === "youtu.be") id = url.pathname.split("/")[1] ?? null;
+  if (host === "youtu.be") id = /^\/([A-Za-z0-9_-]{11})\/?$/.exec(url.pathname)?.[1] ?? null;
   else if (HOSTS_YOUTUBE.has(host)) {
     if (url.pathname === "/watch") id = url.searchParams.get("v");
-    else if (url.pathname.startsWith("/shorts/")) id = url.pathname.split("/")[2] ?? null;
+    else id = /^\/(?:shorts|embed)\/([A-Za-z0-9_-]{11})\/?$/.exec(url.pathname)?.[1] ?? null;
+  } else if (host === "www.youtube-nocookie.com" || host === "youtube-nocookie.com") {
+    id = /^\/embed\/([A-Za-z0-9_-]{11})\/?$/.exec(url.pathname)?.[1] ?? null;
   } else {
     return { ok: false, erro: "só aceitamos vídeos do YouTube (youtube.com ou youtu.be)." };
   }
@@ -45,4 +50,12 @@ export function validarDuracao(duracao: string): string | null {
   if (!m) return "use o formato mm:ss, com segundos de 00 a 59. Ex.: 18:42";
   if (Number(m[1]) === 0 && Number(m[2]) === 0) return "a duração não pode ser 00:00.";
   return null;
+}
+
+/** Endereços fixos; nunca consulta o domínio fornecido pelo usuário. */
+export function miniaturasYoutube(id: string): string[] {
+  if (!ID.test(id)) return [];
+  return ["maxresdefault", "hqdefault", "mqdefault"].map(
+    (qualidade) => `https://i.ytimg.com/vi/${id}/${qualidade}.jpg`,
+  );
 }

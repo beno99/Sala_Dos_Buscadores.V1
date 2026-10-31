@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { todosOsTemas } from "@/data/catalogo";
 import { listarSalas, temasDaSala } from "@/data/repositorio";
 import { GradeSalas, type SalaNaGrade } from "@/features/acervo/GradeSalas";
-import { imagemDaSala } from "@/server/imagens";
+import { imagemDoCardDaSala } from "@/server/imagens";
 
 export const metadata: Metadata = { title: "Salas" };
 
@@ -16,7 +16,7 @@ export default async function SalasPage() {
   const naGrade = (s: (typeof salas)[number]): SalaNaGrade => ({
     sala: s,
     temas: temasDaSala(s.slug),
-    imagem: imagemDaSala(s),
+    imagem: imagemDoCardDaSala(s),
   });
   const oficiais = salas.filter((s) => s.origem === "oficial").map(naGrade);
   const deAnfitrioes = salas.filter((s) => s.origem === "anfitriao").map(naGrade);

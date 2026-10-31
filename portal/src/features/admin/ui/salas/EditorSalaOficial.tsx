@@ -25,6 +25,7 @@ import {
 } from "../../regras/sala";
 import { AvisoSaida, focarCampo } from "../AvisoSaida";
 import { PLACAS } from "../CamposFonte";
+import { OrientacaoCadastro } from "../OrientacaoCadastro";
 import { useEdicao } from "../useEdicao";
 
 /**
@@ -37,13 +38,11 @@ export function EditorSalaOficial({
   imagem: imagemInicial,
   status,
   atualizadoEm,
-  slugTravado,
 }: {
   inicial: FormSalaOficial;
   imagem: ImagemEnviada | null;
   status: StatusEditorial;
   atualizadoEm: string | null;
-  slugTravado: boolean;
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -65,7 +64,7 @@ export function EditorSalaOficial({
   const bloqueado = temPendencia(checklist);
   const publicado = status === "publicado";
   const arquivado = status === "arquivado";
-  const slug = form.slug || slugDaSala(form.nome);
+  const slug = form.id ? form.slug : form.nome.trim() ? slugDaSala(form.nome) : "";
   const titulo = form.nome.trim() || (form.id ? "Sala sem nome" : "Nova Sala");
 
   const mostrarErros = (novos: Record<string, string>, mensagem: string) => {
@@ -127,6 +126,11 @@ export function EditorSalaOficial({
 
   return (
     <div className="flex flex-col gap-6">
+      <OrientacaoCadastro
+        itens={checklist}
+        salvar="O nome permite salvar o rascunho. O endereço é criado automaticamente e não muda depois."
+        publicar="Para publicar, complete os itens abaixo. A Sala aparece no portal quando também tem um artigo publicado."
+      />
       <Breadcrumbs
         itens={[
           { href: "/admin/salas" as Route, rotulo: "Salas" },
@@ -185,35 +189,17 @@ export function EditorSalaOficial({
                 error={erros["campo-sala-nome"]}
                 onChange={(e) => mudar({ nome: e.target.value }, "campo-sala-nome", "campo-sala-slug")}
               />
-              <div className="flex flex-col gap-2">
-                <CampoTexto
-                  id="campo-sala-slug"
-                  label="Endereço (slug)"
-                  placeholder={slugDaSala(form.nome) || "upanishads"}
-                  value={form.slug}
-                  disabled={slugTravado}
-                  error={erros["campo-sala-slug"]}
-                  help={
-                    slugTravado
-                      ? `Travado depois da primeira publicação, para não quebrar links: /salas/${form.slug}`
-                      : `Em branco, é gerado do nome. Fica: /salas/${slug || "…"}`
-                  }
-                  onChange={(e) => mudar({ slug: e.target.value.toLowerCase() }, "campo-sala-slug")}
-                />
-                {!slugTravado && (
-                  <div>
-                    <Button
-                      variant="plain"
-                      size="sm"
-                      icon="regenerar"
-                      disabled={!form.nome.trim()}
-                      onClick={() => mudar({ slug: slugDaSala(form.nome) }, "campo-sala-slug")}
-                    >
-                      Gerar do nome
-                    </Button>
-                  </div>
-                )}
-              </div>
+              <CampoTexto
+                id="campo-sala-slug"
+                label="Endereço da Sala"
+                value={slug ? `/salas/${slug}` : ""}
+                readOnly
+                help={
+                  form.id
+                    ? "Definido no primeiro salvamento. Permanece igual quando o nome muda."
+                    : "Gerado automaticamente ao salvar. Um número é acrescentado se o endereço já estiver em uso ou for reservado."
+                }
+              />
               <CampoTexto
                 id="campo-sala-tradicao"
                 label="Tradição"
@@ -280,15 +266,26 @@ export function EditorSalaOficial({
               />
               <CampoImagem
                 id="campo-sala-imagem"
-                label="Imagem da Sala"
+                label="Banner da Sala"
                 opcional
-                help="JPEG, PNG ou WebP, até 5 MB. Só imagem com direito de uso registrado. Sem ela, a placa."
+                finalidade="banner-sala"
+                help="Só imagem com direito de uso registrado. Sem ela, a placa."
                 valor={imagem}
                 disabled={arquivado}
                 onMudar={(nova) => {
                   setImagem(nova);
                   mudar({ imagem: nova?.id ?? null });
                 }}
+              />
+              <CampoImagem
+                id="campo-sala-imagem-card"
+                label="Imagem do card"
+                opcional
+                finalidade="card-sala"
+                help="Só imagem com direito de uso registrado. Sem ela, o card usa o banner, inteiro."
+                valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
+                disabled={arquivado}
+                onMudar={(nova) => mudar({ imagemCard: nova?.id ?? null })}
               />
               <CampoTexto
                 id="campo-sala-link"

@@ -10,6 +10,7 @@ import type {
   TemaSlug,
 } from "@/data/types";
 import type { ItemChecklist } from "@/features/admin/regras/checklist";
+import { slugDaSala } from "@/features/admin/regras/sala";
 import { gerarSlug, slugUnico } from "@/features/admin/regras/slug";
 import {
   camposCalculadosSala,
@@ -33,13 +34,14 @@ import {
   podeExcluir,
   transicao,
 } from "@/features/anfitriao/regras/ciclo";
+import { inicialDoTitulo } from "@/lib/texto";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import type { ModoSalvar } from "../admin/editorial";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { artigoDoDono, fonteVisivelAoDono, salaDoDono } from "../sessao";
-import { acervo } from "../store";
-import { agora, comPosse, erro, falha, hoje, novoId, ok, type ResultadoAcao } from "./comum";
+import { acervo, criarSalaNoAcervo } from "../store";
+import { agora, comPosse, comPosseAsync, erro, falha, hoje, novoId, ok, type ResultadoAcao } from "./comum";
 
 /*
  * O que o anfitrião faz nas próprias Salas e artigos (§4, §5). Cada função
@@ -71,11 +73,6 @@ function conferirAnfitriao(dono: Membro): string | null {
 const congelado = (item: { revisao?: { congelado?: boolean } }) => Boolean(item.revisao?.congelado);
 const ERRO_CONGELADO = "este item foi congelado pela curadoria e não é mais editado.";
 
-/** Slugs de todas as Salas (oficiais e de anfitriões, de qualquer status): o endereço é único no portal. */
-function slugsDeSalas(exceto: string | null): string[] {
-  return [...acervo().salas.values()].filter((s) => s.id !== exceto).map((s) => s.slug);
-}
-
 function slugsDeArtigos(salaSlug: string, exceto: string | null): string[] {
   return [...acervo().conteudos.values()]
     .filter((c) => c.sala === salaSlug && c.id !== exceto)
@@ -88,12 +85,14 @@ function artigosDaSala(sala: SalaEditorial): ConteudoEditorial[] {
 
 // ---------- Sala ----------
 
-export function salvarSala(
+export async function salvarSala(
   f: FormSalaAnfitriao,
   dono: Membro,
   modo: ModoSalvar,
-): ResultadoAcao<{ id: string; slug: string; status: StatusEditorial; saiuDoAr: boolean; salvoEm: string }> {
-  return comPosse(() => {
+): Promise<
+  ResultadoAcao<{ id: string; slug: string; status: StatusEditorial; saiuDoAr: boolean; salvoEm: string }>
+> {
+  return comPosseAsync(async () => {
     const recusa = conferirAnfitriao(dono);
     if (recusa) return erro(recusa);
     const anterior = f.id ? salaDoDono(f.id, dono.id) : undefined;
@@ -118,11 +117,9 @@ export function salvarSala(
     const perfil = exigirPerfil(dono);
     const nome = f.nome.trim();
     const id = anterior?.id ?? novoId("s");
-    // O endereço acompanha o nome até a primeira publicação; depois fica travado.
-    const slug = anterior?.revisao?.jaPublicado
-      ? anterior.slug
-      : slugUnico(gerarSlug(nome) || "sala", slugsDeSalas(id));
+    const slug = anterior?.slug ?? slugDaSala(nome);
     const imagem = midiaDoDono(f.imagem, dono.id);
+    const imagemCard = midiaDoDono(f.imagemCard, dono.id);
     const momento = agora();
     const sala: SalaEditorial = {
       id,
@@ -151,10 +148,14 @@ export function salvarSala(
       sala.midia = imagem;
       sala.imagem = urlDaMidia(imagem);
     }
+    if (imagemCard) {
+      sala.midiaCard = imagemCard;
+      sala.imagemCard = urlDaMidia(imagemCard);
+    }
 
     const mudou =
       !anterior ||
-      ["nome", "descricao", "periodo", "link", "imagem"].some(
+      ["nome", "descricao", "periodo", "link", "imagem", "imagemCard"].some(
         (k) =>
           (anterior as unknown as Record<string, unknown>)[k] !==
           (sala as unknown as Record<string, unknown>)[k],
@@ -166,13 +167,10 @@ export function salvarSala(
       );
     }
 
-    acervo().salas.set(id, sala);
-    // Antes da primeira publicação, o endereço pode mudar com o nome: os artigos acompanham.
-    if (anterior && anterior.slug !== slug) {
-      for (const c of acervo().conteudos.values()) {
-        if (c.sala === anterior.slug && c.revisao?.donoId === dono.id)
-          acervo().conteudos.set(c.id, { ...c, sala: slug });
-      }
+    if (anterior) acervo().salas.set(id, sala);
+    else {
+      const criada = await criarSalaNoAcervo(sala);
+      sala.slug = criada.slug;
     }
     registrar({
       quem: dono.pseudonimo,
@@ -183,7 +181,7 @@ export function salvarSala(
       mudancas: saiuDoAr ? [{ campo: "Status", antes: "publicado", depois: "rascunho" }] : undefined,
     });
     return ok(
-      { id, slug, status, saiuDoAr, salvoEm: momento },
+      { id, slug: sala.slug, status, saiuDoAr, salvoEm: momento },
       saiuDoAr
         ? "Alterações salvas. A Sala saiu do ar até a curadoria aprovar a nova versão."
         : modo === "manual"
@@ -345,7 +343,7 @@ export function proporFonte(f: FormFonteProposta, dono: Membro): ResultadoAcao<{
     tipo: f.tipo as FonteEditorial["tipo"],
     referencia: f.localizacao.trim(),
     capa: "grafite",
-    inicial: (titulo[0] ?? "?").toUpperCase(),
+    inicial: inicialDoTitulo(titulo),
     criadoEm: momento,
     atualizadoEm: momento,
     criadoPor: dono.pseudonimo,

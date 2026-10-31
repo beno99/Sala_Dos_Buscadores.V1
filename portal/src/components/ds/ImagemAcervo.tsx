@@ -2,14 +2,17 @@
 import { useState } from "react";
 import type { Placa } from "@/data/types";
 import { Arc } from "./Arc";
+import { InicialCapa } from "./InicialCapa";
 
 /** Imagem decorativa; a placa permanece disponível em ausência ou falha do arquivo. */
 export function ImagemAcervo({
   src,
   placa = "bordo",
   className = "",
+  tituloFallback,
 }: {
   src?: string;
+  tituloFallback?: string;
   placa?: Placa;
   className?: string;
 }) {
@@ -17,7 +20,7 @@ export function ImagemAcervo({
   return (
     <div className={`sdb-imagem-acervo ${className}`} aria-hidden="true">
       <div className={`sdb-imagem-acervo__fallback sdb-plate--${placa}`}>
-        <Arc on={placa} />
+        {tituloFallback !== undefined ? <InicialCapa titulo={tituloFallback} /> : <Arc on={placa} />}
       </div>
       {src && falhou !== src && (
         // biome-ignore lint/a11y/noNoninteractiveElementInteractions: onError trata falha da mídia, não interação.

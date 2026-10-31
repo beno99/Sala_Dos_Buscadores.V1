@@ -26,6 +26,7 @@ export default async function PaginaSala(props: PageProps<"/anfitriao/salas/[id]
           periodo: sala.periodo,
           link: sala.link ?? "",
           imagem: sala.midia ?? null,
+          imagemCard: sala.midiaCard ?? null,
         }}
         imagem={sala.midia && sala.imagem ? { id: sala.midia, url: sala.imagem } : null}
         status={sala.status}

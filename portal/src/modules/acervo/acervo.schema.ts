@@ -58,6 +58,8 @@ export const salas = pgTable(
     origem: origemSalaEnum("origem").notNull(),
     naComparacao: boolean("na_comparacao").notNull(),
     imagem: text("imagem"),
+    /** Imagem própria do card vertical; sem ela, o card usa `imagem` (o banner). */
+    imagemCard: text("imagem_card"),
     link: text("link"),
     anfitriao: jsonb("anfitriao").$type<AssinaturaAnfitriao>(),
     ...meta,
@@ -67,6 +69,7 @@ export const salas = pgTable(
     publicadaEm: text("publicada_em"),
     statusAntesDeArquivar: statusEditorialEnum("status_antes_de_arquivar"),
     midia: text("midia"),
+    midiaCard: text("midia_card"),
   },
   (t) => [index("salas_dono_idx").on(t.donoId)],
 ).enableRLS();

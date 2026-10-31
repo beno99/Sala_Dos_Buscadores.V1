@@ -11,7 +11,7 @@ Edita o corpo de um conteúdo parágrafo por parágrafo, com marcações de trec
 ## Em blocos (`.sdb-editor--blocos`)
 Para o corpo do artigo, com os blocos do [Corpo do artigo](../CorpoArtigo/README.md): parágrafo (o primeiro é o lead), intertítulo de nível 2/3, lista, destaque e imagem.
 
-- Cada bloco abre com o tipo em `meta` (`.sdb-editor__bar` > `.sdb-editor__type`: "Parágrafo · lead", "Intertítulo", "Destaque", "Imagem"). A Barra de formatação fica dentro do campo e existe em todos os blocos textuais; no lead, abaixo do campo entram a ajuda e o contador num `.sdb-field__foot` (o número vem de `conteudo.json`, compartilhado com a regra do portal).
+- Cada bloco abre com o tipo em `meta` (`.sdb-editor__bar` > `.sdb-editor__type`: "Parágrafo · abertura", "Intertítulo", "Destaque", "Imagem"). A Barra de formatação fica dentro do campo e existe em todos os blocos textuais; no lead, abaixo do campo entram a ajuda e o contador num `.sdb-field__foot` (o número vem de `conteudo.json`, compartilhado com a regra do portal).
 - Campos por tipo, em `.sdb-editor__fields`:
   - **Parágrafo:** a Área de texto.
   - **Intertítulo:** Área de texto com barra; o título curto do item continua sem barra.
@@ -28,3 +28,8 @@ Para o corpo do artigo, com os blocos do [Corpo do artigo](../CorpoArtigo/README
 O corpo do artigo agora também aceita parágrafo como objeto, listas ordenadas ou com marcadores, níveis 2/3 de título e alinhamento por classe. O seletor de estilo fica dentro da barra; a prévia e a página compartilham `BlocoDoCorpo` e `TextoMarcado`. Strings legadas continuam legíveis; edições de parágrafos passam a objetos. O primeiro bloco continua sendo um parágrafo (lead), validado ao publicar.
 
 Todos os campos dos blocos textuais recebem barra, ajuda e contador. O limite do lead vem da constante de resumo do formulário (`LIMITE_RESUMO` do anfitrião); o resumo manual da curadoria tem sua própria regra. `**…**`, `_…_`, `__…__`, `~~…~~`, `*…*`, `::…::`, links e chamadas seguem a gramática da Barra de formatação. Consulte seu guia para conversões, atalhos, limitações e migração de obras.
+
+## Espaço estreito e ampliação
+O rodapé com ajuda/contador quebra em linhas no editor. Menus fechados saem do layout rolável; o menu Adicionar ancora na linha completa de inserção e limita sua largura à própria linha. Tooltips fechados também saem do layout; abertos ancoram na barra de formatação ou ferramentas, com largura limitada. Essas regras ficam restritas ao editor, sem ocultar overflow de conteúdo nem mudar menus/tooltips de outras telas. Conferir controles e textos em390px e reflow equivalente a200%.
+
+No portal, a edição atribui IDs opcionais aos blocos legados e conserva-os em mudanças de texto/tipo e reordenação. IDs dos controles e pendências usam essa identidade; a ordem visível continua numerada. O corpo já existente não é regravado em massa.

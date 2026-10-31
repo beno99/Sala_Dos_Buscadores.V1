@@ -754,6 +754,15 @@ function initFormatacao(bar) {
     if (img) {
       if (img._sdbUrl) URL.revokeObjectURL(img._sdbUrl);
       img._sdbUrl = URL.createObjectURL(f);
+      img.onload = function () {
+        var size = up.querySelector(".sdb-upload__size");
+        if (size) size.textContent = img.naturalWidth.toLocaleString("pt-BR") + " × " + img.naturalHeight.toLocaleString("pt-BR") + " px · " + bytes(f.size);
+        var warning = up.closest(".sdb-field").querySelector("[data-upload-resolution]");
+        if (warning) {
+          warning.hidden = !(img.naturalWidth < +(up.dataset.recommendedWidth || 0));
+          warning.textContent = warning.hidden ? "" : "Resolução abaixo da recomendada: pode perder nitidez na largura máxima em telas 2×. Prefira um original maior.";
+        }
+      };
       img.src = img._sdbUrl;
     }
     var nome = up.querySelector(".sdb-upload__name");
@@ -768,6 +777,8 @@ function initFormatacao(bar) {
     if (input) input.value = "";
     if (img) { if (img._sdbUrl) URL.revokeObjectURL(img._sdbUrl); img._sdbUrl = null; img.removeAttribute("src"); }
     up.classList.remove("has-file");
+    var warning = up.closest(".sdb-field").querySelector("[data-upload-resolution]");
+    if (warning) { warning.hidden = true; warning.textContent = ""; }
     uploadError(up, "");
     if (input) input.focus();
   }

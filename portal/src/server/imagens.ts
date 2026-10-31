@@ -23,6 +23,15 @@ export function imagemDaSala(sala: { slug: string; imagem?: string }): string | 
   return sala.imagem ?? imagem("salas", sala.slug);
 }
 
+/** Imagem do card vertical da Sala: a própria do card ou, sem ela, o banner. */
+export function imagemDoCardDaSala(sala: {
+  slug: string;
+  imagem?: string;
+  imagemCard?: string;
+}): string | undefined {
+  return sala.imagemCard ?? imagemDaSala(sala);
+}
+
 /** Imagem do card do conteúdo: a enviada pelo anfitrião ou a foto de public/imagens/conteudos. */
 export function imagemDoCard(conteudo: { slug: string; imagem?: string }): string | undefined {
   return conteudo.imagem ?? imagem("conteudos", conteudo.slug);

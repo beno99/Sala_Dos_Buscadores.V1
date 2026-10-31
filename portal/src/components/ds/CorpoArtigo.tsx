@@ -12,7 +12,10 @@ import { TextoMarcado } from "./TextoMarcado";
 export function BlocoDoCorpo({ bloco, lead }: { bloco: BlocoCorpo; lead?: boolean }) {
   if (typeof bloco === "string") {
     return (
-      <p className={lead ? "sdb-articlebody__lead" : "sdb-body"}>
+      <p
+        lang="pt-BR"
+        className={cx(lead ? "sdb-articlebody__lead" : "sdb-body", "sdb-articlebody__paragraph")}
+      >
         <TextoMarcado texto={bloco} />
       </p>
     );
@@ -21,9 +24,10 @@ export function BlocoDoCorpo({ bloco, lead }: { bloco: BlocoCorpo; lead?: boolea
   if (bloco.tipo === "paragrafo")
     return (
       <p
+        lang="pt-BR"
         className={cx(
           lead ? "sdb-articlebody__lead" : "sdb-body",
-          alinhamento,
+          "sdb-articlebody__paragraph",
           !!bloco.recuo && `sdb-texto--recuo-${bloco.recuo}`,
         )}
       >
@@ -92,7 +96,7 @@ export function CorpoArtigo({
   children?: ReactNode;
 }) {
   return (
-    <div className={cx("sdb-articlebody", className)} data-leitura>
+    <div className={cx("sdb-articlebody", className)} lang="pt-BR" data-leitura>
       {corpo.map((bloco, i) => (
         <BlocoDoCorpo
           // biome-ignore lint/suspicious/noArrayIndexKey: posição editorial do bloco.

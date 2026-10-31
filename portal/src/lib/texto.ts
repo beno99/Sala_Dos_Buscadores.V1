@@ -51,3 +51,9 @@ export function iniciais(nome: string): string {
   const ultima = partes.length > 1 ? (partes[partes.length - 1]?.[0] ?? "") : "";
   return (primeira + ultima).toUpperCase();
 }
+
+/** Inicial editorial: primeira letra ou número Unicode do título, sem descartar artigos gramaticais. */
+export function inicialDoTitulo(titulo: string): string {
+  const primeiro = titulo.normalize("NFC").match(/[\p{L}\p{N}][\p{M}]*/u)?.[0];
+  return primeiro?.toLocaleUpperCase("pt-BR") ?? "";
+}

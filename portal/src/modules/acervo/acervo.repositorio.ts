@@ -2,6 +2,7 @@ import "server-only";
 import { and, asc, eq, getTableColumns } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import type { DenunciaComunidade } from "@/data/types";
+import { candidatoSlugSala, SLUGS_SALA_RESERVADOS } from "@/features/admin/regras/sala";
 import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
@@ -121,6 +122,25 @@ async function carregarColecao<K extends NomeColecao>(nome: K): Promise<Map<stri
 export const acervoRepositorio: AcervoRepositorio = {
   versao: lerVersao,
 
+  async criarSala(sala) {
+    return banco().transaction(async (tx) => {
+      // O UNIQUE existente arbitra concorrência entre processos. DO NOTHING
+      // mantém a transação válida após colisão e permite tentar o próximo sufixo.
+      for (let tentativa = 1; ; tentativa += 1) {
+        const slug = candidatoSlugSala(sala.nome, tentativa);
+        if (SLUGS_SALA_RESERVADOS.has(slug)) continue;
+        const criada = { ...sala, slug };
+        const linha = MAPAS.salas.paraLinha(criada.id, criada);
+        const [inserida] = await tx
+          .insert(salas)
+          .values(linha as typeof salas.$inferInsert)
+          .onConflictDoNothing({ target: salas.slug })
+          .returning({ id: salas.id });
+        if (inserida) return { sala: criada, versao: await somarVersao(tx) };
+      }
+    });
+  },
+
   async carregar() {
     const versao = await lerVersao();
     const nomes = Object.keys(MAPAS) as NomeColecao[];
@@ -162,7 +182,13 @@ export const acervoRepositorio: AcervoRepositorio = {
         case "gravar": {
           const mapa = MAPAS[g.colecao] as Mapa<unknown>;
           const linha = mapa.paraLinha(g.id, g.valor);
-          await tx.insert(mapa.tabela).values(linha).onConflictDoUpdate({ target: mapa.pk, set: linha });
+          // Uma Sala existente nunca troca de endereço, mesmo com snapshot antigo.
+          const atualizacao = { ...linha };
+          if (g.colecao === "salas") delete atualizacao.slug;
+          await tx
+            .insert(mapa.tabela)
+            .values(linha)
+            .onConflictDoUpdate({ target: mapa.pk, set: atualizacao });
           break;
         }
         case "apagar": {

@@ -19,7 +19,12 @@ import { formatarData } from "@/lib/texto";
 import { enviarSalaAcao, excluirItemAcao, retirarDoArAcao, salvarSalaAcao } from "@/server/anfitriao/acoes";
 import { AvisoSaida, focarCampo } from "../../admin/ui/AvisoSaida";
 import { useEdicao } from "../../admin/ui/useEdicao";
-import { type FormSalaAnfitriao, LIMITE_DESCRICAO_SALA, LIMITE_NOME_SALA } from "../regras/artigo";
+import {
+  type FormSalaAnfitriao,
+  LIMITE_DESCRICAO_SALA,
+  LIMITE_NOME_SALA,
+  pendenciasEnvioSala,
+} from "../regras/artigo";
 import { DiretrizesAnfitriao } from "./Diretrizes";
 import { SheetEnvio } from "./SheetEnvio";
 
@@ -88,6 +93,7 @@ export function EditorSala({
   const id = edicao.id.current;
   const enviaveis = artigos.filter((a) => ENVIAVEIS.includes(a.status));
   const primeiroEnvio = !jaPublicado;
+  const pendencias = pendenciasEnvioSala(form);
 
   const mostrarErro = (r: { mensagem: string; erros?: Record<string, string> }) => {
     const primeiro = r.erros ? Object.keys(r.erros)[0] : undefined;
@@ -139,6 +145,23 @@ export function EditorSala({
 
   return (
     <div className="flex flex-col gap-6">
+      <details className="sdb-material sdb-panel">
+        <summary className="sdb-headline">O que esta Sala precisa ter?</summary>
+        <p className="sdb-body-sm">
+          Escreva o nome para salvar o rascunho. O endereço é criado automaticamente no primeiro salvamento e
+          permanece igual quando o nome muda.
+        </p>
+        <p className="sdb-body-sm">
+          {pendencias.length
+            ? `Para enviar, complete ${pendencias.join(" e ")}.`
+            : "Nome e descrição estão completos para enviar."}
+          {primeiroEnvio
+            ? " No primeiro envio, escolha pelo menos um artigo para acompanhar a Sala."
+            : " A Sala pode ser enviada sozinha; os artigos publicados seguem como estão."}{" "}
+          Confirme a declaração de direitos no envio. A publicação depende da aprovação da curadoria.
+        </p>
+        <p className="sdb-help">Período, link e imagem são opcionais.</p>
+      </details>
       <Breadcrumbs itens={[{ href: "/anfitriao" as Route, rotulo: "Minhas Salas" }]} atual={titulo} />
       <header className="flex flex-col gap-3">
         <div className="sdb-row">
@@ -246,15 +269,26 @@ export function EditorSala({
               />
               <CampoImagem
                 id="campo-sala-imagem"
-                label="Imagem da Sala"
+                label="Banner da Sala"
                 opcional
-                help="JPEG, PNG ou WebP, até 5 MB. Sem imagem, o card usa a placa da marca."
+                finalidade="banner-sala"
+                help="Sem imagem, a placa da marca."
                 valor={imagem}
                 disabled={travado}
                 onMudar={(nova) => {
                   setImagem(nova);
                   mudar({ imagem: nova?.id ?? null });
                 }}
+              />
+              <CampoImagem
+                id="campo-sala-imagem-card"
+                label="Imagem do card"
+                opcional
+                finalidade="card-sala"
+                help="Sem ela, o card usa o banner, inteiro."
+                valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
+                disabled={travado}
+                onMudar={(nova) => mudar({ imagemCard: nova?.id ?? null })}
               />
             </fieldset>
           </form>

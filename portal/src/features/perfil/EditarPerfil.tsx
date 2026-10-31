@@ -70,12 +70,18 @@ export function EditarPerfil({
           <CampoImagem
             label="Foto"
             opcional
-            quadrado
-            help="JPEG, PNG ou WebP, até 5 MB. Uma foto sua; sem ela, ficam as iniciais."
+            finalidade="avatar"
+            help="Uma foto sua; sem ela, ficam as iniciais."
             valor={novaFoto}
             onMudar={setNovaFoto}
           />
-          <CampoImagem label="Capa" opcional valor={novaCapa} onMudar={setNovaCapa} />
+          <CampoImagem
+            label="Capa"
+            opcional
+            finalidade="capa-perfil"
+            valor={novaCapa}
+            onMudar={setNovaCapa}
+          />
           <AreaTexto
             label="Sobre a sua busca"
             help="O que você procura no acervo. Só você vê."

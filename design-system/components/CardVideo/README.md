@@ -32,3 +32,7 @@ Só no artigo de anfitrião com link do YouTube: o vídeo toca na própria pági
 ## Progresso compartilhado
 
 O elemento nativo `.video__progress` recebe o trilho escuro, o gradiente dourado e o halo definidos em `components/bundle.css`. Evite sobrescrever a cor no CSS do vídeo. A prévia identifica os dados ilustrativos; na integração, mostre progresso apenas quando a origem disponibilizar um valor real.
+
+## Miniatura por URL do YouTube (curadoria)
+
+O portal extrai um ID validado de `watch`, `youtu.be`, `shorts` ou `embed`, sem consultar a URL enviada. Sem imagem cadastrada, carrega `i.ytimg.com/vi/ID/maxresdefault.jpg`, depois `hqdefault.jpg` e `mqdefault.jpg`. Uma resposta de 120 px é tratada como miniatura ausente; falha mantém a placa da marca. A prévia editorial mostra carregamento, erro e tentativa explícita em `.video__thumbnail-status`. Trocar o ID cancela a resposta anterior. O card público mantém a mesma geometria e destino externo.

@@ -1,5 +1,6 @@
 import type { Placa } from "@/data/types";
 import { Arc } from "./Arc";
+import { InicialCapa } from "./InicialCapa";
 
 /**
  * Banner da Sala (BannerSala): a imagem na largura toda, na moldura do Card
@@ -13,8 +14,10 @@ export function BannerSala({
   alt = "",
   foco,
   credito,
+  tituloFallback,
 }: {
   imagem?: string;
+  tituloFallback?: string;
   placa: Placa;
   alt?: string;
   /** object-position da imagem, ex.: "45% 55%". */
@@ -29,7 +32,7 @@ export function BannerSala({
           <img src={imagem} alt={alt} decoding="async" style={foco ? { objectPosition: foco } : undefined} />
         ) : (
           <div className={`sdb-plate sdb-plate--${placa}`} aria-hidden="true">
-            <Arc line on={placa} />
+            {tituloFallback !== undefined ? <InicialCapa titulo={tituloFallback} /> : <Arc line on={placa} />}
           </div>
         )}
       </div>

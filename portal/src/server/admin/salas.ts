@@ -7,12 +7,11 @@ import {
   slugDaSala,
   validarSalaOficial,
 } from "@/features/admin/regras/sala";
-import { slugUnico } from "@/features/admin/regras/slug";
 import { salaVisivel } from "@/features/anfitriao/regras/visibilidade";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { registrar } from "../auditoria";
 import { midiaDoDono, urlDaMidia } from "../midia";
-import { acervo } from "../store";
+import { acervo, criarSalaNoAcervo } from "../store";
 import type { ModoSalvar, ResultadoAcao } from "./editorial";
 
 /*
@@ -122,21 +121,18 @@ export function salaParaForm(s: SalaEditorial): FormSalaOficial {
     placa: s.placa,
     inicial: s.inicial,
     imagem: s.midia ?? null,
+    imagemCard: s.midiaCard ?? null,
     link: s.link ?? "",
   };
 }
 
 // ---------- escrita ----------
 
-function slugsDeOutras(id: string | null): string[] {
-  return [...acervo().salas.values()].filter((s) => s.id !== id).map((s) => s.slug);
-}
-
-export function salvarSalaOficial(
+export async function salvarSalaOficial(
   f: FormSalaOficial,
   admin: Pick<Membro, "id" | "pseudonimo">,
   modo: ModoSalvar,
-): ResultadoAcao<{ id: string; slug: string; salvoEm: string; status: StatusEditorial }> {
+): Promise<ResultadoAcao<{ id: string; slug: string; salvoEm: string; status: StatusEditorial }>> {
   const quem = admin.pseudonimo;
   const anterior = f.id ? acervo().salas.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: esta Sala não existe mais. Atualize a lista e tente de novo.");
@@ -148,8 +144,7 @@ export function salvarSalaOficial(
   if (anterior?.status === "arquivado") {
     return falha("Erro: Sala arquivada não é editada. Restaure a Sala antes de editar.");
   }
-  const slugTravado = Boolean(anterior?.publicadaEm);
-  const erros = validarSalaOficial(f, slugsDeOutras(anterior?.id ?? null), slugTravado);
+  const erros = validarSalaOficial(f);
   if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
   if (anterior?.status === "publicado") {
     if (modo === "automatico") {
@@ -165,10 +160,9 @@ export function salvarSalaOficial(
 
   const nome = f.nome.trim();
   const id = anterior?.id ?? novoId();
-  const slug = slugTravado
-    ? (anterior?.slug ?? "")
-    : slugUnico(f.slug.trim() || slugDaSala(nome) || "sala", slugsDeOutras(id));
+  const slug = anterior?.slug ?? slugDaSala(nome);
   const imagem = midiaDoDono(f.imagem, admin.id);
+  const imagemCard = midiaDoDono(f.imagemCard, admin.id);
   const momento = agora();
   const sala: SalaEditorial = {
     id,
@@ -195,16 +189,14 @@ export function salvarSalaOficial(
     sala.midia = imagem;
     sala.imagem = urlDaMidia(imagem);
   }
-  acervo().salas.set(id, sala);
-
-  // Antes da primeira publicação, o endereço acompanha o nome: os itens da Sala vão junto.
-  if (anterior && anterior.slug !== slug) {
-    for (const c of acervo().conteudos.values())
-      if (c.sala === anterior.slug) acervo().conteudos.set(c.id, { ...c, sala: slug });
-    for (const v of acervo().videos.values())
-      if (v.sala === anterior.slug) acervo().videos.set(v.id, { ...v, sala: slug });
-    for (const c of acervo().citacoes.values())
-      if (c.sala === anterior.slug) acervo().citacoes.set(c.id, { ...c, sala: slug });
+  if (imagemCard) {
+    sala.midiaCard = imagemCard;
+    sala.imagemCard = urlDaMidia(imagemCard);
+  }
+  if (anterior) acervo().salas.set(id, sala);
+  else {
+    const criada = await criarSalaNoAcervo(sala);
+    sala.slug = criada.slug;
   }
 
   if (!anterior) registrar({ quem, acao: "criou", tipoItem: "sala", itemId: id, itemTitulo: nome });
@@ -219,7 +211,7 @@ export function salvarSalaOficial(
   }
   return {
     ok: true,
-    valor: { id, slug, salvoEm: momento, status: sala.status },
+    valor: { id, slug: sala.slug, salvoEm: momento, status: sala.status },
     mensagem: modo === "manual" ? "Alterações salvas." : "Rascunho salvo.",
   };
 }

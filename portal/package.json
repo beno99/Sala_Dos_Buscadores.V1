@@ -23,7 +23,8 @@
     "format": "biome format --write",
     "typecheck": "next typegen && tsc --noEmit",
     "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck",
-    "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs"
+    "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs",
+    "test:editorial": "tsx --conditions=react-server --test tests/*.test.ts src/features/admin/regras/*.test.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.913.0",

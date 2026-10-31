@@ -1,6 +1,7 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
 import type { BlocoCorpo } from "@/data/types";
+import { campoDoBloco } from "@/features/admin/regras/corpo";
 import { validarImagem } from "@/features/anfitriao/regras/imagem";
 import { armazenamentoS3 } from "@/modules/midia/armazenamento.s3";
 import type { ArmazenamentoDeArquivos } from "@/modules/midia/midia.contratos";
@@ -81,7 +82,8 @@ export function conferirImagensDoCorpo(
     } else if (conhecidas.has(b.src)) {
       return b;
     }
-    erros[`campo-corpo-${i}`] = "esta imagem não foi enviada por esta conta. Envie o arquivo de novo.";
+    erros[campoDoBloco(i, undefined, corpo)] =
+      "esta imagem não foi enviada por esta conta. Envie o arquivo de novo.";
     return b;
   });
   return { corpo: conferido, erros };

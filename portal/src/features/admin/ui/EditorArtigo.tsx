@@ -32,7 +32,7 @@ import type {
   StatusEditorial,
   Tema,
 } from "@/data/types";
-import { normalizar } from "@/lib/texto";
+import { inicialDoTitulo, normalizar } from "@/lib/texto";
 import { criarTemaAcao, salvarArtigoAcao, salvarFonteAcao } from "@/server/admin/acoes";
 import { type FormArtigo, type FormFonte, fonteVazia, type TipoArtigo } from "../formularios";
 import {
@@ -54,6 +54,7 @@ import { gerarSlug } from "../regras/slug";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { CamposFonte } from "./CamposFonte";
 import { MoverParaSala } from "./MoverParaSala";
+import { OrientacaoCadastro } from "./OrientacaoCadastro";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
 
@@ -210,7 +211,7 @@ export function EditorArtigo({
       tipo: novaFonte.tipo,
       referencia: novaFonte.referencia.trim(),
       capa: novaFonte.capa,
-      inicial: (novaFonte.inicial || novaFonte.titulo.trim()[0] || "?").toUpperCase(),
+      inicial: inicialDoTitulo(novaFonte.titulo),
     };
     setFontes((atual) => [...atual, fonte]);
     mudar({ fontes: [...form.fontes, fonte.id] }, "campo-fontes");
@@ -294,6 +295,11 @@ export function EditorArtigo({
 
   return (
     <div className="flex flex-col gap-6">
+      <OrientacaoCadastro
+        itens={checklist}
+        salvar="Sala e título permitem salvar o rascunho. Salvar rascunho não publica o artigo."
+        publicar="Para publicar, complete os itens obrigatórios abaixo. Fonte primária também exige citação completa. Imagens e destaques têm requisitos próprios quando adicionados."
+      />
       <Breadcrumbs
         itens={[
           { href: "/admin/salas" as Route, rotulo: "Salas" },
@@ -620,7 +626,7 @@ export function EditorArtigo({
                   Corpo do texto
                 </h2>
                 <p className="sdb-help">
-                  O primeiro parágrafo abre o texto (lead). Entre os blocos, “Adicionar” insere parágrafo,
+                  O primeiro parágrafo apresenta o assunto. Entre os blocos, “Adicionar” insere parágrafo,
                   intertítulo, destaque ou imagem. <b>Termo</b> marca vocabulário próprio da tradição (vira
                   definição); <b>Obra</b> marca título de obra. Atribua cada afirmação: “Segundo o
                   Poimandres…”.
@@ -642,14 +648,22 @@ export function EditorArtigo({
 
               <section className="sdb-material sdb-panel" aria-labelledby="sec-imagens">
                 <h2 id="sec-imagens" className="sdb-headline">
-                  Imagens
+                  Aparência e imagens
                 </h2>
+                <CampoTexto
+                  id="campo-inicial-automatica"
+                  label="Inicial da capa"
+                  readOnly
+                  value={inicialDoTitulo(form.titulo)}
+                  help="Inicial gerada automaticamente a partir do título. Usada somente quando não há imagem disponível."
+                />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <CampoImagem
                     id="campo-imagem-card"
                     label="Imagem do card"
                     opcional
-                    help="Aparece no card do artigo. Sem ela, a imagem da Sala."
+                    finalidade="card-artigo"
+                    help="Sem ela, o card usa o banner da Sala."
                     valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
                     disabled={arquivado}
                     onMudar={(img) => mudar({ imagemCard: img?.id ?? null })}
@@ -658,7 +672,8 @@ export function EditorArtigo({
                     id="campo-imagem-thumb"
                     label="Imagem de topo"
                     opcional
-                    help="Topo da página do artigo. Sem ela, a imagem do card."
+                    finalidade="topo-artigo"
+                    help="Sem ela, o topo usa a imagem do card."
                     valor={form.thumb ? { id: form.thumb, url: `/midia/${form.thumb}` } : null}
                     disabled={arquivado}
                     onMudar={(img) => mudar({ thumb: img?.id ?? null })}

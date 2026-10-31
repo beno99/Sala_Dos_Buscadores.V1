@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Nivel, Placa, Proveniencia } from "@/data/types";
 import { Arc } from "./Arc";
+import { InicialCapa } from "./InicialCapa";
 import { SeloNivel, SeloProveniencia } from "./Selos";
 
 /**
@@ -55,7 +56,11 @@ export function CardAcervo({
           <img className="sala__image" src={imagem} alt="" decoding="async" />
         ) : (
           <div className={`sala__placa sdb-plate--${placa}`} aria-hidden="true">
-            <Arc on={placa} />
+            {tipo === "Artigo" || tipo === "Fonte primária" ? (
+              <InicialCapa titulo={titulo} />
+            ) : (
+              <Arc on={placa} />
+            )}
           </div>
         )}
         <div className="sala__tools">

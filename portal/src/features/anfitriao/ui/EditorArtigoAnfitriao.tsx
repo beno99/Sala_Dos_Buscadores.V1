@@ -33,7 +33,7 @@ import type {
 } from "@/data/types";
 import { LeituraConteudo } from "@/features/acervo/LeituraConteudo";
 import { escolherRelacionados } from "@/features/acervo/relacionados";
-import { normalizar } from "@/lib/texto";
+import { inicialDoTitulo, normalizar } from "@/lib/texto";
 import {
   enviarArtigoAcao,
   excluirItemAcao,
@@ -44,6 +44,7 @@ import {
 import { errosDoCorpoResolvidos } from "../../admin/regras/checklist";
 import { errosDoCorpo } from "../../admin/regras/corpo";
 import { AvisoSaida, focarCampo } from "../../admin/ui/AvisoSaida";
+import { OrientacaoCadastro } from "../../admin/ui/OrientacaoCadastro";
 import { useEdicao } from "../../admin/ui/useEdicao";
 import {
   checklistEnvioArtigo,
@@ -186,7 +187,7 @@ export function EditorArtigoAnfitriao({
         tipo: novaFonte.tipo as TipoFonte,
         referencia: novaFonte.localizacao.trim(),
         capa: "grafite",
-        inicial: (titulo[0] ?? "?").toUpperCase(),
+        inicial: inicialDoTitulo(titulo),
         nova: true,
       },
     ]);
@@ -324,6 +325,11 @@ export function EditorArtigoAnfitriao({
         )}
       </header>
 
+      <OrientacaoCadastro
+        itens={checklist}
+        salvar="Escreva o título para salvar um rascunho. Você pode completar o conteúdo depois."
+        publicar="Para enviar à curadoria, complete os itens obrigatórios abaixo e confirme a autoria e os direitos de uso no envio. Publicar depende da revisão da curadoria."
+      />
       {status === "reprovado" && ultimoMotivo && (
         <Alerta variant="warning" title="Atenção: a curadoria pediu ajustes neste artigo">
           Motivo: {ultimoMotivo}
@@ -386,8 +392,8 @@ export function EditorArtigoAnfitriao({
                   onChange={(e) => mudar({ titulo: e.target.value }, "campo-titulo")}
                 />
                 <p className="sdb-help">
-                  O texto é feito de blocos. O primeiro, o lead, vira o resumo do card. A barra de cada bloco
-                  formata o trecho e marca termos, obras e fontes.
+                  O texto é feito de blocos. O parágrafo de abertura apresenta o assunto e vira o resumo do
+                  card. A barra de cada bloco formata o trecho e marca termos, obras e fontes.
                 </p>
                 <div id="campo-corpo">
                   <EditorBlocos
@@ -547,7 +553,8 @@ export function EditorArtigoAnfitriao({
                     id="campo-imagem-card"
                     label="Imagem do card"
                     opcional
-                    help="Aparece no card do artigo. Sem ela, a placa da marca."
+                    finalidade="card-artigo"
+                    help="Sem ela, a placa da marca."
                     valor={imagens.card}
                     disabled={travado}
                     onMudar={(img) => {
@@ -559,7 +566,8 @@ export function EditorArtigoAnfitriao({
                     id="campo-imagem-thumb"
                     label="Imagem de topo"
                     opcional
-                    help="Topo da página do artigo, quando não há vídeo. Sem ela, a imagem do card."
+                    finalidade="topo-artigo"
+                    help="Só aparece quando o artigo não tem vídeo. Sem ela, o topo usa a imagem do card."
                     valor={imagens.thumb}
                     disabled={travado}
                     onMudar={(img) => {

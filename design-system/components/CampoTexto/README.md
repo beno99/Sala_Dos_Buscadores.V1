@@ -6,3 +6,5 @@ Entrada de uma linha, com rótulo sempre visível acima.
 - **Senha**: `<button class="sdb-control__btn" data-toggle-password>`. **Busca**: `.sdb-control--search` (cápsula) com ícone `busca` e `data-clear`.
 - **Foco**: o campo ganha `material-thick` e anel duplo (`focus-ring` + `accent-soft`). **Erro**: anel `critical`, `aria-invalid` e mensagem com ícone que começa por "Erro:" e diz como corrigir. **Desabilitado**: 45%.
 - Fonte do valor em 16 px (evita zoom no iOS).
+
+Valores derivados (inicial de fonte/artigo e endereço de Sala) usam a mesma estrutura de campo com `readonly` e ajuda explícita; nenhuma ação permite alterar o valor automático.

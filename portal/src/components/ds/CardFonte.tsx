@@ -2,6 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import type { Fonte, Placa, Proveniencia } from "@/data/types";
 import { cx } from "@/lib/cx";
+import { inicialDoTitulo } from "@/lib/texto";
 import { Icon } from "./Icon";
 import { Badge, SeloProveniencia } from "./Selos";
 
@@ -11,7 +12,7 @@ function Capa({ capa, inicial, small }: { capa: Placa; inicial: string; small?: 
       className={cx("sdb-cover", capa !== "bordo" && `sdb-cover--${capa}`, small && "sdb-cover--sm")}
       aria-hidden="true"
     >
-      {inicial}
+      {inicial || <Icon name="biblioteca" />}
     </span>
   );
 }
@@ -20,9 +21,9 @@ function Capa({ capa, inicial, small }: { capa: Placa; inicial: string; small?: 
 export function CardFonte({ fonte }: { fonte: Fonte }) {
   const miolo = (
     <>
-      <Capa capa={fonte.capa} inicial={fonte.inicial} />
+      <Capa capa={fonte.capa} inicial={inicialDoTitulo(fonte.titulo)} />
       <div className="sdb-source__info">
-        <h3 className="sdb-source__title">{fonte.titulo}</h3>
+        <h3 className="sdb-source__title">{fonte.titulo || "Título da obra"}</h3>
         <p className="sdb-source__author">{fonte.autor}</p>
         <div className="sdb-source__tags">
           {fonte.tipo === "Fonte primária" ? (
@@ -66,7 +67,6 @@ export function LinhaFonte({
   titulo,
   referencia,
   capa,
-  inicial,
   href,
   proveniencia,
 }: {
@@ -82,7 +82,7 @@ export function LinhaFonte({
 }) {
   const miolo = (
     <>
-      <Capa capa={capa} inicial={inicial} small />
+      <Capa capa={capa} inicial={inicialDoTitulo(titulo)} small />
       <div className="sdb-source__info">
         <h3 className="sdb-source__title">{titulo}</h3>
         <p className="sdb-source__ref">{referencia}</p>

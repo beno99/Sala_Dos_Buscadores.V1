@@ -24,7 +24,7 @@ A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, 
 - Paleta areia (desde out 2026, do Figma "Jornada do buscador"): fundo areia chapado `bg-canvas` #EBDCC1 (grafite no escuro), sem brilho ambiente nem gradiente. Lateral em caramelo (`nav-fill` #DABC86), com cartões em `nav-card` e contorno `nav-edge`; barra superior com filete `topbar-edge` e busca em `card-warm`.
 - Cards de conteúdo usam a superfície quente `card-warm` (#E3C998); citação, vídeo, glossário, fontes e painéis continuam em creme (`material-regular`). Cards de Sala usam imagem ao fundo e painel de vidro escuro, com moldura acompanhando o tema. Cards de Conquista ficam sempre escuros, inclusive nas páginas claras e areia.
 - Chips de filtro por tema com contagem em areia dourada (`.sdb-chip--sand`, `chip-warm` com texto `on-chip-warm`).
-- Layout de painel: tudo preso à mesma grade, com a mesma borda esquerda, as mesmas larguras de coluna e o mesmo ritmo vertical. Texto alinhado à esquerda; nunca `text-align: justify`.
+- Layout de painel: tudo preso à mesma grade, com a mesma borda esquerda, as mesmas larguras de coluna e o mesmo ritmo vertical. Texto da interface alinhado à esquerda. Exceção aprovada em 31/10/2026: parágrafos de leitura do CorpoArtigo justificados, com última linha à esquerda e hifenização `pt-BR`; títulos, listas, citações, legendas e metadados continuam à esquerda.
 
 ### Camada flutuante
 - O que passa por cima do conteúdo (botão flutuante do assistente, barra superior quando o conteúdo rola por baixo, barra de abas do celular) usa os tokens `float-*` e `blur-float`: translúcido e desfocado **também nos temas sólidos** (`.sdb-float`).

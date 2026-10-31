@@ -185,3 +185,9 @@ Capturas, medidas e decisões: `../artifacts/home-2026-10-26/LEIA-ME.md`.
 O `ConversaProvider` compartilha a conversa em memória com o mini chat e invalida respostas atrasadas após interrupção/nova conversa. Não existe histórico persistente. O endpoint `POST /api/assistente` confere sessão e valida texto (1–2.000 caracteres), modo e Sala visível. O transporte é `features/assistente/servico.ts`; o ponto de integração server-only é `server/assistente.ts` (`ServicoAssistente`). Sem provedor configurado, retorna HTTP 503 com aviso explícito e não gera respostas ou referências. O futuro adaptador deve recuperar apenas fontes publicadas/elegíveis, retornar `ResultadoAssistente` e respeitar `AbortSignal`. Ainda faltam o provedor/RAG e a persistência por conta; nenhuma credencial nova foi criada ou exigida nesta implementação.
 
 O diálogo de fontes e a cópia usam exclusivamente os trechos e as referências retornados pela IA.
+
+## Operação editorial — revisão 31/10/2026
+
+Consulte [Manual de operação](../docs/manual-operacao.md) para Sala, artigo, fonte, vídeo e seus requisitos de rascunho/publicação. Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis. Iniciais de artigo/fonte são derivadas do título; imagens de corpo preservam proporção e bytes originais; pendências levam a blocos de identidade estável. O seletor de vídeos mostra artigos recentes da Sala, com busca e atualização, e a thumbnail YouTube tem fallback sem chave adicional. Não há migração de schema nesta revisão.
+
+Testes adicionados usam `node:test` via `tsx`, sem conectar o banco configurado: `npm run test:editorial`. O teste SQL opcional usa PostgreSQL embarcado PGlite em módulo informado por `PGLITE_MODULE`; detalhes e evidências em [relatório C01–C08](../docs/revisoes-2026-10-31.md).

@@ -6,8 +6,8 @@ import { TIPO_ROTULO } from "@/data/rotulos";
 import type { Conteudo, TipoConteudo } from "@/data/types";
 import { cx } from "@/lib/cx";
 import { formatarData } from "@/lib/texto";
-import { Arc } from "./Arc";
 import { Icon, type IconName } from "./Icon";
+import { InicialCapa } from "./InicialCapa";
 import { Badge, SeloNivel, SeloProveniencia } from "./Selos";
 
 const ICONE_TIPO: Record<TipoConteudo, IconName> = {
@@ -99,7 +99,7 @@ export function CardConteudoLinha({
           // biome-ignore lint/performance/noImgElement: miniatura decorativa servida de public/imagens.
           <img className="h-full w-full object-cover" src={imagem} alt="" loading="lazy" decoding="async" />
         ) : (
-          <Arc on={placa} />
+          <InicialCapa titulo={conteudo.titulo} />
         )}
       </div>
       <div className="sdb-card__body">

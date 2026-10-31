@@ -16,7 +16,7 @@ import { PublicacoesPerfil } from "@/features/comunidade/ui/PublicacoesPerfil";
 import { formatarData, iniciais } from "@/lib/texto";
 import { perfilPorSlug } from "@/server/anfitriao/consultas";
 import { consultarComunidade } from "@/server/comunidade/consultas";
-import { imagem, imagemDaSala } from "@/server/imagens";
+import { imagem, imagemDoCardDaSala } from "@/server/imagens";
 import { urlDaMidia } from "@/server/midia";
 
 export async function generateMetadata(props: PageProps<"/anfitrioes/[slug]">): Promise<Metadata> {
@@ -36,7 +36,7 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
   const salasNaGrade = salas.map((sala) => ({
     sala,
     temas: temasDaSala(sala.slug),
-    imagem: imagemDaSala(sala),
+    imagem: imagemDoCardDaSala(sala),
   }));
   const temas = todosOsTemas()
     .map((tema) => ({

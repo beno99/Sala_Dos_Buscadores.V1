@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useRef } from "react";
-import { blocoVazio, ROTULO_BLOCO, type TipoBloco, tipoDoBloco } from "@/data/corpo";
+import { blocoVazio, identidadeBloco, ROTULO_BLOCO, type TipoBloco, tipoDoBloco } from "@/data/corpo";
 import type { BlocoCorpo } from "@/data/types";
 import { cx } from "@/lib/cx";
 import { BarraFormatacao, type FonteCitavel } from "./BarraFormatacao";
@@ -71,7 +71,17 @@ export function EditorBlocos({
   const entradas = useRef<(Entrada | null)[]>([]);
   const focar = (i: number) => requestAnimationFrame(() => entradas.current[i]?.focus());
 
-  const trocar = (i: number, bloco: BlocoCorpo) => onChange(blocos.map((b, j) => (j === i ? bloco : b)));
+  const trocar = (i: number, bloco: BlocoCorpo) =>
+    onChange(
+      blocos.map((b, j) =>
+        j === i
+          ? {
+              ...(typeof bloco === "string" ? { tipo: "paragrafo" as const, texto: bloco } : bloco),
+              id: identidadeBloco(b, i),
+            }
+          : b,
+      ),
+    );
   const inserir = (depoisDe: number, tipo: TipoBloco) => {
     const nova = [...blocos];
     nova.splice(depoisDe + 1, 0, blocoVazio(tipo));
@@ -88,7 +98,7 @@ export function EditorBlocos({
   };
   const remover = (i: number) => {
     const nova = blocos.filter((_, j) => j !== i);
-    onChange(nova.length ? nova : [""]);
+    onChange(nova.length ? nova : [blocoVazio("paragrafo")]);
     focar(Math.max(0, i - 1));
   };
   /** Texto do bloco mudado pela barra de formatação (parágrafo ou destaque). */
@@ -134,7 +144,7 @@ export function EditorBlocos({
     <div className="sdb-editor sdb-editor--blocos">
       {blocos.map((b, i) => {
         const n = i + 1;
-        const id = `${idBase}-${i}`;
+        const id = `${idBase}-${identidadeBloco(b, i)}`;
         const tipo = tipoDoBloco(b);
         const lead = i === 0 && tipo === "paragrafo";
         const erroPrincipal = erros[id] ?? (i === 0 ? erro : undefined);
@@ -164,8 +174,7 @@ export function EditorBlocos({
         );
         const previa = tipo === "imagem" ? null : <BlocoDoCorpo bloco={b} lead={lead} />;
         return (
-          // biome-ignore lint/suspicious/noArrayIndexKey: a posição é a identidade do bloco no editor.
-          <Fragment key={i}>
+          <Fragment key={id}>
             <div className="sdb-editor__block" data-tipo={tipo}>
               <span className="sdb-editor__num" aria-hidden="true">
                 {n}
@@ -174,7 +183,7 @@ export function EditorBlocos({
                 <div className="sdb-editor__bar">
                   <span className="sdb-meta sdb-editor__type">
                     {ROTULO_BLOCO[tipo]}
-                    {lead && " · lead"}
+                    {lead && " · abertura"}
                   </span>
                 </div>
 
@@ -185,7 +194,7 @@ export function EditorBlocos({
                         ? "Frase do destaque"
                         : tipo === "intertitulo"
                           ? "Intertítulo"
-                          : `Bloco ${n}, ${lead ? "parágrafo de abertura (lead)" : ROTULO_BLOCO[tipo].toLowerCase()}`}
+                          : `Bloco ${n}, ${lead ? "parágrafo de abertura" : ROTULO_BLOCO[tipo].toLowerCase()}`}
                     </label>
                     <div
                       className={cx(
@@ -237,7 +246,8 @@ export function EditorBlocos({
                     <CampoImagem
                       id={id}
                       label="Imagem"
-                      help="JPEG, PNG ou WebP, até 5 MB. Só domínio público, licença aberta ou imagem sua; nunca gerada por IA."
+                      finalidade="corpo-artigo"
+                      help="Só domínio público, licença aberta ou imagem sua; nunca gerada por IA."
                       valor={b.src ? { id: b.midia ?? "", url: b.src } : null}
                       disabled={somenteLeitura}
                       onMudar={(img) => {
@@ -248,7 +258,7 @@ export function EditorBlocos({
                     <Erro id={`${id}-erro`} texto={erroPrincipal} />
                     <CampoTexto
                       id={`${id}-alt`}
-                      label="Texto alternativo"
+                      label="Descreva a imagem para quem não pode vê-la"
                       help="Descreva o que a imagem mostra para quem não a vê."
                       value={b.alt}
                       readOnly={somenteLeitura}
@@ -257,7 +267,7 @@ export function EditorBlocos({
                     />
                     <CampoTexto
                       id={`${id}-credito`}
-                      label="Crédito"
+                      label="Informe a origem e a autorização de uso da imagem"
                       help="Autor, obra, data e licença ou domínio público. Atribuição incerta fica incerta."
                       value={b.credito}
                       readOnly={somenteLeitura}

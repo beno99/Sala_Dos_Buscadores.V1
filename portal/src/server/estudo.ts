@@ -26,7 +26,7 @@ import {
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { imagem, imagemDaSala, imagemDoCard } from "./imagens";
+import { imagem, imagemDaSala, imagemDoCard, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
 
@@ -206,7 +206,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
         motivo,
         temas: [...new Set(acervo.filter((c) => c.sala === sala).flatMap((c) => c.temas))],
         progresso: { pct: n.total ? n.lidas / n.total : 0, legenda },
-        imagem: imagemDaSala(resumo),
+        imagem: imagemDoCardDaSala(resumo),
       },
     ];
   });

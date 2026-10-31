@@ -16,7 +16,6 @@ export default async function EditarSala(props: PageProps<"/admin/salas/[slug]/e
       imagem={sala.midia && sala.imagem ? { id: sala.midia, url: sala.imagem } : null}
       status={sala.status}
       atualizadoEm={sala.atualizadoEm}
-      slugTravado={Boolean(sala.publicadaEm)}
     />
   );
 }

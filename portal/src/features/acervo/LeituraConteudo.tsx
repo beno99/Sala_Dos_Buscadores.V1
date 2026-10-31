@@ -199,6 +199,7 @@ function Topo({ conteudo, sala, imagemCard }: { conteudo: Conteudo; sala: Sala; 
   const item = itemDaImagem(imagem);
   return (
     <BannerSala
+      tituloFallback={conteudo.titulo}
       imagem={imagem}
       placa={sala.placa}
       alt={item?.alt}

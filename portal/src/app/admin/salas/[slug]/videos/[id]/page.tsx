@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ListaHistorico } from "@/components/ds/Curadoria";
 import { videoParaForm } from "@/features/admin/formularios";
 import { EditorVideo } from "@/features/admin/ui/EditorVideo";
-import { historicoDoItem, listarArtigos, obterVideo } from "@/server/admin/consultas";
+import { historicoDoItem, listarArtigosParaVideo, obterVideo } from "@/server/admin/consultas";
 import { salaDoItem } from "@/server/admin/editores";
 import { rotaDoVideo, salaOficialDaRota } from "@/server/admin/rotas";
 
@@ -20,9 +20,7 @@ export default async function EditarVideoNaSala(props: PageProps<"/admin/salas/[
   if (!video) notFound();
   if (video.sala !== slug) redirect((rotaDoVideo(id) ?? "/admin/salas") as Route);
   const sala = salaOficialDaRota(slug);
-  const artigos = listarArtigos()
-    .filter((a) => a.sala === sala.slug)
-    .map(({ id: a, titulo, sala: s, status }) => ({ id: a, titulo, sala: s, status }));
+  const artigos = listarArtigosParaVideo(sala.slug);
   return (
     <EditorVideo
       key={`${video.id}-${video.status}`}

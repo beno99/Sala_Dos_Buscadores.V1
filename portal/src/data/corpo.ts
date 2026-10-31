@@ -20,11 +20,12 @@ export const ROTULO_BLOCO: Record<TipoBloco, string> = {
 };
 
 export function blocoVazio(tipo: TipoBloco): BlocoCorpo {
-  if (tipo === "intertitulo") return { tipo, texto: "" };
-  if (tipo === "destaque") return { tipo, texto: "", atribuicao: "" };
-  if (tipo === "imagem") return { tipo, src: "", alt: "", credito: "", legenda: "" };
-  if (tipo === "lista") return { tipo, itens: [""], ordenada: false };
-  return { tipo: "paragrafo", texto: "" };
+  const id = `b-${crypto.randomUUID()}`;
+  if (tipo === "intertitulo") return { id, tipo, texto: "" };
+  if (tipo === "destaque") return { id, tipo, texto: "", atribuicao: "" };
+  if (tipo === "imagem") return { id, tipo, src: "", alt: "", credito: "", legenda: "" };
+  if (tipo === "lista") return { id, tipo, itens: [""], ordenada: false };
+  return { id, tipo: "paragrafo", texto: "" };
 }
 
 /** O texto do corpo, bloco a bloco: parágrafos, intertítulos e destaques. Imagens não contam texto. */
@@ -64,10 +65,11 @@ export function limparCorpo(corpo: readonly BlocoCorpo[]): BlocoCorpo[] {
       if (b.texto.trim()) limpo.push({ ...b, texto: b.texto.trim() });
     } else if (b.tipo === "destaque") {
       if (b.texto.trim() || b.atribuicao.trim()) {
-        limpo.push({ tipo: "destaque", texto: b.texto.trim(), atribuicao: b.atribuicao.trim() });
+        limpo.push({ ...b, texto: b.texto.trim(), atribuicao: b.atribuicao.trim() });
       }
     } else if (b.src.trim()) {
       const imagem: BlocoImagem = {
+        ...(b.id ? { id: b.id } : {}),
         tipo: "imagem",
         src: b.src.trim(),
         alt: b.alt.trim(),
@@ -83,4 +85,22 @@ export function limparCorpo(corpo: readonly BlocoCorpo[]): BlocoCorpo[] {
 
 /** Corpo do formulário: nunca vazio, para o editor sempre ter o primeiro parágrafo. */
 export const corpoParaForm = (corpo: readonly BlocoCorpo[]): BlocoCorpo[] =>
-  corpo.length ? copiarCorpo(corpo) : [""];
+  identificarBlocos(corpo.length ? copiarCorpo(corpo) : [""]);
+
+/** Legados recebem identidade ao abrir o editor; reordenação preserva essa identidade. */
+export function identificarBlocos(corpo: readonly BlocoCorpo[]): BlocoCorpo[] {
+  const usados = new Set<string>();
+  return corpo.map((b, i) => {
+    const bloco = typeof b === "string" ? { tipo: "paragrafo" as const, texto: b } : b;
+    let id = bloco.id && /^[a-zA-Z0-9-]+$/.test(bloco.id) ? bloco.id : `legado-${i}`;
+    while (usados.has(id)) id += "-2";
+    usados.add(id);
+    return { ...bloco, id };
+  });
+}
+
+export function identidadeBloco(bloco: BlocoCorpo | undefined, indice: number): string {
+  return bloco && typeof bloco !== "string" && bloco.id && /^[a-zA-Z0-9-]+$/.test(bloco.id)
+    ? bloco.id
+    : String(indice);
+}

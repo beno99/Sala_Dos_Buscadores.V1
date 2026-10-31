@@ -95,3 +95,7 @@
 .video-embed__frame > iframe, .video-embed__frame > img, .video-embed__frame > .sdb-plate { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; margin: 0; border-radius: 0; }
 .video-embed__frame > img { object-fit: cover; }
 .video-embed__legenda { font: 400 13px/1.4 var(--font-ui); color: var(--label-secondary); padding: 0 4px; }
+
+/* Feedback da miniatura apenas na prévia editorial; acompanha os tokens do card. */
+.video__thumbnail-status { position: relative; z-index: 2; margin: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--material-thick); color: var(--label); }
+.video__thumbnail-status:empty { display: none; }

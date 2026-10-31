@@ -7,12 +7,6 @@ export const metadata: Metadata = { title: "Nova Sala" };
 /** Primeiro existe a Sala; dentro dela nascem artigos e vídeos. */
 export default function NovaSala() {
   return (
-    <EditorSalaOficial
-      inicial={salaOficialVazia()}
-      imagem={null}
-      status="rascunho"
-      atualizadoEm={null}
-      slugTravado={false}
-    />
+    <EditorSalaOficial inicial={salaOficialVazia()} imagem={null} status="rascunho" atualizadoEm={null} />
   );
 }

@@ -1,7 +1,7 @@
 import { textoDoCorpo } from "@/data/corpo";
 import type { FormArtigo, FormCitacao, FormVideo } from "../formularios";
 import { LIMITE_TRECHO_PERMITIDO } from "./config";
-import { errosDoCorpo, rotuloDoErroDoCorpo } from "./corpo";
+import { campoDoBloco, errosDoCorpo, rotuloDoErroDoCorpo } from "./corpo";
 import { revisarVoz } from "./voz";
 import { extrairIdYoutube, validarDuracao } from "./youtube";
 
@@ -173,12 +173,12 @@ export function regrasDoCorpo(f: Pick<FormArtigo, "corpo">, requisito = "Corpo d
         "Blocos do texto completos",
         "campo-corpo",
         requisito,
-        "O texto começa pelo lead; destaques têm atribuição; imagens têm texto alternativo e crédito.",
+        "Comece com um parágrafo de abertura. Cite a origem dos destaques e descreva as imagens, informando a autorização de uso.",
       ),
     ];
   }
-  return erros.map(([campo, mensagem], i) => ({
-    id: `corpo-${i}`,
+  return erros.map(([campo, mensagem]) => ({
+    id: campo,
     rotulo: rotuloDoErroDoCorpo(f.corpo, campo),
     estado: "pendente" as const,
     campo,
@@ -235,7 +235,7 @@ export function regrasDeVoz(f: FormArtigo): ItemChecklist[] {
       typeof b === "string"
         ? `parágrafo ${i + 1}`
         : `${b.tipo === "destaque" ? "destaque" : "intertítulo"} ${i + 1}`;
-    campos.set(onde, `campo-corpo-${i}`);
+    campos.set(onde, campoDoBloco(i, undefined, f.corpo));
     return [{ onde, texto }];
   });
   const achados = revisarVoz([
@@ -293,7 +293,7 @@ export function checklistVideo(f: FormVideo): ItemChecklist[] {
       "URL válida do YouTube",
       "campo-url",
       "RF-16",
-      "Aceitamos youtube.com/watch, youtu.be e youtube.com/shorts.",
+      "Aceitamos links watch, youtu.be, shorts e embed do YouTube.",
     ),
     item(
       "duracao",

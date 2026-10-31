@@ -30,6 +30,16 @@ export function comPosse<T>(fazer: () => ResultadoAcao<T>): ResultadoAcao<T> {
   }
 }
 
+/** Versão assíncrona para criação cuja confirmação depende do banco. */
+export async function comPosseAsync<T>(fazer: () => Promise<ResultadoAcao<T>>): Promise<ResultadoAcao<T>> {
+  try {
+    return await fazer();
+  } catch (e) {
+    if (e instanceof AcessoNegado) return falha(`Erro: ${e.message}`);
+    throw e;
+  }
+}
+
 export function novaDecisao(
   quem: string,
   decisao: DecisaoRevisao["decisao"],

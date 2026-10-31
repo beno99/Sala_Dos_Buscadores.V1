@@ -154,6 +154,31 @@ function enfileirar(gravacao: Gravacao) {
     });
 }
 
+/**
+ * A criação precisa devolver o slug confirmado pelo banco, antes de expor a
+ * Sala no snapshot. A fila mantém a ordem com auditoria e demais gravações.
+ */
+export async function criarSalaNoAcervo(sala: SalaEditorial): Promise<SalaEditorial> {
+  const e = estado();
+  const tarefa = e.fila.then(async () => {
+    const alvo = store();
+    const criada = await e.repositorio.criarSala(structuredClone(sala));
+    // Já foi persistida: não repetir o INSERT através de MapPersistido.set.
+    Map.prototype.set.call(alvo.acervo.salas, criada.sala.id, structuredClone(criada.sala));
+    if (criada.versao === alvo.versao + 1) alvo.versao = criada.versao;
+    else alvo.desatualizado = true;
+    return criada.sala;
+  });
+  // A falha chega diretamente a quem criou; a fila continua disponível.
+  e.fila = tarefa.then(
+    () => {},
+    () => {
+      if (e.store) e.store.desatualizado = true;
+    },
+  );
+  return tarefa;
+}
+
 /** Liga ou desliga uma relação da comunidade (reação, seguir, salvo). Devolve se ficou ligada. */
 function alternar<T>(
   lista: T[],

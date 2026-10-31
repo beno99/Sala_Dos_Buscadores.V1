@@ -85,6 +85,12 @@ export function ChecklistPublicacao({
       <div className="sdb-checklist__rail" aria-hidden="true">
         <i style={{ "--p": bloqueantes.length ? feitos / bloqueantes.length : 1 } as CSSProperties} />
       </div>
+      <p className="sdb-help" role="status">
+        {bloqueantes.length - feitos > 0
+          ? `Faltam ${bloqueantes.length - feitos} itens obrigatórios para publicar.`
+          : "Todos os itens obrigatórios estão preenchidos."}{" "}
+        Você pode salvar um rascunho incompleto. Recomendações não bloqueiam a publicação.
+      </p>
       <ul className="sdb-checklist__list">
         {itens.map((i) => (
           <li key={i.id}>
@@ -107,7 +113,7 @@ export function ChecklistPublicacao({
               </span>
               <span>
                 {i.estado === "pendente" && <span className="sdb-sr">Pendente: </span>}
-                {i.estado === "alerta" && <span className="sdb-sr">Alerta: </span>}
+                {i.estado === "alerta" && <span className="sdb-sr">Recomendação: </span>}
                 {i.estado === "ok" && <span className="sdb-sr">Concluído: </span>}
                 {i.rotulo}
                 {i.estado !== "ok" && <small>{i.ajuda}</small>}
