@@ -6,6 +6,7 @@ import type {
   Citacao,
   LinkArtigo,
   RevisaoAnfitriao,
+  SalaEditorial,
   SituacaoJuridica,
   TemaSlug,
 } from "@/data/types";
@@ -68,6 +69,7 @@ export const salas = pgTable(
     revisao: jsonb("revisao").$type<RevisaoAnfitriao>(),
     publicadaEm: text("publicada_em"),
     statusAntesDeArquivar: statusEditorialEnum("status_antes_de_arquivar"),
+    lixeira: jsonb("lixeira").$type<NonNullable<SalaEditorial["lixeira"]>>(),
     midia: text("midia"),
     midiaCard: text("midia_card"),
   },

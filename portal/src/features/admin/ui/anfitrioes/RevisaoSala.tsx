@@ -14,6 +14,7 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { Switch } from "@/components/ds/Switch";
 import { useToast } from "@/components/ds/Toast";
 import type { Placa, StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { formatarData } from "@/lib/texto";
 import {
   aprovarArtigoAcao,
@@ -139,6 +140,9 @@ export function RevisaoSala({
         <h1 className="sdb-title-1">{sala.nome}</h1>
         <p className="sdb-footnote">Sala de {anfitriao}</p>
       </header>
+      <div className="sdb-row">
+        <AcaoLixeiraSala id={sala.id} nome={sala.nome} destino={"/admin/salas" as Route} />
+      </div>
 
       {sala.congelada && (
         <Alerta title="Sala congelada">

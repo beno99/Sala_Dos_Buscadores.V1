@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { ConteudoEditorial, FonteEditorial, SalaEditorial } from "@/data/types";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import * as conta from "@/modules/conta/conta.controller";
+import { SALA_NA_LIXEIRA, salaNaLixeira } from "./salas/lixeira";
 import { acervo, sincronizarAcervo } from "./store";
 
 /*
@@ -87,12 +88,14 @@ export function salaDoDono(salaId: string, donoId: string): SalaEditorial {
   if (sala?.origem !== "anfitriao" || sala.revisao?.donoId !== donoId) {
     throw new AcessoNegado(NEGADO_ANFITRIAO);
   }
+  if (sala.lixeira) throw new AcessoNegado(SALA_NA_LIXEIRA);
   return sala;
 }
 
 export function artigoDoDono(artigoId: string, donoId: string): ConteudoEditorial {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao || artigo.revisao.donoId !== donoId) throw new AcessoNegado(NEGADO_ANFITRIAO);
+  if (salaNaLixeira(artigo.sala)) throw new AcessoNegado(SALA_NA_LIXEIRA);
   return artigo;
 }
 

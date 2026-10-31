@@ -11,6 +11,7 @@ import { salaVisivel } from "@/features/anfitriao/regras/visibilidade";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { registrar } from "../auditoria";
 import { midiaDoDono, urlDaMidia } from "../midia";
+import { SALA_NA_LIXEIRA } from "../salas/lixeira";
 import { acervo, criarSalaNoAcervo } from "../store";
 import type { ModoSalvar, ResultadoAcao } from "./editorial";
 
@@ -38,7 +39,7 @@ export function salaPorSlugNoStore(slug: string): SalaEditorial | undefined {
 /** Sala oficial pelo slug, em qualquer status. */
 export function salaOficial(slug: string): SalaEditorial | undefined {
   const s = salaPorSlugNoStore(slug);
-  return s?.origem === "oficial" ? s : undefined;
+  return s?.origem === "oficial" && !s.lixeira ? s : undefined;
 }
 
 /**
@@ -49,6 +50,7 @@ export function erroDaSalaParaConteudo(slug: string | null | undefined): string 
   if (!slug) return "escolha a Sala: nada se cria fora de uma Sala.";
   const s = salaPorSlugNoStore(slug);
   if (!s) return "esta Sala não existe. Abra a Sala em Curadoria › Salas e crie o item dentro dela.";
+  if (s.lixeira) return SALA_NA_LIXEIRA;
   if (s.origem !== "oficial") return "esta Sala é de um anfitrião: a curadoria revisa, mas não escreve nela.";
   if (s.status === "arquivado") return "esta Sala está arquivada. Restaure a Sala para trabalhar nela.";
   return null;
@@ -93,6 +95,7 @@ export function resumirSalaAdmin(sala: SalaEditorial): ResumoSalaAdmin {
 /** Todas as Salas (oficiais e de anfitriões, de qualquer status), oficiais primeiro e pelo nome. */
 export function listarSalasAdmin(): ResumoSalaAdmin[] {
   return [...acervo().salas.values()]
+    .filter((s) => !s.lixeira)
     .sort(
       (a, b) =>
         (a.origem === "oficial" ? 0 : 1) - (b.origem === "oficial" ? 0 : 1) ||
@@ -104,7 +107,7 @@ export function listarSalasAdmin(): ResumoSalaAdmin[] {
 /** Salas oficiais ativas (não arquivadas), para "Mover para outra Sala". */
 export function salasOficiaisAtivas(): { slug: string; nome: string }[] {
   return [...acervo().salas.values()]
-    .filter((s) => s.origem === "oficial" && s.status !== "arquivado")
+    .filter((s) => !s.lixeira && s.origem === "oficial" && s.status !== "arquivado")
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"))
     .map((s) => ({ slug: s.slug, nome: s.nome }));
 }
@@ -136,6 +139,7 @@ export async function salvarSalaOficial(
   const quem = admin.pseudonimo;
   const anterior = f.id ? acervo().salas.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: esta Sala não existe mais. Atualize a lista e tente de novo.");
+  if (anterior?.lixeira) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (anterior && anterior.origem !== "oficial") {
     return falha(
       "Erro: esta Sala é de um anfitrião. A curadoria aprova ou reprova em Revisão de anfitriões.",
@@ -236,6 +240,7 @@ export function mudarStatusSala(
 ): ResultadoAcao<{ status: StatusEditorial; foraDoAr?: { artigos: number; videos: number } }> {
   const sala = acervo().salas.get(id);
   if (!sala) return falha("Erro: esta Sala não existe mais.");
+  if (sala.lixeira) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (sala.origem !== "oficial") {
     return falha("Erro: esta Sala é de um anfitrião. A curadoria decide em Revisão de anfitriões.");
   }

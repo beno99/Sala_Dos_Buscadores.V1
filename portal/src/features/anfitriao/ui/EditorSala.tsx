@@ -15,8 +15,9 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { TabelaDados } from "@/components/ds/TabelaDados";
 import { useToast } from "@/components/ds/Toast";
 import type { StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { formatarData } from "@/lib/texto";
-import { enviarSalaAcao, excluirItemAcao, retirarDoArAcao, salvarSalaAcao } from "@/server/anfitriao/acoes";
+import { enviarSalaAcao, retirarDoArAcao, salvarSalaAcao } from "@/server/anfitriao/acoes";
 import { AvisoSaida, focarCampo } from "../../admin/ui/AvisoSaida";
 import { useEdicao } from "../../admin/ui/useEdicao";
 import {
@@ -74,7 +75,6 @@ export function EditorSala({
   const [erroEnvio, setErroEnvio] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [retirar, setRetirar] = useState(false);
-  const [excluir, setExcluir] = useState(false);
   const [ocupado, setOcupado] = useState(false);
 
   const publicado = status === "publicado";
@@ -181,6 +181,16 @@ export function EditorSala({
           </p>
         )}
       </header>
+      <div className="sdb-row">
+        {id && (
+          <AcaoLixeiraSala
+            id={id}
+            nome={form.nome}
+            destino={"/anfitriao" as Route}
+            aoConcluir={() => setSujo(false)}
+          />
+        )}
+      </div>
 
       {status === "reprovado" && ultimoMotivo && (
         <Alerta variant="warning" title="Atenção: a curadoria pediu ajustes nesta Sala">
@@ -372,11 +382,6 @@ export function EditorSala({
                     Retirar do ar
                   </Button>
                 )}
-                {!jaPublicado && !emRevisao && (
-                  <Button variant="destructive" block icon="lixeira" onClick={() => setExcluir(true)}>
-                    Excluir Sala
-                  </Button>
-                )}
                 <p className="sdb-footnote">
                   {primeiroEnvio
                     ? "No primeiro envio, a Sala vai com pelo menos um artigo. Ela entra no ar quando a curadoria aprovar."
@@ -459,28 +464,6 @@ export function EditorSala({
         }
       >
         A Sala e os artigos dela saem do portal e ficam arquivados. Nada é apagado.
-      </ModalConfirmacao>
-
-      <ModalConfirmacao
-        open={excluir}
-        titulo="Excluir esta Sala?"
-        icone="lixeira"
-        destrutivo
-        rotuloConfirmar="Excluir Sala"
-        carregando={ocupado}
-        onCancelar={() => setExcluir(false)}
-        onConfirmar={() =>
-          executar(
-            () => excluirItemAcao("sala", id ?? ""),
-            () => {
-              setSujo(false);
-              router.push("/anfitriao" as Route);
-              router.refresh();
-            },
-          )
-        }
-      >
-        A Sala e os rascunhos dela são apagados. Isso não pode ser desfeito.
       </ModalConfirmacao>
 
       <AvisoSaida sujo={sujo && estado !== "salvando"} onDescartar={() => setSujo(false)} />

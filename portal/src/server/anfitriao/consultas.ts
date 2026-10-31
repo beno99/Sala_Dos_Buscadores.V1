@@ -12,6 +12,7 @@ import type {
 } from "@/data/types";
 import { statusDoConvite } from "@/features/anfitriao/regras/convite";
 import type { Membro } from "@/modules/conta/conta.contratos";
+import { salaNaLixeira } from "../salas/lixeira";
 import { artigoDoDono, salaDoDono } from "../sessao";
 import { acervo, contasDoDiretorio } from "../store";
 
@@ -24,10 +25,12 @@ import { acervo, contasDoDiretorio } from "../store";
 const clone = <T>(v: T): T => structuredClone(v);
 
 const salasDe = (donoId: string) =>
-  [...acervo().salas.values()].filter((s) => s.origem === "anfitriao" && s.revisao?.donoId === donoId);
+  [...acervo().salas.values()].filter(
+    (s) => !s.lixeira && s.origem === "anfitriao" && s.revisao?.donoId === donoId,
+  );
 
 const artigosDe = (donoId: string) =>
-  [...acervo().conteudos.values()].filter((c) => c.revisao?.donoId === donoId);
+  [...acervo().conteudos.values()].filter((c) => !salaNaLixeira(c.sala) && c.revisao?.donoId === donoId);
 
 const artigosDaSala = (sala: SalaEditorial) =>
   [...acervo().conteudos.values()].filter((c) => c.sala === sala.slug && c.revisao);
@@ -189,8 +192,12 @@ export function listarAnfitrioes(filtro: { soComPendencias?: boolean } = {}): Li
 /** Total de Salas e artigos de anfitriões esperando decisão (card do /admin). */
 export function totalPendenteRevisao(): number {
   return (
-    [...acervo().salas.values()].filter((s) => s.origem === "anfitriao" && s.status === "em_revisao").length +
-    [...acervo().conteudos.values()].filter((c) => c.revisao && c.status === "em_revisao").length
+    [...acervo().salas.values()].filter(
+      (s) => !s.lixeira && s.origem === "anfitriao" && s.status === "em_revisao",
+    ).length +
+    [...acervo().conteudos.values()].filter(
+      (c) => !salaNaLixeira(c.sala) && c.revisao && c.status === "em_revisao",
+    ).length
   );
 }
 
@@ -207,7 +214,7 @@ export function salasDoAnfitriaoParaRevisao(contaId: string): ResumoSalaAnfitria
 /** Nível 3: a Sala em revisão, com os artigos e as fontes (as propostas marcadas como novas). */
 export function salaParaRevisao(salaId: string) {
   const sala = acervo().salas.get(salaId);
-  if (sala?.origem !== "anfitriao") return undefined;
+  if (sala?.origem !== "anfitriao" || sala.lixeira) return undefined;
   const artigos = artigosDaSala(sala).map((a) => ({
     artigo: clone(a),
     fontes: a.fontes.flatMap((id) => {

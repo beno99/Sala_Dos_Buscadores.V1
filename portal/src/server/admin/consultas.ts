@@ -15,6 +15,7 @@ import { checklistArtigo, checklistVideo, temPendencia } from "@/features/admin/
 import { DIAS_RASCUNHO_PARADO } from "@/features/admin/regras/config";
 import { artigosParaVincular } from "@/features/admin/regras/vinculos-video";
 import { listarAuditoria } from "../auditoria";
+import { salaNaLixeira } from "../salas/lixeira";
 import { acervo } from "../store";
 
 /*
@@ -30,26 +31,28 @@ const clone = <T>(v: T): T => structuredClone(v);
  */
 export function listarArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
-    .filter((c) => !c.revisao && (c.tipo === "artigo" || c.tipo === "fonte-primaria"))
+    .filter(
+      (c) => !salaNaLixeira(c.sala) && !c.revisao && (c.tipo === "artigo" || c.tipo === "fonte-primaria"),
+    )
     .map(clone);
 }
 
 /** Artigos e fontes primárias de todas as Salas, inclusive de anfitriões (exportação CSV). */
 export function listarTodosOsArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
-    .filter((c) => c.tipo === "artigo" || c.tipo === "fonte-primaria")
+    .filter((c) => !salaNaLixeira(c.sala) && (c.tipo === "artigo" || c.tipo === "fonte-primaria"))
     .map(clone);
 }
 
 export function obterArtigo(id: string): { artigo: ConteudoEditorial; citacao?: Citacao } | undefined {
   const artigo = acervo().conteudos.get(id);
-  if (!artigo) return undefined;
+  if (!artigo || salaNaLixeira(artigo.sala)) return undefined;
   const citacao = artigo.citacao ? acervo().citacoes.get(artigo.citacao) : undefined;
   return { artigo: clone(artigo), citacao: citacao ? clone(citacao) : undefined };
 }
 
 export function listarVideos(): VideoEditorial[] {
-  return [...acervo().videos.values()].map(clone);
+  return [...acervo().videos.values()].filter((v) => !salaNaLixeira(v.sala)).map(clone);
 }
 
 /** Seleção por ID, na mesma Sala oficial, com ordem de criação estável. */
@@ -66,7 +69,7 @@ export function listarArtigosParaVideo(sala: string) {
 /** Uso exclusivo da prévia administrativa, após autorização da página. */
 export function videosDaPreviaDoArtigo(id: string) {
   const artigo = acervo().conteudos.get(id);
-  if (!artigo || artigo.revisao) return [];
+  if (!artigo || artigo.revisao || salaNaLixeira(artigo.sala)) return [];
   return [...acervo().videos.values()]
     .filter((v) => v.sala === artigo.sala && v.status !== "arquivado" && v.artigos.includes(id))
     .map(videoParaPublico);
@@ -74,7 +77,7 @@ export function videosDaPreviaDoArtigo(id: string) {
 
 export function obterVideo(id: string): VideoEditorial | undefined {
   const v = acervo().videos.get(id);
-  return v ? clone(v) : undefined;
+  return v && !salaNaLixeira(v.sala) ? clone(v) : undefined;
 }
 
 /** Catálogo de fontes: as propostas por anfitriões só entram quando o artigo que as usa é aprovado. */
@@ -146,7 +149,7 @@ export function resumoPainel(agora = new Date()): ResumoPainel {
 
   // Todas as Salas oficiais, inclusive as que ainda não estão no portal (rascunho, sem artigo).
   const oficiais = [...acervo().salas.values()]
-    .filter((s) => s.origem === "oficial")
+    .filter((s) => !s.lixeira && s.origem === "oficial")
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
   const porSala = oficiais.map((s) => {
     const daSala = artigos.filter((a) => a.sala === s.slug);

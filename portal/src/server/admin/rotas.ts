@@ -1,6 +1,7 @@
 import "server-only";
 import type { Route } from "next";
 import { notFound, redirect } from "next/navigation";
+import { salaNaLixeira } from "../salas/lixeira";
 import { acervo } from "../store";
 
 /*
@@ -13,19 +14,19 @@ export const rotaDaSala = (slug: string) => `/admin/salas/${slug}`;
 
 function revisaoDoAnfitriao(salaSlug: string): string | null {
   const sala = [...acervo().salas.values()].find((s) => s.slug === salaSlug);
-  return sala?.revisao ? `/admin/anfitrioes/${sala.revisao.donoId}/salas/${sala.id}` : null;
+  return sala?.revisao && !sala.lixeira ? `/admin/anfitrioes/${sala.revisao.donoId}/salas/${sala.id}` : null;
 }
 
 export function rotaDoArtigo(id: string, previa = false): string | null {
   const a = acervo().conteudos.get(id);
-  if (!a) return null;
+  if (!a || salaNaLixeira(a.sala)) return null;
   if (a.revisao) return revisaoDoAnfitriao(a.sala);
   return `${rotaDaSala(a.sala)}/artigos/${id}${previa ? "/previa" : ""}`;
 }
 
 export function rotaDoVideo(id: string): string | null {
   const v = acervo().videos.get(id);
-  return v ? `${rotaDaSala(v.sala)}/videos/${id}` : null;
+  return v && !salaNaLixeira(v.sala) ? `${rotaDaSala(v.sala)}/videos/${id}` : null;
 }
 
 /**
@@ -35,6 +36,7 @@ export function rotaDoVideo(id: string): string | null {
 export function salaOficialDaRota(slug: string) {
   const sala = [...acervo().salas.values()].find((s) => s.slug === slug);
   if (!sala) notFound();
+  if (sala.lixeira) redirect("/admin/lixeira/salas" as Route);
   if (sala.origem !== "oficial") {
     const revisao = revisaoDoAnfitriao(slug);
     if (revisao) redirect(revisao as Route);

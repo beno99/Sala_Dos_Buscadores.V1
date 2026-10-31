@@ -191,3 +191,7 @@ O diálogo de fontes e a cópia usam exclusivamente os trechos e as referências
 Consulte [Manual de operação](../docs/manual-operacao.md) para Sala, artigo, fonte, vídeo e seus requisitos de rascunho/publicação. Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis. Iniciais de artigo/fonte são derivadas do título; imagens de corpo preservam proporção e bytes originais; pendências levam a blocos de identidade estável. O seletor de vídeos mostra artigos recentes da Sala, com busca e atualização, e a thumbnail YouTube tem fallback sem chave adicional. Não há migração de schema nesta revisão.
 
 Testes adicionados usam `node:test` via `tsx`, sem conectar o banco configurado: `npm run test:editorial`. O teste SQL opcional usa PostgreSQL embarcado PGlite em módulo informado por `PGLITE_MODULE`; detalhes e evidências em [relatório C01–C08](../docs/revisoes-2026-10-31.md).
+
+### Lixeira de Salas (31/10/2026)
+
+Anfitriões excluem as próprias Salas; administradores excluem qualquer Sala e restauram em `/admin/lixeira/salas`. A marca nullable `salas.lixeira` preserva estado, slug e todos os vínculos. Regras em `features/salas/lixeira.ts`, Server Actions em `server/salas/acoes.ts`, transação com auditoria em `modules/acervo/acervo.repositorio.ts`. Aplicar `drizzle/0006_salas_lixeira.sql` antes deste código em outro ambiente; não executar seeds. A migração adiciona somente uma coluna JSONB opcional. Detalhes e reversão em [relatório](../docs/lixeira-salas-2026-10-31.md), operação no [manual](../docs/manual-operacao.md).

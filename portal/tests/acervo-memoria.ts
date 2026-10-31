@@ -1,5 +1,6 @@
 import type { SalaEditorial } from "../src/data/types";
 import { slugDaSala } from "../src/features/admin/regras/sala";
+import { planejarLixeiraSala } from "../src/features/salas/lixeira";
 import type { AcervoRepositorio, Colecoes, DadosCarregados } from "../src/modules/acervo/acervo.contratos";
 import { aguardarGravacoes, sincronizarAcervo, usarRepositorioDoAcervo } from "../src/server/store";
 
@@ -34,6 +35,12 @@ export async function prepararAcervoEmMemoria(): Promise<DadosCarregados> {
     caixaSaida: [],
   };
   const repositorio = {
+    async mudarLixeiraSala(pedido) {
+      const resultado = planejarLixeiraSala(dados.colecoes.salas.get(pedido.id), pedido);
+      dados.colecoes.salas.set(pedido.id, structuredClone(resultado.sala));
+      dados.auditoria.push(resultado.registro);
+      return { ...resultado, versao: ++dados.versao };
+    },
     async versao() {
       return dados.versao;
     },

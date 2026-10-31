@@ -11,6 +11,7 @@ import type { OrigemSala, Sala, StatusEditorial } from "@/data/types";
 export interface SalaParaVisibilidade {
   slug: string;
   origem: OrigemSala;
+  lixeira?: { em: string; por: string };
   status: StatusEditorial;
 }
 
@@ -20,7 +21,7 @@ export interface ArtigoParaVisibilidade {
 }
 
 export function salaVisivel(sala: SalaParaVisibilidade, artigos: Iterable<ArtigoParaVisibilidade>): boolean {
-  if (sala.status !== "publicado") return false;
+  if (sala.lixeira || sala.status !== "publicado") return false;
   for (const a of artigos) if (a.sala === sala.slug && a.status === "publicado") return true;
   return false;
 }

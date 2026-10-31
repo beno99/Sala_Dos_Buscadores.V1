@@ -39,6 +39,7 @@ import type { Membro } from "@/modules/conta/conta.contratos";
 import type { ModoSalvar } from "../admin/editorial";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
+import { mudarLixeiraSala } from "../salas/lixeira";
 import { artigoDoDono, fonteVisivelAoDono, salaDoDono } from "../sessao";
 import { acervo, criarSalaNoAcervo } from "../store";
 import { agora, comPosse, comPosseAsync, erro, falha, hoje, novoId, ok, type ResultadoAcao } from "./comum";
@@ -546,33 +547,12 @@ function podarFontesPropostas(donoId: string) {
   }
 }
 
-/** Só o que nunca foi ao ar é excluído; uma Sala leva junto os artigos dela (que também nunca foram publicados). */
-export function excluir(tipo: TipoItemAnfitriao, id: string, dono: Membro): ResultadoAcao {
+/** Salas vão à lixeira; a exclusão de artigos avulsos mantém as restrições existentes. */
+export async function excluir(tipo: TipoItemAnfitriao, id: string, dono: Membro): Promise<ResultadoAcao> {
+  if (tipo === "sala") return mudarLixeiraSala(id, "excluir", dono);
   return comPosse(() => {
     const recusa = conferirAnfitriao(dono);
     if (recusa) return erro(recusa);
-    if (tipo === "sala") {
-      const sala = salaDoDono(id, dono.id);
-      const motivo = podeExcluir({ status: sala.status, jaPublicado: Boolean(sala.revisao?.jaPublicado) });
-      if (motivo) return erro(motivo);
-      const artigos = artigosDaSala(sala);
-      if (artigos.some((a) => a.revisao?.jaPublicado || a.status === "em_revisao")) {
-        return erro(
-          "esta Sala tem artigo que já foi publicado ou está em revisão; retire do ar em vez de excluir.",
-        );
-      }
-      for (const a of artigos) acervo().conteudos.delete(a.id);
-      acervo().salas.delete(id);
-      podarFontesPropostas(dono.id);
-      registrar({
-        quem: dono.pseudonimo,
-        acao: "excluiu",
-        tipoItem: "sala",
-        itemId: id,
-        itemTitulo: sala.nome,
-      });
-      return ok(undefined, artigos.length ? "Sala e rascunhos excluídos." : "Sala excluída.");
-    }
     const artigo = artigoDoDono(id, dono.id);
     const motivo = podeExcluir({ status: artigo.status, jaPublicado: Boolean(artigo.revisao?.jaPublicado) });
     if (motivo) return erro(motivo);

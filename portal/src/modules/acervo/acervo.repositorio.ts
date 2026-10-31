@@ -3,6 +3,7 @@ import { and, asc, eq, getTableColumns } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import type { DenunciaComunidade } from "@/data/types";
 import { candidatoSlugSala, SLUGS_SALA_RESERVADOS } from "@/features/admin/regras/sala";
+import { ErroLixeiraSala, planejarLixeiraSala } from "@/features/salas/lixeira";
 import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
@@ -122,6 +123,25 @@ async function carregarColecao<K extends NomeColecao>(nome: K): Promise<Map<stri
 export const acervoRepositorio: AcervoRepositorio = {
   versao: lerVersao,
 
+  async mudarLixeiraSala(pedido) {
+    return banco().transaction(async (tx) => {
+      const [linha] = await tx.select().from(salas).where(eq(salas.id, pedido.id)).for("update");
+      const resultado = planejarLixeiraSala(linha ? MAPAS.salas.deLinha(linha)[1] : undefined, pedido);
+      await tx
+        .update(salas)
+        .set({
+          lixeira: resultado.sala.lixeira ?? null,
+          atualizadoEm: resultado.sala.atualizadoEm,
+          atualizadoPor: resultado.sala.atualizadoPor,
+        })
+        .where(eq(salas.id, pedido.id));
+      await tx
+        .insert(auditoria)
+        .values({ ...resultado.registro, mudancas: resultado.registro.mudancas ?? null });
+      return { ...resultado, versao: await somarVersao(tx) };
+    });
+  },
+
   async criarSala(sala) {
     return banco().transaction(async (tx) => {
       // O UNIQUE existente arbitra concorrência entre processos. DO NOTHING
@@ -184,7 +204,27 @@ export const acervoRepositorio: AcervoRepositorio = {
           const linha = mapa.paraLinha(g.id, g.valor);
           // Uma Sala existente nunca troca de endereço, mesmo com snapshot antigo.
           const atualizacao = { ...linha };
-          if (g.colecao === "salas") delete atualizacao.slug;
+          if (g.colecao === "salas") {
+            delete atualizacao.slug;
+            delete atualizacao.lixeira;
+          }
+          // A exclusão/restauração é exclusiva da operação atômica acima. Um autosave antigo não restaura a Sala.
+          if (g.colecao === "salas") {
+            const [s] = await tx.select().from(salas).where(eq(salas.id, g.id)).for("update");
+            if (s?.lixeira)
+              throw new ErroLixeiraSala("Esta Sala está na lixeira. Peça ao curador para restaurá-la.");
+          }
+          if (g.colecao === "conteudos" || g.colecao === "videos" || g.colecao === "citacoes") {
+            const [anterior] = await tx.select().from(mapa.tabela).where(eq(mapa.pk, g.id));
+            // Conferir origem e destino impede uma gravação atrasada de mover conteúdo para fora da lixeira.
+            for (const slug of [
+              ...new Set([g.valor.sala, ...(anterior ? [String(anterior.sala)] : [])]),
+            ].sort()) {
+              const [s] = await tx.select().from(salas).where(eq(salas.slug, slug)).for("update");
+              if (s?.lixeira)
+                throw new ErroLixeiraSala("Esta Sala está na lixeira. Peça ao curador para restaurá-la.");
+            }
+          }
           await tx
             .insert(mapa.tabela)
             .values(linha)
@@ -193,6 +233,18 @@ export const acervoRepositorio: AcervoRepositorio = {
         }
         case "apagar": {
           const mapa = MAPAS[g.colecao];
+          if (g.colecao === "salas") throw new ErroLixeiraSala("Use a lixeira para excluir uma Sala.");
+          if (g.colecao === "conteudos" || g.colecao === "videos" || g.colecao === "citacoes") {
+            const [item] = await tx.select().from(mapa.tabela).where(eq(mapa.pk, g.id));
+            if (item) {
+              const [s] = await tx
+                .select()
+                .from(salas)
+                .where(eq(salas.slug, String(item.sala)))
+                .for("update");
+              if (s?.lixeira) throw new ErroLixeiraSala("Esta Sala está na lixeira.");
+            }
+          }
           await tx.delete(mapa.tabela).where(eq(mapa.pk, g.id));
           break;
         }

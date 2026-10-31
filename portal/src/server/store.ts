@@ -23,6 +23,7 @@ import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilid
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
 import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
+import type { PedidoLixeiraSala } from "@/features/salas/lixeira";
 import type {
   AcaoRelacao,
   AcervoRepositorio,
@@ -170,6 +171,27 @@ export async function criarSalaNoAcervo(sala: SalaEditorial): Promise<SalaEditor
     return criada.sala;
   });
   // A falha chega diretamente a quem criou; a fila continua disponível.
+  e.fila = tarefa.then(
+    () => {},
+    () => {
+      if (e.store) e.store.desatualizado = true;
+    },
+  );
+  return tarefa;
+}
+
+/** A Sala e sua auditoria são persistidas na mesma transação, antes de atualizar o snapshot. */
+export async function mudarLixeiraSalaNoAcervo(pedido: PedidoLixeiraSala) {
+  const e = estado();
+  const tarefa = e.fila.then(async () => {
+    const alvo = store();
+    const resultado = await e.repositorio.mudarLixeiraSala(pedido);
+    Map.prototype.set.call(alvo.acervo.salas, resultado.sala.id, structuredClone(resultado.sala));
+    alvo.auditoria.push(resultado.registro);
+    if (resultado.versao === alvo.versao + 1) alvo.versao = resultado.versao;
+    else alvo.desatualizado = true;
+    return resultado.sala;
+  });
   e.fila = tarefa.then(
     () => {},
     () => {

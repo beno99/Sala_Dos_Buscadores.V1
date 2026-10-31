@@ -18,6 +18,7 @@ import type { Membro } from "@/modules/conta/conta.contratos";
 import { registrar } from "../auditoria";
 import { EMAIL_CURADORIA, enviarEmail, URL_PUBLICA } from "../caixa-saida";
 import { midiaDoDono } from "../midia";
+import { salaNaLixeira } from "../salas/lixeira";
 import { acervo } from "../store";
 import { agora, erro, falha, novoId, ok, type ResultadoAcao } from "./comum";
 
@@ -76,8 +77,10 @@ export type OpcaoRebaixamento =
   | { tipo: "transferir"; para: string };
 
 function itensDoDono(donoId: string) {
-  const salas = [...acervo().salas.values()].filter((s) => s.revisao?.donoId === donoId);
-  const artigos = [...acervo().conteudos.values()].filter((c) => c.revisao?.donoId === donoId);
+  const salas = [...acervo().salas.values()].filter((s) => !s.lixeira && s.revisao?.donoId === donoId);
+  const artigos = [...acervo().conteudos.values()].filter(
+    (c) => !salaNaLixeira(c.sala) && c.revisao?.donoId === donoId,
+  );
   return { salas, artigos };
 }
 
@@ -473,7 +476,7 @@ export function salvarPerfil(f: FormPerfil, dono: Membro): ResultadoAcao<PerfilA
   const assinatura = { nome: perfil.nome, credencial: perfil.credencial, slug: perfil.slug };
   const slugAntigo = anterior?.slug;
   for (const s of acervo().salas.values()) {
-    if (s.revisao?.donoId === dono.id)
+    if (!s.lixeira && s.revisao?.donoId === dono.id)
       acervo().salas.set(s.id, {
         ...s,
         anfitriao: { ...assinatura },
@@ -482,7 +485,11 @@ export function salvarPerfil(f: FormPerfil, dono: Membro): ResultadoAcao<PerfilA
       });
   }
   for (const c of acervo().conteudos.values()) {
-    if (c.revisao && (c.anfitriao?.slug === slugAntigo || (!slugAntigo && c.revisao.donoId === dono.id))) {
+    if (
+      !salaNaLixeira(c.sala) &&
+      c.revisao &&
+      (c.anfitriao?.slug === slugAntigo || (!slugAntigo && c.revisao.donoId === dono.id))
+    ) {
       acervo().conteudos.set(c.id, {
         ...c,
         anfitriao: { ...assinatura },

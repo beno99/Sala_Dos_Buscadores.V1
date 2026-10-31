@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SeloStatus } from "@/components/ds/Curadoria";
 import { TabelaDados } from "@/components/ds/TabelaDados";
 import type { StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { formatarData, plural } from "@/lib/texto";
 
 export interface LinhaSalaAnfitriao {
@@ -67,6 +68,12 @@ export function ListaSalasAnfitriao({ salas }: { salas: LinhaSalaAnfitriao[] }) 
           cabecalho: "Atualizada",
           className: "sdb-tabular",
           celula: (s) => formatarData(s.atualizadaEm),
+        },
+        {
+          id: "lixeira",
+          cabecalho: "Excluir",
+          className: "sdb-table__actions",
+          celula: (s) => <AcaoLixeiraSala id={s.id} nome={s.nome} />,
         },
       ]}
     />

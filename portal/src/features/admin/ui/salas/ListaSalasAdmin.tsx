@@ -9,6 +9,7 @@ import { Icon } from "@/components/ds/Icon";
 import { Menu } from "@/components/ds/Menu";
 import { TabelaDados } from "@/components/ds/TabelaDados";
 import type { Placa, StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { formatarData } from "@/lib/texto";
 import { type FiltrosSalas, paraQuery } from "../../listas";
 import { CampoBuscaLista, PainelFiltros, useFiltrosNaUrl } from "../BarraFiltros";
@@ -80,6 +81,9 @@ export function ListaSalasAdmin({
             revisão, somente leitura.
           </p>
           <div className="sdb-pagehead__top">
+            <ButtonLink href={"/admin/lixeira/salas" as Route} variant="secondary" icon="lixeira">
+              Lixeira de Salas
+            </ButtonLink>
             <ButtonLink href={"/admin/salas/nova" as Route} variant="primary" icon="mais">
               Nova Sala
             </ButtonLink>
@@ -232,6 +236,12 @@ export function ListaSalasAdmin({
                     Revisar
                   </ButtonLink>
                 ),
+            },
+            {
+              id: "lixeira",
+              cabecalho: "Excluir",
+              className: "sdb-table__actions",
+              celula: (s) => <AcaoLixeiraSala id={s.id} nome={s.nome} />,
             },
           ]}
         />

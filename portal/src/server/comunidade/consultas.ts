@@ -66,7 +66,7 @@ export async function consultarComunidade() {
       .filter((r) => r.alvo.tipo === "comentario" && r.tipo === "curtir")
       .map((r) => r.alvo.id),
     salasProprias: [...acervo().salas.values()]
-      .filter((s) => s.revisao?.donoId === membro.id)
+      .filter((s) => !s.lixeira && s.revisao?.donoId === membro.id)
       .map((s) => s.slug),
     seguindoPessoas: seguindoPessoas.map((p) => p.id),
     seguindoSalas: seguindoSalas.map((s) => s.slug),

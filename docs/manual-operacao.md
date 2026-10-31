@@ -14,6 +14,21 @@ O painel **Para publicar** mantém a lista de pendências. “Faltam N itens obr
 
 “O que este cadastro precisa ter?” apresenta as regras do próprio formulário. Não preencha conteúdo inventado para eliminar pendências; corrija, retire um bloco opcional que não será usado ou mantenha o rascunho.
 
+## Excluir e restaurar Salas
+
+**Excluir Sala agora significa mover para a lixeira**, inclusive quando já foi publicada, está em revisão ou arquivada. Não apaga definitivamente a Sala nem os conteúdos.
+
+- **Anfitrião:** em **Minhas Salas** (`/anfitriao`) ou no editor da própria Sala, use **Excluir Sala**. Só pode excluir Salas de que é o dono atual. Não consegue restaurar nem excluir Salas de outro anfitrião ou da curadoria.
+- **Administrador/curador:** em **Curadoria → Salas**, pode excluir qualquer Sala, oficial ou de anfitrião. A mesma ação existe no cabeçalho/editor da Sala e na revisão de anfitriões.
+- O diálogo identifica a Sala e explica que artigos, vídeos, conversas, comentários, fontes, arquivos e vínculos são preservados. **Cancelar** ou Escape não altera nada. Confirme em **Mover para a lixeira**.
+- A Sala sai do portal, das buscas, destaques e listas de trabalho. Seus conteúdos ficam inacessíveis nos fluxos públicos e não podem ser editados pelos editores enquanto a Sala estiver na lixeira. Uma aba antiga não pode restaurá-la por salvamento automático, publicação ou pela restauração de um arquivamento.
+- Para restaurar, o curador abre **Curadoria → Salas → Lixeira de Salas**, em `/admin/lixeira/salas`. A tabela informa o estado anterior e as quantidades de conteúdos preservados. Clique **Restaurar Sala** e confirme.
+- A restauração conserva o slug, as relações e os estados editoriais: uma Sala publicada volta ao portal se ainda satisfizer a regra de visibilidade; rascunhos continuam rascunhos; uma Sala arquivada continua arquivada. A confirmação avisa expressamente quando conteúdos publicados podem voltar ao portal.
+- Não existe exclusão definitiva nem esvaziamento da lixeira. O endereço continua reservado, evitando reutilização que quebraria os vínculos ao restaurar.
+- Exclusão e restauração registram auditoria. Se houver erro, o diálogo permanece aberto para nova tentativa. Pedidos repetidos não duplicam a operação.
+
+**Arquivar é diferente:** mantém a Sala na gestão editorial e usa a restauração de arquivamento já existente. Só a ação da lixeira pode remover a marca de exclusão. Salas na lixeira ficam congeladas também para propagação de alterações de perfil e gestão de conteúdo ao rebaixar/transferir anfitriões; restaure antes se precisar incluir esses conteúdos nessa gestão. Fontes compartilhadas e arquivos não são apagados.
+
 ## Sala oficial
 
 **Finalidade:** organizar o acervo por tradição ou conjunto de textos. Aparece em Salas e nos contextos de artigos, vídeos e comparação. Uma Sala publicada só fica visível no portal quando também tem artigo publicado.
@@ -39,7 +54,7 @@ O painel **Para publicar** mantém a lista de pendências. “Faltam N itens obr
 
 O rascunho exige nome (até 80); descrição até 600 e link HTTPS são validados se presentes. Para enviar à revisão: nome e descrição; no primeiro envio, ao menos um artigo elegível junto e declaração de direitos. A conta precisa de perfil de anfitrião válido. Período, banner e imagem do card são opcionais (mesmas dimensões da Sala oficial). Tradição, placa e inicial são calculados a partir do nome/perfil; endereço é automático e estável.
 
-A curadoria aprova ou devolve com motivo, sem escrever pelo anfitrião. Sala em revisão/congelada não pode ser editada. Editar uma Sala de anfitrião publicada pode retirá-la e aos seus artigos do ar até nova aprovação, conforme o aviso de confirmação. Retirar do ar arquiva; excluir só quando permitido pelo ciclo existente.
+A curadoria aprova ou devolve com motivo, sem escrever pelo anfitrião. Sala em revisão/congelada não pode ser editada. Editar uma Sala de anfitrião publicada pode retirá-la e aos seus artigos do ar até nova aprovação, conforme o aviso de confirmação. Retirar do ar arquiva; Excluir Sala move para a lixeira em qualquer estado editorial, com restauração exclusiva pelo curador.
 
 ## Artigo da curadoria
 

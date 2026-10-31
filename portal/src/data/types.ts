@@ -318,6 +318,8 @@ export interface ConteudoEditorial extends Conteudo, MetaEditorial {
 
 /** Sala como a curadoria e o anfitrião a veem: o contrato público mais os campos editoriais. */
 export interface SalaEditorial extends Sala, MetaEditorial {
+  /** Exclusão reversível: o estado editorial e os vínculos permanecem intactos. */
+  lixeira?: { em: string; por: string };
   /** Só nas Salas de anfitrião. */
   revisao?: RevisaoAnfitriao;
   /** Sala oficial: data da primeira publicação. O slug já é estável desde o primeiro salvamento. */

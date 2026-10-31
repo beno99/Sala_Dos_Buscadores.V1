@@ -55,7 +55,7 @@ type CamposPublicacao = Pick<
 const dados = () => acervo().comunidade;
 const limpo = (v: unknown) => normalizarTextoComunidade(String(v ?? ""));
 const donoDaSala = (slug?: string) =>
-  [...acervo().salas.values()].find((s) => s.slug === slug)?.revisao?.donoId;
+  [...acervo().salas.values()].find((s) => !s.lixeira && s.slug === slug)?.revisao?.donoId;
 const rotulo = (texto: string) => texto.slice(0, 80);
 
 function lerPublicacao(form: FormPublicacao, autorId: string): CamposPublicacao | string {

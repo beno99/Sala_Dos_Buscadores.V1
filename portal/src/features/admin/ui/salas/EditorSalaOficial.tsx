@@ -13,6 +13,7 @@ import { ChecklistPublicacao, IndicadorSalvamento, SeloStatus } from "@/componen
 import { ModalConfirmacao } from "@/components/ds/Modal";
 import { useToast } from "@/components/ds/Toast";
 import type { Placa, StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { mudarStatusSalaAcao, salvarSalaOficialAcao } from "@/server/admin/acoes";
 import { temPendencia } from "../../regras/checklist";
 import {
@@ -153,6 +154,16 @@ export function EditorSalaOficial({
         </div>
         <h1 className="sdb-title-1">{titulo}</h1>
       </header>
+      <div className="sdb-row">
+        {edicao.id.current && (
+          <AcaoLixeiraSala
+            id={edicao.id.current}
+            nome={form.nome}
+            destino={"/admin/salas" as Route}
+            aoConcluir={() => edicao.setSujo(false)}
+          />
+        )}
+      </div>
 
       {arquivado && (
         <Alerta

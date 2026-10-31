@@ -43,6 +43,13 @@
       "when": 1793473171299,
       "tag": "0005_sala_imagem_card",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793476251454,
+      "tag": "0006_salas_lixeira",
+      "breakpoints": true
     }
   ]
 }

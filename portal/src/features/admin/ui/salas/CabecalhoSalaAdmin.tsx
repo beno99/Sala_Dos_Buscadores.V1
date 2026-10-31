@@ -13,6 +13,7 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { Segmented } from "@/components/ds/Segmented";
 import { useToast } from "@/components/ds/Toast";
 import type { Placa, StatusEditorial } from "@/data/types";
+import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { mudarStatusSalaAcao } from "@/server/admin/acoes";
 
 export type AbaSala = "artigos" | "videos";
@@ -102,6 +103,7 @@ export function CabecalhoSalaAdmin({
                 Ver no portal
               </ButtonLink>
             )}
+            <AcaoLixeiraSala id={sala.id} nome={sala.nome} destino={"/admin/salas" as Route} />
             <Menu
               titulo={sala.nome}
               triggerLabel={`Mais ações da Sala ${sala.nome}`}

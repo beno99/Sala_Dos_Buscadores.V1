@@ -36,6 +36,7 @@ import { extrairIdYoutube, validarDuracao } from "@/features/admin/regras/youtub
 import { inicialDoTitulo, normalizar, plural } from "@/lib/texto";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
+import { SALA_NA_LIXEIRA, salaNaLixeira } from "../salas/lixeira";
 import { acervo, auditoriaBruta } from "../store";
 import { podarDestaques } from "./destaques";
 import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
@@ -376,6 +377,7 @@ export function mudarStatusArtigo(
 ): ResultadoAcao<StatusEditorial> {
   const artigo = acervo().conteudos.get(id);
   if (!artigo) return falha("Erro: este conteúdo não existe mais.");
+  if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
   if (acao === "publicar") {
     const erroSala = conferirSala(artigo.sala, undefined);
@@ -470,6 +472,7 @@ export function moverArtigo(
 ): ResultadoAcao<{ sala: string; slug: string }> {
   const artigo = acervo().conteudos.get(id);
   if (!artigo) return falha("Erro: este conteúdo não existe mais.");
+  if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
   if (artigo.publicadoEm) {
     return falha("Erro: artigo já publicado não muda de Sala, porque o endereço público inclui a Sala.");
@@ -598,6 +601,7 @@ export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): Re
   if (!Object.hasOwn(STATUS_DESTINO, acao)) return falha("Erro: ação desconhecida.");
   const video = acervo().videos.get(id);
   if (!video) return falha("Erro: este vídeo não existe mais.");
+  if (salaNaLixeira(video.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (acao === "publicar") {
     const erroSala = conferirSala(video.sala, undefined);
     if (erroSala) return erroSala;

@@ -1,0 +1,1 @@
+ALTER TABLE "salas" ADD COLUMN "lixeira" jsonb;

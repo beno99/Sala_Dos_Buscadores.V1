@@ -8,6 +8,7 @@ import {
 } from "@/features/anfitriao/regras/ciclo";
 import { registrar } from "../auditoria";
 import { enviarEmail } from "../caixa-saida";
+import { SALA_NA_LIXEIRA, salaNaLixeira } from "../salas/lixeira";
 import { acervo, contaNoDiretorio as contaPorId } from "../store";
 import { agora, comDecisao, erro, hoje, novaDecisao, ok, type ResultadoAcao } from "./comum";
 
@@ -20,11 +21,11 @@ import { agora, comDecisao, erro, hoje, novaDecisao, ok, type ResultadoAcao } fr
 
 function salaPorId(id: string): SalaEditorial | undefined {
   const s = acervo().salas.get(id);
-  return s?.origem === "anfitriao" ? s : undefined;
+  return s?.origem === "anfitriao" && !s.lixeira ? s : undefined;
 }
 
 function salaDoArtigo(a: ConteudoEditorial): SalaEditorial | undefined {
-  return [...acervo().salas.values()].find((s) => s.slug === a.sala);
+  return [...acervo().salas.values()].find((s) => !s.lixeira && s.slug === a.sala);
 }
 
 function artigosDaSala(sala: SalaEditorial): ConteudoEditorial[] {
@@ -198,6 +199,7 @@ export function reprovarSala(
 export function aprovarArtigo(artigoId: string, quem: string): ResultadoAcao {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao) return erro("este artigo não existe mais.");
+  if (salaNaLixeira(artigo.sala)) return erro(SALA_NA_LIXEIRA);
   const t = transicao(artigo.status, "aprovar");
   if (!t.ok) return erro(t.erro);
   const sala = salaDoArtigo(artigo);
@@ -221,6 +223,7 @@ export function aprovarArtigo(artigoId: string, quem: string): ResultadoAcao {
 export function reprovarArtigo(artigoId: string, motivo: string, quem: string): ResultadoAcao {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao) return erro("este artigo não existe mais.");
+  if (salaNaLixeira(artigo.sala)) return erro(SALA_NA_LIXEIRA);
   const t = reprovar(artigo.status, motivo);
   if (!t.ok) return erro(t.erro);
   const texto = motivo.trim().replace(/\s+/g, " ");
