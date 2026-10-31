@@ -12,25 +12,20 @@ interface Secao {
   href: Route;
   rotulo: string;
   icone: IconName;
-  grupo: "Acervo" | "Estudo" | "Conta";
+  grupo: "Acervo" | "Estudo" | "Ferramentas" | "Conta";
 }
 
-/* Ordem e agrupamento alinhados à revisão visual do cliente (telas-portal-revisado-v1):
-   Acervo (Portal, Salas, Biblioteca, Destaques) e Estudo (Comunidade, Comparar, Estante,
-   Assistente, Trilhas, Conquistas, Meu percurso) num só bloco cada, sem a divisão
-   "Ferramentas". Mesmas rotas e ícones de sempre. */
 const SECOES: Secao[] = [
   { href: "/", rotulo: "Portal", icone: "inicio", grupo: "Acervo" },
-  { href: "/salas" as Route, rotulo: "Salas", icone: "salas", grupo: "Acervo" },
-  { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
   { href: "/destaques" as Route, rotulo: "Destaques", icone: "destaques", grupo: "Acervo" },
+  { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
+  { href: "/salas" as Route, rotulo: "Salas", icone: "salas", grupo: "Acervo" },
   { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "comunidade", grupo: "Estudo" },
-  { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Estudo" },
-  { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },
-  { href: "/assistente", rotulo: "Assistente", icone: "assistente", grupo: "Estudo" },
   { href: "/trilhas" as Route, rotulo: "Trilhas", icone: "trilha", grupo: "Estudo" },
+  { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },
   { href: "/conquistas" as Route, rotulo: "Conquistas", icone: "check", grupo: "Estudo" },
-  { href: "/perfil" as Route, rotulo: "Meu percurso", icone: "pessoa", grupo: "Estudo" },
+  { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
+  { href: "/assistente", rotulo: "Assistente", icone: "assistente", grupo: "Ferramentas" },
   { href: "/ajustes" as Route, rotulo: "Ajustes", icone: "ajustes", grupo: "Conta" },
 ];
 
@@ -111,7 +106,7 @@ export function gruposDaLateral(
     sair: () => void;
   },
 ): GrupoNavegacaoApp[] {
-  const grupos: GrupoNavegacaoApp[] = (["Acervo", "Estudo", "Conta"] as const).map((g) => ({
+  const grupos: GrupoNavegacaoApp[] = (["Acervo", "Estudo", "Ferramentas", "Conta"] as const).map((g) => ({
     titulo: g,
     itens: SECOES.filter((s) => s.grupo === g).map((s) => ({
       rotulo: s.rotulo,
@@ -138,15 +133,12 @@ export function gruposDaLateral(
 const ABAS = ["/", "/biblioteca", "/trilhas", "/estante"];
 
 export function abasDoCelular(caminho: string): AbaApp[] {
-  // Ordem fixa de ABAS, não a de SECOES (que mudou com a revisão da lateral).
-  return ABAS.map((href) => SECOES.find((s) => s.href === href))
-    .filter((s): s is Secao => s !== undefined)
-    .map((s) => ({
-      href: s.href,
-      rotulo: s.rotulo,
-      icone: s.icone,
-      ativa: ativa(s.href, caminho),
-    }));
+  return SECOES.filter((s) => ABAS.includes(s.href)).map((s) => ({
+    href: s.href,
+    rotulo: s.rotulo,
+    icone: s.icone,
+    ativa: ativa(s.href, caminho),
+  }));
 }
 
 /** O caminho está numa seção que só aparece no "Mais" do celular. */
