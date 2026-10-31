@@ -327,7 +327,8 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
 
 /* ---------- Badge ---------- */
 .sdb-badge {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 6px 10px; border-radius: var(--radius-xs); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 6px 10px; border-radius: var(--radius-xs);
+  max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere;
   background: var(--tag-fill, var(--tag-blue-fill)); color: var(--tag-ink, var(--tag-blue-ink)); font: 600 12.5px/1.3 var(--font-ui); letter-spacing: -0.005em;
 }
 .sdb-badge--neutral { --tag-fill: var(--tag-neutral-fill); --tag-ink: var(--tag-neutral-ink); }
@@ -715,8 +716,6 @@ a.sdb-card:active, button.sdb-card:active { transform: scale(0.985); transition-
 .sdb-source__title { font-family: var(--font-reading); font-size: 17px; font-weight: 600; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
 .sdb-source__author { font-size: 14px; color: var(--label-secondary); margin: 0; overflow-wrap: anywhere; }
 .sdb-source__tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-.sdb-source__tags .sdb-badge { max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
-.sdb-source__tags .sdb-badge > .sdb-icon { flex-shrink: 0; }
 .sdb-source__ref { font-size: 12.5px; color: var(--label-tertiary); margin: 4px 0 0; overflow-wrap: anywhere; }
 .sdb-source__trail { color: var(--label-tertiary); }
 .sdb-source--row { padding: 8px 16px 8px 16px; gap: 16px; }
