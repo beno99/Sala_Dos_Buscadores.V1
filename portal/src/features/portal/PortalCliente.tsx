@@ -97,7 +97,13 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
 
   return (
     <div className="sdb-home">
-      <h1 className="sdb-sr">Portal</h1>
+      <div className="sdb-home__intro-head">
+        <p className="sdb-meta">Seu percurso de estudo</p>
+        <h1 className="sdb-large-title">Sua próxima descoberta começa aqui.</h1>
+        <p className="sdb-body-sm sdb-secondary">
+          Explore fontes, compare perspectivas e construa seu próprio caminho.
+        </p>
+      </div>
       <BannerRotativo slides={slides} onPorQue={() => setPolitica(true)} />
       <PainelIndicadores rotulo="Seu progresso no acervo" itens={modelo.indicadores} />
       <div className="sdb-home__columns">

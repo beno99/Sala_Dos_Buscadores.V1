@@ -2158,6 +2158,7 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 [data-portal="inicio"] .sdb-topbar { height: 72px; min-height: 72px; }
 [data-portal="inicio"] .sdb-topbar__search { width: 320px; height: 40px; border-radius: calc(var(--radius-md) - var(--space-1)); }
 .sdb-home { container: portal / inline-size; display: flex; flex-direction: column; gap: var(--space-7); min-width: 0; }
+.sdb-home__intro-head { display: flex; flex-direction: column; gap: var(--space-2); max-width: 46rem; }
 .sdb-home__columns { display: grid; grid-template-columns: minmax(0, 1fr) 312px; gap: var(--space-5); align-items: start; }
 .sdb-home__editorial, .sdb-home__section { display: flex; flex-direction: column; min-width: 0; }
 .sdb-home__editorial { gap: var(--space-7); }
