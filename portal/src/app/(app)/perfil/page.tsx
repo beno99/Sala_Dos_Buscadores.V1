@@ -108,7 +108,7 @@ export default async function Perfil() {
               <div className="flex min-w-[14rem] flex-col gap-2">
                 <p className="sdb-meta sdb-secondary m-0">Temas que você acompanha</p>
                 {m.temasAcompanhados.length > 0 ? (
-                  <div className="sdb-row" style={{ gap: 8 }}>
+                  <div className="sdb-row sdb-content__tags" style={{ gap: 8 }}>
                     {m.temasAcompanhados.map((t) => (
                       <Badge key={t} variant="topic" icon="glossario">
                         {t}

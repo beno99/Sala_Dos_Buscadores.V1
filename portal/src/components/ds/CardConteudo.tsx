@@ -54,7 +54,7 @@ export function CardConteudo({
           </Link>
         </Titulo>
         <p className="sdb-content__excerpt sdb-clamp-3">{conteudo.resumo}</p>
-        <div className="sdb-row" style={{ gap: 8 }}>
+        <div className="sdb-row sdb-content__tags" style={{ gap: 8 }}>
           {conteudo.temas.slice(0, 2).map((t) => (
             <Badge key={t} variant="topic" icon="glossario">
               {temaPorSlug(t)?.nome}

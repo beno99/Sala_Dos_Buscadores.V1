@@ -327,9 +327,17 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
 
 /* ---------- Badge ---------- */
 .sdb-badge {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 6px 10px; border-radius: var(--radius-xs);
-  max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 6px 10px; border-radius: var(--radius-xs); white-space: nowrap;
   background: var(--tag-fill, var(--tag-blue-fill)); color: var(--tag-ink, var(--tag-blue-ink)); font: 600 12.5px/1.3 var(--font-ui); letter-spacing: -0.005em;
+}
+/* Linhas de tags com nomes longos (tema, tradição): o badge encolhe e quebra, em vez de vazar do card ou da linha. */
+.sdb-source__tags .sdb-badge,
+.sdb-content__tags .sdb-badge {
+  max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere;
+}
+.sdb-source__tags .sdb-badge > .sdb-icon,
+.sdb-content__tags .sdb-badge > .sdb-icon {
+  flex-shrink: 0;
 }
 .sdb-badge--neutral { --tag-fill: var(--tag-neutral-fill); --tag-ink: var(--tag-neutral-ink); }
 .sdb-badge--solid { background: var(--depth-fill); color: var(--on-depth); }

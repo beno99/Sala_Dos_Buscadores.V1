@@ -126,7 +126,7 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
               {temas.length > 0 && (
                 <div className="sdb-publicprofile__detail">
                   <h3 className="sdb-meta">Temas nas Salas</h3>
-                  <div className="sdb-publicprofile__tags">
+                  <div className="sdb-publicprofile__tags sdb-content__tags">
                     {temas.map((tema) => (
                       <Badge key={tema.slug} variant="topic" icon="glossario">
                         {tema.nome}
