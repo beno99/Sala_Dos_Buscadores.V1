@@ -75,9 +75,8 @@ export function editar(de: StatusEditorial): Transicao & { saiDoAr?: boolean } {
   return t.ok ? { ...t, saiDoAr: de === "publicado" } : t;
 }
 
-/** Só se exclui o que nunca foi ao ar; o que já foi publicado só é retirado (arquivado). */
-export function podeExcluir(item: { status: StatusEditorial; jaPublicado: boolean }): string | null {
-  if (item.jaPublicado) return "o que já foi publicado não é excluído; retire do ar para arquivar.";
+/** Exclusão do anfitrião: bloqueada só enquanto o item está em revisão (a curadoria decide primeiro). */
+export function podeExcluir(item: { status: StatusEditorial }): string | null {
   if (item.status === "em_revisao") return "este item está em revisão. Espere a decisão da curadoria.";
   return null;
 }

@@ -547,14 +547,14 @@ function podarFontesPropostas(donoId: string) {
   }
 }
 
-/** Salas vão à lixeira; a exclusão de artigos avulsos mantém as restrições existentes. */
+/** Salas vão à lixeira; artigos avulsos são apagados direto (sem lixeira), mesmo já tendo sido publicados. */
 export async function excluir(tipo: TipoItemAnfitriao, id: string, dono: Membro): Promise<ResultadoAcao> {
   if (tipo === "sala") return mudarLixeiraSala(id, "excluir", dono);
   return comPosse(() => {
     const recusa = conferirAnfitriao(dono);
     if (recusa) return erro(recusa);
     const artigo = artigoDoDono(id, dono.id);
-    const motivo = podeExcluir({ status: artigo.status, jaPublicado: Boolean(artigo.revisao?.jaPublicado) });
+    const motivo = podeExcluir({ status: artigo.status });
     if (motivo) return erro(motivo);
     acervo().conteudos.delete(id);
     podarFontesPropostas(dono.id);

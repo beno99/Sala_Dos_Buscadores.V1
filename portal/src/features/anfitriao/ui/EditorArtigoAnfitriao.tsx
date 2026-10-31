@@ -67,7 +67,6 @@ interface EditorArtigoAnfitriaoProps {
   inicial: FormArtigoAnfitriao;
   status: StatusEditorial;
   atualizadoEm: string | null;
-  jaPublicado: boolean;
   congelado: boolean;
   ultimoMotivo?: string;
   sala: Sala & { id: string; status: StatusEditorial };
@@ -89,7 +88,6 @@ export function EditorArtigoAnfitriao({
   inicial,
   status,
   atualizadoEm,
-  jaPublicado,
   congelado,
   ultimoMotivo,
   sala,
@@ -611,7 +609,7 @@ export function EditorArtigoAnfitriao({
                 )
               }
             />
-            {id && !travado && (publicado || !jaPublicado) && (
+            {id && !travado && (
               <div className="sdb-material sdb-panel">
                 <h2 className="sdb-headline">Ações</h2>
                 <div className="flex flex-col gap-2">
@@ -620,11 +618,9 @@ export function EditorArtigoAnfitriao({
                       Retirar do ar
                     </Button>
                   )}
-                  {!jaPublicado && (
-                    <Button variant="destructive" block icon="lixeira" onClick={() => setExcluir(true)}>
-                      Excluir artigo
-                    </Button>
-                  )}
+                  <Button variant="destructive" block icon="lixeira" onClick={() => setExcluir(true)}>
+                    Excluir artigo
+                  </Button>
                 </div>
               </div>
             )}
@@ -782,7 +778,9 @@ export function EditorArtigoAnfitriao({
           )
         }
       >
-        O artigo é apagado. Isso não pode ser desfeito.
+        {publicado
+          ? "O artigo sai do portal e é apagado. Isso não pode ser desfeito."
+          : "O artigo é apagado. Isso não pode ser desfeito."}
       </ModalConfirmacao>
 
       <AvisoSaida sujo={sujo && estado !== "salvando"} onDescartar={() => setSujo(false)} />

@@ -17,7 +17,6 @@ export default async function NovoArtigo(props: PageProps<"/anfitriao/salas/[id]
       inicial={artigoVazio(sala.id)}
       status="rascunho"
       atualizadoEm={null}
-      jaPublicado={false}
       congelado={Boolean(sala.revisao?.congelado)}
       sala={dados.sala}
       assinatura={dados.assinaturaPadrao}

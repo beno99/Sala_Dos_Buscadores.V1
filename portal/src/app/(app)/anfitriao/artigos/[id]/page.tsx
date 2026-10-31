@@ -42,7 +42,6 @@ export default async function PaginaArtigo(props: PageProps<"/anfitriao/artigos/
         }}
         status={artigo.status}
         atualizadoEm={artigo.atualizadoEm}
-        jaPublicado={Boolean(revisao?.jaPublicado)}
         congelado={Boolean(revisao?.congelado)}
         ultimoMotivo={revisao?.ultimoMotivo}
         sala={dados.sala}
