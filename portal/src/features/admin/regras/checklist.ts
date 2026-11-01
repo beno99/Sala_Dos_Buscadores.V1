@@ -274,7 +274,7 @@ export function checklistVideo(f: FormVideo): ItemChecklist[] {
   const faltando: [boolean, string][] = [
     [!f.sala, "campo-sala"],
     [!f.titulo.trim(), "campo-titulo"],
-    [!f.tema, "campo-tema"],
+    [f.temas.length === 0, "campo-temas"],
     [f.nivel === null, "campo-nivel"],
   ];
   const primeiro = faltando.find(([falta]) => falta);
@@ -340,7 +340,7 @@ export const ORDEM_CAMPOS_VIDEO = [
   "campo-titulo",
   "campo-url",
   "campo-duracao",
-  "campo-tema",
+  "campo-temas",
   "campo-nivel",
 ];
 
@@ -419,7 +419,7 @@ export function errosDePublicacaoVideo(f: FormVideo): Record<string, string> {
   if (!url.ok) e["campo-url"] = url.erro;
   const duracao = validarDuracao(f.duracao);
   if (duracao) e["campo-duracao"] = duracao;
-  if (!f.tema) e["campo-tema"] = "escolha o tema do vídeo.";
+  if (f.temas.length === 0) e["campo-temas"] = "escolha ao menos um tema do vídeo.";
   if (f.nivel === null) e["campo-nivel"] = "escolha o nível.";
   return e;
 }

@@ -50,6 +50,13 @@
       "when": 1793476251454,
       "tag": "0006_salas_lixeira",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793493142692,
+      "tag": "0007_famous_azazel",
+      "breakpoints": true
     }
   ]
 }

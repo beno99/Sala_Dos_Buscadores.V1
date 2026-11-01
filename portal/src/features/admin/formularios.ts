@@ -66,7 +66,7 @@ export interface FormVideo {
   titulo: string;
   url: string;
   duracao: string;
-  tema: TemaSlug | "";
+  temas: TemaSlug[];
   nivel: Nivel | null;
   episodio: string;
   publicadoEm: string;
@@ -134,7 +134,7 @@ export function videoVazio(): FormVideo {
     titulo: "",
     url: "",
     duracao: "",
-    tema: "",
+    temas: [],
     nivel: null,
     episodio: "",
     publicadoEm: "",
@@ -205,7 +205,7 @@ export function videoParaForm(v: VideoEditorial): FormVideo {
     titulo: v.titulo,
     url: v.url,
     duracao: v.duracao,
-    tema: v.tema,
+    temas: [...v.temas],
     nivel: v.nivel,
     episodio: v.episodio,
     publicadoEm: v.publicadoEm,

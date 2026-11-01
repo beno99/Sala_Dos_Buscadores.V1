@@ -183,7 +183,7 @@ export function filtrarVideos(itens: VideoEditorial[], f: FiltrosVideos): VideoE
       (v) =>
         contem(v.titulo, f.q) &&
         (!f.sala || v.sala === f.sala) &&
-        (!f.tema || v.tema === f.tema) &&
+        (!f.tema || v.temas.includes(f.tema)) &&
         (!f.nivel || v.nivel === f.nivel) &&
         (!f.status || v.status === f.status),
     ),

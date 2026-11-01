@@ -21,7 +21,7 @@ export function duracaoPorExtenso(duracao: string): string {
  */
 export function CardVideo({ video, previa = false }: { video: Video; previa?: boolean }) {
   const sala = salaPorSlug(video.sala);
-  const tema = temaPorSlug(video.tema);
+  const tema = video.temas[0] && temaPorSlug(video.temas[0]);
   const destino = extrairIdYoutube(video.url);
   const id = `video-${video.id}`;
   const notaId = `${id}-nota`;

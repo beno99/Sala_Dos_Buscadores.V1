@@ -86,7 +86,7 @@ export const COLUNAS_VIDEOS: Coluna<VideoEditorial>[] = [
   { cabecalho: "URL", valor: (v) => v.url },
   { cabecalho: "ID do YouTube", valor: (v) => v.youtubeId },
   { cabecalho: "Duração", valor: (v) => v.duracao },
-  { cabecalho: "Tema", valor: (v) => temaPorSlug(v.tema)?.nome ?? v.tema },
+  { cabecalho: "Temas", valor: (v) => v.temas.map((t) => temaPorSlug(t)?.nome ?? t).join(", ") },
   { cabecalho: "Nível", valor: (v) => NIVEL_ROTULO[v.nivel] },
   { cabecalho: "Episódio", valor: (v) => v.episodio },
   { cabecalho: "Publicado no canal em", valor: (v) => data(v.publicadoEm) },

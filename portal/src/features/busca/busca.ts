@@ -163,11 +163,8 @@ function termos(pergunta: string): string[] {
 
 function textoPesquisavel(item: ItemResultado): string {
   const sala = salaPorSlug(item.item.sala)?.nome ?? "";
-  if (item.tipo === "video") {
-    const tema = temaPorSlug(item.item.tema)?.nome ?? "";
-    return normalizar(`${item.item.titulo} ${sala} ${tema}`);
-  }
   const temas = item.item.temas.map((t) => temaPorSlug(t)?.nome ?? "").join(" ");
+  if (item.tipo === "video") return normalizar(`${item.item.titulo} ${sala} ${temas}`);
   return normalizar(`${item.item.titulo} ${item.item.resumo} ${sala} ${temas}`);
 }
 
@@ -180,7 +177,7 @@ function todosOsItens(acervo: AcervoBusca): ItemResultado[] {
   ];
 }
 
-const temasDoItem = (i: ItemResultado): TemaSlug[] => (i.tipo === "video" ? [i.item.tema] : i.item.temas);
+const temasDoItem = (i: ItemResultado): TemaSlug[] => i.item.temas;
 
 type Faceta = "salas" | "temas" | "niveis" | "formato";
 

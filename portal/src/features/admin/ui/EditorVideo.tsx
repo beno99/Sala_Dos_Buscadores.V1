@@ -6,8 +6,9 @@ import { Alerta } from "@/components/ds/Alerta";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { Button } from "@/components/ds/Button";
 import { CampoTexto } from "@/components/ds/Campos";
-import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
+import { RadioGrupo } from "@/components/ds/CamposExtras";
 import { CardVideo } from "@/components/ds/CardVideo";
+import { Chip } from "@/components/ds/Chip";
 import { ChecklistPublicacao, IndicadorSalvamento, SeloStatus } from "@/components/ds/Curadoria";
 import { Icon } from "@/components/ds/Icon";
 import { ModalConfirmacao } from "@/components/ds/Modal";
@@ -16,7 +17,7 @@ import { SeloNivel } from "@/components/ds/Selos";
 import { useToast } from "@/components/ds/Toast";
 import { todosOsTemas } from "@/data/catalogo";
 import { NIVEL_AJUDA } from "@/data/rotulos";
-import type { Nivel, Placa, SalaSlug, StatusEditorial, TemaSlug } from "@/data/types";
+import type { Nivel, Placa, SalaSlug, StatusEditorial } from "@/data/types";
 import { atualizarArtigosParaVideoAcao, salvarVideoAcao } from "@/server/admin/acoes";
 import type { FormVideo } from "../formularios";
 import {
@@ -30,7 +31,7 @@ import type { ArtigoLigavel } from "../regras/vinculos-video";
 import { extrairIdYoutube } from "../regras/youtube";
 import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { PLACAS } from "./CamposFonte";
-import type { SalaDoItem } from "./EditorArtigo";
+import { ErroCampo, type SalaDoItem } from "./EditorArtigo";
 import { OrientacaoCadastro } from "./OrientacaoCadastro";
 import { SeletorArtigosVideo } from "./SeletorArtigosVideo";
 import { useAcaoStatus } from "./useAcaoStatus";
@@ -68,6 +69,12 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
   const publicado = status === "publicado";
   const arquivado = status === "arquivado";
   const url = extrairIdYoutube(form.url);
+
+  const alternarTema = (t: FormVideo["temas"][number]) =>
+    mudar(
+      { temas: form.temas.includes(t) ? form.temas.filter((x) => x !== t) : [...form.temas, t] },
+      "campo-temas",
+    );
 
   const mostrarErros = (novos: Record<string, string>, mensagem: string) => {
     setErros(novos);
@@ -235,17 +242,26 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
                 <h2 id="sec-classificacao-video" className="sdb-headline">
                   Classificação
                 </h2>
-                <Select
-                  id="campo-tema"
-                  label="Tema"
-                  value={form.tema}
-                  error={erros["campo-tema"]}
-                  opcoes={[
-                    { value: "", label: "Escolha o tema" },
-                    ...todosOsTemas().map((t) => ({ value: t.slug, label: t.nome })),
-                  ]}
-                  onChange={(e) => mudar({ tema: e.target.value as TemaSlug }, "campo-tema")}
-                />
+                <fieldset
+                  id="campo-temas"
+                  className="sdb-fieldset"
+                  aria-describedby={erros["campo-temas"] ? "campo-temas-erro" : undefined}
+                >
+                  <legend className="sdb-caption">Temas</legend>
+                  <div className="sdb-row sdb-tag-picker">
+                    {todosOsTemas().map((t) => (
+                      <Chip
+                        key={t.slug}
+                        small
+                        pressed={form.temas.includes(t.slug)}
+                        onClick={() => alternarTema(t.slug)}
+                      >
+                        {t.nome}
+                      </Chip>
+                    ))}
+                  </div>
+                  {erros["campo-temas"] && <ErroCampo id="campo-temas-erro" texto={erros["campo-temas"]} />}
+                </fieldset>
                 <RadioGrupo<`${Nivel}`>
                   id="campo-nivel"
                   legenda="Nível"
@@ -291,7 +307,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
                       sala: sala.slug as SalaSlug,
                       titulo: form.titulo || "Título do vídeo",
                       duracao: form.duracao || "00:00",
-                      tema: (form.tema || "alma") as TemaSlug,
+                      temas: form.temas.length ? form.temas : ["alma"],
                       nivel: form.nivel ?? 1,
                       episodio: form.episodio || "Episódio",
                       publicadoEm: form.publicadoEm || new Date().toISOString().slice(0, 10),

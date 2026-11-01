@@ -89,7 +89,7 @@ export function videoParaPublico(v: VideoEditorial): Video {
     sala: v.sala,
     titulo: v.titulo,
     duracao: v.duracao,
-    tema: v.tema,
+    temas: v.temas,
     nivel: v.nivel,
     episodio: v.episodio,
     publicadoEm: v.publicadoEm,
@@ -205,7 +205,7 @@ export function temasDaSala(sala: SalaSlug): TemaSlug[] {
 /** Quantos conteúdos e vídeos publicados tratam de cada tema, e em quantas Salas. */
 export function alcanceDoTema(tema: TemaSlug): { itens: number; salas: number } {
   const conteudos = publicados().filter((c) => c.temas.includes(tema));
-  const videos = videosPublicados().filter((v) => v.tema === tema);
+  const videos = videosPublicados().filter((v) => v.temas.includes(tema));
   const salas = new Set([...conteudos.map((c) => c.sala), ...videos.map((v) => v.sala)]);
   return { itens: conteudos.length + videos.length, salas: salas.size };
 }

@@ -535,7 +535,7 @@ function montarVideo(f: FormVideo, anterior: VideoEditorial | undefined, quem: s
     sala,
     titulo: f.titulo.trim(),
     duracao: f.duracao.trim(),
-    tema: (f.tema || "alma") as VideoEditorial["tema"],
+    temas: [...new Set(f.temas)],
     nivel: f.nivel ?? 1,
     episodio: f.episodio.trim(),
     publicadoEm: f.publicadoEm || anterior?.publicadoEm || hoje(),

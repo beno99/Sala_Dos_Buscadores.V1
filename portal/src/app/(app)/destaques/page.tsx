@@ -29,7 +29,7 @@ export default async function Destaques(props: PageProps<"/destaques">) {
       ...t,
       contagem:
         escolhidos.filter((e) => e.conteudo.temas.includes(t.slug)).length +
-        (destaques.video?.tema === t.slug ? 1 : 0),
+        (destaques.video?.temas.includes(t.slug) ? 1 : 0),
     }))
     .filter((t) => t.contagem > 0);
   const tema = temas.find((t) => t.slug === busca.tema);
@@ -87,7 +87,7 @@ export default async function Destaques(props: PageProps<"/destaques">) {
           <h2 id="titulo-tema" className="sdb-title-2">
             {tema.nome} nos destaques
           </h2>
-          {destaques.video?.tema === tema.slug && <CardVideo video={destaques.video} />}
+          {destaques.video?.temas.includes(tema.slug) && <CardVideo video={destaques.video} />}
           {doTema.length > 0 ? (
             <div className="grid grid-cols-3 gap-5 @max-[53.75rem]:grid-cols-2 @max-[37.5rem]:grid-cols-1">
               {doTema.map((e) => card(e, "normal"))}

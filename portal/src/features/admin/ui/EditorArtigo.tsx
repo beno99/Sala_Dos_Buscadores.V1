@@ -1163,7 +1163,7 @@ export function EditorArtigo({
   );
 }
 
-function ErroCampo({ id, texto }: { id: string; texto: string }) {
+export function ErroCampo({ id, texto }: { id: string; texto: string }) {
   return (
     <p id={id} className="sdb-error-msg">
       <Icon name="erro" />

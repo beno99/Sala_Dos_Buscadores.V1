@@ -57,7 +57,7 @@ export function ListaVideos({
             <Link href={`${base}/${v.id}` as Route}>{v.titulo || "Sem título"}</Link>
           </span>
           <span className="sdb-table__sub">
-            {temaPorSlug(v.tema)?.nome} · {v.duracao || "sem duração"}
+            {v.temas.map((t) => temaPorSlug(t)?.nome).join(", ")} · {v.duracao || "sem duração"}
             {v.pendencias > 0 && ` · ${v.pendencias} ${v.pendencias === 1 ? "pendência" : "pendências"}`}
           </span>
         </>

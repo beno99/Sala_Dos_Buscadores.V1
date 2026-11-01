@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 import { videosDoConteudo } from "../src/data/repositorio";
 import type { ConteudoEditorial } from "../src/data/types";
-import { videoParaForm, videoVazio } from "../src/features/admin/formularios";
+import { type FormVideo, videoParaForm, videoVazio } from "../src/features/admin/formularios";
 import { salaOficialVazia } from "../src/features/admin/regras/sala";
 import { listarArtigosParaVideo, videosDaPreviaDoArtigo } from "../src/server/admin/consultas";
 import { salvarVideo } from "../src/server/admin/editorial";
@@ -38,16 +38,15 @@ const artigo = (id: string, status: "publicado" | "rascunho" = "rascunho") =>
     status,
     criadoEm: "2026-10-31T00:00:00Z",
   }) as ConteudoEditorial;
-const form = () =>
-  ({
-    ...videoVazio(),
-    sala,
-    titulo: "Vídeo teste",
-    url: "https://youtu.be/dQw4w9WgXcQ",
-    duracao: "10:00",
-    tema: "alma",
-    nivel: 1,
-  }) as const;
+const form = (): FormVideo => ({
+  ...videoVazio(),
+  sala,
+  titulo: "Vídeo teste",
+  url: "https://youtu.be/dQw4w9WgXcQ",
+  duracao: "10:00",
+  temas: ["alma"],
+  nivel: 1,
+});
 
 test("salvar mantém ID, deduplica vínculos e remover associação não exclui artigo", async () => {
   const a = artigo("artigo-a");

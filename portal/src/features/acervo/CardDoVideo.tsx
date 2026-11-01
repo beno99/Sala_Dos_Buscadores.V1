@@ -12,7 +12,7 @@ import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
  */
 export function CardDoVideo({ video, nomeSala }: { video: Video; nomeSala: string }) {
   const destino = extrairIdYoutube(video.url);
-  const tema = temaPorSlug(video.tema);
+  const tema = video.temas[0] && temaPorSlug(video.temas[0]);
   return (
     <CardAcervo
       id={`video-${video.id}`}

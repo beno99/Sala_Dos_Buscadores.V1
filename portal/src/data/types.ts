@@ -164,7 +164,7 @@ export interface Video {
   titulo: string;
   /** mm:ss */
   duracao: string;
-  tema: TemaSlug;
+  temas: TemaSlug[];
   nivel: Nivel;
   episodio: string;
   publicadoEm: string;

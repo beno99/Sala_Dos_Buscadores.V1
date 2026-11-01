@@ -140,7 +140,7 @@ export const videos = pgTable("videos", {
     .references(() => salas.slug, { onUpdate: "cascade" }),
   titulo: text("titulo").notNull(),
   duracao: text("duracao").notNull(),
-  tema: text("tema").notNull().$type<TemaSlug>(),
+  temas: text("temas").array().notNull().$type<TemaSlug[]>(),
   nivel: integer("nivel").notNull().$type<1 | 2 | 3>(),
   episodio: text("episodio").notNull(),
   publicadoEm: text("publicado_em").notNull(),
