@@ -33,6 +33,7 @@ export interface UsuarioVisual {
   email: string;
   papel: "membro" | "anfitriao" | "administrador";
   membroDesde: string;
+  emailVerificadoEm: string | null;
   nomePublico?: string;
   salas: number;
 }
@@ -58,9 +59,9 @@ export interface ConviteVisual {
 }
 
 const PAPEL: Record<UsuarioVisual["papel"], string> = {
-  membro: "Membro",
+  membro: "Buscador",
   anfitriao: "Anfitrião",
-  administrador: "Administrador",
+  administrador: "Curadoria",
 };
 
 const data = (iso: string) => formatarData(iso.slice(0, 10));
@@ -133,6 +134,20 @@ export function UsuariosAdmin({
 }) {
   const router = useRouter();
   const toast = useToast();
+  const [busca, setBusca] = useState("");
+  const [papelFiltro, setPapelFiltro] = useState("");
+  const [situacaoFiltro, setSituacaoFiltro] = useState("");
+  const normalizar = (v: string) =>
+    v
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  const filtrados = usuarios.filter(
+    (u) =>
+      (!papelFiltro || u.papel === papelFiltro) &&
+      (!situacaoFiltro || (u.emailVerificadoEm ? "ativo" : "pendente") === situacaoFiltro) &&
+      normalizar(`${u.pseudonimo} ${u.nomePublico ?? ""} ${u.email}`).includes(normalizar(busca.trim())),
+  );
   const [aba, setAba] = useState<Aba>(abaInicial);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [ocupado, setOcupado] = useState(false);
@@ -192,12 +207,39 @@ export function UsuariosAdmin({
         aria-labelledby="usuarios-aba-usuarios"
         hidden={aba !== "usuarios"}
       >
+        <div className="grid gap-3 nav:grid-cols-3">
+          <CampoTexto
+            label="Buscar usuário"
+            type="search"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+          <Select
+            label="Perfil"
+            value={papelFiltro}
+            onChange={(e) => setPapelFiltro(e.target.value)}
+            opcoes={[
+              { value: "", label: "Todos os perfis" },
+              ...Object.entries(PAPEL).map(([value, label]) => ({ value, label })),
+            ]}
+          />
+          <Select
+            label="Situação do cadastro"
+            value={situacaoFiltro}
+            onChange={(e) => setSituacaoFiltro(e.target.value)}
+            opcoes={[
+              { value: "", label: "Todas as situações" },
+              { value: "ativo", label: "Ativo" },
+              { value: "pendente", label: "Pendente de confirmação" },
+            ]}
+          />
+        </div>
         <TabelaDados<UsuarioVisual>
-          legenda={`Contas · ${usuarios.length}`}
-          itens={usuarios}
+          legenda={`Contas · ${filtrados.length} de ${usuarios.length}`}
+          itens={filtrados}
           chave={(u) => u.id}
           rotuloItem={(u) => u.pseudonimo}
-          vazio="Nenhuma conta."
+          vazio="Nenhuma conta corresponde aos filtros."
           colunas={[
             {
               id: "conta",
@@ -224,6 +266,11 @@ export function UsuariosAdmin({
                   {PAPEL[u.papel]}
                 </span>
               ),
+            },
+            {
+              id: "situacao",
+              cabecalho: "Situação",
+              celula: (u) => (u.emailVerificadoEm ? "Ativo" : "Pendente de confirmação"),
             },
             { id: "desde", cabecalho: "Desde", className: "sdb-tabular", celula: (u) => data(u.membroDesde) },
             {

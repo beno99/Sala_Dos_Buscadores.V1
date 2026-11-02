@@ -34,6 +34,7 @@ import type {
 } from "@/data/types";
 import { inicialDoTitulo, normalizar } from "@/lib/texto";
 import { criarTemaAcao, salvarArtigoAcao, salvarFonteAcao } from "@/server/admin/acoes";
+import type { VideoSelecionavel } from "@/server/vinculos-editoriais";
 import { type FormArtigo, type FormFonte, fonteVazia, type TipoArtigo } from "../formularios";
 import {
   checklistArtigo,
@@ -55,6 +56,7 @@ import { AvisoSaida, focarCampo } from "./AvisoSaida";
 import { CamposFonte } from "./CamposFonte";
 import { MoverParaSala } from "./MoverParaSala";
 import { OrientacaoCadastro } from "./OrientacaoCadastro";
+import { SeletorVideosArtigo } from "./SeletorVideosArtigo";
 import { useAcaoStatus } from "./useAcaoStatus";
 import { useEdicao } from "./useEdicao";
 
@@ -91,6 +93,7 @@ export interface SalaDoItem {
 }
 
 interface EditorArtigoProps {
+  videos?: VideoSelecionavel[];
   inicial: FormArtigo;
   status: StatusEditorial;
   atualizadoEm: string | null;
@@ -108,6 +111,7 @@ const PROVENIENCIAS = (Object.keys(PROVENIENCIA_ROTULO) as Proveniencia[]).filte
 /** Formulário de artigo e fonte primária (RF-11 a RF-13, RF-15, RNF-DOM-01, RNF-DOM-03, RNF-DOM-04). */
 export function EditorArtigo({
   inicial,
+  videos = [],
   status,
   atualizadoEm,
   slugTravado,
@@ -325,6 +329,11 @@ export function EditorArtigo({
           Sala: <b>{sala.nome}</b>
         </p>
       </header>
+      {edicao.conflito && (
+        <Alerta variant="error" title="Conflito de edição">
+          {edicao.conflito}
+        </Alerta>
+      )}
 
       {form.id && (
         <Segmented<"edicao" | "historico">
@@ -663,7 +672,7 @@ export function EditorArtigo({
                     label="Imagem do card"
                     opcional
                     finalidade="card-artigo"
-                    help="Sem ela, o card usa o banner da Sala."
+                    help="Sem imagem de card, será exibida a inicial do artigo."
                     valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
                     disabled={arquivado}
                     onMudar={(img) => mudar({ imagemCard: img?.id ?? null })}
@@ -821,6 +830,12 @@ export function EditorArtigo({
               </section>
 
               {/* g) Fontes (RNF-DOM-01) */}
+              <SeletorVideosArtigo
+                videos={videos}
+                selecionados={form.videos ?? []}
+                onMudar={(videos) => mudar({ videos }, "campo-videos")}
+                erro={erros["campo-videos"]}
+              />
               <section className="sdb-material sdb-panel" aria-labelledby="sec-fontes">
                 <div className="sdb-row sdb-row--between">
                   <h2 id="sec-fontes" className="sdb-headline">
@@ -858,7 +873,7 @@ export function EditorArtigo({
                       />
                     </div>
                   </div>
-                  <div className="sdb-list">
+                  <div className="sdb-list sdb-selection-list" role="region" aria-label="Fontes disponíveis">
                     {fontesFiltradas.length === 0 ? (
                       <p className="sdb-list-row sdb-hint">
                         Nenhuma fonte com esse nome. Use “Nova fonte” para cadastrar.

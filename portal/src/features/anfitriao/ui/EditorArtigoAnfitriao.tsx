@@ -41,10 +41,12 @@ import {
   retirarDoArAcao,
   salvarArtigoAnfitriaoAcao,
 } from "@/server/anfitriao/acoes";
+import type { VideoSelecionavel } from "@/server/vinculos-editoriais";
 import { errosDoCorpoResolvidos } from "../../admin/regras/checklist";
 import { errosDoCorpo } from "../../admin/regras/corpo";
 import { AvisoSaida, focarCampo } from "../../admin/ui/AvisoSaida";
 import { OrientacaoCadastro } from "../../admin/ui/OrientacaoCadastro";
+import { SeletorVideosArtigo } from "../../admin/ui/SeletorVideosArtigo";
 import { useEdicao } from "../../admin/ui/useEdicao";
 import {
   checklistEnvioArtigo,
@@ -64,6 +66,7 @@ import { SheetEnvio } from "./SheetEnvio";
 export type FonteParaAnfitriao = Fonte & { nova: boolean };
 
 interface EditorArtigoAnfitriaoProps {
+  videos?: VideoSelecionavel[];
   inicial: FormArtigoAnfitriao;
   status: StatusEditorial;
   atualizadoEm: string | null;
@@ -86,6 +89,7 @@ const fonteVazia = (): FormFonteProposta => ({ titulo: "", autor: "", tipo: "", 
 /** O artigo do anfitrião (§3.2, §5): formulário, prévia como o público verá e envio para revisão. */
 export function EditorArtigoAnfitriao({
   inicial,
+  videos = [],
   status,
   atualizadoEm,
   congelado,
@@ -322,6 +326,11 @@ export function EditorArtigoAnfitriao({
           </p>
         )}
       </header>
+      {edicao.conflito && (
+        <Alerta variant="error" title="Conflito de edição">
+          {edicao.conflito}
+        </Alerta>
+      )}
 
       <OrientacaoCadastro
         itens={checklist}
@@ -449,6 +458,12 @@ export function EditorArtigoAnfitriao({
                 />
               </section>
 
+              <SeletorVideosArtigo
+                videos={videos}
+                selecionados={form.videos ?? []}
+                onMudar={(videos) => mudar({ videos }, "campo-videos")}
+                erro={erros["campo-videos"]}
+              />
               <section className="sdb-material sdb-panel" aria-labelledby="sec-fontes">
                 <div className="sdb-row sdb-row--between">
                   <h2 id="sec-fontes" className="sdb-headline">
@@ -486,7 +501,7 @@ export function EditorArtigoAnfitriao({
                       />
                     </div>
                   </div>
-                  <div className="sdb-list">
+                  <div className="sdb-list sdb-selection-list" role="region" aria-label="Fontes disponíveis">
                     {fontesFiltradas.length === 0 ? (
                       <p className="sdb-list-row sdb-hint">
                         Nenhuma fonte com esse nome. Use “Nova fonte” para cadastrar.
@@ -761,10 +776,10 @@ export function EditorArtigoAnfitriao({
 
       <ModalConfirmacao
         open={excluir}
-        titulo="Excluir este artigo?"
+        titulo="Mover este artigo para a lixeira?"
         icone="lixeira"
         destrutivo
-        rotuloConfirmar="Excluir artigo"
+        rotuloConfirmar="Mover para a lixeira"
         carregando={ocupado}
         onCancelar={() => setExcluir(false)}
         onConfirmar={() =>
@@ -778,9 +793,8 @@ export function EditorArtigoAnfitriao({
           )
         }
       >
-        {publicado
-          ? "O artigo sai do portal e é apagado. Isso não pode ser desfeito."
-          : "O artigo é apagado. Isso não pode ser desfeito."}
+        O artigo sai do portal e das suas listas. Seu texto, estado editorial, fontes e vínculos são
+        preservados. Somente a curadoria pode restaurar ou excluir definitivamente.
       </ModalConfirmacao>
 
       <AvisoSaida sujo={sujo && estado !== "salvando"} onDescartar={() => setSujo(false)} />

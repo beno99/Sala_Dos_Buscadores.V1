@@ -1,4 +1,5 @@
 import "server-only";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { randomUUID } from "node:crypto";
 import type { RegistroAuditoria } from "@/data/types";
 import { auditoriaBruta, incluirAuditoria } from "./store";
@@ -10,10 +11,18 @@ import { auditoriaBruta, incluirAuditoria } from "./store";
  */
 
 export type NovoRegistro = Omit<RegistroAuditoria, "id" | "quando">;
+const contextoAtor = new AsyncLocalStorage<string>();
+/** Contexto por chamada; dois curadores simultâneos nunca compartilham identidade. */
+export const atorAuditoriaAtual = () => contextoAtor.getStore();
+
+export function auditarComo<T>(atorId: string, executar: () => T): T {
+  return contextoAtor.run(atorId, executar);
+}
 
 export function registrar(novo: NovoRegistro, quando = new Date()): RegistroAuditoria {
   const registro: RegistroAuditoria = Object.freeze({
     ...novo,
+    atorId: novo.atorId ?? contextoAtor.getStore(),
     mudancas: novo.mudancas?.map((m) => Object.freeze({ ...m })),
     id: `a-${randomUUID()}`,
     quando: quando.toISOString(),

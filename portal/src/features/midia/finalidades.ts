@@ -49,11 +49,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
     proporcao: "3:1",
     alturaLivre: true,
     exibicao: "Aparece inteira, na largura da página da Sala; a altura acompanha a proporção do arquivo.",
-    usos: [
-      "topo da página da Sala",
-      "card da Sala, enquanto não houver imagem do card",
-      "card dos artigos da Sala que não têm imagem própria",
-    ],
+    usos: ["topo da página da Sala; não substitui a imagem do card"],
   },
   // Card vertical: de 274 × 552 (celular) a 491 × 552 (1920), quase sempre perto de 3:5.
   "card-sala": {
@@ -74,8 +70,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
     exibicao:
       "Aparece inteira no card do artigo; arquivos de outra proporção ganham fundo em cima e embaixo ou nas laterais.",
     usos: [
-      "cards do artigo no Portal, em Destaques, na Biblioteca e na Sala",
-      "topo da página do artigo, enquanto não houver imagem de topo",
+      "cards do artigo no Portal, em Destaques, na Biblioteca e na Sala; não substitui a imagem de topo",
     ],
   },
   // Mesma peça do banner da Sala, na página do artigo.

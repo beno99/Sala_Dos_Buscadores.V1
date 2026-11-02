@@ -8,19 +8,19 @@ export interface ArtigoLigavel {
   criadoEm: string;
 }
 
-type Candidato = ArtigoLigavel & { tipo?: string; revisao?: unknown };
+type Candidato = ArtigoLigavel & { tipo?: string; revisao?: unknown; lixeira?: unknown };
 const normalizar = (valor: string) =>
   valor.normalize("NFD").replace(/\p{M}/gu, "").toLocaleLowerCase("pt-BR");
 
 /** O mesmo recorte alimenta o seletor e a validação de IDs no servidor. */
-export function artigosParaVincular<T extends Candidato>(artigos: T[], sala: string, busca = ""): T[] {
+export function artigosParaVincular<T extends Candidato>(artigos: T[], _sala: string, busca = ""): T[] {
   const termo = normalizar(busca.trim());
   return artigos
     .filter(
       (a) =>
-        a.sala === sala &&
+        !a.lixeira &&
         a.status !== "arquivado" &&
-        !a.revisao &&
+        (!a.revisao || a.status === "publicado") &&
         (!a.tipo || a.tipo === "artigo" || a.tipo === "fonte-primaria") &&
         (!termo || normalizar(`${a.titulo} ${a.id}`).includes(termo)),
     )

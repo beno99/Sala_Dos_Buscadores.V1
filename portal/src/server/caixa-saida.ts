@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { after } from "next/server";
 import type { EmailEnviado } from "@/data/types";
-import { caixaSaidaBruta, incluirEmail } from "./store";
+import { aposConfirmarPedido, caixaSaidaBruta, incluirEmail } from "./store";
 
 /*
  * Caixa de saída (§10). Cada envio fica registrado no banco (para, assunto,
@@ -62,7 +62,7 @@ export function enviarEmail(novo: NovoEmail, quando = new Date()): EmailEnviado 
     quando: quando.toISOString(),
   });
   incluirEmail(email);
-  after(() => enviarPeloResend(email, novo.html));
+  if (process.env.RESEND_API_KEY) aposConfirmarPedido(() => after(() => enviarPeloResend(email, novo.html)));
   return { ...email };
 }
 

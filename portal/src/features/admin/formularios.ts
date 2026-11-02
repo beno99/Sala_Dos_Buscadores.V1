@@ -35,6 +35,7 @@ export interface FormCitacao {
 }
 
 export interface FormArtigo {
+  versaoEsperada?: string | null;
   id: string | null;
   sala: SalaSlug | "";
   tipo: TipoArtigo;
@@ -53,6 +54,7 @@ export interface FormArtigo {
   temCitacao: boolean;
   citacao: FormCitacao;
   fontes: string[];
+  videos?: string[];
   situacaoJuridica: SituacaoJuridica | null;
   temaDivergente: boolean;
   notaDivergencia: string;
@@ -61,6 +63,7 @@ export interface FormArtigo {
 }
 
 export interface FormVideo {
+  versaoEsperada?: string | null;
   id: string | null;
   sala: SalaSlug | "";
   titulo: string;
@@ -119,6 +122,7 @@ export function artigoVazio(sala: SalaSlug | "" = ""): FormArtigo {
     temCitacao: false,
     citacao: { ...CITACAO_VAZIA },
     fontes: [],
+    videos: [],
     situacaoJuridica: null,
     temaDivergente: false,
     notaDivergencia: "",

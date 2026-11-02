@@ -109,6 +109,7 @@ export const conteudos = pgTable(
     temaDivergente: boolean("tema_divergente").notNull(),
     notaDivergencia: text("nota_divergencia").notNull(),
     producaoIA: boolean("producao_ia").notNull(),
+    lixeira: jsonb("lixeira").$type<{ em: string; por: string }>(),
     donoId: text("dono_id"),
     revisao: jsonb("revisao").$type<RevisaoAnfitriao>(),
     midias: jsonb("midias").$type<{ card?: string; thumb?: string }>(),
@@ -148,7 +149,7 @@ export const videos = pgTable("videos", {
   placa: placaEnum("placa").notNull(),
   imagem: text("imagem"),
   youtubeId: text("youtube_id").notNull(),
-  /** Ids dos conteúdos da mesma Sala ligados ao vídeo. */
+  /** IDs de artigos relacionados, inclusive de outras Salas. Fonte única da relação. */
   artigos: text("artigos").array().notNull(),
   ...meta,
 }).enableRLS();

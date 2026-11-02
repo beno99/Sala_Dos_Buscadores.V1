@@ -3,6 +3,7 @@ import { beforeEach, test } from "node:test";
 import { salaOficialVazia } from "../src/features/admin/regras/sala";
 import { salaVisivel } from "../src/features/anfitriao/regras/visibilidade";
 import { listarSalasAdmin, salvarSalaOficial } from "../src/server/admin/salas";
+import { mudarLixeiraArtigo } from "../src/server/artigos/lixeira";
 import { acervo, aguardarGravacoes } from "../src/server/store";
 import { prepararAcervoEmMemoria } from "./acervo-memoria";
 
@@ -56,7 +57,9 @@ async function criarSala(origem: "oficial" | "anfitriao" = "anfitriao") {
   };
   acervo().salas.set(s.id, sala);
   await aguardarGravacoes();
-  return sala;
+  const confirmada = acervo().salas.get(sala.id);
+  assert.ok(confirmada);
+  return confirmada;
 }
 test("anfitrião exclui sua Sala publicada; curador restaura endereço, estados e vínculos após reabertura", async () => {
   const hooks = registerHooks({
@@ -116,6 +119,11 @@ test("anfitrião exclui sua Sala publicada; curador restaura endereço, estados 
   acervo().comunidade.comentarios.set(comentario.id, comentario);
   await aguardarGravacoes();
   assert.equal(salasVisiveis().length, 1);
+  assert.equal((await mudarLixeiraSala(sala.id, "excluir", dono)).ok, false);
+  assert.ok((await mudarLixeiraArtigo(artigo.id, "excluir", dono)).ok);
+  artigo.lixeira = acervo().conteudos.get(artigo.id)?.lixeira;
+  artigo.atualizadoEm = acervo().conteudos.get(artigo.id)?.atualizadoEm ?? artigo.atualizadoEm;
+  artigo.atualizadoPor = acervo().conteudos.get(artigo.id)?.atualizadoPor ?? artigo.atualizadoPor;
   assert.ok((await mudarLixeiraSala(sala.id, "excluir", dono)).ok);
   esquecerAcervo();
   await sincronizarAcervo();
@@ -131,12 +139,18 @@ test("anfitrião exclui sua Sala publicada; curador restaura endereço, estados 
   assert.ok((await mudarLixeiraSala(sala.id, "restaurar", admin)).ok);
   esquecerAcervo();
   await sincronizarAcervo();
+  assert.equal(salasVisiveis().length, 0);
+  assert.ok((await mudarLixeiraArtigo(artigo.id, "restaurar", admin)).ok);
+  artigo.lixeira = undefined;
+  artigo.atualizadoEm = acervo().conteudos.get(artigo.id)?.atualizadoEm ?? artigo.atualizadoEm;
+  artigo.atualizadoPor = acervo().conteudos.get(artigo.id)?.atualizadoPor ?? artigo.atualizadoPor;
   assert.equal(salasVisiveis()[0]?.slug, sala.slug);
   assert.equal(acervo().salas.get(sala.id)?.status, "publicado");
   assert.deepEqual(acervo().conteudos.get(artigo.id), artigo);
   assert.equal(listarLixeiraSalas().length, 0);
   assert.deepEqual(
     auditoriaBruta()
+      .filter((a) => a.tipoItem === "sala")
       .slice(-2)
       .map((a) => a.acao),
     ["excluiu", "restaurou"],
@@ -167,6 +181,7 @@ test("abas antigas não editam, publicam, arquivam ou movem conteúdos de Sala n
     id: "a",
     sala: sala.slug,
     titulo: "Rascunho",
+    lixeira: { em: "2026-11-02", por: "admin" },
     status: "rascunho",
   } as ConteudoEditorial);
   await aguardarGravacoes();

@@ -16,12 +16,14 @@ export function MiniaturaVideo({
   placa,
   mostrarEstado,
   titulo,
+  className = "video__image",
 }: {
   id?: string;
   imagem?: string;
   placa: Placa;
   mostrarEstado?: boolean;
   titulo?: string;
+  className?: string;
 }) {
   const [tentativa, setTentativa] = useState(0);
   const [src, setSrc] = useState<string>();
@@ -41,7 +43,7 @@ export function MiniaturaVideo({
       {src ? (
         // biome-ignore lint/performance/noImgElement: URL validada e carregada com fallback antes da exibição.
         <img
-          className="video__image"
+          className={className}
           src={src}
           alt={titulo ? `Miniatura do vídeo: ${titulo}` : ""}
           width={736}

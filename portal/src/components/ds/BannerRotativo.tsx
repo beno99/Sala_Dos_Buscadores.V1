@@ -48,7 +48,7 @@ function Conteudo({ slide, onPorQue }: { slide: SlideBanner; onPorQue: () => voi
   if (slide.tipo === "arte") {
     return (
       <div className="sdb-banner__text">
-        <h2 className="sdb-sr">{slide.texto}</h2>
+        <h2 className="sdb-sr sdb-banner__art-caption">{slide.texto}</h2>
         <div className="sdb-banner__actions">{slide.acoes}</div>
       </div>
     );
@@ -151,7 +151,7 @@ export function BannerRotativo({ slides, onPorQue }: { slides: SlideBanner[]; on
   return (
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover e foco só pausam a rotação; as ações ficam nos botões.
     <section
-      className={cx("sdb-banner sdb-banner--cheio", parado && "is-paused")}
+      className={cx("sdb-banner sdb-banner--cheio sdb-banner--fluxo", parado && "is-paused")}
       aria-roledescription="carrossel"
       aria-label="Destaques do Portal"
       onMouseEnter={() => setHover(true)}

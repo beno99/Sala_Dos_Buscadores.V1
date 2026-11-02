@@ -22,6 +22,7 @@ import {
   validarComentario,
   validarPublicacao,
 } from "@/features/comunidade/regras";
+import { podeCriarPublicacao } from "@/features/comunidade/regras/publicacao-permitida";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { agora, erro, novoId, ok, type ResultadoAcao } from "../anfitriao/comum";
 import { registrar } from "../auditoria";
@@ -44,12 +45,21 @@ export interface FormPublicacao {
   imagemAlt?: string;
   citacao?: { trecho: string; obra: string; passagem: string };
   conteudoId?: string;
+  videoId?: string;
   dirigirAoAnfitriao?: boolean;
 }
 
 type CamposPublicacao = Pick<
   Publicacao,
-  "tipo" | "texto" | "salaSlug" | "temas" | "imagem" | "citacao" | "conteudoId" | "perguntaDirigidaA"
+  | "tipo"
+  | "texto"
+  | "salaSlug"
+  | "temas"
+  | "imagem"
+  | "citacao"
+  | "conteudoId"
+  | "videoId"
+  | "perguntaDirigidaA"
 >;
 
 const dados = () => acervo().comunidade;
@@ -59,8 +69,15 @@ const donoDaSala = (slug?: string) =>
 const rotulo = (texto: string) => texto.slice(0, 80);
 
 function lerPublicacao(form: FormPublicacao, autorId: string): CamposPublicacao | string {
+  const videoId = limpo(form.videoId) || undefined;
+  const video = videoId ? acervo().videos.get(videoId) : undefined;
+  if (videoId && (video?.status !== "publicado" || !salaPorSlug(video.sala)))
+    return "escolha um vídeo publicado do acervo.";
   const conteudo = form.tipo === "achado" ? acervo().conteudos.get(String(form.conteudoId)) : undefined;
-  if (form.tipo === "achado" && (conteudo?.status !== "publicado" || !salaPorSlug(conteudo.sala)))
+  if (
+    form.tipo === "achado" &&
+    (conteudo?.status !== "publicado" || conteudo.lixeira || !salaPorSlug(conteudo.sala))
+  )
     return "escolha um conteúdo publicado do acervo.";
   const salaSlug = conteudo?.sala ?? (limpo(form.salaSlug) || undefined);
   if (salaSlug && !salaPorSlug(salaSlug)) return "escolha uma Sala disponível.";
@@ -88,6 +105,7 @@ function lerPublicacao(form: FormPublicacao, autorId: string): CamposPublicacao 
           }
         : undefined,
     conteudoId: conteudo?.id,
+    videoId,
     perguntaDirigidaA: dono,
   };
   const [primeiro] = validarPublicacao(campos);
@@ -106,6 +124,8 @@ function avisarAnfitriao(p: Publicacao, autor: Membro) {
 }
 
 export function publicar(form: FormPublicacao, autor: Membro): ResultadoAcao<{ id: string }> {
+  if (!podeCriarPublicacao(autor.papel))
+    return erro("somente anfitriões e a Curadoria podem criar publicações.");
   const registros = [...dados().publicacoes.values()];
   if (!dentroDoLimiteDiario("publicacao", autor.id, registros, new Date()))
     return erro("você chegou ao limite de 10 publicações por dia.");

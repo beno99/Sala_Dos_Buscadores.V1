@@ -6,9 +6,10 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { useToast } from "@/components/ds/Toast";
 import { salaPorSlug } from "@/data/catalogo";
 import type { SalaSlug } from "@/data/types";
-import { mudarStatusArtigoAcao, mudarStatusVideoAcao } from "@/server/admin/acoes";
-import type { AcaoStatus } from "@/server/admin/editorial";
+import { mandarArtigoLixeiraAcao, mudarStatusArtigoAcao, mudarStatusVideoAcao } from "@/server/admin/acoes";
+import type { AcaoStatus as AcaoEditorial } from "@/server/admin/editorial";
 
+type AcaoStatus = AcaoEditorial | "lixeira";
 type TipoItem = "artigo" | "video";
 
 export interface AlvoStatus {
@@ -20,6 +21,7 @@ export interface AlvoStatus {
 }
 
 const TITULO: Record<AcaoStatus, (t: TipoItem) => string> = {
+  lixeira: () => "Mover artigo para a lixeira?",
   publicar: (t) => (t === "video" ? "Publicar este vídeo?" : "Publicar este conteúdo?"),
   despublicar: () => "Despublicar e voltar a rascunho?",
   arquivar: () => "Arquivar?",
@@ -27,6 +29,7 @@ const TITULO: Record<AcaoStatus, (t: TipoItem) => string> = {
 };
 
 const CONFIRMAR: Record<AcaoStatus, string> = {
+  lixeira: "Mover para a lixeira",
   publicar: "Publicar",
   despublicar: "Despublicar",
   arquivar: "Arquivar",
@@ -38,6 +41,8 @@ export function impactoDaAcao(acao: AcaoStatus, tipo: TipoItem, sala: string): s
   const onde = sala ? `da Sala ${sala}` : "da Sala";
   const pagina = tipo === "video" ? "" : ", da página do conteúdo";
   switch (acao) {
+    case "lixeira":
+      return "O artigo sairá das listas e do portal. Seu conteúdo, estado e vínculos serão preservados. Somente a curadoria poderá restaurá-lo.";
     case "publicar":
       return `Vai aparecer na mesma hora na Sala ${sala || ""}${tipo === "video" ? "" : ", na página do conteúdo"} e na busca por tema.`;
     case "despublicar":
@@ -53,7 +58,7 @@ export function impactoDaAcao(acao: AcaoStatus, tipo: TipoItem, sala: string): s
  * Ciclo de publicação: toda mudança de status passa por um Modal com o
  * resumo do impacto. Devolve `pedir(alvo, acao)` e o modal para renderizar.
  */
-export function useAcaoStatus(tipo: TipoItem, aoConcluir?: (acao: AcaoStatus) => void) {
+export function useAcaoStatus(tipo: TipoItem, aoConcluir?: (acao: AcaoStatus) => void, lixeira = false) {
   const router = useRouter();
   const toast = useToast();
   const [pedido, setPedido] = useState<{ alvo: AlvoStatus; acao: AcaoStatus } | null>(null);
@@ -63,25 +68,30 @@ export function useAcaoStatus(tipo: TipoItem, aoConcluir?: (acao: AcaoStatus) =>
     if (!pedido) return;
     setCarregando(true);
     const acao = tipo === "video" ? mudarStatusVideoAcao : mudarStatusArtigoAcao;
-    const r = await acao(pedido.alvo.id, pedido.acao);
+    const r = await (pedido.acao === "lixeira"
+      ? mandarArtigoLixeiraAcao(pedido.alvo.id)
+      : acao(pedido.alvo.id, pedido.acao));
     setCarregando(false);
     setPedido(null);
     if (r.ok) {
       toast(r.mensagem, { icon: pedido.acao === "arquivar" ? "cadeado" : "check" });
-      aoConcluir?.(pedido.acao);
+      if (pedido.acao !== "lixeira") aoConcluir?.(pedido.acao);
       router.refresh();
     } else {
-      toast(r.pendencias?.map((p) => p.rotulo).join(" · ") || "Tente de novo.", {
-        variant: "erro",
-        title: r.mensagem,
-      });
+      toast(
+        ("pendencias" in r ? r.pendencias : undefined)?.map((p) => p.rotulo).join(" · ") || "Tente de novo.",
+        {
+          variant: "erro",
+          title: r.mensagem,
+        },
+      );
     }
   };
 
   const modal: ReactNode = (
     <ModalConfirmacao
       open={pedido !== null}
-      titulo={pedido ? TITULO[pedido.acao](tipo) : ""}
+      titulo={pedido ? (lixeira ? "Restaurar artigo da lixeira?" : TITULO[pedido.acao](tipo)) : ""}
       icone={pedido?.acao === "arquivar" ? "cadeado" : pedido?.acao === "publicar" ? "check" : "info"}
       destrutivo={pedido?.acao === "arquivar" || pedido?.acao === "despublicar"}
       rotuloConfirmar={pedido ? CONFIRMAR[pedido.acao] : ""}
@@ -93,11 +103,13 @@ export function useAcaoStatus(tipo: TipoItem, aoConcluir?: (acao: AcaoStatus) =>
         <>
           <b>{pedido.alvo.titulo || "Sem título"}</b>
           <br />
-          {impactoDaAcao(
-            pedido.acao,
-            tipo,
-            pedido.alvo.salaNome ?? (pedido.alvo.sala ? (salaPorSlug(pedido.alvo.sala)?.nome ?? "") : ""),
-          )}
+          {lixeira
+            ? "O artigo retorna com seu estado editorial anterior. Se estava publicado, voltará a aparecer no portal quando a Sala estiver visível."
+            : impactoDaAcao(
+                pedido.acao,
+                tipo,
+                pedido.alvo.salaNome ?? (pedido.alvo.sala ? (salaPorSlug(pedido.alvo.sala)?.nome ?? "") : ""),
+              )}
         </>
       )}
     </ModalConfirmacao>

@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import Link from "next/link";
 import { Alerta } from "@/components/ds/Alerta";
 import { AutoriaConteudo, type DadoAutoria } from "@/components/ds/AutoriaConteudo";
 import { BannerSala } from "@/components/ds/BannerSala";
@@ -28,7 +29,7 @@ interface LeituraConteudoProps {
   videos: Video[];
   /** "Continuar a busca": publicados com tema em comum, das outras Salas primeiro. */
   relacionados?: Conteudo[];
-  /** Imagem do card vinda de public/imagens, quando o conteúdo não tem thumb nem imagem própria. */
+  /** Imagem de card recebida por consumidores legados; não substitui o topo do artigo. */
   imagemCard?: string;
 }
 
@@ -85,7 +86,10 @@ export function LeituraConteudo({
     <div className="@container flex min-w-0 flex-col gap-8">
       <Topo conteudo={conteudo} sala={sala} imagemCard={imagemCard} />
 
-      <article className="sdb-article" aria-labelledby="titulo-conteudo">
+      <article
+        className={`sdb-article${assinatura ? " sdb-content--host" : ""}`}
+        aria-labelledby="titulo-conteudo"
+      >
         <h1 id="titulo-conteudo" className="sdb-large-title sdb-article__title">
           {conteudo.titulo}
         </h1>
@@ -95,11 +99,21 @@ export function LeituraConteudo({
           iniciais={iniciais(conteudo.autoria.nome)}
           nome={conteudo.autoria.nome}
           credencial={conteudo.autoria.credencial}
-          href={assinatura ? (`/anfitrioes/${assinatura.slug}` as Route) : undefined}
+          href={
+            assinatura && assinatura.nome === conteudo.autoria.nome
+              ? (`/anfitrioes/${assinatura.slug}` as Route)
+              : undefined
+          }
           suave={conteudo.proveniencia === "primaria"}
           dados={dados}
         />
 
+        {assinatura && (
+          <p className="sdb-host-signature">
+            Sala de Anfitrião ·{" "}
+            <Link href={`/anfitrioes/${assinatura.slug}` as Route}>{assinatura.nome}</Link>
+          </p>
+        )}
         <CorpoArtigo className="sdb-article__body" corpo={conteudo.corpo}>
           {conteudo.link?.tipo === "site" && (
             <div>
@@ -175,10 +189,10 @@ export function LeituraConteudo({
 
 /**
  * Topo: o vídeo do YouTube do anfitrião, quando o link é de vídeo; senão o
- * banner com a thumb, a imagem do card ou, sem nenhuma, a placa da Sala.
+ * banner com a imagem de topo própria ou, sem ela, a placa da Sala.
  * Alt, foco e crédito vêm do item de imagens do acervo.
  */
-function Topo({ conteudo, sala, imagemCard }: { conteudo: Conteudo; sala: Sala; imagemCard?: string }) {
+function Topo({ conteudo, sala }: { conteudo: Conteudo; sala: Sala; imagemCard?: string }) {
   if (conteudo.link?.tipo === "youtube") {
     return (
       <figure className="video-embed">
@@ -195,7 +209,7 @@ function Topo({ conteudo, sala, imagemCard }: { conteudo: Conteudo; sala: Sala; 
       </figure>
     );
   }
-  const imagem = conteudo.thumb ?? conteudo.imagem ?? imagemCard;
+  const imagem = conteudo.thumb;
   const item = itemDaImagem(imagem);
   return (
     <BannerSala

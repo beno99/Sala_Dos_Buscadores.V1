@@ -304,6 +304,8 @@ export function TelaAssistente({
         <p>
           A IA organiza o que o acervo diz; não determina qual crença é verdadeira.
           <br />
+          <span>A cor da esfera é lembrada neste navegador e não altera o tema do Portal.</span>
+          <br />
           <span>Histórico entre visitas ainda não disponível.</span>
         </p>
       </footer>

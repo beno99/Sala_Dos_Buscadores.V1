@@ -1,6 +1,7 @@
 import { CardAcervo } from "@/components/ds/CardAcervo";
 import { duracaoPorExtenso } from "@/components/ds/CardVideo";
-import { temaPorSlug } from "@/data/catalogo";
+import { MiniaturaVideo } from "@/components/ds/MiniaturaVideo";
+import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
 import type { Video } from "@/data/types";
 import { extrairIdYoutube } from "@/features/admin/regras/youtube";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
@@ -26,7 +27,17 @@ export function CardDoVideo({ video, nomeSala }: { video: Video; nomeSala: strin
       duracao={video.duracao}
       duracaoExtenso={duracaoPorExtenso(video.duracao)}
       proveniencia="curado"
+      assinatura={salaPorSlug(video.sala)?.anfitriao}
       imagem={video.imagem}
+      midia={
+        <MiniaturaVideo
+          id={destino.ok ? destino.id : undefined}
+          imagem={video.imagem}
+          placa={video.placa}
+          titulo={video.titulo}
+          className="sala__image sala__image--inteira"
+        />
+      }
       placa={video.placa}
       acoes={<BotaoSalvar tipo="video" alvo={video.id} titulo={video.titulo} />}
     />

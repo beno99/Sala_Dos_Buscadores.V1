@@ -7,7 +7,7 @@ import { checklistVideo } from "@/features/admin/regras/checklist";
 import { ITENS_POR_PAGINA } from "@/features/admin/regras/config";
 import { ListaVideos } from "@/features/admin/ui/ListaVideos";
 import { CabecalhoSalaAdmin } from "@/features/admin/ui/salas/CabecalhoSalaAdmin";
-import { listarArtigos, listarVideos } from "@/server/admin/consultas";
+import { listarTodosOsArtigos, listarVideos } from "@/server/admin/consultas";
 import { cabecalhoDaSala } from "@/server/admin/paginaSala";
 
 export async function generateMetadata(props: PageProps<"/admin/salas/[slug]/videos">): Promise<Metadata> {
@@ -21,11 +21,7 @@ export default async function VideosDaSalaAdmin(props: PageProps<"/admin/salas/[
   const filtros = { ...lerFiltrosVideos(await props.searchParams), sala: sala.slug };
   const filtrados = filtrarVideos(listarVideos(), filtros);
   const { itens, pagina, totalPaginas } = paginar(filtrados, filtros.pagina, ITENS_POR_PAGINA);
-  const titulos = Object.fromEntries(
-    listarArtigos()
-      .filter((a) => a.sala === sala.slug)
-      .map((a) => [a.id, a.titulo || "Sem título"]),
-  );
+  const titulos = Object.fromEntries(listarTodosOsArtigos().map((a) => [a.id, a.titulo || "Sem título"]));
   const arquivada = sala.status === "arquivado";
   return (
     <CabecalhoSalaAdmin {...cabecalho} aba="videos">

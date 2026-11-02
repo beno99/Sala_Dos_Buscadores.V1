@@ -45,6 +45,8 @@ export function useEdicao<F extends { id: string | null }>({
   const [erros, setErros] = useState<Record<string, string>>({});
   const [estado, setEstado] = useState<EstadoSalvamento>(atualizadoEm ? "salvo" : "pendente");
   const [hora, setHora] = useState(atualizadoEm ? horaCurta(atualizadoEm) : undefined);
+  const [conflito, setConflito] = useState<string>();
+  const versaoRef = useRef(atualizadoEm);
   const idRef = useRef(inicial.id);
   const formRef = useRef(form);
   const emVoo = useRef(false);
@@ -69,13 +71,14 @@ export function useEdicao<F extends { id: string | null }>({
 
   const salvarAgora = useCallback(
     async (modo: ModoSalvar) => {
-      if (emVoo.current) return null;
+      if (emVoo.current || conflito) return null;
       emVoo.current = true;
-      const enviado = { ...formRef.current, id: idRef.current };
+      const enviado = { ...formRef.current, id: idRef.current, versaoEsperada: versaoRef.current };
       setEstado("salvando");
       try {
         const r = await salvar(enviado, modo);
         if (r.ok) {
+          versaoRef.current = r.valor.salvoEm;
           const novo = !idRef.current;
           idRef.current = r.valor.id;
           setForm((f) => ({ ...f, id: r.valor.id, ...(r.valor.slug ? { slug: r.valor.slug } : {}) }));
@@ -83,13 +86,17 @@ export function useEdicao<F extends { id: string | null }>({
           if ((novo || caminho) && window.location.pathname !== destino) {
             window.history.replaceState(null, "", destino);
           }
-          if (JSON.stringify({ ...formRef.current, id: null }) === JSON.stringify({ ...enviado, id: null })) {
+          if (
+            JSON.stringify({ ...formRef.current, id: null }) ===
+            JSON.stringify({ ...enviado, id: null, versaoEsperada: undefined })
+          ) {
             setSujo(false);
           }
           setEstado("salvo");
           setHora(horaCurta(r.valor.salvoEm));
         } else {
           setEstado("erro");
+          if (r.conflito) setConflito(r.mensagem);
           if (r.erros) setErros((e) => ({ ...e, ...r.erros }));
         }
         return r;
@@ -100,15 +107,28 @@ export function useEdicao<F extends { id: string | null }>({
         emVoo.current = false;
       }
     },
-    [salvar, base, caminho],
+    [salvar, base, caminho, conflito],
   );
 
   // Rascunho: salva 1,2 s depois da última alteração, se já tiver o mínimo.
   useEffect(() => {
-    if (!automatico || !sujo || !podeSalvar(form)) return;
+    if (conflito || !automatico || !sujo || !podeSalvar(form)) return;
     const t = setTimeout(() => void salvarAgora("automatico"), 1200);
     return () => clearTimeout(t);
-  }, [automatico, sujo, form, podeSalvar, salvarAgora]);
+  }, [automatico, sujo, form, podeSalvar, salvarAgora, conflito]);
 
-  return { form, mudar, sujo, setSujo, erros, setErros, estado, hora, salvarAgora, automatico, id: idRef };
+  return {
+    conflito,
+    form,
+    mudar,
+    sujo,
+    setSujo,
+    erros,
+    setErros,
+    estado,
+    hora,
+    salvarAgora,
+    automatico,
+    id: idRef,
+  };
 }

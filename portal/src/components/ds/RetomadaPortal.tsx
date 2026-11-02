@@ -25,7 +25,7 @@ export function RetomadaPortal({
   const sala = salaPorSlug(conteudo.sala);
   const percentual = pct === undefined ? undefined : percentualDeLeitura(pct);
   return (
-    <article className="sdb-retomada">
+    <article className={`sdb-retomada${conteudo.anfitriao ? " sdb-content--host" : ""}`}>
       <div className="sdb-retomada__media">
         <ImagemAcervo tituloFallback={conteudo.titulo} src={imagem} placa={sala?.placa ?? "bordo"} />
         <div className="sdb-retomada__selo">
@@ -37,6 +37,13 @@ export function RetomadaPortal({
           </p>
           <p className="sdb-retomada__sala">{sala?.nome}</p>
           <h3>{conteudo.titulo}</h3>
+          <p className="sdb-retomada__meta">{conteudo.autoria.nome}</p>
+          {conteudo.anfitriao && (
+            <p className="sdb-host-signature">
+              Sala de Anfitrião ·{" "}
+              <Link href={`/anfitrioes/${conteudo.anfitriao.slug}` as Route}>{conteudo.anfitriao.nome}</Link>
+            </p>
+          )}
           {percentual !== undefined && (
             <div className="sdb-retomada__progresso">
               <span className="sdb-progress__track" aria-hidden="true">

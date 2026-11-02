@@ -7,6 +7,7 @@ import { Segmented } from "@/components/ds/Segmented";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
 import type { TipoPublicacao } from "@/data/types";
 import { TIPOS_PUBLICACAO } from "@/features/comunidade/regras";
+import { podeCriarPublicacao } from "@/features/comunidade/regras/publicacao-permitida";
 import type { ModeloComunidade } from "@/server/comunidade/consultas";
 import { BotaoSeguir } from "./BotaoSeguir";
 import { CompositorPublicacao, ICONES_TIPO } from "./CompositorPublicacao";
@@ -29,6 +30,7 @@ export function FeedComunidade({
   const [compondo, setCompondo] = useState(false);
   const [tipoCompositor, setTipoCompositor] = useState<TipoPublicacao>("reflexao");
   const id = useId();
+  const podePublicar = podeCriarPublicacao(m.visao.papel);
   const abrir = (tipo: TipoPublicacao) => {
     setTipoCompositor(tipo);
     setCompondo(true);
@@ -50,9 +52,11 @@ export function FeedComunidade({
           <h1 className="sdb-title-1">Comunidade</h1>
           <p className="sdb-body-sm">Um caderno de estudos em voz alta.</p>
         </div>
-        <Button variant="gold" onClick={() => abrir("reflexao")}>
-          Nova publicação
-        </Button>
+        {podePublicar && (
+          <Button variant="gold" onClick={() => abrir("reflexao")}>
+            Nova publicação
+          </Button>
+        )}
       </header>
       <div className="sdb-community__layout">
         <div className="sdb-community__feed">
@@ -137,21 +141,23 @@ export function FeedComunidade({
               />
             </aside>
           )}
-          <section className="sdb-composer sdb-composer--launcher" aria-label="Começar publicação">
-            <div className="sdb-composer__prompt">
-              <Avatar iniciais={m.pessoa.iniciais} foto={m.pessoa.foto} />
-              <Button variant="secondary" onClick={() => abrir("reflexao")}>
-                O que você está estudando?
-              </Button>
-            </div>
-            <div className="sdb-composer__types">
-              {(Object.keys(TIPOS_PUBLICACAO) as TipoPublicacao[]).map((chave) => (
-                <Button variant="plain" key={chave} icon={ICONES_TIPO[chave]} onClick={() => abrir(chave)}>
-                  {TIPOS_PUBLICACAO[chave]}
+          {podePublicar && (
+            <section className="sdb-composer sdb-composer--launcher" aria-label="Começar publicação">
+              <div className="sdb-composer__prompt">
+                <Avatar iniciais={m.pessoa.iniciais} foto={m.pessoa.foto} />
+                <Button variant="secondary" onClick={() => abrir("reflexao")}>
+                  O que você está estudando?
                 </Button>
-              ))}
-            </div>
-          </section>
+              </div>
+              <div className="sdb-composer__types">
+                {(Object.keys(TIPOS_PUBLICACAO) as TipoPublicacao[]).map((chave) => (
+                  <Button variant="plain" key={chave} icon={ICONES_TIPO[chave]} onClick={() => abrir(chave)}>
+                    {TIPOS_PUBLICACAO[chave]}
+                  </Button>
+                ))}
+              </div>
+            </section>
+          )}
           <p className="sdb-sr" role="status">
             {filtrar(aba === "para-voce" ? m.publicacoes : m.seguindo).length} publicações
             {aba === "para-voce"
@@ -189,12 +195,14 @@ export function FeedComunidade({
         </div>
         <LateralComunidade modelo={m} />
       </div>
-      <CompositorPublicacao
-        aberto={compondo}
-        tipo={tipoCompositor}
-        opcoes={m.opcoes}
-        onFechar={() => setCompondo(false)}
-      />
+      {podePublicar && (
+        <CompositorPublicacao
+          aberto={compondo}
+          tipo={tipoCompositor}
+          opcoes={m.opcoes}
+          onFechar={() => setCompondo(false)}
+        />
+      )}
     </div>
   );
 }

@@ -19,13 +19,15 @@ const SECOES: Secao[] = [
   { href: "/", rotulo: "Portal", icone: "inicio", grupo: "Acervo" },
   { href: "/destaques" as Route, rotulo: "Destaques", icone: "destaques", grupo: "Acervo" },
   { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
+  { href: "/videos" as Route, rotulo: "Vídeos", icone: "video", grupo: "Acervo" },
+  { href: "/anfitrioes" as Route, rotulo: "Anfitriões", icone: "anfitriao", grupo: "Acervo" },
   { href: "/salas" as Route, rotulo: "Salas", icone: "salas", grupo: "Acervo" },
   { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "comunidade", grupo: "Estudo" },
   { href: "/trilhas" as Route, rotulo: "Trilhas", icone: "trilha", grupo: "Estudo" },
   { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },
   { href: "/conquistas" as Route, rotulo: "Conquistas", icone: "check", grupo: "Estudo" },
   { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
-  { href: "/assistente", rotulo: "Assistente", icone: "assistente", grupo: "Ferramentas" },
+  { href: "/assistente", rotulo: "Assistente do acervo", icone: "assistente", grupo: "Ferramentas" },
   { href: "/ajustes" as Route, rotulo: "Ajustes", icone: "ajustes", grupo: "Conta" },
 ];
 
@@ -52,7 +54,7 @@ export function tituloDaPagina(caminho: string, conteudos: readonly ConteudoBusc
   // A página de um conteúdo fica dentro de Salas (layout do Figma); o tipo aparece no próprio artigo.
   if (conteudoDaPagina(caminho, conteudos)) return "Salas";
   // A página pública de um anfitrião fica dentro de Salas.
-  if (caminho.startsWith("/anfitrioes/")) return "Salas";
+  if (caminho.startsWith("/anfitrioes/")) return "Anfitriões";
   return SECOES.find((s) => ativa(s.href, caminho))?.rotulo ?? "A Sala dos Buscadores";
 }
 

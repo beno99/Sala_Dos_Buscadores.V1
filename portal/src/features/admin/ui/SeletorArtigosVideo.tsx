@@ -51,7 +51,7 @@ export function SeletorArtigosVideo({
       </p>
       <CampoTexto
         id="busca-artigos-video"
-        label="Buscar artigos da Sala"
+        label="Buscar artigos do acervo"
         type="search"
         value={buscaArtigos}
         onChange={(e) => {
@@ -93,7 +93,7 @@ export function SeletorArtigosVideo({
         <p className="sdb-hint">
           {buscaArtigos
             ? "Nenhum artigo encontrado para esta busca."
-            : "Esta Sala ainda não tem artigos ativos. Sem artigo, o vídeo fica só na Sala."}
+            : "Não há artigos elegíveis. Sem artigo, o vídeo fica só na Sala."}
         </p>
       ) : (
         <fieldset className="sdb-fieldset" aria-busy={atualizandoArtigos}>
@@ -114,7 +114,7 @@ export function SeletorArtigosVideo({
               <span>
                 {a.titulo}
                 <small>
-                  {sala.nome} · {STATUS_ROTULO[a.status]} · Criado em {formatarData(a.criadoEm.slice(0, 10))}
+                  {a.sala} · {STATUS_ROTULO[a.status]} · Criado em {formatarData(a.criadoEm.slice(0, 10))}
                   {a.status !== "publicado" &&
                     " · Aparece no portal quando o artigo e o vídeo forem publicados"}
                 </small>

@@ -57,6 +57,20 @@
       "when": 1793493142692,
       "tag": "0007_famous_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793630878211,
+      "tag": "0008_refinamento_portal",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793630983384,
+      "tag": "0009_auditoria_ator",
+      "breakpoints": true
     }
   ]
 }

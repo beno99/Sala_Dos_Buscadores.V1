@@ -5,7 +5,7 @@ import { campoDoBloco } from "@/features/admin/regras/corpo";
 import { validarImagem } from "@/features/anfitriao/regras/imagem";
 import { armazenamentoS3 } from "@/modules/midia/armazenamento.s3";
 import type { ArmazenamentoDeArquivos } from "@/modules/midia/midia.contratos";
-import { acervo, aguardarGravacoes, type MidiaGuardada } from "./store";
+import { acervo, comGravacoesDoPedido, type MidiaGuardada } from "./store";
 
 /*
  * Imagens enviadas (§3.4). Os metadados ficam no banco (tabela midias) e os
@@ -40,8 +40,9 @@ export async function guardarImagem(
     donoId,
     criadoEm: new Date().toISOString(),
   };
-  acervo().midias.set(id, midia);
-  await aguardarGravacoes();
+  await comGravacoesDoPedido(() => {
+    acervo().midias.set(id, midia);
+  });
   return { ok: true, id, url: urlDaMidia(id) };
 }
 

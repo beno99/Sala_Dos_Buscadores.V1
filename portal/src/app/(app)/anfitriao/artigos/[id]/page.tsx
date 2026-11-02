@@ -7,6 +7,7 @@ import { MarcarVisto } from "@/features/anfitriao/ui/MarcarVisto";
 import { artigoDoAnfitriao } from "@/server/anfitriao/consultas";
 import { dadosDoEditorDeArtigo } from "@/server/anfitriao/editor";
 import { anfitriaoDaPagina, ouNaoEncontrado } from "@/server/anfitriao/pagina";
+import { idsVideosDoArtigo, videosSelecionaveis } from "@/server/vinculos-editoriais";
 
 export const metadata: Metadata = { title: "Artigo" };
 
@@ -35,6 +36,9 @@ export default async function PaginaArtigo(props: PageProps<"/anfitriao/artigos/
           corpo: corpoParaForm(artigo.corpo),
           temas: artigo.temas,
           fontes: artigo.fontes,
+          videos: idsVideosDoArtigo(artigo.id).filter((id) =>
+            videosSelecionaveis("anfitriao").some((v) => v.id === id),
+          ),
           nivel: artigo.nivel,
           link: artigo.link?.url ?? "",
           imagemCard: artigo.midias?.card ?? null,
@@ -46,6 +50,7 @@ export default async function PaginaArtigo(props: PageProps<"/anfitriao/artigos/
         ultimoMotivo={revisao?.ultimoMotivo}
         sala={dados.sala}
         assinatura={artigo.anfitriao ?? dados.assinaturaPadrao}
+        videos={videosSelecionaveis("anfitriao")}
         fontes={dados.fontes}
         publicados={dados.publicados}
         imagens={{

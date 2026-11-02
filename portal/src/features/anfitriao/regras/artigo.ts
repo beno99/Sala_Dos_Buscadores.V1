@@ -14,6 +14,7 @@ import { extrairIdYoutube } from "@/features/admin/regras/youtube";
 // ---------- Sala ----------
 
 export interface FormSalaAnfitriao {
+  versaoEsperada?: string | null;
   id: string | null;
   nome: string;
   descricao: string;
@@ -91,6 +92,7 @@ export function validarLinkHttps(entrada: string): string | null {
 // ---------- artigo ----------
 
 export interface FormArtigoAnfitriao {
+  versaoEsperada?: string | null;
   id: string | null;
   /** Id da Sala do próprio anfitrião. */
   salaId: string;
@@ -100,6 +102,7 @@ export interface FormArtigoAnfitriao {
   temas: TemaSlug[];
   /** Ids de fontes do catálogo ou propostas pelo próprio anfitrião. */
   fontes: string[];
+  videos?: string[];
   /** Opcional; sem escolha, Iniciante. */
   nivel: Nivel | null;
   /** Um link só: YouTube (vira player) ou site (vira "Ler no site"). */
@@ -116,6 +119,7 @@ export const artigoVazio = (salaId: string): FormArtigoAnfitriao => ({
   corpo: corpoParaForm([]),
   temas: [],
   fontes: [],
+  videos: [],
   nivel: null,
   link: "",
   imagemCard: null,

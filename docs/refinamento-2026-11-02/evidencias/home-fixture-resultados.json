@@ -1,0 +1,1268 @@
+[
+  {
+    "width": 390,
+    "n": 0,
+    "docwidth": 390,
+    "bodywidth": 390,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 209.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 151.84375
+    },
+    "actions": {
+      "top": 385.46875,
+      "bottom": 489.46875,
+      "left": 40,
+      "right": 350,
+      "width": 310,
+      "height": 104
+    },
+    "controls": {
+      "top": 505.46875,
+      "bottom": 561.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 593.46875,
+    "statsTop": 1351.453125,
+    "cards": [],
+    "roomSlugs": [],
+    "readingHeights": []
+  },
+  {
+    "width": 390,
+    "n": 1,
+    "docwidth": 390,
+    "bodywidth": 390,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 195.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 209.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 151.84375
+    },
+    "actions": {
+      "top": 385.46875,
+      "bottom": 489.46875,
+      "left": 40,
+      "right": 350,
+      "width": 310,
+      "height": 104
+    },
+    "controls": {
+      "top": 505.46875,
+      "bottom": 561.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 593.46875,
+    "statsTop": 1624.703125,
+    "cards": [
+      {
+        "top": 817.0625,
+        "bottom": 1369.90625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 552.84375
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      520.859375
+    ]
+  },
+  {
+    "width": 390,
+    "n": 3,
+    "docwidth": 390,
+    "bodywidth": 390,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 195.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 209.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 151.84375
+    },
+    "actions": {
+      "top": 385.46875,
+      "bottom": 489.46875,
+      "left": 40,
+      "right": 350,
+      "width": 310,
+      "height": 104
+    },
+    "controls": {
+      "top": 505.46875,
+      "bottom": 561.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 593.46875,
+    "statsTop": 2730.796875,
+    "cards": [
+      {
+        "top": 817.0625,
+        "bottom": 1369.90625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 552.84375
+      },
+      {
+        "top": 1393.90625,
+        "bottom": 1839.90625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 446
+      },
+      {
+        "top": 1863.90625,
+        "bottom": 2476,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 612.09375
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      520.859375,
+      432.359375,
+      432.359375
+    ]
+  },
+  {
+    "width": 390,
+    "n": 7,
+    "docwidth": 390,
+    "bodywidth": 390,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 195.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 209.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 151.84375
+    },
+    "actions": {
+      "top": 385.46875,
+      "bottom": 489.46875,
+      "left": 40,
+      "right": 350,
+      "width": 310,
+      "height": 104
+    },
+    "controls": {
+      "top": 505.46875,
+      "bottom": 561.46875,
+      "left": 16,
+      "right": 374,
+      "width": 358,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 593.46875,
+    "statsTop": 4671.328125,
+    "cards": [
+      {
+        "top": 817.0625,
+        "bottom": 1369.90625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 552.84375
+      },
+      {
+        "top": 1393.90625,
+        "bottom": 1839.90625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 446
+      },
+      {
+        "top": 1863.90625,
+        "bottom": 2476,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 612.09375
+      },
+      {
+        "top": 2500,
+        "bottom": 2946,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 446
+      },
+      {
+        "top": 2970,
+        "bottom": 3416,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 446
+      },
+      {
+        "top": 3440,
+        "bottom": 3946.53125,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 506.53125
+      },
+      {
+        "top": 3970.53125,
+        "bottom": 4416.53125,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 446
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2",
+      "/salas/sala-demo-3",
+      "/salas/sala-demo-4",
+      "/salas/sala-demo-5",
+      "/salas/sala-demo-6"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      520.859375,
+      432.359375,
+      432.359375
+    ]
+  },
+  {
+    "width": 768,
+    "n": 0,
+    "docwidth": 768,
+    "bodywidth": 768,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 41
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 369.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 312.171875
+    },
+    "actions": {
+      "top": 385.796875,
+      "bottom": 433.796875,
+      "left": 40,
+      "right": 728,
+      "width": 688,
+      "height": 48
+    },
+    "controls": {
+      "top": 449.796875,
+      "bottom": 505.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 537.796875,
+    "statsTop": 1209.984375,
+    "cards": [],
+    "roomSlugs": [],
+    "readingHeights": []
+  },
+  {
+    "width": 768,
+    "n": 1,
+    "docwidth": 768,
+    "bodywidth": 768,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 41
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 564.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 369.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 312.171875
+    },
+    "actions": {
+      "top": 385.796875,
+      "bottom": 433.796875,
+      "left": 40,
+      "right": 728,
+      "width": 688,
+      "height": 48
+    },
+    "controls": {
+      "top": 449.796875,
+      "bottom": 505.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 537.796875,
+    "statsTop": 1425.65625,
+    "cards": [
+      {
+        "top": 696.59375,
+        "bottom": 1191.859375,
+        "left": 16,
+        "right": 752,
+        "width": 736,
+        "height": 495.265625
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      382.84375
+    ]
+  },
+  {
+    "width": 768,
+    "n": 3,
+    "docwidth": 768,
+    "bodywidth": 768,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 41
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 523.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 564.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 369.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 312.171875
+    },
+    "actions": {
+      "top": 385.796875,
+      "bottom": 433.796875,
+      "left": 40,
+      "right": 728,
+      "width": 688,
+      "height": 48
+    },
+    "controls": {
+      "top": 449.796875,
+      "bottom": 505.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 537.796875,
+    "statsTop": 2119.328125,
+    "cards": [
+      {
+        "top": 696.59375,
+        "bottom": 1249.4375,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 552.84375
+      },
+      {
+        "top": 696.59375,
+        "bottom": 1249.4375,
+        "left": 396,
+        "right": 752,
+        "width": 356,
+        "height": 552.84375
+      },
+      {
+        "top": 1273.4375,
+        "bottom": 1885.53125,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 612.09375
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      520.859375,
+      520.859375,
+      432.359375
+    ]
+  },
+  {
+    "width": 768,
+    "n": 7,
+    "docwidth": 768,
+    "bodywidth": 768,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 41
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 523.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 523.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 523.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 143.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 17
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 564.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 369.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 312.171875
+    },
+    "actions": {
+      "top": 385.796875,
+      "bottom": 433.796875,
+      "left": 40,
+      "right": 728,
+      "width": 688,
+      "height": 48
+    },
+    "controls": {
+      "top": 449.796875,
+      "bottom": 505.796875,
+      "left": 16,
+      "right": 752,
+      "width": 736,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 537.796875,
+    "statsTop": 3119.859375,
+    "cards": [
+      {
+        "top": 696.59375,
+        "bottom": 1249.4375,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 552.84375
+      },
+      {
+        "top": 696.59375,
+        "bottom": 1249.4375,
+        "left": 396,
+        "right": 752,
+        "width": 356,
+        "height": 552.84375
+      },
+      {
+        "top": 1273.4375,
+        "bottom": 1885.53125,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 612.09375
+      },
+      {
+        "top": 1273.4375,
+        "bottom": 1885.53125,
+        "left": 396,
+        "right": 752,
+        "width": 356,
+        "height": 612.09375
+      },
+      {
+        "top": 1909.53125,
+        "bottom": 2416.0625,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 506.53125
+      },
+      {
+        "top": 1909.53125,
+        "bottom": 2416.0625,
+        "left": 396,
+        "right": 752,
+        "width": 356,
+        "height": 506.53125
+      },
+      {
+        "top": 2440.0625,
+        "bottom": 2886.0625,
+        "left": 16,
+        "right": 372,
+        "width": 356,
+        "height": 446
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2",
+      "/salas/sala-demo-3",
+      "/salas/sala-demo-4",
+      "/salas/sala-demo-5",
+      "/salas/sala-demo-6"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      520.859375,
+      520.859375,
+      432.359375
+    ]
+  },
+  {
+    "width": 1440,
+    "n": 0,
+    "docwidth": 1440,
+    "bodywidth": 1440,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 193
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 169
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 525.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 468.265625
+    },
+    "actions": {
+      "top": 541.890625,
+      "bottom": 589.890625,
+      "left": 192,
+      "right": 1248,
+      "width": 1056,
+      "height": 48
+    },
+    "controls": {
+      "top": 605.890625,
+      "bottom": 661.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 693.890625,
+    "statsTop": 1289.46875,
+    "cards": [],
+    "roomSlugs": [],
+    "readingHeights": []
+  },
+  {
+    "width": 1440,
+    "n": 1,
+    "docwidth": 1440,
+    "bodywidth": 1440,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 193
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 295.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 740.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 525.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 468.265625
+    },
+    "actions": {
+      "top": 541.890625,
+      "bottom": 589.890625,
+      "left": 192,
+      "right": 1248,
+      "width": 1056,
+      "height": 48
+    },
+    "controls": {
+      "top": 605.890625,
+      "bottom": 661.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 693.890625,
+    "statsTop": 1517.75,
+    "cards": [
+      {
+        "top": 852.6875,
+        "bottom": 1347.953125,
+        "left": 168,
+        "right": 1272,
+        "width": 1104,
+        "height": 495.265625
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      382.84375
+    ]
+  },
+  {
+    "width": 1440,
+    "n": 3,
+    "docwidth": 1440,
+    "bodywidth": 1440,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 193
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 295.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 671.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 1047.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 740.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 525.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 468.265625
+    },
+    "actions": {
+      "top": 541.890625,
+      "bottom": 589.890625,
+      "left": 192,
+      "right": 1248,
+      "width": 1056,
+      "height": 48
+    },
+    "controls": {
+      "top": 605.890625,
+      "bottom": 661.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 693.890625,
+    "statsTop": 1634.578125,
+    "cards": [
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 168,
+        "right": 520,
+        "width": 352,
+        "height": 612.09375
+      },
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 544,
+        "right": 896,
+        "width": 352,
+        "height": 612.09375
+      },
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 920,
+        "right": 1272,
+        "width": 352,
+        "height": 612.09375
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      491.359375,
+      491.359375,
+      432.359375
+    ]
+  },
+  {
+    "width": 1440,
+    "n": 7,
+    "docwidth": 1440,
+    "bodywidth": 1440,
+    "offenders": [
+      {
+        "cls": "sdb-sr",
+        "tag": "H1",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr sdb-banner__art-caption",
+        "tag": "H2",
+        "w": 1,
+        "right": 193
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 295.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 671.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 1047.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 295.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 671.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 1047.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 295.109375
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "H2",
+        "w": 1,
+        "right": 169
+      },
+      {
+        "cls": "sdb-sr",
+        "tag": "SPAN",
+        "w": 1,
+        "right": 740.5
+      }
+    ],
+    "overflow": false,
+    "media": {
+      "top": 57.625,
+      "bottom": 525.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 468.265625
+    },
+    "actions": {
+      "top": 541.890625,
+      "bottom": 589.890625,
+      "left": 192,
+      "right": 1248,
+      "width": 1056,
+      "height": 48
+    },
+    "controls": {
+      "top": 605.890625,
+      "bottom": 661.890625,
+      "left": 168,
+      "right": 1272,
+      "width": 1104,
+      "height": 56
+    },
+    "imageFit": "contain",
+    "roomsTop": 693.890625,
+    "statsTop": 2635.109375,
+    "cards": [
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 168,
+        "right": 520,
+        "width": 352,
+        "height": 612.09375
+      },
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 544,
+        "right": 896,
+        "width": 352,
+        "height": 612.09375
+      },
+      {
+        "top": 852.6875,
+        "bottom": 1464.78125,
+        "left": 920,
+        "right": 1272,
+        "width": 352,
+        "height": 612.09375
+      },
+      {
+        "top": 1488.78125,
+        "bottom": 1995.3125,
+        "left": 168,
+        "right": 520,
+        "width": 352,
+        "height": 506.53125
+      },
+      {
+        "top": 1488.78125,
+        "bottom": 1995.3125,
+        "left": 544,
+        "right": 896,
+        "width": 352,
+        "height": 506.53125
+      },
+      {
+        "top": 1488.78125,
+        "bottom": 1995.3125,
+        "left": 920,
+        "right": 1272,
+        "width": 352,
+        "height": 506.53125
+      },
+      {
+        "top": 2019.3125,
+        "bottom": 2465.3125,
+        "left": 168,
+        "right": 520,
+        "width": 352,
+        "height": 446
+      }
+    ],
+    "roomSlugs": [
+      "/salas/sala-demo-0",
+      "/salas/sala-demo-1",
+      "/salas/sala-demo-2",
+      "/salas/sala-demo-3",
+      "/salas/sala-demo-4",
+      "/salas/sala-demo-5",
+      "/salas/sala-demo-6"
+    ],
+    "hostName": "Por Anfitrião demonstrativo",
+    "readingHeights": [
+      491.359375,
+      491.359375,
+      432.359375
+    ]
+  }
+]

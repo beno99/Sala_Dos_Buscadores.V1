@@ -1,8 +1,9 @@
 import { randomBytes } from "node:crypto";
+import { VALIDADE_VERIFICACAO_H } from "../acesso";
 import type { DepsConta, Membro, Resultado } from "../conta.contratos";
 import { hash } from "./sessao";
 
-export const VALIDADE_VERIFICACAO_H = 24;
+export { VALIDADE_VERIFICACAO_H } from "../acesso";
 
 export async function pedirVerificacao(
   { contas, verificacoes }: Pick<DepsConta, "contas" | "verificacoes">,
@@ -12,12 +13,13 @@ export async function pedirVerificacao(
   const membro = await contas.porId(usuarioId);
   if (!membro || membro.emailVerificadoEm) return null;
   const token = randomBytes(24).toString("base64url");
-  await verificacoes.criar({
+  const criado = await verificacoes.criar({
     tokenHash: hash(token),
     usuarioId,
+    email: membro.email,
     expiraEm: new Date(agora.getTime() + VALIDADE_VERIFICACAO_H * 60 * 60_000),
   });
-  return { membro, token };
+  return criado ? { membro, token } : null;
 }
 
 export async function confirmarEmail(
@@ -26,7 +28,8 @@ export async function confirmarEmail(
   agora = new Date(),
 ): Promise<Resultado<Membro>> {
   const usuarioId = token ? await verificacoes.consumir(hash(token), agora) : null;
-  const membro = usuarioId ? await contas.marcarEmailVerificado(usuarioId) : null;
-  if (!membro) return { ok: false, erro: "este link expirou ou já foi usado. Peça um novo." };
+  const membro = usuarioId ? await contas.porId(usuarioId) : null;
+  if (!membro?.emailVerificadoEm)
+    return { ok: false, erro: "este link expirou ou já foi usado. Peça um novo." };
   return { ok: true, valor: membro };
 }

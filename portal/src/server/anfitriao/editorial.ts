@@ -1,3 +1,5 @@
+import { mudarLixeiraArtigo } from "@/server/artigos/lixeira";
+import { erroVideosDoArtigo, idsVideosDoArtigo } from "../vinculos-editoriais";
 import "server-only";
 import { todosOsTemas } from "@/data/catalogo";
 import { limparCorpo } from "@/data/corpo";
@@ -31,7 +33,6 @@ import {
   editar,
   planejarEnvioSala,
   podeEnviarArtigoAvulso,
-  podeExcluir,
   transicao,
 } from "@/features/anfitriao/regras/ciclo";
 import { inicialDoTitulo } from "@/lib/texto";
@@ -41,7 +42,7 @@ import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { mudarLixeiraSala } from "../salas/lixeira";
 import { artigoDoDono, fonteVisivelAoDono, salaDoDono } from "../sessao";
-import { acervo, criarSalaNoAcervo } from "../store";
+import { acervo, comGravacoesDoPedido, criarSalaNoAcervo, gravarEditorialNoAcervo } from "../store";
 import { agora, comPosse, comPosseAsync, erro, falha, hoje, novoId, ok, type ResultadoAcao } from "./comum";
 
 /*
@@ -168,7 +169,13 @@ export async function salvarSala(
       );
     }
 
-    if (anterior) acervo().salas.set(id, sala);
+    if (anterior)
+      await gravarEditorialNoAcervo({
+        colecao: "salas",
+        valor: sala,
+        esperado: f.versaoEsperada ?? anterior.atualizadoEm,
+        ator: { id: dono.id, papel: "anfitriao" },
+      });
     else {
       const criada = await criarSalaNoAcervo(sala);
       sala.slug = criada.slug;
@@ -182,7 +189,7 @@ export async function salvarSala(
       mudancas: saiuDoAr ? [{ campo: "Status", antes: "publicado", depois: "rascunho" }] : undefined,
     });
     return ok(
-      { id, slug: sala.slug, status, saiuDoAr, salvoEm: momento },
+      { id, slug: sala.slug, status, saiuDoAr, salvoEm: sala.atualizadoEm },
       saiuDoAr
         ? "Alterações salvas. A Sala saiu do ar até a curadoria aprovar a nova versão."
         : modo === "manual"
@@ -205,12 +212,14 @@ function conferirFontes(fontes: string[], donoId: string): string | null {
   return null;
 }
 
-export function salvarArtigo(
+async function salvarArtigoPlano(
   f: FormArtigoAnfitriao,
   dono: Membro,
   modo: ModoSalvar,
-): ResultadoAcao<{ id: string; slug: string; status: StatusEditorial; saiuDoAr: boolean; salvoEm: string }> {
-  return comPosse(() => {
+): Promise<
+  ResultadoAcao<{ id: string; slug: string; status: StatusEditorial; saiuDoAr: boolean; salvoEm: string }>
+> {
+  return comPosseAsync(async () => {
     const recusa = conferirAnfitriao(dono);
     if (recusa) return erro(recusa);
     const sala = salaDoDono(f.salaId, dono.id);
@@ -220,6 +229,8 @@ export function salvarArtigo(
 
     const imagens = conferirImagensDoCorpo(f.corpo, dono.id, anterior?.corpo);
     const erros = { ...validarArtigoParaSalvar(f), ...imagens.erros };
+    const erroVideos = erroVideosDoArtigo(f.id, f.videos, "anfitriao");
+    if (erroVideos) erros["campo-videos"] = erroVideos;
     const erroFontes = conferirFontes(f.fontes, dono.id);
     if (erroFontes) erros["campo-fontes"] = erroFontes;
     if (f.temas.some((t) => !temaValido(t))) erros["campo-temas"] = "escolha os temas da lista.";
@@ -299,14 +310,23 @@ export function salvarArtigo(
         c.imagem ?? null,
         c.thumb ?? null,
       ]);
-    if (anterior && chave(anterior) === chave(artigo)) {
+    const vinculosMudaram =
+      f.videos !== undefined &&
+      JSON.stringify([...idsVideosDoArtigo(id)].sort()) !== JSON.stringify([...new Set(f.videos)].sort());
+    if (anterior && chave(anterior) === chave(artigo) && !vinculosMudaram) {
       return ok(
         { id, slug, status: anterior.status, saiuDoAr: false, salvoEm: anterior.atualizadoEm },
         "Nada mudou.",
       );
     }
 
-    acervo().conteudos.set(id, artigo);
+    await gravarEditorialNoAcervo({
+      colecao: "conteudos",
+      valor: artigo,
+      esperado: f.versaoEsperada ?? anterior?.atualizadoEm ?? null,
+      ator: { id: dono.id, papel: "anfitriao" },
+      videos: f.videos,
+    });
     registrar({
       quem: dono.pseudonimo,
       acao: anterior ? "editou" : "criou",
@@ -316,7 +336,7 @@ export function salvarArtigo(
       mudancas: saiuDoAr ? [{ campo: "Status", antes: "publicado", depois: "rascunho" }] : undefined,
     });
     return ok(
-      { id, slug, status, saiuDoAr, salvoEm: momento },
+      { id, slug, status, saiuDoAr, salvoEm: artigo.atualizadoEm },
       saiuDoAr
         ? "Alterações salvas. O artigo saiu do ar até a curadoria aprovar a nova versão."
         : modo === "manual"
@@ -384,7 +404,7 @@ const ERRO_ACEITE = "marque a declaração de que tem direito de usar as imagens
  * Envia a Sala para revisão. No primeiro envio vão junto os artigos escolhidos
  * (pelo menos um). O aceite de direitos é obrigatório e fica registrado.
  */
-export function enviarSala(
+function enviarSalaPlano(
   salaId: string,
   escolhidos: string[],
   aceite: boolean,
@@ -538,35 +558,10 @@ export function retirarDoAr(tipo: TipoItemAnfitriao, id: string, dono: Membro): 
   });
 }
 
-/** Apaga propostas de fonte do anfitrião que nenhum outro item usa. */
-function podarFontesPropostas(donoId: string) {
-  const usadas = new Set([...acervo().conteudos.values()].flatMap((c) => c.fontes));
-  for (const f of [...acervo().fontes.values()]) {
-    if (f.proposta?.pendente && f.proposta.donoId === donoId && !usadas.has(f.id))
-      acervo().fontes.delete(f.id);
-  }
-}
-
-/** Salas vão à lixeira; artigos avulsos são apagados direto (sem lixeira), mesmo já tendo sido publicados. */
+/** Salas e artigos usam exclusão reversível, sem apagar fontes nem vínculos. */
 export async function excluir(tipo: TipoItemAnfitriao, id: string, dono: Membro): Promise<ResultadoAcao> {
   if (tipo === "sala") return mudarLixeiraSala(id, "excluir", dono);
-  return comPosse(() => {
-    const recusa = conferirAnfitriao(dono);
-    if (recusa) return erro(recusa);
-    const artigo = artigoDoDono(id, dono.id);
-    const motivo = podeExcluir({ status: artigo.status });
-    if (motivo) return erro(motivo);
-    acervo().conteudos.delete(id);
-    podarFontesPropostas(dono.id);
-    registrar({
-      quem: dono.pseudonimo,
-      acao: "excluiu",
-      tipoItem: "artigo",
-      itemId: id,
-      itemTitulo: artigo.titulo,
-    });
-    return ok(undefined, "Artigo excluído.");
-  });
+  return mudarLixeiraArtigo(id, "excluir", dono);
 }
 
 // ---------- novidades ----------
@@ -581,4 +576,13 @@ export function marcarNovidadesVistas(tipo: TipoItemAnfitriao, id: string, dono:
     else acervo().conteudos.set(id, { ...(item as ConteudoEditorial), revisao });
     return ok(undefined, "");
   });
+}
+
+/** Sala e seus artigos entram em revisão no mesmo commit. */
+export async function enviarSala(salaId: string, escolhidos: string[], aceite: boolean, dono: Membro) {
+  return comGravacoesDoPedido(() => enviarSalaPlano(salaId, escolhidos, aceite, dono));
+}
+
+export async function salvarArtigo(f: FormArtigoAnfitriao, dono: Membro, modo: ModoSalvar) {
+  return comGravacoesDoPedido(() => salvarArtigoPlano(f, dono, modo));
 }

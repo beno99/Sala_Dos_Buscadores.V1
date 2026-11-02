@@ -29,3 +29,9 @@ O preview usa dados ilustrativos explícitos. No portal, nenhum progresso ou nom
 Os cards de Sala usam imagem ao fundo e painel de vidro escuro, inclusive no tema claro/areia. A variante de estudo troca nível/data por percentual, barra nativa dourada e contagem. Calcule concluídos / total com o valor exato; arredonde somente o percentual visível (2 de 3 → 67%). Esse progresso é da Sala e não substitui o percentual de leitura da retomada.
 
 Carregue `CardSala/card-sala.css` com o bundle e use o runtime `refined.js` para os controles da prévia. O exemplo reúne as Salas num carrossel sem alterar o contrato de dados reais do portal.
+
+## Descoberta e poucos itens (02/11/2026)
+
+A ordem de produção passa a banner, Salas em grade, Assistente do acervo textual, indicadores e conteúdo editorial/Comunidade. Salas e leituras usam `.sdb-home__grid`, com colunas naturais pelo espaço disponível; um item usa `.sdb-home__grid--single` e ocupa a largura. Zero itens tem estado vazio. Nunca duplicar registros para preencher a composição; não há trilho obrigatório para descobrir Salas.
+
+A prévia da Comunidade usa somente publicações já visíveis, três IDs únicos mais recentes, texto curto, data e identificação pública do autor. Não recebe comentários, mídia, e-mail, preferências ou histórico. Cada item leva à conversa e há acesso ao feed, inclusive no estado vazio.

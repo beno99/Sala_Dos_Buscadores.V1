@@ -39,7 +39,9 @@ const SECOES = [
     id: "privacidade",
     titulo: "Privacidade e LGPD",
     texto: [
-      "Guardamos e-mail, pseudônimo, preferências e o seu progresso de estudo, só para manter a conta e sugerir conteúdos. Nada disso aparece para outras pessoas: não há perfil público, placar ou comparação entre membros.",
+      "Guardamos os dados necessários para manter sua conta e seu estudo. Seu e-mail, suas preferências e seu histórico detalhado de estudo não são exibidos nos perfis da Comunidade. O pseudônimo e a foto do seu perfil podem ser vistos por outras pessoas autenticadas no Portal. Publicações e interações na Comunidade também aparecem para seus participantes.",
+      "Com a exibição de níveis habilitada, suas publicações relacionadas a uma Sala podem mostrar o nível de estudo nessa Sala. Você pode desativar essa exibição em Ajustes. Seu histórico detalhado de leituras permanece privado.",
+      "Os perfis públicos de Anfitriões apresentam sua assinatura, apresentação e materiais publicados. Público aqui significa acessível às contas do Portal: o acesso ao acervo exige login. Não há ranking público de progresso entre pessoas.",
       "Religião ou convicção é opcional e só fica guardada com o seu consentimento (LGPD, art. 11). Em Ajustes, você muda ou apaga as respostas a qualquer momento.",
     ],
   },
@@ -56,7 +58,8 @@ export default function SobrePage() {
         <section
           key={s.id}
           id={s.id}
-          className="flex scroll-mt-9 flex-col gap-3"
+          className="sdb-policy-section flex flex-col gap-3"
+          tabIndex={-1}
           aria-labelledby={`${s.id}-titulo`}
         >
           <h2 id={`${s.id}-titulo`} className="sdb-title-2">

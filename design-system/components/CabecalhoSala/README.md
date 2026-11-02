@@ -24,3 +24,7 @@ Decide pelo container (coloque o cabeçalho dentro de um elemento com `container
 - A data vai em português e por extenso abreviado ("3 set 2026").
 - Assinatura com Avatar de iniciais é exclusiva da Sala de anfitrião; o nome é link para a página pública dele.
 - Logo abaixo vem o [Banner da Sala](../BannerSala/README.md).
+
+## Origem de Anfitrião (02/11/2026)
+
+`.sdb-roomhead--host` acrescenta filete dourado; selo textual Sala de Anfitrião e assinatura pública continuam presentes. O detalhe visual não indica superioridade nem modifica a autoria.

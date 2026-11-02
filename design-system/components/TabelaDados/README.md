@@ -23,3 +23,6 @@ Para listas em que cada linha abre o nível seguinte (anfitriões › Salas do a
 
 ## Miniatura da Sala (1.0.3)
 Na lista de Salas da curadoria, a primeira coluna junta a miniatura e o nome: `.sdb-table__sala` > `.sdb-table__thumb` (64 px, 16:10, com `<img alt="">` ou a placa `.sdb-plate.sdb-plate--{bordo|grafite|bege}` com o arco) e o bloco do título (`.sdb-table__title` e `.sdb-table__sub`). A miniatura é decorativa (`aria-hidden`); o nome é o link.
+
+## Seleção extensa 02/11/2026
+Listas selecionáveis de fontes e vídeos usam `.sdb-selection-list`, altura máxima `--selection-list-height`, rolagem interna e região focável com nome acessível. Busca e criação ficam fora da região; seleção não é apagada ao filtrar.

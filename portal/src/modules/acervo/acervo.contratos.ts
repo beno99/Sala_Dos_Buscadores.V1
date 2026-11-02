@@ -19,10 +19,13 @@ import type {
   VideoEditorial,
 } from "@/data/types";
 import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
+import type { PedidoLixeiraArtigo } from "@/features/artigos/lixeira";
 import type { EscolhaDestaques } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
 import type { PedidoExclusaoPermanenteSala, PedidoLixeiraSala } from "@/features/salas/lixeira";
 import type { Membro } from "@/modules/conta/conta.contratos";
+import type { OperacaoContaNoLote } from "./contas-no-lote";
+import type { PedidoEditorial, ResultadoEditorial } from "./editorial-atomico";
 
 /*
  * Contratos da persistência do acervo. O servidor trabalha sobre um snapshot
@@ -82,7 +85,15 @@ export interface DadosCarregados {
 export type AcaoRelacao = "incluir" | "remover";
 
 export type Gravacao =
-  | { [K in NomeColecao]: { tipo: "gravar"; colecao: K; id: string; valor: Colecoes[K] } }[NomeColecao]
+  | {
+      [K in NomeColecao]: {
+        tipo: "gravar";
+        colecao: K;
+        id: string;
+        valor: Colecoes[K];
+        esperado?: string | null;
+      };
+    }[NomeColecao]
   | { tipo: "apagar"; colecao: NomeColecao; id: string }
   | { tipo: "destaques"; valor: EscolhaDestaques }
   | { tipo: "auditoria"; valor: RegistroAuditoria }
@@ -91,11 +102,21 @@ export type Gravacao =
   | { tipo: "seguir"; acao: AcaoRelacao; valor: SeguirComunidade }
   | { tipo: "salvo"; acao: AcaoRelacao; valor: SalvoComunidade };
 
+export type OperacaoLote = Gravacao | { tipo: "editorial"; pedido: PedidoEditorial } | OperacaoContaNoLote;
+
 export interface AcervoRepositorio {
+  aplicarLote(operacoes: OperacaoLote[]): Promise<number>;
+  salvarEditorial(pedido: PedidoEditorial): Promise<ResultadoEditorial & { versao: number }>;
+  mudarLixeiraArtigo(
+    pedido: PedidoLixeiraArtigo,
+  ): Promise<{ artigo: ConteudoEditorial; registro: RegistroAuditoria; versao: number }>;
+  excluirArtigoPermanentemente(
+    pedido: PedidoLixeiraArtigo,
+  ): Promise<{ registro: RegistroAuditoria; versao: number }>;
   mudarLixeiraSala(
     pedido: PedidoLixeiraSala,
   ): Promise<{ sala: SalaEditorial; registro: RegistroAuditoria; versao: number }>;
-  /** Apaga a Sala e seus conteúdos, vídeos e citações; exige que já esteja na lixeira. */
+  /** Apaga somente Salas na lixeira e sem dependências. */
   excluirSalaPermanentemente(pedido: PedidoExclusaoPermanenteSala): Promise<{
     conteudosIds: string[];
     videosIds: string[];

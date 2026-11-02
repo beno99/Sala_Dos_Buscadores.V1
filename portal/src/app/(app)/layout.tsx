@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Moldura } from "@/components/layout/Moldura";
 import { listarConteudosBuscaveis } from "@/data/repositorio";
 import { aparenciaDoCookie, COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie } from "@/features/aparencia/tema";
+import * as conta from "@/modules/conta/conta.controller";
 import { novidadesDe } from "@/server/anfitriao/consultas";
 import { modeloDaLateral } from "@/server/estudo";
 import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
@@ -14,6 +15,8 @@ import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
  * também não entra (RF-01): vai para /confirmar-email em vez da moldura.
  */
 export default async function LayoutApp({ children }: { children: ReactNode }) {
+  const pendente = await conta.membroAtual();
+  if (pendente && !pendente.emailVerificadoEm) redirect("/confirmar-email");
   const membro = await membroAtual();
   if (!membro) return redirecionarParaEntrar();
   if (!membro.emailVerificadoEm) redirect("/confirmar-email");

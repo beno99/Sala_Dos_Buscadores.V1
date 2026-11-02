@@ -1,6 +1,6 @@
 # Manual de operação editorial
 
-A Sala dos Buscadores · revisão de 31/10/2026 · C01–C08
+A Sala dos Buscadores · revisão de 02/11/2026 · C01–C08 e refinamento P01–P34
 
 Este manual descreve o código atual. Exemplos abaixo são ilustrativos: não são dados inseridos nem autorização para publicar. A área **Curadoria** é restrita a administradores; anfitriões trabalham nas próprias Salas e enviam para revisão. Leitores não acessam os cadastros editoriais.
 
@@ -14,7 +14,7 @@ O painel **Para publicar** mantém a lista de pendências. “Faltam N itens obr
 
 “O que este cadastro precisa ter?” apresenta as regras do próprio formulário. Não preencha conteúdo inventado para eliminar pendências; corrija, retire um bloco opcional que não será usado ou mantenha o rascunho.
 
-## Excluir e restaurar Salas
+## Excluir e restaurar artigos e Salas
 
 **Excluir Sala agora significa mover para a lixeira**, inclusive quando já foi publicada, está em revisão ou arquivada. Não apaga definitivamente a Sala nem os conteúdos.
 
@@ -24,7 +24,9 @@ O painel **Para publicar** mantém a lista de pendências. “Faltam N itens obr
 - A Sala sai do portal, das buscas, destaques e listas de trabalho. Seus conteúdos ficam inacessíveis nos fluxos públicos e não podem ser editados pelos editores enquanto a Sala estiver na lixeira. Uma aba antiga não pode restaurá-la por salvamento automático, publicação ou pela restauração de um arquivamento.
 - Para restaurar, o curador abre **Curadoria → Salas → Lixeira de Salas**, em `/admin/lixeira/salas`. A tabela informa o estado anterior e as quantidades de conteúdos preservados. Clique **Restaurar Sala** e confirme.
 - A restauração conserva o slug, as relações e os estados editoriais: uma Sala publicada volta ao portal se ainda satisfizer a regra de visibilidade; rascunhos continuam rascunhos; uma Sala arquivada continua arquivada. A confirmação avisa expressamente quando conteúdos publicados podem voltar ao portal.
-- Não existe exclusão definitiva nem esvaziamento da lixeira. O endereço continua reservado, evitando reutilização que quebraria os vínculos ao restaurar.
+- Antes de enviar a Sala à lixeira, mova todos os seus artigos para a lixeira, inclusive rascunhos e arquivados. A interface informa quando ainda há artigos ativos.
+- Artigos próprios de anfitrião podem ir à lixeira em qualquer estado; o conteúdo e a autoria são preservados. Só o curador restaura, em **Curadoria → Lixeira** (`/admin/lixeira`). Restaure primeiro a Sala, se também estiver excluída.
+- Só o curador pode excluir definitivamente um artigo ou Sala que já esteja na lixeira. A confirmação é específica. A exclusão recusa dependências ainda existentes (vídeos, referências, conversas, progresso, destaques etc.); não apaga registros relacionados em cascata. Enquanto o item estiver na lixeira, o endereço continua reservado. Sem resolver as dependências, mantenha o item na lixeira. Não apague histórico de estudo para contornar esse bloqueio.
 - Exclusão e restauração registram auditoria. Se houver erro, o diálogo permanece aberto para nova tentativa. Pedidos repetidos não duplicam a operação.
 
 **Arquivar é diferente:** mantém a Sala na gestão editorial e usa a restauração de arquivamento já existente. Só a ação da lixeira pode remover a marca de exclusão. Salas na lixeira ficam congeladas também para propagação de alterações de perfil e gestão de conteúdo ao rebaixar/transferir anfitriões; restaure antes se precisar incluir esses conteúdos nessa gestão. Fontes compartilhadas e arquivos não são apagados.
@@ -44,7 +46,7 @@ O painel **Para publicar** mantém a lista de pendências. “Faltam N itens obr
 
 **Exemplo ilustrativo:** nome “Leituras do Corpus Hermeticum”; tradição “Hermetismo antigo”; tradição curta “Hermetismo”; descrição “Estudos sobre os tratados, suas traduções e contextos”; inicial “H”; período “Datação a conferir na edição utilizada”. Não presume datação, autoria ou autorização de imagem.
 
-**Imagens:** duas, opcionais, JPEG/PNG/WebP até 5 MB: o **banner** (topo da página da Sala, recomendado 2.400 × 800 px, 3:1) e a **imagem do card** (card vertical, recomendado 1.200 × 1.800 px, 2:3). Sem imagem do card, o card usa o banner, inteiro. As dimensões de cada uso estão em [Imagens: dimensões e exibição](#imagens-dimensoes-e-exibicao). Só envie material cujo uso seja autorizado. Campos de descrição/crédito do corpo do artigo não são campos da capa da Sala; registre origem e autorização no processo editorial aplicável, sem inventar metadados.
+**Imagens:** duas, opcionais, JPEG/PNG/WebP até 5 MB: o **banner** (topo da página da Sala, recomendado 2.400 × 800 px, 3:1) e a **imagem do card** (card vertical, recomendado 1.200 × 1.800 px, 2:3). Sem imagem do card, aparece a placa neutra; o banner não é usado como substituto. As dimensões de cada uso estão em [Imagens: dimensões e exibição](#imagens-dimensoes-e-exibicao). Só envie material cujo uso seja autorizado. Campos de descrição/crédito do corpo do artigo não são campos da capa da Sala; registre origem e autorização no processo editorial aplicável, sem inventar metadados.
 
 **Resolver pendências:** Nome → informe o nome canônico; Tradição → indique o contexto em uma linha; Tradição curta → versão curta para a comparação; Descrição → apresente o recorte; Inicial → uma letra da capa. O endereço não gera tarefa manual.
 
@@ -133,11 +135,11 @@ Preencha os campos, veja a prévia e clique Cadastrar fonte/Salvar fonte. A mesm
 
 **Thumbnail:** carregada no navegador de endereços fixos `i.ytimg.com`, primeiro `maxresdefault`, depois `hqdefault`, depois `mqdefault`. Falha, timeout e placeholder de resolução ausente acionam alternativa. Sem nenhuma imagem válida, mostra “Miniatura indisponível” e Tentar novamente na prévia. A imagem é inteira, com fundo quando necessário; sem upload ou chave de API adicional. Ao trocar URL, a tentativa antiga é cancelada/ignorada. Uma thumbnail disponível **não comprova permissão de incorporação**: confira o player/link autorizado, especialmente vídeos privados/removidos. Falha não apaga o formulário.
 
-**Artigos recentes:** lista inicial ordenada por **criação**, mais novo primeiro, com desempate por ID. Mostra Sala, status e data. O contexto é a Sala do vídeo: conteúdos de outra Sala, de anfitrião ou arquivados não entram como novas opções. O tema não é usado para proibir associação. A busca consulta todo o conjunto elegível, inclusive fora da primeira página; Carregar mais amplia dez por vez. Marque o checkbox e confira o contador. Se o artigo foi salvo em outra aba, use Atualizar artigos; as escolhas permanecem ao buscar, paginar e atualizar.
+**Artigos recentes:** lista inicial ordenada por **criação**, mais novo primeiro, com desempate por ID. Mostra Sala, status e data. O contexto e o filtro de Sala são explícitos. Artigos elegíveis de outras Salas, inclusive de anfitrião, podem ser vinculados. Arquivados e itens na lixeira não são novas opções. O tema não é usado para proibir associação. A busca consulta todo o conjunto elegível, inclusive fora da primeira página; Carregar mais amplia dez por vez. Marque o checkbox e confira o contador. Se o artigo foi salvo em outra aba, use Atualizar artigos; as escolhas permanecem ao buscar, paginar e atualizar.
 
 Seleções antigas indisponíveis são identificadas e podem ser desmarcadas. Remover uma seleção retira somente a associação, nunca o artigo ou o vídeo. O servidor evita IDs duplicados e rejeita novas ligações inválidas. Vídeo publicado e artigo publicado na Sala visível são requisitos para a exibição pública; a prévia de curadoria pode incluir rascunhos autorizados e não se torna pública.
 
-**Exemplo ilustrativo de fluxo:** preencha um vídeo autorizado, informe título e duração reais, selecione tema/nível, escolha o artigo recém-criado da mesma Sala, salve, reabra e confira o checkbox. Publique apenas quando houver autorização e checklist completo. Abra a prévia administrativa para conferir a relação; para leitores, confira “Vídeos relacionados” quando ambos estiverem publicados. Para desassociar, desmarque e salve. Despublicar/arquivar retira o vídeo da visualização pública sem apagar os artigos.
+**Exemplo ilustrativo de fluxo:** preencha um vídeo autorizado, informe título e duração reais, selecione tema/nível, escolha os artigos elegíveis, inclusive de outras Salas, salve, reabra e confira o checkbox. Publique apenas quando houver autorização e checklist completo. Abra a prévia administrativa para conferir a relação; para leitores, confira “Vídeos relacionados” quando ambos estiverem publicados. Para desassociar, desmarque e salve. Despublicar/arquivar retira o vídeo da visualização pública sem apagar os artigos.
 
 ## Outros cadastros e decisões editoriais
 
@@ -147,7 +149,7 @@ Seleções antigas indisponíveis são identificadas e podem ser desmarcadas. Re
 
 **Perfil de anfitrião:** nome, pseudônimo/slug de perfil e dados conforme o formulário próprio; não faz parte da mudança de slug de Sala. Atualizações de perfil/permissões não foram redesenhadas nesta revisão.
 
-**Comunidade:** possui regras próprias em `/comunidade/regras`; publicações de buscador não recebem selo editorial. Esta revisão não altera seus tipos, limites, moderação ou autoria.
+**Comunidade:** regras em `/comunidade/regras`. Novas publicações são exclusivas de Curadoria e Anfitriões; Buscadores mantêm leitura e as interações já existentes. Posts antigos não são apagados nem recebem selo editorial. Os quatro tipos, imagens, limites e moderação continuam. O campo opcional Vídeo do acervo vincula um vídeo publicado e elegível, sem criar upload de vídeo. Se o vídeo sair do ar, seu conteúdo não é exposto pelo post. A prévia na home lê o mesmo feed público.
 
 ## Imagens: dimensões e exibição
 
@@ -155,9 +157,9 @@ Revisão de 31/10/2026. Todo campo de imagem mostra, **antes de escolher o arqui
 
 | Campo | Uso | Recomendado (largura × altura) | Proporção | Formatos | Limite | Exibição | Também aparece em |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Sala › Banner da Sala | topo da página da Sala | 2.400 × 800 px | 3:1, altura acompanha o arquivo | JPEG, PNG, WebP | 5 MB | inteira, na largura da página | card da Sala sem imagem do card; card de artigo da Sala sem imagem própria |
+| Sala › Banner da Sala | topo da página da Sala | 2.400 × 800 px | 3:1, altura acompanha o arquivo | JPEG, PNG, WebP | 5 MB | inteira, na largura da página | —; banner não substitui card |
 | Sala › Imagem do card | card vertical da Sala | 1.200 × 1.800 px | 2:3 | JPEG, PNG, WebP | 5 MB | inteira dentro do card; sobra fundo | Portal, Salas, Biblioteca, Estante, Perfil |
-| Artigo › Imagem do card | cards do artigo | 1.600 × 1.000 px | 16:10 | JPEG, PNG, WebP | 5 MB | inteira dentro do card; sobra fundo | topo do artigo sem imagem de topo; retomada do Portal |
+| Artigo › Imagem do card | cards do artigo | 1.600 × 1.000 px | 16:10 | JPEG, PNG, WebP | 5 MB | inteira dentro do card; sobra fundo | retomada do Portal; não substitui o topo |
 | Artigo › Imagem de topo | topo da página do artigo | 2.400 × 800 px | 3:1, altura acompanha o arquivo | JPEG, PNG, WebP | 5 MB | inteira, na largura da página | — |
 | Artigo › Imagem (bloco do corpo) | corpo do artigo | 1.472 × 981 px | 3:2, altura acompanha o arquivo | JPEG, PNG, WebP | 5 MB | inteira, na coluna de texto (até 736 px) | — |
 | Perfil › Foto / Anfitrião › Avatar | avatar | 512 × 512 px | 1:1 | JPEG, PNG, WebP | 5 MB | círculo | lateral, Perfil, Comunidade |
@@ -174,12 +176,33 @@ Fontes bibliográficas usam capa tipográfica e vídeos usam a miniatura do YouT
 
 **Nitidez:** ampliar artificialmente um arquivo pequeno (aumentar os pixels num editor) não recupera detalhes; procure um original maior.
 
-**Imagens já publicadas:** nenhum arquivo foi recortado, regravado ou substituído. O portal guarda o original enviado, e a correção foi só de exibição: as imagens antigas passaram a aparecer inteiras sem novo envio. Para Salas que hoje usam o banner horizontal no card vertical, enviar uma imagem do card (2:3) evita as faixas de fundo.
+**Imagens já publicadas:** nenhum arquivo foi recortado, regravado ou substituído. O portal guarda o original enviado, e a correção foi só de exibição: as imagens antigas passaram a aparecer inteiras sem novo envio. Banner, card e topo são independentes. Arquivos existentes no campo correto continuam sendo usados, sem novo upload; campo ausente apresenta fallback neutro, sem substituir por imagem de outra finalidade.
 
 ## Implantação e reversão
 
-Esta revisão não exige migração de schema, regravação em massa nem nova variável de ambiente. A coluna única `salas.slug` existente arbitra a reserva concorrente; a aplicação usa transação com `ON CONFLICT DO NOTHING` e tenta o próximo sufixo.
+A revisão C01–C08 de 31/10 não exigia migração de schema. O refinamento de 02/11 acrescenta as migrações aditivas `0008_refinamento_portal.sql` (lixeira de artigos e vídeo opcional do post) e `0009_auditoria_ator.sql` (identificador imutável da conta na auditoria). Não há regravação em massa, seed ou nova variável de ambiente. Elas precisam ser aplicadas no fluxo controlado de cada ambiente antes do código novo. Foram aplicadas ao banco configurado em 02/11 após o relato de erro de coluna ausente; consulte [registro da aplicação](refinamento-2026-11-02/migracoes-aplicadas.md). A coluna única `salas.slug` existente arbitra a reserva concorrente; a aplicação usa transação com `ON CONFLICT DO NOTHING` e tenta o próximo sufixo.
 
 Blocos recebem `id` opcional no JSON ao serem editados/salvos; strings legadas continuam legíveis. Fontes já existentes conservam dados no banco até edição; a inicial visual é derivada do título. Arquivos de imagem existentes não são substituídos nem recortados.
 
-Antes de implantar, use o backup/snapshot PostgreSQL e a política de backup Storage do ambiente. Versione código e artefatos DS juntos. Reversão: restaure a versão anterior do código e DS, sem apagar registros nem restaurar banco sobre gravações novas. Os IDs opcionais são compatíveis com os leitores anteriores; slugs já criados permanecem válidos. Reverter também reintroduz as regras antigas de edição de slug/inicial e recorte: registre o risco operacional. Não execute seed ou migração para reproduzir exemplos deste manual.
+Antes de implantar, use o backup/snapshot PostgreSQL e a política de backup Storage do ambiente. Versione código e artefatos DS juntos. Reversão: pause escritas e restaure código e DS compatíveis com a lixeira de artigos. Não volte a uma versão que ignore `conteudos.lixeira`, pois ela pode expor artigos excluídos. Preserve as colunas aditivas e não apague registros nem restaure banco sobre gravações novas. Se for indispensável voltar a código anterior a 02/11, mantenha a aplicação indisponível até aplicar uma correção de leitura que respeite a lixeira. Os IDs opcionais são compatíveis com os leitores anteriores; slugs já criados permanecem válidos. Reverter também reintroduz as regras antigas de edição de slug/inicial e recorte: registre o risco operacional. Não execute seed ou migração para reproduzir exemplos deste manual.
+
+
+## Vínculos e edição simultânea — 02/11/2026
+
+No artigo, use **Vídeos relacionados** para pesquisar e marcar vídeos elegíveis do acervo. No vídeo, use **Artigos recentes**. Os dois formulários alteram a mesma relação por identificador: vincular de um lado aparece no outro após reabrir. Um vídeo pode ficar só na Sala, sem artigo. Desmarcar remove apenas aquele vínculo. O Anfitrião administra os próprios artigos e pode associar vídeos públicos de outras Salas; isso não permite editar o vídeo nem remover relações de artigos alheios. A página pública exibe apenas os dois lados elegíveis e publicados.
+
+Artigos e vídeos aceitam vários temas. Marcar outro não substitui os anteriores. A lista de temas e a lista de fontes têm rolagem interna, mantendo o restante do formulário acessível. Buscar ou paginar mantém as escolhas.
+
+Se outra pessoa salvar primeiro a mesma entidade, aparece um conflito e seu rascunho permanece no formulário; o salvamento automático é suspenso. Copie seu texto antes de recarregar, confira a versão mais recente e reaplique conscientemente o necessário. Não repita o salvamento em uma aba desatualizada esperando sobrescrever a outra pessoa. A auditoria de novas ações registra o ID da conta, além do nome público; registros antigos não recebem identidade inventada.
+
+## Cadastro, e-mail e navegação
+
+Contas pendentes de confirmação não acessam o acervo autenticado nem ações editoriais. Na confirmação, é possível corrigir o e-mail e pedir nova mensagem. O reenvio tem intervalo mínimo de 60 segundos e o link expira em 24 horas. Corrigir o endereço invalida o link anterior. Se a entrega falhar, a interface informa a falha; não significa que a mensagem chegou. Um link de outra conta não troca silenciosamente a conta já aberta: entre na conta correspondente.
+
+Sem retorno interno explícito, login de Buscador abre `/`, de Anfitrião `/anfitriao`, e de Curadoria `/admin`. A curadoria consulta contas por nome/e-mail e filtra papel/situação em `/admin/usuarios`. Atribuição de novos curadores aguarda a definição da hierarquia do curador principal; não compartilhe senha.
+
+O Portal destaca Salas e oferece prévia da Comunidade. **Vídeos** (`/videos`) permite buscar e filtrar por Sala, artigo e origem. **Anfitriões** (`/anfitrioes`) lista assinaturas com Salas públicas, sem expor cadastros privados. O menu móvel reutiliza os mesmos destinos. A aparência Dourada/Escura da esfera é uma preferência do navegador independente do tema; não guarda conversa entre visitas.
+
+## Decisões ainda não ativadas
+
+Inbox, agenda, critérios numéricos da Jornada do Buscador, concessão dos quatro títulos e oito Gemas de Conhecimento dependem das definições indicadas pela especificação. As conquistas existentes permanecem. URLs oficiais de redes/contato e permissões do curador principal precisam ser fornecidas; não há links fictícios. A exclusão de fontes exige seleção e aprovação editorial explícitas, conferindo todos os usos antes de apagar.

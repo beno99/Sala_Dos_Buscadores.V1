@@ -5,7 +5,7 @@ import { videoParaForm } from "@/features/admin/formularios";
 import { lerFiltrosVideos } from "@/features/admin/listas";
 import { checklistVideo } from "@/features/admin/regras/checklist";
 import { ListaVideos } from "@/features/admin/ui/ListaVideos";
-import { listarArtigos, listarVideos } from "@/server/admin/consultas";
+import { listarTodosOsArtigos, listarVideos } from "@/server/admin/consultas";
 import { listarSalasAdmin } from "@/server/admin/salas";
 
 export const metadata: Metadata = { title: "Vídeos" };
@@ -15,7 +15,7 @@ export default async function PaginaVideos() {
     .map((r) => r.sala)
     .filter((s) => s.origem === "oficial" && s.status !== "arquivado");
   const videos = listarVideos();
-  const titulos = Object.fromEntries(listarArtigos().map((a) => [a.id, a.titulo || "Sem título"]));
+  const titulos = Object.fromEntries(listarTodosOsArtigos().map((a) => [a.id, a.titulo || "Sem título"]));
   const filtros = { ...lerFiltrosVideos({}), sala: "", pagina: 1 };
   return (
     <>

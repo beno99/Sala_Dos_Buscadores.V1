@@ -2,6 +2,7 @@ import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ConteudoEditorial, FonteEditorial, SalaEditorial } from "@/data/types";
+import { contaAtiva } from "@/modules/conta/acesso";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import * as conta from "@/modules/conta/conta.controller";
 import { SALA_NA_LIXEIRA, salaNaLixeira } from "./salas/lixeira";
@@ -20,9 +21,15 @@ export { COOKIE_SESSAO, tokenDaSessao } from "@/modules/conta/conta.controller";
  * (o portal exige conta), então é também onde o snapshot do acervo é posto em
  * dia com o banco antes de qualquer leitura (src/server/store.ts).
  */
-export async function membroAtual(): Promise<Membro | null> {
+export async function membroDaSessaoAtual(): Promise<Membro | null> {
   const [membro] = await Promise.all([conta.membroAtual(), sincronizarAcervo()]);
   return membro;
+}
+
+/** DAL de conta ativa: ações diretas também recusam contas pendentes. */
+export async function membroAtual(): Promise<Membro | null> {
+  const membro = await membroDaSessaoAtual();
+  return contaAtiva(membro) ? membro : null;
 }
 
 /** "sem-sessao" só aparece se o proxy for contornado: o portal exige conta. */
@@ -95,6 +102,8 @@ export function salaDoDono(salaId: string, donoId: string): SalaEditorial {
 export function artigoDoDono(artigoId: string, donoId: string): ConteudoEditorial {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao || artigo.revisao.donoId !== donoId) throw new AcessoNegado(NEGADO_ANFITRIAO);
+  if (artigo.lixeira)
+    throw new AcessoNegado("Este artigo está na lixeira. Peça ao curador para restaurá-lo.");
   if (salaNaLixeira(artigo.sala)) throw new AcessoNegado(SALA_NA_LIXEIRA);
   return artigo;
 }

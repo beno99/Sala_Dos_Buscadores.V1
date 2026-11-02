@@ -7,8 +7,8 @@ import { urlDaMidia } from "@/server/midia";
 import { perfilDe } from "@/server/perfilBuscador";
 import { progressoDe } from "@/server/progresso";
 import { acervo, contaNoDiretorio as contaPorId, salasVisiveis } from "@/server/store";
-import { acervoDeEstudo, conteudoParaPublico } from "./repositorio";
-import type { ComentarioComunidade, Conteudo, Nivel, Publicacao } from "./types";
+import { acervoDeEstudo, conteudoParaPublico, videoParaPublico } from "./repositorio";
+import type { ComentarioComunidade, Conteudo, Nivel, Publicacao, Video } from "./types";
 
 export interface PessoaPublicaComunidade extends PessoaComunidadeVisual {
   id: string;
@@ -22,6 +22,7 @@ export interface PublicacaoPublica extends Publicacao {
   salaNome?: string;
   nivel?: { valor: Nivel; assunto: string };
   conteudo?: Conteudo;
+  video?: Video;
   comentarios: ComentarioPublicoComunidade[];
   curtidas: number;
   dirigidaA?: PessoaPublicaComunidade;
@@ -93,14 +94,17 @@ export function publicacoesVisiveisComunidade(): PublicacaoPublica[] {
           }
         : undefined;
     const c = p.conteudoId ? acervo().conteudos.get(p.conteudoId) : undefined;
+    const v = p.videoId ? acervo().videos.get(p.videoId) : undefined;
     return [
       {
         ...structuredClone(p),
         autor,
+        video: v?.status === "publicado" && salas.has(v.sala) ? videoParaPublico(v) : undefined,
         nivel,
         comentarios,
         salaNome: p.salaSlug ? salas.get(p.salaSlug)?.nome : undefined,
-        conteudo: c?.status === "publicado" && salas.has(c.sala) ? conteudoParaPublico(c) : undefined,
+        conteudo:
+          c?.status === "publicado" && !c.lixeira && salas.has(c.sala) ? conteudoParaPublico(c) : undefined,
         dirigidaA: p.perguntaDirigidaA ? pessoaPublicaComunidade(p.perguntaDirigidaA) : undefined,
         curtidas: dados.reacoes.filter(
           (r) => r.alvo.tipo === "publicacao" && r.alvo.id === p.id && r.tipo === "curtir",

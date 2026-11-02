@@ -15,11 +15,11 @@ import { validarEmail, validarPseudonimo, validarSenha } from "@/features/auth/v
 import { contas } from "@/modules/conta";
 import { hash } from "@/modules/conta/casos-de-uso/sessao";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { registrar } from "../auditoria";
+import { atorAuditoriaAtual, registrar } from "../auditoria";
 import { EMAIL_CURADORIA, enviarEmail, URL_PUBLICA } from "../caixa-saida";
 import { midiaDoDono } from "../midia";
 import { salaNaLixeira } from "../salas/lixeira";
-import { acervo } from "../store";
+import { acervo, comGravacoesDoPedido, planejarContaNoPedido } from "../store";
 import { agora, erro, falha, novoId, ok, type ResultadoAcao } from "./comum";
 
 /*
@@ -56,14 +56,25 @@ export function perfilIncompleto(p: PerfilAnfitriao | undefined): boolean {
   return !(p?.credencial.trim() && p.apresentacao.trim());
 }
 
+function atorDaOperacao(): string {
+  const id = atorAuditoriaAtual();
+  if (!id) throw new Error("A operação exige identidade de Curadoria autenticada.");
+  return id;
+}
+
 // ---------- promoção pela curadoria ----------
 
-export async function promover(contaId: string, quem: string): Promise<ResultadoAcao> {
+async function promoverPlano(contaId: string, quem: string): Promise<ResultadoAcao> {
   const conta = await contas.porId(contaId);
   if (!conta) return erro("esta conta não existe mais.");
   if (conta.papel !== "membro") return erro("só membros podem ser promovidos a anfitrião.");
-  const r = await contas.definirPapel(contaId, "anfitriao");
-  if (!r.ok) return erro(r.erro);
+  planejarContaNoPedido({
+    tipo: "papel-conta",
+    id: contaId,
+    esperado: "membro",
+    papel: "anfitriao",
+    atorId: atorDaOperacao(),
+  });
   criarPerfil(contaId, { nome: conta.pseudonimo });
   registrar({ quem, acao: "promoveu", tipoItem: "usuario", itemId: contaId, itemTitulo: conta.pseudonimo });
   return ok(undefined, `${conta.pseudonimo} agora é anfitrião. Ao entrar, completa o perfil público.`);
@@ -197,7 +208,7 @@ function notificarDestino(destino: Membro, origem: string, nomesSalas: string, q
  * Tira o papel de anfitrião: a conta continua, mas volta a ser membro. Veja
  * `disporItensDoAnfitriao` para o que acontece com as Salas e artigos.
  */
-export async function rebaixar(
+async function rebaixarPlano(
   contaId: string,
   opcao: OpcaoRebaixamento,
   quem: string,
@@ -210,7 +221,14 @@ export async function rebaixar(
   if (!r.ok) return r;
   const { salas, artigos, destino, perfilDestino } = r.valor;
 
-  await contas.definirPapel(contaId, "membro");
+  planejarContaNoPedido({
+    tipo: "papel-conta",
+    id: contaId,
+    esperado: "anfitriao",
+    papel: "membro",
+    atorId: atorDaOperacao(),
+    destinoId: opcao.tipo === "transferir" ? opcao.para : undefined,
+  });
   const rotulo = {
     manter: "manter publicado e congelado",
     despublicar: "despublicar tudo",
@@ -259,7 +277,7 @@ export async function rebaixar(
  * saem junto). Veja `disporItensDoAnfitriao` para o que acontece com as Salas
  * e artigos antes de a conta sumir.
  */
-export async function excluirConta(
+async function excluirContaPlano(
   contaId: string,
   opcao: OpcaoRebaixamento,
   quem: string,
@@ -275,7 +293,13 @@ export async function excluirConta(
 
   const email = conta.email;
   const pseudonimo = conta.pseudonimo;
-  await contas.excluir(contaId);
+  planejarContaNoPedido({
+    tipo: "excluir-conta",
+    id: contaId,
+    esperado: "anfitriao",
+    atorId: atorDaOperacao(),
+    destinoId: opcao.tipo === "transferir" ? opcao.para : undefined,
+  });
   const rotulo = {
     manter: "manter publicado e congelado",
     despublicar: "despublicar tudo",
@@ -368,7 +392,7 @@ export function candidatar(f: FormCandidatura, membro: Membro): ResultadoAcao<{ 
   );
 }
 
-export async function decidirCandidatura(
+async function decidirCandidaturaPlano(
   id: string,
   decisao: "aprovar" | "recusar",
   motivo: string | undefined,
@@ -412,7 +436,13 @@ export async function decidirCandidatura(
   }
 
   if (conta.papel !== "membro") return erro("esta conta já não é de membro.");
-  await contas.definirPapel(conta.id, "anfitriao");
+  planejarContaNoPedido({
+    tipo: "papel-conta",
+    id: conta.id,
+    esperado: "membro",
+    papel: "anfitriao",
+    atorId: atorDaOperacao(),
+  });
   criarPerfil(conta.id, c);
   acervo().candidaturas.set(id, { ...c, status: "aprovada", decididaEm: agora(), decididaPor: quem });
   registrar({ quem, acao: "aprovou", tipoItem: "candidatura", itemId: id, itemTitulo: c.nome });
@@ -595,4 +625,22 @@ export function salvarPerfil(f: FormPerfil, dono: Membro): ResultadoAcao<PerfilA
     mudancas,
   });
   return ok(perfil, "Perfil salvo. Ele já aparece na sua página pública.");
+}
+
+export async function promover(id: string, quem: string) {
+  return comGravacoesDoPedido(() => promoverPlano(id, quem));
+}
+export async function rebaixar(id: string, opcao: OpcaoRebaixamento, quem: string) {
+  return comGravacoesDoPedido(() => rebaixarPlano(id, opcao, quem));
+}
+export async function excluirConta(id: string, opcao: OpcaoRebaixamento, quem: string) {
+  return comGravacoesDoPedido(() => excluirContaPlano(id, opcao, quem));
+}
+export async function decidirCandidatura(
+  id: string,
+  decisao: "aprovar" | "recusar",
+  motivo: string | undefined,
+  quem: string,
+) {
+  return comGravacoesDoPedido(() => decidirCandidaturaPlano(id, decisao, motivo, quem));
 }

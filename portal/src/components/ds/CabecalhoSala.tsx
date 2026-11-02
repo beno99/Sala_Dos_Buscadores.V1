@@ -50,7 +50,7 @@ export function CabecalhoSala({
           {voltar.rotulo}
         </ButtonLink>
       )}
-      <header className="sdb-roomhead">
+      <header className={`sdb-roomhead${assinatura ? " sdb-roomhead--host" : ""}`}>
         <div className="sdb-roomhead__titles">
           <p className="sdb-meta">{rotulo}</p>
           <h1 className="sdb-large-title sdb-roomhead__title" id="titulo-sala">
@@ -71,7 +71,7 @@ export function CabecalhoSala({
                   </Link>
                   {assinatura.credencial && <span className="sdb-footnote">{assinatura.credencial}</span>}
                 </span>
-                <SeloProveniencia tipo="anfitriao" />
+                <SeloProveniencia tipo="anfitriao" rotulo="Sala de Anfitrião" />
               </div>
             ) : (
               blocoAcoes

@@ -16,8 +16,8 @@ export function LixeiraSalas({ salas }: { salas: ReturnType<typeof listarLixeira
         <h1 className="sdb-title-1">Lixeira de Salas</h1>
         <p className="sdb-body-sm">
           As Salas excluídas ficam fora do portal. Artigos, vídeos, conversas e vínculos permanecem guardados.
-          Só a curadoria pode restaurar ou excluir definitivamente; a exclusão definitiva apaga a Sala, seus
-          artigos, vídeos e citações para sempre.
+          Só a curadoria pode restaurar ou excluir definitivamente; a exclusão definitiva só é permitida
+          depois de resolver todos os conteúdos e vínculos dependentes.
         </p>
         <ButtonLink href={"/admin/salas" as Route} variant="secondary">
           Voltar às Salas

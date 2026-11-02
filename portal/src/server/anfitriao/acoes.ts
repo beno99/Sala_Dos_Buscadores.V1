@@ -7,11 +7,13 @@ import type {
   FormSalaAnfitriao,
 } from "@/features/anfitriao/regras/artigo";
 import type { FormCandidatura, FormPerfil } from "@/features/anfitriao/regras/perfil";
+import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { gravarSessao } from "@/modules/conta/conta.controller";
+import { auditarComo } from "@/server/auditoria";
 import type { ModoSalvar } from "../admin/editorial";
 import { AcessoNegado, exigirAnfitriao, membroAtual } from "../sessao";
-import { aguardarGravacoes, sincronizarAcervo } from "../store";
+import { comGravacoesDoPedido, sincronizarAcervo } from "../store";
 import type { ResultadoAcao } from "./comum";
 import * as editorial from "./editorial";
 import * as usuarios from "./usuarios";
@@ -36,8 +38,13 @@ async function comAnfitriao<T>(
     if (e instanceof AcessoNegado) return NEGADO("acesso restrito a anfitriões.");
     throw e;
   }
-  const r = await fazer(dono);
-  await aguardarGravacoes();
+  let r: ResultadoAcao<T>;
+  try {
+    r = await comGravacoesDoPedido(() => auditarComo(dono.id, () => fazer(dono)));
+  } catch (e) {
+    if (e instanceof ConflitoEditorial) return { ok: false, conflito: true, mensagem: e.message };
+    throw e;
+  }
   if (r.ok && revalidar) revalidatePath("/", "layout");
   return r;
 }
@@ -48,10 +55,22 @@ async function comAnfitriao<T>(
  * para /[id]). O salvamento manual (que pode tirar do ar) invalida.
  */
 export async function salvarSalaAcao(form: FormSalaAnfitriao, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string")
+    return {
+      ok: false as const,
+      conflito: true,
+      mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+    };
   return comAnfitriao((dono) => editorial.salvarSala(form, dono, modo), { revalidar: modo === "manual" });
 }
 
 export async function salvarArtigoAnfitriaoAcao(form: FormArtigoAnfitriao, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string")
+    return {
+      ok: false as const,
+      conflito: true,
+      mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+    };
   return comAnfitriao((dono) => editorial.salvarArtigo(form, dono, modo), { revalidar: modo === "manual" });
 }
 
@@ -94,8 +113,7 @@ export async function salvarPerfilAcao(form: FormPerfil) {
 export async function candidatarAcao(form: FormCandidatura) {
   const membro = await membroAtual();
   if (!membro) return NEGADO("entre na sua conta para se candidatar.");
-  const r = usuarios.candidatar(form, membro);
-  await aguardarGravacoes();
+  const r = await comGravacoesDoPedido(() => usuarios.candidatar(form, membro));
   if (r.ok) revalidatePath("/", "layout");
   return r;
 }
@@ -105,11 +123,12 @@ export async function candidatarAcao(form: FormCandidatura) {
 /** Cria a conta pelo link do convite, já como anfitrião, e abre a sessão. */
 export async function cadastrarPorConviteAcao(token: string, dados: { pseudonimo: string; senha: string }) {
   await sincronizarAcervo();
-  const r = await usuarios.aceitarConvite(String(token), {
-    pseudonimo: String(dados.pseudonimo),
-    senha: String(dados.senha),
-  });
-  await aguardarGravacoes();
+  const r = await comGravacoesDoPedido(() =>
+    usuarios.aceitarConvite(String(token), {
+      pseudonimo: String(dados.pseudonimo),
+      senha: String(dados.senha),
+    }),
+  );
   if (r.ok) await gravarSessao(r.valor);
   return r;
 }

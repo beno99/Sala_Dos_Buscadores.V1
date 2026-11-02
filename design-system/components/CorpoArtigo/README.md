@@ -41,3 +41,6 @@ Na largura toda, depois da leitura: `section.sdb-carousel.sdb-article__continue`
 - A nota de divergência ([Alerta](../Alerta/README.md) de aviso) e "Ler no site" vêm depois dos blocos, no fim da coluna do texto.
 
 A largura dos parágrafos é a mesma da coluna e das imagens (`width: 100%; max-width: none` neste contexto), sem herdar o limite tipográfico genérico de `68ch`. A moldura da leitura continua limitada pelo token `article-reading-width`.
+
+## Refinamento 02/11/2026
+O H1 `.sdb-article__title` fica centralizado somente na coluna de leitura; controles/metadados não herdam o alinhamento. Imagem de topo usa apenas o campo próprio; a ausência mostra placa, sem reutilizar a imagem do card.

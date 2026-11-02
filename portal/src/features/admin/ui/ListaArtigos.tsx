@@ -133,6 +133,12 @@ export function ListaArtigos({ itens, total, pagina, totalPaginas, filtros, sala
                     },
                   ]
                 : []),
+              {
+                label: "Mover para a lixeira",
+                icon: "cadeado",
+                danger: true,
+                onSelect: () => pedir(a, "lixeira"),
+              },
               { label: "Duplicar", icon: "copiar", onSelect: () => duplicar(a) },
               a.status === "arquivado"
                 ? {

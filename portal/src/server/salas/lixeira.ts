@@ -42,7 +42,7 @@ export async function excluirSalaPermanentemente(id: string, ator: AtorLixeira) 
     return {
       ok: true as const,
       valor: undefined,
-      mensagem: "Sala excluída definitivamente. Artigos, vídeos e citações vinculados também foram apagados.",
+      mensagem: "Sala excluída definitivamente.",
     };
   } catch (e) {
     if (e instanceof ErroLixeiraSala) return { ok: false as const, mensagem: `Erro: ${e.message}` };

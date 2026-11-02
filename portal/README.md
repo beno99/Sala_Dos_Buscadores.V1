@@ -67,7 +67,7 @@ Entre por `/entrar` com a conta de administrador e use **Curadoria** no grupo Co
 | `/admin` | Painel: totais por Sala, status e proveniência, vídeos por Sala, pendências, rascunhos parados há mais de 14 dias e últimas ações | RF-37, RNF-DOM-05 |
 | `/admin/artigos` · `/novo` · `/[id]` | Lista com busca, filtros, ordenação, paginação e ações em linha; formulário em seções com checklist, salvamento automático do rascunho e aba Histórico | RF-11 a RF-13, RF-15, RNF-DOM-01, RNF-DOM-03, RNF-DOM-04 |
 | `/admin/artigos/[id]/previa` | "Pré-visualizar como buscador": a página pública do conteúdo, com aviso fixo | RF-11 |
-| `/admin/videos` · `/novo` · `/[id]` | Vídeos do canal: URL do YouTube validada (watch, youtu.be, shorts), duração mm:ss, ligação a artigos da mesma Sala | RF-16 |
+| `/admin/videos` · `/novo` · `/[id]` | Vídeos do canal: URL do YouTube validada (watch, youtu.be, shorts), duração mm:ss, ligação a múltiplos artigos elegíveis, inclusive de outras Salas | RF-16 |
 | `/admin/fontes` · `/novo` · `/[id]` | Fontes bibliográficas; "onde é usada"; exclusão bloqueada se citada por conteúdo publicado | RNF-DOM-01 |
 | `/admin/historico` | Histórico de auditoria com filtros; só leitura | RNF-04 |
 | `/admin/exportar/[artigos\|videos\|fontes]` | CSV em UTF-8 com BOM, `;`, cabeçalhos em português, respeitando os filtros | RF-38, RNF-LEG-01/02 |
@@ -92,7 +92,7 @@ Terceiro papel: o anfitrião mantém Salas próprias e escreve artigos nelas; na
 | `/admin/usuarios` | contas (promover, tirar o papel com manter congelado, despublicar tudo ou transferir), candidaturas e convites |
 | `/admin/caixa-saida` | e-mails registrados (tabela `emails_enviados`; `enviarEmail()` em `server/caixa-saida.ts` está pronta para um serviço real) |
 
-- **Ciclo** (`features/anfitriao/regras/ciclo.ts`): rascunho → em revisão → publicado ou reprovado (motivo de pelo menos 20 caracteres). Editar algo publicado tira do ar até a nova aprovação; o salvamento automático nunca faz isso. Só se exclui o que nunca foi publicado.
+- **Ciclo** (`features/anfitriao/regras/ciclo.ts`): rascunho → em revisão → publicado ou reprovado (motivo de pelo menos 20 caracteres). Editar algo publicado tira do ar até a nova aprovação; o salvamento automático nunca faz isso. Itens próprios podem ir à lixeira em qualquer estado; somente a Curadoria restaura ou exclui definitivamente, respeitando dependências.
 - **Visibilidade** (`regras/visibilidade.ts`): Sala de anfitrião aparece se, e só se, está publicada e tem pelo menos um artigo publicado. `/salas` mostra “Salas da curadoria” e “Salas de anfitriões”.
 - **Comparação e assistente:** a Sala de anfitrião só entra na grade (`respostasDeAnfitrioes` em `features/busca/busca.ts`) e no conjunto de leituras elegíveis ao futuro assistente (registro de leituras publicadas; o motor legado em `features/assistente/motor.ts` é usado apenas em testes) quando a curadoria liga `naComparacao`.
 - **Imagens:** `POST /midia` (só anfitrião; JPEG, PNG ou WebP até 5 MB, conferidos pelos magic bytes) e `GET /midia/[id]`. O envio exige o aceite de direitos, registrado com nome e data.
@@ -116,7 +116,7 @@ Diagrama: [`../docs/banco/diagrama.md`](../docs/banco/diagrama.md). Cada módulo
 - `src/data/repositorio.ts` é a leitura pública: só sai o que está com status `publicado` (Salas, página do conteúdo, busca, contadores e nível predominante).
 - `src/server/admin/consultas.ts` (leitura editorial), `editorial.ts` (regras de escrita) e `acoes.ts` (Server Actions finas que conferem o papel e chamam `revalidatePath("/", "layout")`).
 - `src/server/auditoria.ts` só acrescenta registros congelados; não existe função para editar ou apagar.
-- Temas, glossário, comparações curadas, trilhas, episódios do banner e respostas do assistente são conteúdo editorial em código (`src/data/referencia/`), lido por `src/data/catalogo.ts`; entram no banco quando ganharem tela de edição. As Salas vêm do store por um registro (`instalarRegistroSalas`). Conteúdos novos da curadoria aparecem na Sala, na página e na busca, mas **ainda não entram na grade comparativa nem no assistente** (há uma nota no painel); as Salas de anfitrião entram quando a curadoria liga a comparação.
+- Temas, glossário, comparações curadas, trilhas, episódios do banner e respostas do assistente são conteúdo editorial em código (`src/data/referencia/`), lido por `src/data/catalogo.ts`; entram no banco quando ganharem tela de edição. As Salas vêm do store por um registro (`instalarRegistroSalas`). Conteúdos novos da curadoria aparecem na Sala, na página e na busca, não geram automaticamente a grade comparativa editorial. A consulta do assistente usa o acervo publicado elegível; Salas de anfitrião dependem de `naComparacao`. Disponibilidade de resposta exige o provedor real, sem fallback de demonstração.
 
 
 ## Homologação
@@ -188,10 +188,25 @@ O diálogo de fontes e a cópia usam exclusivamente os trechos e as referências
 
 ## Operação editorial — revisão 31/10/2026
 
-Consulte [Manual de operação](../docs/manual-operacao.md) para Sala, artigo, fonte, vídeo e seus requisitos de rascunho/publicação. Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis. Iniciais de artigo/fonte são derivadas do título; imagens de corpo preservam proporção e bytes originais; pendências levam a blocos de identidade estável. O seletor de vídeos mostra artigos recentes da Sala, com busca e atualização, e a thumbnail YouTube tem fallback sem chave adicional. Não há migração de schema nesta revisão.
+Consulte [Manual de operação](../docs/manual-operacao.md) para Sala, artigo, fonte, vídeo e seus requisitos de rascunho/publicação. Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis. Iniciais de artigo/fonte são derivadas do título; imagens de corpo preservam proporção e bytes originais; pendências levam a blocos de identidade estável. O seletor de vídeos mostra artigos recentes elegíveis, inclusive de outras Salas, com busca e atualização, e a thumbnail YouTube tem fallback sem chave adicional. Não há migração de schema nesta revisão.
 
 Testes adicionados usam `node:test` via `tsx`, sem conectar o banco configurado: `npm run test:editorial`. O teste SQL opcional usa PostgreSQL embarcado PGlite em módulo informado por `PGLITE_MODULE`; detalhes e evidências em [relatório C01–C08](../docs/revisoes-2026-10-31.md).
 
 ### Lixeira de Salas (31/10/2026)
 
 Anfitriões excluem as próprias Salas; administradores excluem qualquer Sala e restauram em `/admin/lixeira/salas`. A marca nullable `salas.lixeira` preserva estado, slug e todos os vínculos. Regras em `features/salas/lixeira.ts`, Server Actions em `server/salas/acoes.ts`, transação com auditoria em `modules/acervo/acervo.repositorio.ts`. Aplicar `drizzle/0006_salas_lixeira.sql` antes deste código em outro ambiente; não executar seeds. A migração adiciona somente uma coluna JSONB opcional. Detalhes e reversão em [relatório](../docs/lixeira-salas-2026-10-31.md), operação no [manual](../docs/manual-operacao.md).
+
+
+## Refinamento de 02/11/2026
+
+Implementação e evidências por P01–P34: [relatório](../docs/refinamento-2026-11-02/relatorio.md). O [manual](../docs/manual-operacao.md) foi atualizado para a operação vigente.
+
+- Novas rotas `/videos` e `/anfitrioes`, dentro da moldura/autenticação. Home destaca Salas, acesso ao assistente e prévia do feed existente.
+- Novos posts da Comunidade apenas para Curadoria e Anfitrião; vídeo opcional é vínculo com o acervo público. Imagens, quatro tipos, comentários e moderação existentes são preservados.
+- Lixeira de artigos, sequência artigo → Sala e exclusão definitiva restrita ao curador, sem cascatas de dependências. Restauração conserva estado e slug.
+- Artigos e vídeos se vinculam pelos dois editores, entre Salas. Escritas editoriais usam versão esperada, proteção de concorrência e auditoria por identidade da conta.
+- Confirmação de e-mail exigida para sessão ativa, correção/reenvio com validade e controle de intervalo. Destino padrão: membro `/`, anfitrião `/anfitriao`, administrador `/admin`.
+- Migrações aditivas `0008_refinamento_portal.sql` e `0009_auditoria_ator.sql`, aplicadas ao banco configurado em 02/11 após a entrega inicial (registro em `docs/refinamento-2026-11-02/migracoes-aplicadas.md`). Nos demais ambientes, aplicar no fluxo controlado de entrega com backup; não rodar seed. Reversão precisa manter leitura que respeite a lixeira de artigos.
+- Fontes do DS em `../design-system`; gerar com `node scripts/build.mjs` e `node scripts/contraste.mjs` a partir dessa pasta, depois `npm run ds:sync` no portal. A versão publicada do DS precisa acompanhar esta alteração.
+
+Os testes adicionais de navegador são fixtures de componentes reais com dados locais explícitos, sem sessão/banco real, em `tests/*.browser.cjs`. Usam Playwright e esbuild disponibilizados externamente pelas variáveis `PLAYWRIGHT_MODULE` e `ESBUILD_MODULE`; não adicionam bibliotecas de produção. Testes SQL usam PGlite isolado via `PGLITE_MODULE`. Não confundir esses testes com homologação de SMTP, PostgreSQL remoto ou dispositivos físicos.

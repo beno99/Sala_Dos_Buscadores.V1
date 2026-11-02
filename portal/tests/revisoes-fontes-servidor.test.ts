@@ -41,7 +41,7 @@ test("C06 rascunho incompleto é salvo, mas servidor bloqueia publicação sem a
     "manual",
   );
   assert.ok(sala.ok);
-  const salvo = salvarArtigo(
+  const salvo = await salvarArtigo(
     { ...artigoVazio(sala.valor.slug), titulo: "Artigo de teste isolado", corpo: [""] },
     "Teste",
     "manual",

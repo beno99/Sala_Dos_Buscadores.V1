@@ -51,7 +51,7 @@ const form = (): FormVideo => ({
 test("salvar mantém ID, deduplica vínculos e remover associação não exclui artigo", async () => {
   const a = artigo("artigo-a");
   acervo().conteudos.set(a.id, a);
-  const r = salvarVideo({ ...form(), artigos: [a.id, a.id] }, "Curadoria", "automatico");
+  const r = await salvarVideo({ ...form(), artigos: [a.id, a.id] }, "Curadoria", "automatico");
   assert.ok(r.ok);
   await aguardarGravacoes();
   esquecerAcervo();
@@ -59,7 +59,7 @@ test("salvar mantém ID, deduplica vínculos e remover associação não exclui 
   const salvo = existe(acervo().videos.get(r.valor.id));
   assert.deepEqual(salvo.artigos, [a.id]);
   assert.equal(salvo.status, "rascunho");
-  const novo = salvarVideo({ ...videoParaForm(salvo), artigos: [] }, "Curadoria", "manual");
+  const novo = await salvarVideo({ ...videoParaForm(salvo), artigos: [] }, "Curadoria", "manual");
   assert.ok(novo.ok);
   assert.equal(novo.valor.id, salvo.id);
   assert.deepEqual(acervo().videos.get(salvo.id)?.artigos, []);
@@ -70,7 +70,7 @@ test("salvar mantém ID, deduplica vínculos e remover associação não exclui 
 test("vídeos e artigos rascunhos não vazam no público, mas aparecem na prévia administrativa", async () => {
   const a = artigo("artigo-a");
   acervo().conteudos.set(a.id, a);
-  const r = salvarVideo({ ...form(), artigos: [a.id] }, "Curadoria", "automatico");
+  const r = await salvarVideo({ ...form(), artigos: [a.id] }, "Curadoria", "automatico");
   assert.ok(r.ok);
   assert.equal(videosDaPreviaDoArtigo(a.id).length, 1);
   assert.equal(videosDoConteudo(sala, a.slug).length, 0);
@@ -86,18 +86,19 @@ test("vídeos e artigos rascunhos não vazam no público, mas aparecem na prévi
 });
 
 test("POST automático não altera vídeo publicado", async () => {
-  const r = salvarVideo(form(), "Curadoria", "automatico");
+  const r = await salvarVideo(form(), "Curadoria", "automatico");
   assert.ok(r.ok);
-  const publicado = { ...existe(acervo().videos.get(r.valor.id)), status: "publicado" as const };
-  acervo().videos.set(publicado.id, publicado);
-  const resultado = salvarVideo(
+  const dadosPublicados = { ...existe(acervo().videos.get(r.valor.id)), status: "publicado" as const };
+  acervo().videos.set(dadosPublicados.id, dadosPublicados);
+  const publicado = existe(acervo().videos.get(r.valor.id));
+  const resultado = await salvarVideo(
     { ...videoParaForm(publicado), titulo: "Alteração indevida" },
     "Curadoria",
     "automatico",
   );
   assert.equal(resultado.ok, false);
   assert.deepEqual(acervo().videos.get(publicado.id), publicado);
-  const manual = salvarVideo(
+  const manual = await salvarVideo(
     { ...videoParaForm(publicado), titulo: "Alteração confirmada" },
     "Curadoria",
     "manual",
@@ -108,21 +109,26 @@ test("POST automático não altera vídeo publicado", async () => {
   await aguardarGravacoes();
 });
 
-test("vínculo arquivado existente é preservado até remoção explícita; ID externo novo é recusado", async () => {
+test("vínculo arquivado existente é preservado até remoção explícita; ID inexistente é recusado e artigo de outra Sala é elegível", async () => {
   const a = artigo("artigo-a");
   acervo().conteudos.set(a.id, a);
-  const r = salvarVideo({ ...form(), artigos: [a.id] }, "Curadoria", "automatico");
+  const r = await salvarVideo({ ...form(), artigos: [a.id] }, "Curadoria", "automatico");
   assert.ok(r.ok);
   const v = existe(acervo().videos.get(r.valor.id));
   acervo().conteudos.set(a.id, { ...a, status: "arquivado" });
-  assert.ok(salvarVideo(videoParaForm(v), "Curadoria", "manual").ok);
+  assert.ok((await salvarVideo(videoParaForm(v), "Curadoria", "manual")).ok);
   assert.deepEqual(acervo().videos.get(v.id)?.artigos, [a.id]);
   assert.equal(
-    salvarVideo({ ...videoParaForm(v), artigos: ["inexistente"] }, "Curadoria", "manual").ok,
+    (await salvarVideo({ ...videoParaForm(v), artigos: ["inexistente"] }, "Curadoria", "manual")).ok,
     false,
   );
+  const salaOrigem = existe(acervo().salas.values().next().value);
+  acervo().salas.set("outra-sala", { ...salaOrigem, id: "outra-sala", slug: "outra-sala" });
   acervo().conteudos.set("externo", { ...a, id: "externo", sala: "outra-sala", status: "rascunho" });
-  assert.equal(salvarVideo({ ...videoParaForm(v), artigos: ["externo"] }, "Curadoria", "manual").ok, false);
-  assert.deepEqual(acervo().videos.get(v.id)?.artigos, [a.id]);
+  assert.equal(
+    (await salvarVideo({ ...videoParaForm(v), artigos: ["externo"] }, "Curadoria", "manual")).ok,
+    true,
+  );
+  assert.deepEqual(acervo().videos.get(v.id)?.artigos, ["externo"]);
   await aguardarGravacoes();
 });

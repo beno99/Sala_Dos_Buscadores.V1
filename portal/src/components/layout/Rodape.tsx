@@ -29,10 +29,7 @@ const COLUNAS: { titulo: string; links: { rotulo: string; href: string; externo?
       { rotulo: "Privacidade e LGPD", href: "/sobre#privacidade" },
     ],
   },
-  {
-    titulo: "Canal",
-    links: [{ rotulo: "YouTube", href: "https://www.youtube.com/", externo: true }],
-  },
+  // P20: adicionar Canal apenas com endereços oficiais confirmados; a home do YouTube não é o canal.
 ];
 
 export function Rodape() {

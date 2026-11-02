@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { type Aba, UsuariosAdmin } from "@/features/admin/ui/anfitrioes/UsuariosAdmin";
 import { listarCandidaturas, listarConvites } from "@/server/anfitriao/consultas";
+import { membroAtual } from "@/server/sessao";
 import { acervo, contasDoDiretorio as listarContas } from "@/server/store";
 
 export const metadata: Metadata = { title: "Usuários" };
@@ -9,6 +10,8 @@ const ABAS: Aba[] = ["usuarios", "candidaturas", "convites"];
 
 /** Usuários, candidaturas e convites. Sem ranking nem pontuação de pessoas (RNF-DOM-05). */
 export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
+  const membro = await membroAtual();
+  if (membro?.papel !== "administrador") return null;
   const { aba } = await props.searchParams;
   const salasPorDono = new Map<string, number>();
   for (const s of acervo().salas.values()) {
@@ -22,6 +25,7 @@ export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
       email: c.email,
       papel: c.papel,
       membroDesde: c.membroDesde,
+      emailVerificadoEm: c.emailVerificadoEm,
       nomePublico: acervo().perfis.get(c.id)?.nome,
       salas: salasPorDono.get(c.id) ?? 0,
     }));

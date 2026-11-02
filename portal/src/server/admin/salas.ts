@@ -1,3 +1,4 @@
+import { gravarEditorialNoAcervo } from "../store";
 import "server-only";
 import type { SalaEditorial, StatusEditorial } from "@/data/types";
 import {
@@ -197,7 +198,13 @@ export async function salvarSalaOficial(
     sala.midiaCard = imagemCard;
     sala.imagemCard = urlDaMidia(imagemCard);
   }
-  if (anterior) acervo().salas.set(id, sala);
+  if (anterior)
+    await gravarEditorialNoAcervo({
+      colecao: "salas",
+      valor: sala,
+      esperado: f.versaoEsperada ?? anterior.atualizadoEm,
+      ator: { id: admin.id, papel: "administrador" },
+    });
   else {
     const criada = await criarSalaNoAcervo(sala);
     sala.slug = criada.slug;
@@ -215,7 +222,7 @@ export async function salvarSalaOficial(
   }
   return {
     ok: true,
-    valor: { id, slug: sala.slug, salvoEm: momento, status: sala.status },
+    valor: { id, slug: sala.slug, salvoEm: sala.atualizadoEm, status: sala.status },
     mensagem: modo === "manual" ? "Alterações salvas." : "Rascunho salvo.",
   };
 }

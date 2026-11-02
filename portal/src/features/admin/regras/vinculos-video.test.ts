@@ -14,14 +14,14 @@ test("ordena por criação desc e ID, busca antes de paginar e exclui itens inel
   ];
   assert.deepEqual(
     artigosParaVincular(itens, "sala").map((a) => a.id),
-    ["a", "b", "antigo"],
+    ["a", "b", "x", "antigo"],
   );
   assert.deepEqual(
     artigosParaVincular(itens, "sala", "antigo").map((a) => a.id),
     ["antigo"],
   );
 });
-test("deduplica IDs, restringe Sala e revisão e mantém rascunhos", () => {
+test("deduplica IDs, permite outras Salas e restringe revisão privada", () => {
   const itens = [artigo("a"), { ...artigo("b"), sala: "outra" }, { ...artigo("c"), revisao: {} }];
-  assert.deepEqual(idsDeArtigosValidos(["a", "a", "b", "c", "ausente"], itens, "sala"), ["a"]);
+  assert.deepEqual(idsDeArtigosValidos(["a", "a", "b", "c", "ausente"], itens, "sala"), ["a", "b"]);
 });

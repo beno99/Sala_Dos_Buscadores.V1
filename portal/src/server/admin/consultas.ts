@@ -33,7 +33,11 @@ const clone = <T>(v: T): T => structuredClone(v);
 export function listarArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
     .filter(
-      (c) => !salaNaLixeira(c.sala) && !c.revisao && (c.tipo === "artigo" || c.tipo === "fonte-primaria"),
+      (c) =>
+        !c.lixeira &&
+        !salaNaLixeira(c.sala) &&
+        !c.revisao &&
+        (c.tipo === "artigo" || c.tipo === "fonte-primaria"),
     )
     .map(clone);
 }
@@ -41,20 +45,22 @@ export function listarArtigos(): ConteudoEditorial[] {
 /** Artigos e fontes primárias de todas as Salas, inclusive de anfitriões (exportação CSV). */
 export function listarTodosOsArtigos(): ConteudoEditorial[] {
   return [...acervo().conteudos.values()]
-    .filter((c) => !salaNaLixeira(c.sala) && (c.tipo === "artigo" || c.tipo === "fonte-primaria"))
+    .filter(
+      (c) => !c.lixeira && !salaNaLixeira(c.sala) && (c.tipo === "artigo" || c.tipo === "fonte-primaria"),
+    )
     .map(clone);
 }
 
 /** Artigos arquivados da curadoria (lixeira de artigos): restaurar ou excluir definitivamente. */
 export function listarArtigosArquivados(): (ConteudoEditorial & { salaNome: string })[] {
-  return listarArtigos()
-    .filter((a) => a.tipo === "artigo" && a.status === "arquivado")
+  return [...acervo().conteudos.values()]
+    .filter((a) => Boolean(a.lixeira))
     .map((a) => ({ ...a, salaNome: salaPorSlugNoStore(a.sala)?.nome ?? a.sala }));
 }
 
 export function obterArtigo(id: string): { artigo: ConteudoEditorial; citacao?: Citacao } | undefined {
   const artigo = acervo().conteudos.get(id);
-  if (!artigo || salaNaLixeira(artigo.sala)) return undefined;
+  if (!artigo || artigo.lixeira || salaNaLixeira(artigo.sala)) return undefined;
   const citacao = artigo.citacao ? acervo().citacoes.get(artigo.citacao) : undefined;
   return { artigo: clone(artigo), citacao: citacao ? clone(citacao) : undefined };
 }
@@ -65,7 +71,7 @@ export function listarVideos(): VideoEditorial[] {
 
 /** Seleção por ID, na mesma Sala oficial, com ordem de criação estável. */
 export function listarArtigosParaVideo(sala: string) {
-  return artigosParaVincular(listarArtigos(), sala).map(({ id, titulo, sala, status, criadoEm }) => ({
+  return artigosParaVincular(listarTodosOsArtigos(), sala).map(({ id, titulo, sala, status, criadoEm }) => ({
     id,
     titulo,
     sala,
@@ -77,9 +83,9 @@ export function listarArtigosParaVideo(sala: string) {
 /** Uso exclusivo da prévia administrativa, após autorização da página. */
 export function videosDaPreviaDoArtigo(id: string) {
   const artigo = acervo().conteudos.get(id);
-  if (!artigo || artigo.revisao || salaNaLixeira(artigo.sala)) return [];
+  if (!artigo || artigo.lixeira || artigo.revisao || salaNaLixeira(artigo.sala)) return [];
   return [...acervo().videos.values()]
-    .filter((v) => v.sala === artigo.sala && v.status !== "arquivado" && v.artigos.includes(id))
+    .filter((v) => !salaNaLixeira(v.sala) && v.status !== "arquivado" && v.artigos.includes(id))
     .map(videoParaPublico);
 }
 

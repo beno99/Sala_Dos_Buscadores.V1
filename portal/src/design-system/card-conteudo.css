@@ -323,3 +323,9 @@
 .sala__barra { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 6px; background: var(--progress-track); }
 .sala__barra i { display: block; width: calc(var(--p, 0) * 100%); height: 100%; background: var(--progress-gradient); filter: drop-shadow(0 0 4px var(--progress-glow)); }
 .sala--conteudo.sala--acervo .sala__info + .sdb-seal { margin-top: 0; }
+
+/* Origem editorial não substitui a autoria do material. */
+.sdb-content--host { border-top: 2px solid var(--gold); }
+.sdb-content--host .sdb-card__foot { flex-wrap: wrap; gap: var(--space-3); }
+.sdb-content--host .sdb-host-signature { flex-basis: 100%; margin: 0; }
+.sdb-content--host .sdb-seal--anfitriao { color: var(--label); background: var(--fill); box-shadow: inset 0 0 0 1px var(--gold); }

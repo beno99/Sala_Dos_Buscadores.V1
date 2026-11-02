@@ -35,7 +35,7 @@ export function CardConteudoVitrine({
   const id = `vitrine-${conteudo.sala}-${conteudo.slug}`;
   const destaque = formato !== "normal";
   const tipo = TIPO_ROTULO[conteudo.tipo];
-  const chip = formato === "horizontal" ? tipo : `${tipo} · ${conteudo.duracaoMin} min`;
+  const chip = `${tipo} · ${conteudo.duracaoMin} min`;
   const corpo = (
     <div className="sala__body">
       <p className="sala__onde">{salaPorSlug(conteudo.sala)?.nome}</p>
@@ -45,6 +45,12 @@ export function CardConteudoVitrine({
         </Link>
       </h3>
       {formato === "alto" && <p className="sala__description">{conteudo.resumo}</p>}
+      {conteudo.anfitriao && (
+        <p className="sdb-host-signature">
+          Sala de Anfitrião ·{" "}
+          <Link href={`/anfitrioes/${conteudo.anfitriao.slug}` as Route}>{conteudo.anfitriao.nome}</Link>
+        </p>
+      )}
       <SeloProveniencia tipo={conteudo.proveniencia} />
     </div>
   );
@@ -52,6 +58,7 @@ export function CardConteudoVitrine({
     <article
       className={cx(
         "sala sala--conteudo",
+        conteudo.anfitriao && "sdb-content--host",
         destaque ? "sala--destaque" : "sala--normal",
         formato === "alto" && "sala--amplo",
         formato === "horizontal" && "sala--horizontal",

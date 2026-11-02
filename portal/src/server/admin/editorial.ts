@@ -1,3 +1,4 @@
+import { erroVideosDoArtigo } from "../vinculos-editoriais";
 import "server-only";
 import { limparCorpo } from "@/data/corpo";
 import { PROVENIENCIA_ROTULO } from "@/data/rotulos";
@@ -37,7 +38,7 @@ import { inicialDoTitulo, normalizar, plural } from "@/lib/texto";
 import { registrar } from "../auditoria";
 import { conferirImagensDoCorpo, midiaDoDono, urlDaMidia } from "../midia";
 import { SALA_NA_LIXEIRA, salaNaLixeira } from "../salas/lixeira";
-import { acervo, auditoriaBruta } from "../store";
+import { acervo, auditoriaBruta, comGravacoesDoPedido, gravarEditorialNoAcervo } from "../store";
 import { podarDestaques } from "./destaques";
 import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
 
@@ -49,7 +50,13 @@ import { erroDaSalaParaConteudo, salaPorSlugNoStore } from "./salas";
 
 export type ResultadoAcao<T = undefined> =
   | { ok: true; valor: T; mensagem: string }
-  | { ok: false; mensagem: string; erros?: Record<string, string>; pendencias?: ItemChecklist[] };
+  | {
+      ok: false;
+      mensagem: string;
+      erros?: Record<string, string>;
+      pendencias?: ItemChecklist[];
+      conflito?: boolean;
+    };
 
 export type ModoSalvar = "automatico" | "manual";
 
@@ -182,6 +189,7 @@ function montarArtigo(
   quem: string,
   corpo: BlocoCorpo[],
   donoId?: string,
+  guardarCitacao?: (c: Citacao) => void,
 ): ConteudoEditorial {
   const id = anterior?.id ?? f.id ?? novoId("c");
   const sala = f.sala as ConteudoEditorial["sala"];
@@ -215,7 +223,7 @@ function montarArtigo(
         lang: c.originalLang.trim(),
       };
     }
-    acervo().citacoes.set(citacao, registro);
+    guardarCitacao?.(registro);
   } else if (anterior?.citacao) {
     // A citação deixa de ser usada por este conteúdo; o registro fica guardado.
     citacao = undefined;
@@ -264,13 +272,13 @@ function citacaoDe(a: ConteudoEditorial) {
   return a.citacao ? acervo().citacoes.get(a.citacao) : undefined;
 }
 
-export function salvarArtigo(
+async function salvarArtigoPlano(
   f: FormArtigo,
   quem: string,
   modo: ModoSalvar,
   /** Id da conta que salva: as imagens enviadas para o corpo precisam ser dela. */
   donoId?: string,
-): ResultadoAcao<{ id: string; slug: string; salvoEm: string; status: StatusEditorial }> {
+): Promise<ResultadoAcao<{ id: string; slug: string; salvoEm: string; status: StatusEditorial }>> {
   const anterior = f.id ? acervo().conteudos.get(f.id) : undefined;
   if (f.id && !anterior)
     return falha("Erro: este conteúdo não existe mais. Atualize a lista e tente de novo.");
@@ -282,12 +290,15 @@ export function salvarArtigo(
       "campo-proveniencia": "a proveniência Anfitrião é só dos artigos de anfitrião.",
     });
   }
+  if (anterior?.lixeira) return falha("Erro: este artigo está na lixeira. Restaure-o antes de editar.");
   if (anterior?.status === "arquivado") {
     return falha("Erro: conteúdo arquivado não é editado. Restaure-o para rascunho antes de editar.");
   }
 
   const imagens = conferirImagensDoCorpo(f.corpo, donoId, anterior?.corpo);
   const erros = { ...validarArtigoParaSalvar(f, anterior), ...imagens.erros };
+  const erroVideos = erroVideosDoArtigo(f.id, f.videos, "administrador");
+  if (erroVideos) erros["campo-videos"] = erroVideos;
   if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
 
   // Item publicado só aceita alterações que mantêm o checklist completo.
@@ -298,8 +309,18 @@ export function salvarArtigo(
     }
   }
 
-  const artigo = montarArtigo(f, anterior, quem, imagens.corpo, donoId);
-  acervo().conteudos.set(artigo.id, artigo);
+  let citacao: Citacao | undefined;
+  const artigo = montarArtigo(f, anterior, quem, imagens.corpo, donoId, (c) => {
+    citacao = c;
+  });
+  await gravarEditorialNoAcervo({
+    colecao: "conteudos",
+    valor: artigo,
+    esperado: f.versaoEsperada ?? anterior?.atualizadoEm ?? null,
+    ator: { id: donoId ?? quem, papel: "administrador" },
+    videos: f.videos,
+    citacao,
+  });
 
   if (!anterior) {
     registrar({ quem, acao: "criou", tipoItem: "artigo", itemId: artigo.id, itemTitulo: artigo.titulo });
@@ -376,6 +397,7 @@ export function mudarStatusArtigo(
   quem: string,
 ): ResultadoAcao<StatusEditorial> {
   const artigo = acervo().conteudos.get(id);
+  if (artigo?.lixeira) return falha("Erro: este artigo está na lixeira. Restaure-o antes de continuar.");
   if (!artigo) return falha("Erro: este conteúdo não existe mais.");
   if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
@@ -429,32 +451,20 @@ export function mudarStatusArtigo(
 }
 
 /** Lixeira de artigos: só o que já está arquivado, e some de vez (sem cascata: nada mais referencia o artigo). */
-export function excluirArtigoDefinitivamente(id: string, quem: string): ResultadoAcao {
-  const artigo = acervo().conteudos.get(id);
-  if (!artigo) return falha("Erro: este conteúdo não existe mais.");
-  if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
-  if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
-  if (artigo.status !== "arquivado")
-    return falha("Erro: arquive o artigo antes de excluí-lo definitivamente.");
-  acervo().conteudos.delete(id);
-  registrar({
-    quem,
-    acao: "excluiu-definitivamente",
-    tipoItem: "artigo",
-    itemId: id,
-    itemTitulo: artigo.titulo,
-  });
-  return { ok: true, valor: undefined, mensagem: "Artigo excluído definitivamente." };
+export function excluirArtigoDefinitivamente(_id: string, _quem: string): ResultadoAcao {
+  return falha("Erro: use a ação autenticada da lixeira para excluir definitivamente.");
 }
 
-export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: string }> {
+async function duplicarArtigoPlano(id: string, quem: string): Promise<ResultadoAcao<{ id: string }>> {
   const original = acervo().conteudos.get(id);
+  if (original?.lixeira) return falha("Erro: este artigo está na lixeira.");
   if (!original) return falha("Erro: este conteúdo não existe mais.");
   if (original.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
   const erroSala = conferirSala(original.sala, undefined);
   if (erroSala) return erroSala;
   const form = artigoParaForm(original, citacaoDe(original));
   const titulo = `Cópia de ${original.titulo}`.slice(0, 120);
+  let citacao: Citacao | undefined;
   const copia = montarArtigo(
     {
       ...form,
@@ -465,8 +475,18 @@ export function duplicarArtigo(id: string, quem: string): ResultadoAcao<{ id: st
     undefined,
     quem,
     form.corpo,
+    undefined,
+    (c) => {
+      citacao = c;
+    },
   );
-  acervo().conteudos.set(copia.id, copia);
+  await gravarEditorialNoAcervo({
+    colecao: "conteudos",
+    valor: copia,
+    esperado: null,
+    ator: { id: quem, papel: "administrador" },
+    citacao,
+  });
   registrar({
     quem,
     acao: "duplicou",
@@ -490,6 +510,7 @@ export function moverArtigo(
   quem: string,
 ): ResultadoAcao<{ sala: string; slug: string }> {
   const artigo = acervo().conteudos.get(id);
+  if (artigo?.lixeira) return falha("Erro: este artigo está na lixeira. Restaure-o antes de continuar.");
   if (!artigo) return falha("Erro: este conteúdo não existe mais.");
   if (salaNaLixeira(artigo.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (artigo.revisao) return falha(ERRO_ITEM_DE_ANFITRIAO);
@@ -506,10 +527,6 @@ export function moverArtigo(
   if (artigo.citacao) {
     const c = acervo().citacoes.get(artigo.citacao);
     if (c) acervo().citacoes.set(c.id, { ...c, sala: destino });
-  }
-  for (const v of acervo().videos.values()) {
-    if (v.artigos.includes(id))
-      acervo().videos.set(v.id, { ...v, artigos: v.artigos.filter((a) => a !== id) });
   }
   registrar({
     quem,
@@ -528,7 +545,13 @@ function montarVideo(f: FormVideo, anterior: VideoEditorial | undefined, quem: s
   const id = anterior?.id ?? f.id ?? novoId("v");
   const url = extrairIdYoutube(f.url);
   const sala = f.sala as VideoEditorial["sala"];
-  const artigos = f.artigos;
+  const artigos = [
+    ...f.artigos,
+    ...(anterior?.artigos ?? []).filter((id) => {
+      const a = acervo().conteudos.get(id);
+      return !a || a.lixeira || salaNaLixeira(a.sala) || Boolean(a.revisao && a.status !== "publicado");
+    }),
+  ];
   return {
     ...anterior,
     id,
@@ -551,11 +574,11 @@ function montarVideo(f: FormVideo, anterior: VideoEditorial | undefined, quem: s
   };
 }
 
-export function salvarVideo(
+async function salvarVideoPlano(
   f: FormVideo,
   quem: string,
   modo: ModoSalvar,
-): ResultadoAcao<{ id: string; salvoEm: string; status: StatusEditorial }> {
+): Promise<ResultadoAcao<{ id: string; salvoEm: string; status: StatusEditorial }>> {
   const anterior = f.id ? acervo().videos.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: este vídeo não existe mais.");
   if (anterior?.status === "publicado" && modo !== "manual")
@@ -569,11 +592,24 @@ export function salvarVideo(
     return falha("Erro: confira os artigos ligados.", {
       "campo-artigos": "A seleção de artigos é inválida.",
     });
-  const validos = new Set(idsDeArtigosValidos(f.artigos, [...acervo().conteudos.values()], f.sala));
+  const validos = new Set(
+    idsDeArtigosValidos(
+      f.artigos,
+      [...acervo().conteudos.values()].filter((a) => !a.lixeira && !salaNaLixeira(a.sala)),
+      f.sala,
+    ),
+  );
   // Um artigo arquivado continua ligado, mas oculto no portal, até desmarcação explícita.
   for (const id of anterior?.artigos ?? []) {
     const artigo = acervo().conteudos.get(id);
-    if (artigo?.sala === f.sala && artigo.status === "arquivado" && !artigo.revisao) validos.add(id);
+    if (
+      !artigo ||
+      artigo.lixeira ||
+      artigo.status === "arquivado" ||
+      artigo.revisao ||
+      salaNaLixeira(artigo.sala)
+    )
+      validos.add(id);
   }
   if (f.artigos.some((id) => !validos.has(id)))
     erros["campo-artigos"] =
@@ -594,7 +630,12 @@ export function salvarVideo(
       return falha("Erro: a alteração deixaria o vídeo publicado com pendências.", undefined, pendencias);
   }
   const video = montarVideo(f, anterior, quem);
-  acervo().videos.set(video.id, video);
+  await gravarEditorialNoAcervo({
+    colecao: "videos",
+    valor: video,
+    esperado: f.versaoEsperada ?? anterior?.atualizadoEm ?? null,
+    ator: { id: quem, papel: "administrador" },
+  });
   if (!anterior)
     registrar({ quem, acao: "criou", tipoItem: "video", itemId: video.id, itemTitulo: video.titulo });
   else if (deveRegistrarEdicao(video.id, quem, modo)) {
@@ -730,4 +771,15 @@ export function excluirFonte(id: string, quem: string): ResultadoAcao {
       : [],
   });
   return { ok: true, valor: undefined, mensagem: "Fonte excluída." };
+}
+
+/** Chamadas internas também preservam conteúdo, vínculos e auditoria no mesmo commit. */
+export async function salvarArtigo(f: FormArtigo, quem: string, modo: ModoSalvar, donoId?: string) {
+  return comGravacoesDoPedido(() => salvarArtigoPlano(f, quem, modo, donoId));
+}
+export async function salvarVideo(f: FormVideo, quem: string, modo: ModoSalvar) {
+  return comGravacoesDoPedido(() => salvarVideoPlano(f, quem, modo));
+}
+export async function duplicarArtigo(id: string, quem: string) {
+  return comGravacoesDoPedido(() => duplicarArtigoPlano(id, quem));
 }

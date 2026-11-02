@@ -155,7 +155,6 @@ export function Moldura({
     <EstanteProvider chaves={lateral.salvos.chaves}>
       <div
         className={`flex min-h-dvh${noAssistente ? " sdb-assistant-screen sdb-assistant-screen--portal" : ""}`}
-        data-theme={noAssistente ? "solido-escuro" : undefined}
         data-portal={caminho === "/" ? "inicio" : undefined}
       >
         <div className="sticky top-0 hidden h-dvh shrink-0 nav:block">

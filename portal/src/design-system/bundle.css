@@ -2340,3 +2340,64 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 /* Retomada do Portal: a imagem inteira ocupa a metade esquerda, ao lado do painel (no celular, a faixa de cima). */
 .sdb-retomada__media > .sdb-imagem-acervo { right: 50%; }
 @container portal (max-width: 559px) { .sdb-retomada__media > .sdb-imagem-acervo { right: 0; bottom: auto; height: 180px; } }
+
+/* Revisão consolidada P09, P10, P21 (02/11/2026). */
+.sdb-selection-list { max-height: var(--selection-list-height); overflow-y: auto; overscroll-behavior: contain; min-width: 0; }
+.sdb-article__title { text-align: center; }
+.sdb-policy-section { scroll-margin-top: calc(var(--space-9) + var(--space-7)); }
+.sala__image--inteira { object-fit: contain; background: var(--fill); }
+
+/* P28: composição responsiva do Portal; aplicar no fim de bundle.css. */
+.sdb-home__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--home-card-min)), 1fr)); gap: var(--space-5); min-width: 0; }
+.sdb-home__grid > * { min-width: 0; }
+.sdb-home__salas { gap: var(--space-4); }
+.sdb-home__salas .sala__media { min-height: var(--home-room-height); }
+.sdb-home__salas .sala__tools { margin-bottom: var(--space-8); }
+.sdb-home .sdb-home__leituras .sdb-card { min-height: 0; }
+.sdb-home__grid--single { grid-template-columns: minmax(0, 1fr); }
+.sdb-home__grid--single .sala { width: 100%; }
+.sdb-home__grid--single .sala__media { min-height: var(--home-room-single-height); }
+.sdb-home__grid--single .sala__body { max-width: var(--home-room-text-width); }
+.sdb-home__assistant { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); padding: var(--space-5); border-radius: var(--radius-lg); background: var(--card-warm); }
+.sdb-home__assistant > div { display: grid; gap: var(--space-2); max-width: var(--article-reading-width); }
+.sdb-home__assistant h2 { margin: 0; font: 400 28px/1.2 var(--font-display-lower); }
+.sdb-home__assistant p { margin: 0; color: var(--label-secondary); font: 400 14px/1.5 var(--font-ui); }
+.sdb-home__community { display: grid; gap: var(--space-3); }
+.sdb-home__community article { padding: var(--space-4); display: grid; gap: var(--space-3); border: 1px solid var(--separator); border-radius: var(--radius-md); background: var(--material-regular); min-width: 0; overflow-wrap: anywhere; }
+.sdb-home__community p { margin: 0; }
+.sdb-home__community a { position: relative; z-index: 1; }
+/* Arte integral, ações e controles em fluxo: nenhuma faixa da imagem precisa ser reservada. */
+.sdb-banner--fluxo { background: var(--material-regular); }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__slide,
+.sdb-home .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__slide { display: flex; flex-direction: column; min-height: 0; }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__slide:not(.is-current) { display: none; }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__media { position: relative; inset: auto; order: -1; width: 100%; aspect-ratio: 2400 / 1018; min-height: 0; margin: 0; background: var(--fill); }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__media::before,
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__media::after { display: none; }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__media .sdb-imagem-acervo > img { object-fit: contain; object-position: center; }
+.sdb-home .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__text,
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__text { width: 100%; max-width: none; padding: var(--space-4) var(--space-5); gap: var(--space-3); }
+.sdb-banner--fluxo.sdb-banner--cheio :is(.sdb-banner__label, .sdb-banner__brand, .sdb-banner__title, .sdb-banner__title span, .sdb-banner__sub, .sdb-banner__why) { color: var(--label); }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__controls { position: static; padding: 0 var(--space-5) var(--space-4); flex-wrap: wrap; justify-content: center; }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__actions { margin-top: 0; }
+.sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__actions .sdb-btn { height: auto; min-height: 48px; white-space: normal; }
+.sdb-banner--fluxo .sdb-dots { flex-wrap: wrap; justify-content: center; }
+/* P23: identificação textual acompanha o detalhe dourado, sem hierarquia de autoria. */
+.sdb-roomhead--host { border-top: 2px solid var(--gold); padding-top: var(--space-4); }
+.sdb-host-signature { position: relative; z-index: 2; color: var(--label-brand); font: 500 12px/1.5 var(--font-ui); overflow-wrap: anywhere; }
+.sdb-host-signature a { color: inherit; text-decoration: underline; text-underline-offset: var(--space-1); }
+@container portal (max-width: 620px) {
+  .sdb-home__grid { grid-template-columns: minmax(0, 1fr); }
+  .sdb-home__assistant { align-items: stretch; }
+  .sdb-home__assistant > .sdb-btn { width: 100%; }
+  .sdb-home__grid--single .sala__body { max-width: none; }
+}
+
+@container sdb-banner (max-width: 620px) {
+  .sdb-banner--fluxo .sdb-banner__art-caption { position: static; width: auto; height: auto; padding: 0; margin: 0; overflow: visible; clip: auto; clip-path: none; white-space: normal; font: 400 16px/1.5 var(--font-reading); color: var(--label); }
+}
+/* Tooltips dos controles junto à borda permanecem dentro do card. */
+.sdb-home .sdb-over[data-tip]::after { left: auto; right: 0; max-width: min(240px, calc(100vw - var(--space-8))); transform: none !important; }
+.sdb-home [data-tip]:not(:hover):not(:focus-visible):not(.is-open)::after { display: none; }
+
+.sdb-roomhead--host .sdb-seal--anfitriao { color: var(--label); background: var(--fill); box-shadow: inset 0 0 0 1px var(--gold); }

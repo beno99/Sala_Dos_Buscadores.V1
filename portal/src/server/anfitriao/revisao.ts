@@ -9,7 +9,7 @@ import {
 import { registrar } from "../auditoria";
 import { enviarEmail } from "../caixa-saida";
 import { SALA_NA_LIXEIRA, salaNaLixeira } from "../salas/lixeira";
-import { acervo, contaNoDiretorio as contaPorId } from "../store";
+import { acervo, comGravacoesDoPedido, contaNoDiretorio as contaPorId } from "../store";
 import { agora, comDecisao, erro, hoje, novaDecisao, ok, type ResultadoAcao } from "./comum";
 
 /*
@@ -92,7 +92,7 @@ const lista = (titulos: string[]) => titulos.map((t) => `- ${t}`).join("\n");
 
 // ---------- Sala ----------
 
-export function aprovarSala(salaId: string, quem: string): ResultadoAcao<{ artigos: number }> {
+function aprovarSalaPlano(salaId: string, quem: string): ResultadoAcao<{ artigos: number }> {
   const sala = salaPorId(salaId);
   if (!sala?.revisao) return erro("esta Sala não existe mais.");
   const artigos = artigosDaSala(sala);
@@ -142,11 +142,7 @@ export function aprovarSala(salaId: string, quem: string): ResultadoAcao<{ artig
   );
 }
 
-export function reprovarSala(
-  salaId: string,
-  motivo: string,
-  quem: string,
-): ResultadoAcao<{ artigos: number }> {
+function reprovarSalaPlano(salaId: string, motivo: string, quem: string): ResultadoAcao<{ artigos: number }> {
   const sala = salaPorId(salaId);
   if (!sala?.revisao) return erro("esta Sala não existe mais.");
   const plano = planejarReprovacaoSala(sala, artigosDaSala(sala), motivo);
@@ -196,7 +192,7 @@ export function reprovarSala(
 // ---------- artigo ----------
 
 /** Aprovar um artigo avulso: só numa Sala já publicada (no primeiro envio, quem aprova é "Aprovar Sala"). */
-export function aprovarArtigo(artigoId: string, quem: string): ResultadoAcao {
+function aprovarArtigoPlano(artigoId: string, quem: string): ResultadoAcao {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao) return erro("este artigo não existe mais.");
   if (salaNaLixeira(artigo.sala)) return erro(SALA_NA_LIXEIRA);
@@ -220,7 +216,7 @@ export function aprovarArtigo(artigoId: string, quem: string): ResultadoAcao {
 }
 
 /** Reprovar um artigo: motivo obrigatório; volta ao anfitrião e os demais seguem na fila. */
-export function reprovarArtigo(artigoId: string, motivo: string, quem: string): ResultadoAcao {
+function reprovarArtigoPlano(artigoId: string, motivo: string, quem: string): ResultadoAcao {
   const artigo = acervo().conteudos.get(artigoId);
   if (!artigo?.revisao) return erro("este artigo não existe mais.");
   if (salaNaLixeira(artigo.sala)) return erro(SALA_NA_LIXEIRA);
@@ -281,4 +277,18 @@ export function arquivarSala(salaId: string, quem: string): ResultadoAcao {
     mudancas: [{ campo: "Status", antes: sala.status, depois: "arquivado" }],
   });
   return ok(undefined, "Sala arquivada e fora do ar. Nada foi apagado.");
+}
+
+/** Decisões de conjunto são indivisíveis, inclusive quando chamadas fora da Server Action. */
+export async function aprovarSala(id: string, quem: string) {
+  return comGravacoesDoPedido(() => aprovarSalaPlano(id, quem));
+}
+export async function reprovarSala(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => reprovarSalaPlano(id, motivo, quem));
+}
+export async function aprovarArtigo(id: string, quem: string) {
+  return comGravacoesDoPedido(() => aprovarArtigoPlano(id, quem));
+}
+export async function reprovarArtigo(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => reprovarArtigoPlano(id, motivo, quem));
 }

@@ -23,3 +23,6 @@ Referências inspecionadas: Figma `WtsqtkYXDtEKBZ3pYiBOE4`, desktop `103:615`, m
 Os temas de vidro também usam cards sólidos nesta família. Não substituir globalmente os materiais do portal. O texto dourado foi ajustado de #8B652F para #825D29 no tema claro para atingir AA sobre areia e sobre o aviso. Ícones de coração, comentário e citação foram exportados do Figma e ficam em `Comunidade/assets`, como máscaras que acompanham o token de texto.
 
 O portal conecta publicação, comentários, reações, salvar, seguir, denúncia e moderação em `portal/src/server/comunidade/`. Os formulários interativos do catálogo continuam sendo demonstração.
+
+## Refinamento 02/11/2026
+Somente Curadoria e Anfitriões criam publicações. O seletor opcional de vídeo reutiliza Select e oferece registros públicos do acervo; não aceita URL arbitrária nem arquivo binário. O card vinculado conserva contexto e destino YouTube, sem dar selo editorial ao post. Campos são preservados em falha; submissão repetida em andamento é bloqueada.

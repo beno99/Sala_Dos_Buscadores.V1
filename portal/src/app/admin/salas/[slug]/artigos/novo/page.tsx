@@ -5,6 +5,7 @@ import { EditorArtigo } from "@/features/admin/ui/EditorArtigo";
 import { listarFontes } from "@/server/admin/consultas";
 import { destinosDe, salaDoItem } from "@/server/admin/editores";
 import { salaOficialDaRota } from "@/server/admin/rotas";
+import { videosSelecionaveis } from "@/server/vinculos-editoriais";
 
 export const metadata: Metadata = { title: "Novo artigo" };
 
@@ -18,6 +19,7 @@ export default async function NovoArtigoNaSala(props: PageProps<"/admin/salas/[s
       status="rascunho"
       atualizadoEm={null}
       slugTravado={false}
+      videos={videosSelecionaveis("administrador")}
       fontes={listarFontes()}
       sala={salaDoItem(sala)}
       salasDestino={destinosDe(sala)}

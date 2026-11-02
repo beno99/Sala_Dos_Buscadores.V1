@@ -26,8 +26,10 @@ export function CardAcervo({
   duracaoExtenso,
   proveniencia,
   imagem,
+  midia,
   placa,
   acoes,
+  assinatura,
 }: {
   id: string;
   tipo: string;
@@ -43,26 +45,33 @@ export function CardAcervo({
   duracaoExtenso?: string;
   proveniencia: Proveniencia;
   imagem?: string;
+  /** Miniatura validada de vídeo, reutilizando a cadeia de fallback do acervo. */
+  midia?: ReactNode;
   placa: Placa;
   /** Controles sobre a imagem, como o botão .sala__save da Estante. */
   acoes?: ReactNode;
+  assinatura?: { nome: string; slug: string };
 }) {
   const notaId = `${id}-nota`;
   return (
-    <article className="sala sala--conteudo sala--normal sala--acervo" aria-labelledby={id}>
+    <article
+      className={`sala sala--conteudo sala--normal sala--acervo${assinatura ? " sdb-content--host" : ""}`}
+      aria-labelledby={id}
+    >
       <div className="sala__media">
-        {imagem ? (
-          // biome-ignore lint/performance/noImgElement: imagem decorativa servida de public/imagens.
-          <img className="sala__image" src={imagem} alt="" decoding="async" />
-        ) : (
-          <div className={`sala__placa sdb-plate--${placa}`} aria-hidden="true">
-            {tipo === "Artigo" || tipo === "Fonte primária" ? (
-              <InicialCapa titulo={titulo} />
-            ) : (
-              <Arc on={placa} />
-            )}
-          </div>
-        )}
+        {midia ??
+          (imagem ? (
+            // biome-ignore lint/performance/noImgElement: imagem decorativa servida de public/imagens.
+            <img className="sala__image" src={imagem} alt="" decoding="async" />
+          ) : (
+            <div className={`sala__placa sdb-plate--${placa}`} aria-hidden="true">
+              {tipo === "Artigo" || tipo === "Fonte primária" ? (
+                <InicialCapa titulo={titulo} />
+              ) : (
+                <Arc on={placa} />
+              )}
+            </div>
+          ))}
         <div className="sala__tools">
           <div className="sala__chips">
             <span className="sala__count">{tipo}</span>
@@ -103,6 +112,12 @@ export function CardAcervo({
           </span>
         </div>
         <SeloProveniencia tipo={proveniencia} />
+        {assinatura && (
+          <p className="sdb-host-signature">
+            Sala de Anfitrião ·{" "}
+            <Link href={`/anfitrioes/${assinatura.slug}` as Route}>{assinatura.nome}</Link>
+          </p>
+        )}
         {!href && nota && (
           <p id={notaId} className="sdb-footnote m-0">
             {nota}

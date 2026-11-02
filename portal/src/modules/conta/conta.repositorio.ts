@@ -1,7 +1,8 @@
 import "server-only";
-import { and, asc, eq, gt } from "drizzle-orm";
+import { and, asc, eq, gt, isNull } from "drizzle-orm";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
+import { podeEmitirVerificacao, VALIDADE_VERIFICACAO_H } from "./acesso";
 import type {
   ContaRepositorio,
   Membro,
@@ -91,6 +92,39 @@ export const contaRepositorio: ContaRepositorio = {
     if (!membro) throw new Error("conta não criada");
     return membro;
   },
+  async corrigirEmailPendente(id, email, verificacao) {
+    try {
+      const linha = await banco().transaction(async (tx) => {
+        const [atual] = await tx.select().from(usuarios).where(eq(usuarios.id, id)).for("update");
+        if (!atual || atual.emailVerificadoEm) return undefined;
+        const [anterior] = await tx
+          .select()
+          .from(verificacoesEmail)
+          .where(eq(verificacoesEmail.usuarioId, id));
+        if (!podeEmitirVerificacao(anterior?.expiraEm ?? null, new Date())) return undefined;
+        const [nova] = await tx
+          .update(usuarios)
+          .set({ email: normalizar(email) })
+          .where(eq(usuarios.id, id))
+          .returning();
+        await tx.delete(verificacoesEmail).where(eq(verificacoesEmail.usuarioId, id));
+        if (verificacao)
+          await tx
+            .insert(verificacoesEmail)
+            .values({ ...verificacao, expiraEm: verificacao.expiraEm.toISOString(), usuarioId: id });
+        await somarVersao(tx);
+        return nova;
+      });
+      return avisar(linha);
+    } catch (erro) {
+      if (
+        (erro as { cause?: { code?: string }; code?: string }).code === "23505" ||
+        (erro as { cause?: { code?: string } }).cause?.code === "23505"
+      )
+        return null;
+      throw erro;
+    }
+  },
   async definirPapel(id, papel) {
     return atualizar(id, { papel });
   },
@@ -163,19 +197,53 @@ export const redefinicaoRepositorio: RedefinicaoRepositorio = {
 };
 
 export const verificacaoRepositorio: VerificacaoRepositorio = {
-  async criar({ tokenHash, usuarioId, expiraEm }) {
-    await banco().transaction(async (tx) => {
+  async criar({ tokenHash, usuarioId, email, expiraEm }) {
+    return banco().transaction(async (tx) => {
+      const [usuario] = await tx.select().from(usuarios).where(eq(usuarios.id, usuarioId)).for("update");
+      if (!usuario || usuario.emailVerificadoEm || usuario.email !== email) return false;
+      const [anterior] = await tx
+        .select()
+        .from(verificacoesEmail)
+        .where(eq(verificacoesEmail.usuarioId, usuarioId));
+      // A validade é de 24h; a expiração também permite derivar o instante de emissão sem novo schema.
+      if (
+        !podeEmitirVerificacao(
+          anterior?.expiraEm ?? null,
+          new Date(expiraEm.getTime() - VALIDADE_VERIFICACAO_H * 60 * 60_000),
+        )
+      )
+        return false;
       await tx.delete(verificacoesEmail).where(eq(verificacoesEmail.usuarioId, usuarioId));
       await tx.insert(verificacoesEmail).values({ tokenHash, usuarioId, expiraEm: expiraEm.toISOString() });
+      return true;
     });
   },
   async consumir(tokenHash, agora) {
-    const [linha] = await banco()
-      .delete(verificacoesEmail)
-      .where(
-        and(eq(verificacoesEmail.tokenHash, tokenHash), gt(verificacoesEmail.expiraEm, agora.toISOString())),
-      )
-      .returning({ usuarioId: verificacoesEmail.usuarioId });
-    return linha?.usuarioId ?? null;
+    const linha = await banco().transaction(async (tx) => {
+      const [token] = await tx
+        .select()
+        .from(verificacoesEmail)
+        .where(eq(verificacoesEmail.tokenHash, tokenHash));
+      if (!token) return undefined;
+      await tx.select().from(usuarios).where(eq(usuarios.id, token.usuarioId)).for("update");
+      const [valido] = await tx
+        .delete(verificacoesEmail)
+        .where(
+          and(
+            eq(verificacoesEmail.tokenHash, tokenHash),
+            gt(verificacoesEmail.expiraEm, agora.toISOString()),
+          ),
+        )
+        .returning();
+      if (!valido) return undefined;
+      const [usuario] = await tx
+        .update(usuarios)
+        .set({ emailVerificadoEm: agora.toISOString() })
+        .where(and(eq(usuarios.id, valido.usuarioId), isNull(usuarios.emailVerificadoEm)))
+        .returning();
+      if (usuario) await somarVersao(tx);
+      return usuario;
+    });
+    return avisar(linha)?.id ?? null;
   },
 };

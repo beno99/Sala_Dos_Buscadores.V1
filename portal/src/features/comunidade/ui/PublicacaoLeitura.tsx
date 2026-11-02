@@ -5,6 +5,7 @@ import { BarraAcoesComunidade } from "@/components/ds/BarraAcoesComunidade";
 import { BlocoCitacao } from "@/components/ds/BlocoCitacao";
 import { Button, ButtonLink } from "@/components/ds/Button";
 import { CardPublicacao } from "@/components/ds/CardPublicacao";
+import { CardVideo } from "@/components/ds/CardVideo";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { LinhaComentario } from "@/components/ds/LinhaComentario";
@@ -267,6 +268,12 @@ export function PublicacaoLeitura({
         }
         bloco={
           <>
+            {p.videoId &&
+              (p.video ? (
+                <CardVideo video={p.video} />
+              ) : (
+                <p className="sdb-footnote">O vídeo vinculado não está disponível no acervo.</p>
+              ))}
             {p.tipo === "citacao" && p.citacao && (
               <BlocoCitacao
                 estreito

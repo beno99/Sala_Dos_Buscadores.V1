@@ -1,0 +1,42 @@
+
+> sala-dos-buscadores-portal@0.1.0 check
+> npm run ds:check && npm run ds:test && npm run lint && npm run typecheck
+
+
+> sala-dos-buscadores-portal@0.1.0 ds:check
+> node scripts/sync-design-system.mjs --check
+
+Design system em dia.
+
+> sala-dos-buscadores-portal@0.1.0 ds:test
+> node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs
+
+✔ cada sinal produz apenas o elemento permitido, na ordem correta (1.247292ms)
+✔ texto simples e HTML do autor permanecem texto (0.09425ms)
+✔ marcas aninhadas ficam integralmente visíveis (0.096ms)
+✔ links aceitam apenas https e caminhos realmente internos (0.133917ms)
+✔ referência sem fontes continua representada e numerada (0.067708ms)
+✔ cursor dentro e seleção parcial detectam e removem a marca inteira (0.101458ms)
+✔ marca, modelo, endereço e limpeza devolvem seleções úteis (0.152916ms)
+✔ conversão em lista e retorno preservam todas as linhas (0.108333ms)
+✔ migração da gramática antiga preserva links e transforma somente obras (0.103667ms)
+✔ um link existente pode ser desmarcado com cursor no endereço (0.094667ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.408084
+
+> sala-dos-buscadores-portal@0.1.0 lint
+> biome check
+
+Checked 470 files in 158ms. No fixes applied.
+
+> sala-dos-buscadores-portal@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully

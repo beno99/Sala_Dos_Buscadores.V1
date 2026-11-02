@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TabelaDados · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=4cf1fc2bfdcb">
-<link rel="stylesheet" href="../components/bundle.css?v=568def0efed1">
+<link rel="stylesheet" href="../tokens.css?v=170aefaa5903">
+<link rel="stylesheet" href="../components/bundle.css?v=8411e8f19e8c">
 <link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
 
 
@@ -105,6 +105,8 @@
   </div>
 </div>
 <script>SalaBuscadores.hydrate();</script>
+
+<section class="sdb-panel"><h3 class="sdb-title-2">Seleção de fontes · exemplo</h3><div class="sdb-selection-list" role="region" aria-label="Fontes disponíveis" tabindex="0"><ul class="sdb-list"><li class="sdb-list__item"><label><input type="checkbox"> Corpus Hermeticum · edição de referência</label></li><li class="sdb-list__item"><label><input type="checkbox"> Evangelho de Tomé · referência de estudo</label></li></ul></div></section>
 <script src="../components/refined.js?v=98df67e3bc61" defer></script>
 <script>
 window.addEventListener('message',function(e){if(e.source!==parent)return;if(['solido-claro','solido-escuro','vidro-claro','vidro-escuro'].includes(e.data?.sdbTheme))document.documentElement.dataset.theme=e.data.sdbTheme;});

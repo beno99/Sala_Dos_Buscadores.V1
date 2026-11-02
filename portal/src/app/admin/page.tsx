@@ -73,10 +73,10 @@ export default function PainelCuradoria() {
         </div>
       </section>
 
-      <Alerta title="Grade comparativa e assistente ainda não recebem conteúdos novos">
-        O que você publica aparece na Sala, na página do conteúdo e na busca por tema. A grade comparativa e
-        as respostas do assistente continuam curadas à parte nesta etapa. As Salas de anfitrião entram nelas
-        quando você liga “Incluir na comparação e no assistente” na revisão.
+      <Alerta title="Como os conteúdos entram nas ferramentas de estudo">
+        O que você publica aparece na Sala, na página do conteúdo e na busca por tema. O assistente consulta o
+        acervo publicado disponível no momento da pergunta. A grade comparativa tem uma seleção editorial
+        própria e não é gerada automaticamente a cada publicação.
       </Alerta>
 
       <section

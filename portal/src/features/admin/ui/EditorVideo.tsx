@@ -117,7 +117,7 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
       <OrientacaoCadastro
         itens={checklist}
         salvar="Sala e título permitem salvar o rascunho. Um link preenchido precisa ser válido; a duração pode ficar vazia até publicar."
-        publicar="Para publicar, complete identificação, link YouTube e duração. Vincular artigos é opcional; somente artigos da mesma Sala podem ser associados."
+        publicar="Para publicar, complete identificação, link YouTube e duração. Vincular artigos é opcional; artigos elegíveis de outras Salas também podem ser associados."
       />
       <Breadcrumbs
         itens={[
@@ -142,6 +142,11 @@ export function EditorVideo({ inicial, status, atualizadoEm, artigos, sala, hist
           {form.artigos.length === 0 && " · Só na Sala: aparece na página da Sala"}
         </p>
       </header>
+      {edicao.conflito && (
+        <Alerta variant="error" title="Conflito de edição">
+          {edicao.conflito}
+        </Alerta>
+      )}
 
       {form.id && (
         <Segmented<"edicao" | "historico">

@@ -25,3 +25,7 @@ No banner cheio, a ação discreta “Por que estou vendo isto?” usa `on-media
 
 ## Arte pronta (`.sdb-banner__slide--arte`, out 2026)
 Para peça que já traz o texto na imagem: sem véu nem desfoque, imagem ancorada à esquerda para o texto não ser cortado, e o mesmo texto em `h2.sdb-sr` para leitor de tela. As ações ficam na base, logo acima dos controles. Mantenha o texto da arte na metade esquerda e fora dessa faixa. Até 480 px de largura do banner, a arte aparece inteira (`contain`) sobre a placa grafite.
+
+## Arte integral em fluxo (02/11/2026)
+
+A integração React usa `.sdb-banner--fluxo`: mídia integral em moldura 2400:1018, ações e controles em fluxo abaixo, nos quatro temas. Apenas o slide atual participa da altura; os demais continuam inertes e invisíveis. Não se reserva uma faixa sobre a imagem para CTAs. Abaixo de 620 px de container, `.sdb-banner__art-caption` torna o texto da arte legível fora da imagem; acima disso, permanece disponível aos leitores de tela. Pausa, teclado e movimento reduzido continuam ativos. Não recortar a arte para preencher o quadro.

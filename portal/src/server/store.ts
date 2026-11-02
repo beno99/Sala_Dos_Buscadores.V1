@@ -1,3 +1,7 @@
+import { AsyncLocalStorage } from "node:async_hooks";
+import type { PedidoLixeiraArtigo } from "@/features/artigos/lixeira";
+import type { OperacaoContaNoLote } from "@/modules/acervo/contas-no-lote";
+import { type PedidoEditorial, proximoInstante } from "@/modules/acervo/editorial-atomico";
 import "server-only";
 import { instalarRegistroSalas, instalarRegistroTemas } from "@/data/catalogo";
 import type {
@@ -32,6 +36,7 @@ import type {
   Gravacao,
   MidiaGuardada,
   NomeColecao,
+  OperacaoLote,
   PerfilBuscador,
 } from "@/modules/acervo/acervo.contratos";
 import { acervoRepositorio } from "@/modules/acervo/acervo.repositorio";
@@ -41,21 +46,15 @@ import { aoApagarConta, aoMudarConta } from "@/modules/conta/conta.repositorio";
 export type { MidiaGuardada, PerfilBuscador } from "@/modules/acervo/acervo.contratos";
 
 /*
- * Snapshot do acervo no servidor, carregado do Postgres (modules/acervo).
+ * Snapshot de leitura do acervo. Escritas de rotas e Server Actions usam
+ * comGravacoesDoPedido: cada chamada ganha snapshot isolado, plano e promessa
+ * próprios. O plano inteiro (incluindo auditoria e caixa de saída) é aplicado
+ * em uma transação; só depois o snapshot público é recarregado.
  *
- * As regras de negócio leem e escrevem nos Maps abaixo de forma síncrona,
- * como antes; cada `set`/`delete` entra numa fila que grava no banco na
- * ordem em que aconteceu. As Server Actions esperam a fila esvaziar
- * (`aguardarGravacoes`) antes de responder, então um erro de banco chega a
- * quem agiu, e o snapshot é recarregado.
- *
- * Toda gravação soma 1 na versão dos dados. No começo de cada pedido,
- * `sincronizarAcervo` compara a versão do banco com a deste processo e
- * recarrega se outra instância gravou.
- *
- * ponytail: o acervo inteiro fica na memória de cada instância e a última
- * gravação vence entre instâncias; trocar por consultas paginadas no banco
- * quando o acervo passar de alguns milhares de itens.
+ * A fila global apenas ordena commits. Não armazena nem distribui erros:
+ * cada pedido aguarda sua tarefa e recebe sua própria falha. Edições usam
+ * CAS; relações são relidas sob lock pelo repositório.
+ * Utilitários internos legados aguardam somente tarefas do seu contexto.
  */
 
 /** Map que grava cada mudança no banco. */
@@ -69,8 +68,26 @@ class MapPersistido<K extends NomeColecao> extends Map<string, Colecoes[K]> {
   }
 
   override set(id: string, valor: Colecoes[K]): this {
+    const anterior = super.get(id);
+    const editorial = ["salas", "conteudos", "videos"].includes(this.#colecao);
+    const esperado = anterior && "atualizadoEm" in anterior ? String(anterior.atualizadoEm) : null;
+    if (
+      editorial &&
+      anterior &&
+      "atualizadoEm" in anterior &&
+      "atualizadoEm" in valor &&
+      Date.parse(String(valor.atualizadoEm)) <= Date.parse(String(anterior.atualizadoEm))
+    ) {
+      valor = { ...valor, atualizadoEm: proximoInstante(String(anterior.atualizadoEm)) };
+    }
     super.set(id, valor);
-    enfileirar({ tipo: "gravar", colecao: this.#colecao, id, valor: structuredClone(valor) } as Gravacao);
+    enfileirar({
+      tipo: "gravar",
+      colecao: this.#colecao,
+      id,
+      valor: structuredClone(valor),
+      ...(editorial ? { esperado } : {}),
+    } as Gravacao);
     return this;
   }
 
@@ -126,7 +143,6 @@ interface Estado {
   store?: Store;
   carregando?: Promise<void>;
   fila: Promise<void>;
-  erros: unknown[];
 }
 
 const chave = Symbol.for("sala-dos-buscadores.store");
@@ -134,25 +150,119 @@ type ComEstado = typeof globalThis & { [chave]?: Estado };
 
 function estado(): Estado {
   const g = globalThis as ComEstado;
-  g[chave] ??= { repositorio: acervoRepositorio, fila: Promise.resolve(), erros: [] };
+  g[chave] ??= { repositorio: acervoRepositorio, fila: Promise.resolve() };
   return g[chave];
 }
 
+interface EscopoGravacoes {
+  modo: "pedido" | "legado";
+  store: Store;
+  operacoes: OperacaoLote[];
+  tarefas: Promise<void>[];
+  efeitos: (() => void)[];
+}
+const contextoGravacoes = new AsyncLocalStorage<EscopoGravacoes>();
+
+/** Isola snapshot e confirmação de um pedido; todas as gravações do plano fazem um só commit. */
+export async function comGravacoesDoPedido<T>(executar: () => T | Promise<T>): Promise<T> {
+  if (contextoGravacoes.getStore()?.modo === "pedido") return executar();
+  await sincronizarAcervo();
+  const local = montar(snapshotDoStore(store()));
+  const escopo: EscopoGravacoes = { modo: "pedido", store: local, operacoes: [], tarefas: [], efeitos: [] };
+  return contextoGravacoes.run(escopo, async () => {
+    const r = await executar();
+    if (r && typeof r === "object" && "ok" in r && r.ok === false) return r;
+    await confirmarEscopo(escopo);
+    for (const efeito of escopo.efeitos) {
+      try {
+        efeito();
+      } catch {
+        process.stderr.write("Não foi possível agendar um efeito após a confirmação do pedido.\n");
+      }
+    }
+    return r;
+  });
+}
+/** Efeitos externos só são agendados quando o banco confirmou o pedido. */
+export function aposConfirmarPedido(efeito: () => void): void {
+  const escopo = contextoGravacoes.getStore();
+  if (escopo?.modo === "pedido") escopo.efeitos.push(efeito);
+  else efeito();
+}
+/** Operações de conta são apenas planejadas; não há commit fora do lote editorial. */
+export function planejarContaNoPedido(op: OperacaoContaNoLote): void {
+  const escopo = contextoGravacoes.getStore();
+  if (escopo?.modo !== "pedido") throw new Error("Alteração de conta exige um pedido transacional.");
+  escopo.operacoes.push(structuredClone(op));
+}
+
+async function confirmarEscopo(escopo: EscopoGravacoes): Promise<void> {
+  if (!escopo.operacoes.length) return;
+  const ops = escopo.operacoes.splice(0);
+  const e = estado();
+  const tarefa = e.fila.then(async () => {
+    await e.repositorio.aplicarLote(ops);
+    e.store = montar(await e.repositorio.carregar());
+  });
+  e.fila = tarefa.catch(() => {
+    if (e.store) e.store.desatualizado = true;
+  });
+  await tarefa;
+}
 function enfileirar(gravacao: Gravacao) {
+  let escopo = contextoGravacoes.getStore();
+  if (escopo?.modo === "pedido") {
+    escopo.operacoes.push(structuredClone(gravacao));
+    return;
+  }
+  // Compatibilidade para utilitários/testes internos; rotas de escrita usam escopo próprio.
   const e = estado();
   const alvo = e.store;
-  e.fila = e.fila
-    .then(async () => {
-      const nova = await e.repositorio.aplicar(gravacao);
-      if (!alvo) return;
+  if (!escopo) {
+    escopo = { modo: "legado", store: store(), operacoes: [], tarefas: [], efeitos: [] };
+    contextoGravacoes.enterWith(escopo);
+  }
+  const tarefa = e.fila.then(async () => {
+    const nova = await e.repositorio.aplicar(gravacao);
+    if (alvo) {
       if (nova === alvo.versao + 1) alvo.versao = nova;
       else alvo.desatualizado = true;
-    })
-    .catch((erro) => {
-      console.error("Falha ao gravar no banco; o acervo será recarregado.", erro);
-      if (alvo) alvo.desatualizado = true;
-      e.erros.push(erro);
-    });
+    }
+  });
+  e.fila = tarefa.catch(() => {
+    if (alvo) alvo.desatualizado = true;
+  });
+  escopo.tarefas.push(tarefa);
+}
+
+/** Gravação atômica com CAS; o Map é apenas uma prévia local, nunca a fonte dos vínculos. */
+export function gravarEditorialNoAcervo(pedido: PedidoEditorial): Promise<void> {
+  const e = estado();
+  const alvo = store();
+  const mapa = alvo.acervo[pedido.colecao];
+  const anterior = mapa.get(pedido.valor.id);
+  pedido.valor.atualizadoEm = proximoInstante(anterior?.atualizadoEm);
+  const copia = structuredClone(pedido);
+  const escopo = contextoGravacoes.getStore();
+  if (escopo?.modo === "pedido") {
+    escopo.operacoes.push({ tipo: "editorial", pedido: copia });
+    Map.prototype.set.call(mapa, pedido.valor.id, structuredClone(pedido.valor));
+    if (pedido.citacao)
+      Map.prototype.set.call(alvo.acervo.citacoes, pedido.citacao.id, structuredClone(pedido.citacao));
+    return Promise.resolve();
+  }
+  const tarefa = e.fila.then(async () => {
+    const r = await e.repositorio.salvarEditorial(copia);
+    Map.prototype.set.call(alvo.acervo[r.colecao], r.valor.id, structuredClone(r.valor));
+    for (const v of r.videos) Map.prototype.set.call(alvo.acervo.videos, v.id, structuredClone(v));
+    if (r.citacao) Map.prototype.set.call(alvo.acervo.citacoes, r.citacao.id, structuredClone(r.citacao));
+    if (r.versao === alvo.versao + 1) alvo.versao = r.versao;
+    else alvo.desatualizado = true;
+  });
+  e.fila = tarefa.catch(() => {
+    alvo.desatualizado = true;
+  });
+  return tarefa;
 }
 
 /**
@@ -171,6 +281,31 @@ export async function criarSalaNoAcervo(sala: SalaEditorial): Promise<SalaEditor
     return criada.sala;
   });
   // A falha chega diretamente a quem criou; a fila continua disponível.
+  e.fila = tarefa.then(
+    () => {},
+    () => {
+      if (e.store) e.store.desatualizado = true;
+    },
+  );
+  return tarefa;
+}
+
+export async function mudarLixeiraArtigoNoAcervo(pedido: PedidoLixeiraArtigo, permanente = false) {
+  const e = estado();
+  const tarefa = e.fila.then(async () => {
+    const alvo = store();
+    if (permanente) {
+      const resultado = await e.repositorio.excluirArtigoPermanentemente(pedido);
+      Map.prototype.delete.call(alvo.acervo.conteudos, pedido.id);
+      alvo.auditoria.push(resultado.registro);
+      alvo.desatualizado = true;
+    } else {
+      const resultado = await e.repositorio.mudarLixeiraArtigo(pedido);
+      Map.prototype.set.call(alvo.acervo.conteudos, pedido.id, structuredClone(resultado.artigo));
+      alvo.auditoria.push(resultado.registro);
+      alvo.desatualizado = true;
+    }
+  });
   e.fila = tarefa.then(
     () => {},
     () => {
@@ -266,6 +401,39 @@ export function alternarSalvo(s: SalvoComunidade): boolean {
   );
 }
 
+function snapshotDoStore(s: Store): DadosCarregados {
+  const a = s.acervo;
+  return structuredClone({
+    versao: s.versao,
+    contas: s.contas,
+    colecoes: {
+      salas: a.salas,
+      conteudos: a.conteudos,
+      citacoes: a.citacoes,
+      videos: a.videos,
+      fontes: a.fontes,
+      perfis: a.perfis,
+      candidaturas: a.candidaturas,
+      convites: a.convites,
+      midias: a.midias,
+      temas: a.temas,
+      progresso: s.progresso,
+      perfisBuscador: s.perfisBuscador,
+      publicacoes: a.comunidade.publicacoes,
+      comentarios: a.comunidade.comentarios,
+      denuncias: a.comunidade.denuncias,
+    },
+    destaques: a.destaques,
+    comunidade: {
+      reacoes: a.comunidade.reacoes,
+      seguindo: a.comunidade.seguindo,
+      salvos: a.comunidade.salvos,
+    },
+    auditoria: s.auditoria,
+    caixaSaida: s.caixaSaida,
+  });
+}
+
 function montar(d: DadosCarregados): Store {
   const c = d.colecoes;
   let destaques = d.destaques ?? structuredClone(VAGAS_VAZIAS);
@@ -327,16 +495,17 @@ export async function sincronizarAcervo(): Promise<void> {
   await e.carregando;
 }
 
-/** Espera as gravações pendentes; repassa a primeira falha. */
+/** Utilitários internos: espera somente tarefas deste contexto. Pedidos confirmam o plano ao sair. */
 export async function aguardarGravacoes(): Promise<void> {
-  const e = estado();
-  await e.fila;
-  const [erro] = e.erros.splice(0);
-  if (erro) throw erro;
+  const escopo = contextoGravacoes.getStore();
+  if (escopo?.modo === "pedido") return; // confirmação única ao sair do pedido, nunca no meio do plano
+  const tarefas = escopo?.tarefas.splice(0) ?? [];
+  await Promise.all(tarefas);
 }
 
 function store(): Store {
-  const s = estado().store;
+  const contexto = contextoGravacoes.getStore();
+  const s = contexto?.modo === "pedido" ? contexto.store : estado().store;
   if (!s) throw new Error("Acervo não carregado: chame sincronizarAcervo() no começo do pedido.");
   return s;
 }
@@ -357,6 +526,7 @@ export function salaParaPublico(s: SalaEditorial): Sala {
     naComparacao: s.naComparacao,
   };
   if (s.imagem) publico.imagem = s.imagem;
+  if (s.imagemCard) publico.imagemCard = s.imagemCard;
   if (s.link) publico.link = s.link;
   if (s.anfitriao) publico.anfitriao = { ...s.anfitriao };
   return publico;
@@ -374,7 +544,7 @@ export function leiturasParaAssistente(): LeituraParaAssistente[] {
   const salas = salasVisiveis().filter((s) => s.origem === "anfitriao");
   const porSlug = new Map(salas.map((s) => [s.slug, s]));
   return [...store().acervo.conteudos.values()]
-    .filter((c) => c.status === "publicado" && c.revisao && porSlug.has(c.sala))
+    .filter((c) => !c.lixeira && c.status === "publicado" && c.revisao && porSlug.has(c.sala))
     .sort((a, b) => b.publicadoEm.localeCompare(a.publicadoEm))
     .map((c) => ({
       sala: c.sala,

@@ -10,10 +10,10 @@ import { CampoTexto } from "@/components/ds/Campos";
 import { useToast } from "@/components/ds/Toast";
 import { useSessao } from "./SessaoProvider";
 import { useEnvio } from "./useEnvio";
-import { validarEmail } from "./validacao";
+import { destinoAposLogin, validarEmail } from "./validacao";
 
 /** Entrar com e-mail e senha (RF-02). A conta é obrigatória para usar o portal. */
-export function FormEntrar({ voltar }: { voltar: string }) {
+export function FormEntrar({ voltar }: { voltar?: string }) {
   const router = useRouter();
   const toast = useToast();
   const { entrar } = useSessao();
@@ -21,7 +21,7 @@ export function FormEntrar({ voltar }: { voltar: string }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erros, setErros] = useState<{ email?: string; senha?: string; geral?: string }>({});
-  const qs = `?voltar=${encodeURIComponent(voltar)}`;
+  const qs = voltar ? `?voltar=${encodeURIComponent(voltar)}` : "";
 
   const submeter = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ export function FormEntrar({ voltar }: { voltar: string }) {
       return;
     }
     toast(`Você entrou como ${r.valor.pseudonimo}.`);
-    router.push(voltar as Route);
+    router.push(destinoAposLogin(r.valor, voltar) as Route);
     router.refresh();
   };
 

@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
+import { auditarComo } from "@/server/auditoria";
 import { AcessoNegado, exigirAdmin } from "../sessao";
-import { aguardarGravacoes } from "../store";
+import { comGravacoesDoPedido } from "../store";
 import type { ResultadoAcao } from "./comum";
 import * as revisao from "./revisao";
 import * as usuarios from "./usuarios";
@@ -17,8 +19,11 @@ async function comAdmin<T>(
   fazer: (quem: string) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
 ): Promise<ResultadoAcao<T>> {
   let quem: string;
+  let atorId: string;
   try {
-    quem = (await exigirAdmin()).pseudonimo;
+    const admin = await exigirAdmin();
+    quem = admin.pseudonimo;
+    atorId = admin.id;
   } catch (e) {
     if (e instanceof AcessoNegado) {
       return {
@@ -28,8 +33,13 @@ async function comAdmin<T>(
     }
     throw e;
   }
-  const r = await fazer(quem);
-  await aguardarGravacoes();
+  let r: ResultadoAcao<T>;
+  try {
+    r = await comGravacoesDoPedido(() => auditarComo(atorId, () => fazer(quem)));
+  } catch (e) {
+    if (e instanceof ConflitoEditorial) return { ok: false, conflito: true, mensagem: e.message };
+    throw e;
+  }
   if (r.ok) revalidatePath("/", "layout");
   return r;
 }

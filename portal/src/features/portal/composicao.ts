@@ -32,3 +32,32 @@ export function comporLeituras(
 export function percentualDeLeitura(valor: number) {
   return Number.isFinite(valor) ? Math.max(0, Math.min(100, valor)) : undefined;
 }
+
+export interface PreviaComunidade {
+  id: string;
+  texto: string;
+  criadaEm: string;
+  autorNome: string;
+  autorHref: string;
+}
+
+/** Recebe somente publicações já autorizadas; não transporta comentários, mídia ou dados da conta. */
+export function projetarPreviaComunidade(
+  publicacoes: readonly {
+    id: string;
+    texto: string;
+    criadaEm: string;
+    autor: { nome: string; href: string };
+  }[],
+): PreviaComunidade[] {
+  return [...new Map(publicacoes.map((p) => [p.id, p])).values()]
+    .sort((a, b) => b.criadaEm.localeCompare(a.criadaEm))
+    .slice(0, 3)
+    .map((p) => ({
+      id: p.id,
+      texto: p.texto.length > 240 ? `${p.texto.slice(0, 237)}…` : p.texto,
+      criadaEm: p.criadaEm,
+      autorNome: p.autor.nome,
+      autorHref: p.autor.href,
+    }));
+}

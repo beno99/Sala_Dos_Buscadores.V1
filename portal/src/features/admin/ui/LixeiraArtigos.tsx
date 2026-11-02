@@ -17,26 +17,26 @@ type LinhaArtigoArquivado = ConteudoEditorial & { salaNome: string };
 
 /** Lixeira de Artigos: artigos arquivados da curadoria, para restaurar ou excluir definitivamente. */
 export function LixeiraArtigos({ artigos }: { artigos: LinhaArtigoArquivado[] }) {
-  const { pedir, modal } = useAcaoStatus("artigo");
+  const { pedir, modal } = useAcaoStatus("artigo", undefined, true);
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumbs itens={[{ href: "/admin/salas" as Route, rotulo: "Salas" }]} atual="Lixeira de Artigos" />
       <header className="flex flex-col gap-3">
         <h1 className="sdb-title-1">Lixeira de Artigos</h1>
         <p className="sdb-body-sm">
-          Artigos arquivados da curadoria. Restaure como rascunho ou exclua definitivamente: a exclusão apaga
-          o artigo para sempre, sem volta.
+          Artigos na lixeira. Restaure com o estado editorial anterior ou exclua definitivamente: a exclusão
+          apaga o artigo para sempre, sem volta.
         </p>
         <ButtonLink href={"/admin/salas" as Route} variant="secondary">
           Voltar às Salas
         </ButtonLink>
       </header>
       <TabelaDados
-        legenda={`Artigos arquivados · ${artigos.length}`}
+        legenda={`Artigos na lixeira · ${artigos.length}`}
         itens={artigos}
         chave={(a) => a.id}
         rotuloItem={(a) => a.titulo}
-        vazio="Nenhum artigo arquivado no momento."
+        vazio="Nenhum artigo na lixeira no momento."
         colunas={[
           {
             id: "titulo",
@@ -50,8 +50,8 @@ export function LixeiraArtigos({ artigos }: { artigos: LinhaArtigoArquivado[] })
           },
           {
             id: "arquivado",
-            cabecalho: "Arquivado em",
-            celula: (a) => formatarData(a.atualizadoEm.slice(0, 10)),
+            cabecalho: "Enviado à lixeira em",
+            celula: (a) => formatarData((a.lixeira?.em ?? a.atualizadoEm).slice(0, 10)),
           },
           {
             id: "acoes",

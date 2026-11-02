@@ -26,7 +26,7 @@ import {
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { imagem, imagemDaSala, imagemDoCard, imagemDoCardDaSala } from "./imagens";
+import { imagem, imagemDoCard, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
 
@@ -184,7 +184,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   const porChave = (sala: string, slug: string) => publicos.find((c) => c.sala === sala && c.slug === slug);
   const comImagem = (c: Conteudo): ConteudoComImagem => ({
     conteudo: c,
-    imagem: imagemDoCard(c) ?? imagemDaSala({ slug: c.sala }),
+    imagem: imagemDoCard(c),
   });
 
   const ordem = ordenarSalas(
@@ -211,7 +211,11 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
     ];
   });
 
-  const resumo = resumoDoPainel(p, acervo, salas.length);
+  const resumo = resumoDoPainel(
+    p,
+    acervo,
+    salas.map((s) => s.slug),
+  );
   const naoVisitadas = salas.filter((s) => !p.salasVisitadas.includes(s.slug)).map((s) => s.nome);
   const indicadores: Indicador[] = [
     {

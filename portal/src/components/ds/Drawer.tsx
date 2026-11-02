@@ -31,14 +31,15 @@ export function Drawer({ open, onClose, title, children, footer, wide, acoes }: 
     if (!open) return;
     anterior.current = document.activeElement as HTMLElement | null;
     const t = setTimeout(() => {
+      painel.current?.querySelector(".sdb-drawer__body")?.scrollTo(0, 0);
       const primeiro = painel.current?.querySelector<HTMLElement>(
-        'input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), button:not(:disabled):not([data-close])',
+        'a[href], input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), button:not(:disabled):not([data-close])',
       );
       (
         primeiro ??
         painel.current?.querySelector<HTMLElement>("button:not(:disabled)") ??
         painel.current
-      )?.focus();
+      )?.focus({ preventScroll: true });
     }, 30);
     return () => {
       clearTimeout(t);

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { publicacoesVisiveisComunidade } from "@/data/repositorio";
+import { projetarPreviaComunidade } from "@/features/portal/composicao";
 import { PortalCliente } from "@/features/portal/PortalCliente";
 import { modeloDoPortal } from "@/server/estudo";
 import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
@@ -13,5 +15,10 @@ export const metadata: Metadata = { title: { absolute: "Portal · A Sala dos Bus
 export default async function Portal() {
   const membro = await membroAtual();
   if (!membro) return redirecionarParaEntrar();
-  return <PortalCliente modelo={await modeloDoPortal(membro)} />;
+  return (
+    <PortalCliente
+      modelo={await modeloDoPortal(membro)}
+      comunidade={projetarPreviaComunidade(publicacoesVisiveisComunidade())}
+    />
+  );
 }

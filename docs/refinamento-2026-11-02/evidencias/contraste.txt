@@ -1,0 +1,410 @@
+
+vidro-claro
+  label            sobre bg-canvas        15.71
+  label-secondary  sobre bg-canvas        6.23
+  accent           sobre bg-canvas        15.04
+  critical         sobre bg-canvas        15.04
+  label-tertiary   sobre bg-canvas        5.26 (só ícones e placeholders)
+  label            sobre material-thin    16.61
+  label-secondary  sobre material-thin    6.59
+  accent           sobre material-thin    15.90
+  critical         sobre material-thin    15.90
+  label-tertiary   sobre material-thin    5.56 (só ícones e placeholders)
+  label            sobre material-regular 17.07
+  label-secondary  sobre material-regular 6.77
+  accent           sobre material-regular 16.34
+  critical         sobre material-regular 16.34
+  label-tertiary   sobre material-regular 5.71 (só ícones e placeholders)
+  label            sobre material-thick   17.62
+  label-secondary  sobre material-thick   6.99
+  accent           sobre material-thick   16.86
+  critical         sobre material-thick   16.86
+  label-tertiary   sobre material-thick   5.89 (só ícones e placeholders)
+  label            sobre float-fill       17.14
+  label-secondary  sobre float-fill       6.80
+  accent           sobre float-fill       16.40
+  critical         sobre float-fill       16.40
+  label-tertiary   sobre float-fill       5.73 (só ícones e placeholders)
+  label            sobre nav-fill         16.61
+  label-secondary  sobre nav-fill         6.59
+  accent           sobre nav-fill         15.90
+  critical         sobre nav-fill         15.90
+  label-tertiary   sobre nav-fill         5.56 (só ícones e placeholders)
+  label            sobre card-warm        17.07
+  label-secondary  sobre card-warm        6.77
+  accent           sobre card-warm        16.34
+  critical         sobre card-warm        16.34
+  label-tertiary   sobre card-warm        5.71 (só ícones e placeholders)
+  label            sobre nav-card         17.07
+  label-secondary  sobre nav-card         6.77
+  accent           sobre nav-card         16.34
+  critical         sobre nav-card         16.34
+  label-tertiary   sobre nav-card         5.71 (só ícones e placeholders)
+  label            sobre overlay-from     17.62
+  label-secondary  sobre overlay-from     6.99
+  accent           sobre overlay-from     16.86
+  critical         sobre overlay-from     16.86
+  label-tertiary   sobre overlay-from     5.89 (só ícones e placeholders)
+  label            sobre overlay-to       17.62
+  label-secondary  sobre overlay-to       6.99
+  accent           sobre overlay-to       16.86
+  critical         sobre overlay-to       16.86
+  label-tertiary   sobre overlay-to       5.89 (só ícones e placeholders)
+  label            sobre community-canvas 15.71
+  label-secondary  sobre community-canvas 6.23
+  community-link   sobre community-canvas 4.99
+  label            sobre community-surface 18.64
+  label-secondary  sobre community-surface 7.40
+  community-link   sobre community-surface 5.92
+  label            sobre community-inset  17.11
+  label-secondary  sobre community-inset  6.79
+  community-link   sobre community-inset  5.43
+  label            sobre community-notice 15.31
+  label-secondary  sobre community-notice 6.07
+  community-link   sobre community-notice 4.86
+  community-question-ink sobre community-question 6.44
+  community-action-ink sobre community-action 7.12
+  level-beginner-ink sobre level-beginner-fill 5.80
+  level-intermediate-ink sobre level-intermediate-fill 6.78
+  level-advanced-ink sobre level-advanced-fill 7.35
+  tag-blue-ink     sobre tag-blue-fill    5.88
+  tag-green-ink    sobre tag-green-fill   6.23
+  tag-amber-ink    sobre tag-amber-fill   6.02
+  tag-purple-ink   sobre tag-purple-fill  5.77
+  tag-neutral-ink  sobre tag-neutral-fill 6.27
+  on-accent        sobre accent-fill      14.65
+  on-prominent     sobre prominent-fill   18.64
+  on-depth         sobre depth-fill       14.65
+  on-critical      sobre critical-fill    14.65
+  accent           sobre accent-soft (em card) 13.81
+  critical         sobre critical-soft (em card) 13.22
+  label            sobre fill (em card) 14.55
+  label-secondary  sobre fill (em card) 5.77
+  on-media         sobre veil-media (sobre bege) 7.22
+  on-media         sobre veil-media-deep (sobre bege) 13.92
+  nav-active-label sobre nav-active-fill (em nav-fill) 13.44
+  positive         sobre positive-soft (em nav-fill) 7.14
+  danger           sobre nav-fill (em bg-canvas) 6.76
+  on-chip-warm     sobre chip-warm (em bg-canvas) 14.12
+  label-brand      sobre bg-canvas (em bg-canvas) 15.04
+  label-brand      sobre nav-card (em nav-fill) 16.59
+  label-secondary  sobre kbd-warm (em card-warm) 5.77
+  on-action-warm   sobre action-warm (em card-warm) 18.64
+  on-gold-action   sobre gold-action-to (em overlay-to) 18.64
+  on-gold-action   sobre gold-action-from (em overlay-from) 18.64
+  label-secondary  sobre overlay-to (em overlay-to) 6.99
+  label            sobre overlay-panel (em overlay-to) 17.62
+  label-secondary  sobre overlay-panel (em overlay-to) 6.99
+  label            sobre text-selection (em material-thick) 12.43
+  label            sobre text-selection (em material-regular) 12.06
+  label            sobre fill (em material-regular) 14.55
+  accent           sobre thumb (em material-regular) 17.84
+  accent           sobre text-selection (em material-thick) 11.89
+
+vidro-escuro
+  label            sobre bg-canvas        18.49
+  label-secondary  sobre bg-canvas        11.04
+  accent           sobre bg-canvas        15.18
+  critical         sobre bg-canvas        15.18
+  label-tertiary   sobre bg-canvas        8.86 (só ícones e placeholders)
+  label            sobre material-thin    13.69
+  label-secondary  sobre material-thin    8.18
+  accent           sobre material-thin    11.24
+  critical         sobre material-thin    11.24
+  label-tertiary   sobre material-thin    6.56 (só ícones e placeholders)
+  label            sobre material-regular 16.34
+  label-secondary  sobre material-regular 9.76
+  accent           sobre material-regular 13.41
+  critical         sobre material-regular 13.41
+  label-tertiary   sobre material-regular 7.83 (só ícones e placeholders)
+  label            sobre material-thick   15.68
+  label-secondary  sobre material-thick   9.37
+  accent           sobre material-thick   12.87
+  critical         sobre material-thick   12.87
+  label-tertiary   sobre material-thick   7.52 (só ícones e placeholders)
+  label            sobre float-fill       13.23
+  label-secondary  sobre float-fill       7.90
+  accent           sobre float-fill       10.86
+  critical         sobre float-fill       10.86
+  label-tertiary   sobre float-fill       6.34 (só ícones e placeholders)
+  label            sobre nav-fill         13.69
+  label-secondary  sobre nav-fill         8.18
+  accent           sobre nav-fill         11.24
+  critical         sobre nav-fill         11.24
+  label-tertiary   sobre nav-fill         6.56 (só ícones e placeholders)
+  label            sobre card-warm        16.34
+  label-secondary  sobre card-warm        9.76
+  accent           sobre card-warm        13.41
+  critical         sobre card-warm        13.41
+  label-tertiary   sobre card-warm        7.83 (só ícones e placeholders)
+  label            sobre nav-card         16.34
+  label-secondary  sobre nav-card         9.76
+  accent           sobre nav-card         13.41
+  critical         sobre nav-card         13.41
+  label-tertiary   sobre nav-card         7.83 (só ícones e placeholders)
+  label            sobre overlay-from     15.68
+  label-secondary  sobre overlay-from     9.37
+  accent           sobre overlay-from     12.87
+  critical         sobre overlay-from     12.87
+  label-tertiary   sobre overlay-from     7.52 (só ícones e placeholders)
+  label            sobre overlay-to       15.68
+  label-secondary  sobre overlay-to       9.37
+  accent           sobre overlay-to       12.87
+  critical         sobre overlay-to       12.87
+  label-tertiary   sobre overlay-to       7.52 (só ícones e placeholders)
+  label            sobre community-canvas 17.46
+  label-secondary  sobre community-canvas 10.43
+  community-link   sobre community-canvas 9.96
+  label            sobre community-surface 15.39
+  label-secondary  sobre community-surface 9.20
+  community-link   sobre community-surface 8.78
+  label            sobre community-inset  13.63
+  label-secondary  sobre community-inset  8.14
+  community-link   sobre community-inset  7.78
+  label            sobre community-notice 13.18
+  label-secondary  sobre community-notice 7.87
+  community-link   sobre community-notice 7.52
+  community-question-ink sobre community-question 8.10
+  community-action-ink sobre community-action 7.12
+  level-beginner-ink sobre level-beginner-fill 5.80
+  level-intermediate-ink sobre level-intermediate-fill 6.78
+  level-advanced-ink sobre level-advanced-fill 7.35
+  tag-blue-ink     sobre tag-blue-fill    8.32
+  tag-green-ink    sobre tag-green-fill   8.03
+  tag-amber-ink    sobre tag-amber-fill   8.28
+  tag-purple-ink   sobre tag-purple-fill  7.84
+  tag-neutral-ink  sobre tag-neutral-fill 8.66
+  on-accent        sobre accent-fill      15.31
+  on-prominent     sobre prominent-fill   18.64
+  on-depth         sobre depth-fill       14.65
+  on-critical      sobre critical-fill    14.65
+  accent           sobre accent-soft (em card) 9.65
+  critical         sobre critical-soft (em card) 14.66
+  label            sobre fill (em card) 15.44
+  label-secondary  sobre fill (em card) 9.22
+  on-media         sobre veil-media (sobre bege) 7.22
+  on-media         sobre veil-media-deep (sobre bege) 13.92
+  nav-active-label sobre nav-active-fill (em nav-fill) 8.01
+  positive         sobre positive-soft (em nav-fill) 5.55
+  danger           sobre nav-fill (em bg-canvas) 6.48
+  on-chip-warm     sobre chip-warm (em bg-canvas) 16.00
+  label-brand      sobre bg-canvas (em bg-canvas) 15.18
+  label-brand      sobre nav-card (em nav-fill) 12.51
+  label-secondary  sobre kbd-warm (em card-warm) 9.22
+  on-action-warm   sobre action-warm (em card-warm) 18.64
+  on-gold-action   sobre gold-action-to (em overlay-to) 18.64
+  on-gold-action   sobre gold-action-from (em overlay-from) 18.64
+  label-secondary  sobre overlay-to (em overlay-to) 9.37
+  label            sobre overlay-panel (em overlay-to) 15.68
+  label-secondary  sobre overlay-panel (em overlay-to) 9.37
+  label            sobre text-selection (em material-thick) 8.25
+  label            sobre text-selection (em material-regular) 8.60
+  label            sobre fill (em material-regular) 15.44
+  accent           sobre thumb (em material-regular) 6.09
+  accent           sobre text-selection (em material-thick) 6.77
+
+solido-claro
+  label            sobre bg-canvas        13.80
+  label-secondary  sobre bg-canvas        6.92
+  accent           sobre bg-canvas        13.20
+  critical         sobre bg-canvas        13.20
+  label-tertiary   sobre bg-canvas        4.21 (só ícones e placeholders)
+  label            sobre material-thin    14.81
+  label-secondary  sobre material-thin    7.43
+  accent           sobre material-thin    14.18
+  critical         sobre material-thin    14.18
+  label-tertiary   sobre material-thin    4.52 (só ícones e placeholders)
+  label            sobre material-regular 17.62
+  label-secondary  sobre material-regular 8.84
+  accent           sobre material-regular 16.86
+  critical         sobre material-regular 16.86
+  label-tertiary   sobre material-regular 5.38 (só ícones e placeholders)
+  label            sobre material-thick   17.62
+  label-secondary  sobre material-thick   8.84
+  accent           sobre material-thick   16.86
+  critical         sobre material-thick   16.86
+  label-tertiary   sobre material-thick   5.38 (só ícones e placeholders)
+  label            sobre float-fill       16.57
+  label-secondary  sobre float-fill       8.31
+  accent           sobre float-fill       15.85
+  critical         sobre float-fill       15.85
+  label-tertiary   sobre float-fill       5.06 (só ícones e placeholders)
+  label            sobre nav-fill         10.23
+  label-secondary  sobre nav-fill         5.13
+  accent           sobre nav-fill         9.79
+  critical         sobre nav-fill         9.79
+  label-tertiary   sobre nav-fill         3.12 (só ícones e placeholders)
+  label            sobre card-warm        11.61
+  label-secondary  sobre card-warm        5.82
+  accent           sobre card-warm        11.11
+  critical         sobre card-warm        11.11
+  label-tertiary   sobre card-warm        3.55 (só ícones e placeholders)
+  label            sobre nav-card         9.27
+  label-secondary  sobre nav-card         4.65
+  accent           sobre nav-card         8.87
+  critical         sobre nav-card         8.87
+  label-tertiary   sobre nav-card         2.83 (só ícones e placeholders)
+  label            sobre overlay-from     11.61
+  label-secondary  sobre overlay-from     5.82
+  accent           sobre overlay-from     11.11
+  critical         sobre overlay-from     11.11
+  label-tertiary   sobre overlay-from     3.55 (só ícones e placeholders)
+  label            sobre overlay-to       10.23
+  label-secondary  sobre overlay-to       5.13
+  accent           sobre overlay-to       9.79
+  critical         sobre overlay-to       9.79
+  label-tertiary   sobre overlay-to       3.12 (só ícones e placeholders)
+  label            sobre community-canvas 15.71
+  label-secondary  sobre community-canvas 7.88
+  community-link   sobre community-canvas 4.99
+  label            sobre community-surface 18.64
+  label-secondary  sobre community-surface 9.35
+  community-link   sobre community-surface 5.92
+  label            sobre community-inset  17.11
+  label-secondary  sobre community-inset  8.58
+  community-link   sobre community-inset  5.43
+  label            sobre community-notice 15.31
+  label-secondary  sobre community-notice 7.67
+  community-link   sobre community-notice 4.86
+  community-question-ink sobre community-question 6.44
+  community-action-ink sobre community-action 7.12
+  level-beginner-ink sobre level-beginner-fill 5.80
+  level-intermediate-ink sobre level-intermediate-fill 6.78
+  level-advanced-ink sobre level-advanced-fill 7.35
+  tag-blue-ink     sobre tag-blue-fill    5.88
+  tag-green-ink    sobre tag-green-fill   6.23
+  tag-amber-ink    sobre tag-amber-fill   6.02
+  tag-purple-ink   sobre tag-purple-fill  5.77
+  tag-neutral-ink  sobre tag-neutral-fill 6.27
+  on-accent        sobre accent-fill      14.65
+  on-prominent     sobre prominent-fill   18.64
+  on-depth         sobre depth-fill       14.65
+  on-critical      sobre critical-fill    14.65
+  accent           sobre accent-soft (em card) 14.24
+  critical         sobre critical-soft (em card) 13.63
+  label            sobre fill (em card) 14.83
+  label-secondary  sobre fill (em card) 7.44
+  on-media         sobre veil-media (sobre bege) 7.22
+  on-media         sobre veil-media-deep (sobre bege) 13.92
+  nav-active-label sobre nav-active-fill (em nav-fill) 5.07
+  positive         sobre positive-soft (em nav-fill) 4.85
+  danger           sobre nav-fill (em bg-canvas) 4.83
+  on-chip-warm     sobre chip-warm (em bg-canvas) 5.53
+  label-brand      sobre bg-canvas (em bg-canvas) 6.82
+  label-brand      sobre nav-card (em nav-fill) 4.59
+  label-secondary  sobre kbd-warm (em card-warm) 5.33
+  on-action-warm   sobre action-warm (em card-warm) 5.25
+  on-gold-action   sobre gold-action-to (em overlay-to) 5.53
+  on-gold-action   sobre gold-action-from (em overlay-from) 5.92
+  label-secondary  sobre overlay-to (em overlay-to) 5.13
+  label            sobre overlay-panel (em overlay-to) 17.62
+  label-secondary  sobre overlay-panel (em overlay-to) 8.84
+  label            sobre text-selection (em material-thick) 12.43
+  label            sobre text-selection (em material-regular) 12.43
+  label            sobre fill (em material-regular) 14.83
+  accent           sobre thumb (em material-regular) 17.84
+  accent           sobre text-selection (em material-thick) 11.89
+
+solido-escuro
+  label            sobre bg-canvas        18.64
+  label-secondary  sobre bg-canvas        10.33
+  accent           sobre bg-canvas        15.31
+  critical         sobre bg-canvas        15.31
+  label-tertiary   sobre bg-canvas        8.43 (só ícones e placeholders)
+  label            sobre material-thin    12.32
+  label-secondary  sobre material-thin    6.83
+  accent           sobre material-thin    10.11
+  critical         sobre material-thin    10.11
+  label-tertiary   sobre material-thin    5.57 (só ícones e placeholders)
+  label            sobre material-regular 15.68
+  label-secondary  sobre material-regular 8.69
+  accent           sobre material-regular 12.87
+  critical         sobre material-regular 12.87
+  label-tertiary   sobre material-regular 7.09 (só ícones e placeholders)
+  label            sobre material-thick   15.68
+  label-secondary  sobre material-thick   8.69
+  accent           sobre material-thick   12.87
+  critical         sobre material-thick   12.87
+  label-tertiary   sobre material-thick   7.09 (só ícones e placeholders)
+  label            sobre float-fill       17.43
+  label-secondary  sobre float-fill       9.66
+  accent           sobre float-fill       14.31
+  critical         sobre float-fill       14.31
+  label-tertiary   sobre float-fill       7.89 (só ícones e placeholders)
+  label            sobre nav-fill         12.32
+  label-secondary  sobre nav-fill         6.83
+  accent           sobre nav-fill         10.11
+  critical         sobre nav-fill         10.11
+  label-tertiary   sobre nav-fill         5.57 (só ícones e placeholders)
+  label            sobre card-warm        15.68
+  label-secondary  sobre card-warm        8.69
+  accent           sobre card-warm        12.87
+  critical         sobre card-warm        12.87
+  label-tertiary   sobre card-warm        7.09 (só ícones e placeholders)
+  label            sobre nav-card         15.68
+  label-secondary  sobre nav-card         8.69
+  accent           sobre nav-card         12.87
+  critical         sobre nav-card         12.87
+  label-tertiary   sobre nav-card         7.09 (só ícones e placeholders)
+  label            sobre overlay-from     15.68
+  label-secondary  sobre overlay-from     8.69
+  accent           sobre overlay-from     12.87
+  critical         sobre overlay-from     12.87
+  label-tertiary   sobre overlay-from     7.09 (só ícones e placeholders)
+  label            sobre overlay-to       15.68
+  label-secondary  sobre overlay-to       8.69
+  accent           sobre overlay-to       12.87
+  critical         sobre overlay-to       12.87
+  label-tertiary   sobre overlay-to       7.09 (só ícones e placeholders)
+  label            sobre community-canvas 17.46
+  label-secondary  sobre community-canvas 9.68
+  community-link   sobre community-canvas 9.96
+  label            sobre community-surface 15.39
+  label-secondary  sobre community-surface 8.53
+  community-link   sobre community-surface 8.78
+  label            sobre community-inset  13.63
+  label-secondary  sobre community-inset  7.56
+  community-link   sobre community-inset  7.78
+  label            sobre community-notice 13.18
+  label-secondary  sobre community-notice 7.31
+  community-link   sobre community-notice 7.52
+  community-question-ink sobre community-question 8.10
+  community-action-ink sobre community-action 7.12
+  level-beginner-ink sobre level-beginner-fill 5.80
+  level-intermediate-ink sobre level-intermediate-fill 6.78
+  level-advanced-ink sobre level-advanced-fill 7.35
+  tag-blue-ink     sobre tag-blue-fill    8.32
+  tag-green-ink    sobre tag-green-fill   8.03
+  tag-amber-ink    sobre tag-amber-fill   8.28
+  tag-purple-ink   sobre tag-purple-fill  7.84
+  tag-neutral-ink  sobre tag-neutral-fill 8.66
+  on-accent        sobre accent-fill      15.31
+  on-prominent     sobre prominent-fill   18.64
+  on-depth         sobre depth-fill       14.65
+  on-critical      sobre critical-fill    14.65
+  accent           sobre accent-soft (em card) 9.22
+  critical         sobre critical-soft (em card) 14.62
+  label            sobre fill (em card) 16.64
+  label-secondary  sobre fill (em card) 9.22
+  on-media         sobre veil-media (sobre bege) 7.22
+  on-media         sobre veil-media-deep (sobre bege) 13.92
+  nav-active-label sobre nav-active-fill (em nav-fill) 7.25
+  positive         sobre positive-soft (em nav-fill) 5.02
+  danger           sobre nav-fill (em bg-canvas) 5.83
+  on-chip-warm     sobre chip-warm (em bg-canvas) 16.64
+  label-brand      sobre bg-canvas (em bg-canvas) 15.31
+  label-brand      sobre nav-card (em nav-fill) 12.87
+  label-secondary  sobre kbd-warm (em card-warm) 9.22
+  on-action-warm   sobre action-warm (em card-warm) 18.64
+  on-gold-action   sobre gold-action-to (em overlay-to) 18.64
+  on-gold-action   sobre gold-action-from (em overlay-from) 18.64
+  label-secondary  sobre overlay-to (em overlay-to) 8.69
+  label            sobre overlay-panel (em overlay-to) 15.68
+  label-secondary  sobre overlay-panel (em overlay-to) 8.69
+  label            sobre text-selection (em material-thick) 8.25
+  label            sobre text-selection (em material-regular) 8.25
+  label            sobre fill (em material-regular) 16.64
+  accent           sobre thumb (em material-regular) 8.65
+  accent           sobre text-selection (em material-thick) 6.77
+
+Todos os pares de texto passam AA (4,5:1).

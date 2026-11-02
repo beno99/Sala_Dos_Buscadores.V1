@@ -6,6 +6,7 @@ import { EditorArtigo } from "@/features/admin/ui/EditorArtigo";
 import { historicoDoItem, listarFontes, obterArtigo } from "@/server/admin/consultas";
 import { destinosDe, salaDoItem } from "@/server/admin/editores";
 import { rotaDoArtigo, salaOficialDaRota } from "@/server/admin/rotas";
+import { idsVideosDoArtigo, videosSelecionaveis } from "@/server/vinculos-editoriais";
 
 export async function generateMetadata(
   props: PageProps<"/admin/salas/[slug]/artigos/[id]">,
@@ -29,10 +30,11 @@ export default async function EditarArtigoNaSala(props: PageProps<"/admin/salas/
   return (
     <EditorArtigo
       key={`${artigo.id}-${artigo.status}`}
-      inicial={artigoParaForm(artigo, citacao)}
+      inicial={{ ...artigoParaForm(artigo, citacao), videos: idsVideosDoArtigo(artigo.id) }}
       status={artigo.status}
       atualizadoEm={artigo.atualizadoEm}
       slugTravado={Boolean(artigo.publicadoEm)}
+      videos={videosSelecionaveis("administrador")}
       fontes={listarFontes()}
       sala={salaDoItem(sala)}
       salasDestino={destinosDe(sala)}

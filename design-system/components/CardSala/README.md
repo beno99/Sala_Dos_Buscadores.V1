@@ -38,3 +38,10 @@ O Carrossel de salas reutiliza esta mesma estrutura. O exemplo de CardSala demon
 ## Imagem inteira (revisão de 31/10/2026)
 `img.sala__image` (e a `ImagemAcervo` dentro do card) usa `object-fit: contain`: a imagem aparece inteira, e onde a proporção difere sobra o fundo do card. A Sala tem uma **imagem do card** própria (vertical, recomendado 1.200 × 1.800 px, 2:3); sem ela, o card usa o banner da Sala, inteiro.
 
+
+## Imagens por finalidade 02/11/2026
+O card recebe somente imagemCard. O banner fica exclusivo da página da Sala; ausência da imagem do card exibe a placa da marca, sem modificar registros nem exigir novo envio de imagem existente.
+
+## Sala de Anfitrião (02/11/2026)
+
+`.sala--host` acrescenta detalhe dourado na moldura; o selo diz **Sala de Anfitrião**, e `.sala__signature` traz “Por” e nome público com link para o perfil existente. Cor nunca é a única distinção. Ausência de assinatura confirmada não autoriza inventar nome. O selo e a revisão não transferem a autoria à Curadoria.

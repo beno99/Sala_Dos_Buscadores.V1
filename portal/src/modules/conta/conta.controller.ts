@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { validarEmail, validarPseudonimo, validarSenha } from "@/features/auth/validacao";
 import { enviarEmail, URL_PUBLICA } from "@/server/caixa-saida";
 import { aguardarGravacoes, sincronizarAcervo } from "@/server/store";
+import { type CorrecaoEmail, corrigirEEmitir } from "./casos-de-uso/corrigir-email";
 import { VALIDADE_REDEFINICAO_MIN } from "./casos-de-uso/redefinir";
 import { DURACAO_SESSAO_MS } from "./casos-de-uso/sessao";
 import type { Membro, Resultado } from "./conta.contratos";
@@ -114,20 +115,44 @@ export async function membroAtual(): Promise<Membro | null> {
 }
 
 /** Confirma o e-mail pelo token do link (RF-01); a conta já existe, só libera o acesso. */
-export async function confirmarEmail(token: unknown): Promise<Resultado<Membro>> {
-  return contas.confirmarEmail(String(token ?? ""));
+export async function confirmarEmail(
+  token: unknown,
+): Promise<Resultado<{ membro: Membro; mesmaSessao: boolean }>> {
+  const resultado = await contas.confirmarEmail(String(token ?? ""));
+  if (!resultado.ok) return resultado;
+  const sessao = await membroAtual();
+  return { ok: true, valor: { membro: resultado.valor, mesmaSessao: sessao?.id === resultado.valor.id } };
 }
 
 /** Reenvia o link de verificação para quem já está com sessão aberta, mas ainda não confirmou. */
 export async function reenviarVerificacao(): Promise<Resultado<true>> {
   const membro = await membroAtual();
   if (!membro) return { ok: false, erro: "sessão expirada. Entre novamente." };
-  if (membro.emailVerificadoEm) return { ok: true, valor: true };
+  if (membro.emailVerificadoEm)
+    return { ok: false, erro: "esta conta já confirmou o e-mail. Entre para continuar." };
   const pedido = await contas.pedirVerificacao(membro.id);
-  if (pedido) {
-    await sincronizarAcervo();
-    await enviarVerificacao(pedido.membro, pedido.token);
-    await aguardarGravacoes();
-  }
+  if (!pedido) return { ok: false, erro: "aguarde um minuto antes de pedir outro link." };
+  await sincronizarAcervo();
+  await enviarVerificacao(pedido.membro, pedido.token);
+  await aguardarGravacoes();
   return { ok: true, valor: true };
+}
+
+/** Só a conta pendente da própria sessão pode corrigir o endereço. */
+export async function corrigirEmailPendente(email: unknown): Promise<Resultado<CorrecaoEmail>> {
+  const membro = await membroAtual();
+  if (!membro || membro.emailVerificadoEm)
+    return { ok: false, erro: "entre em uma conta pendente para corrigir o e-mail." };
+  const texto = String(email ?? "")
+    .trim()
+    .toLowerCase();
+  const erro = validarEmail(texto);
+  if (erro) return { ok: false, campo: "email", erro };
+  if (texto === membro.email)
+    return { ok: false, campo: "email", erro: "informe o endereço corrigido ou use Reenviar e-mail." };
+  return corrigirEEmitir(contas, membro.id, texto, async (atualizada, token) => {
+    await sincronizarAcervo();
+    await enviarVerificacao(atualizada, token);
+    await aguardarGravacoes();
+  });
 }

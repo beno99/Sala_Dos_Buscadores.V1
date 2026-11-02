@@ -1,0 +1,1 @@
+ALTER TABLE "auditoria" ADD COLUMN "ator_id" text;

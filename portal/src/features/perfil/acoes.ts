@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { midiaDoDono } from "@/server/midia";
 import { gravarPerfil } from "@/server/perfilBuscador";
 import { membroAtual } from "@/server/sessao";
-import { aguardarGravacoes } from "@/server/store";
+import { comGravacoesDoPedido } from "@/server/store";
 import { validarSobre } from "./regras";
 
 /**
@@ -25,12 +25,13 @@ export async function salvarPerfilAcao(dados: {
   if ((dados.fotoId && !fotoId) || (dados.capaId && !capaId)) {
     return { ok: false, erro: "Erro: a imagem não foi encontrada. Envie de novo." };
   }
-  gravarPerfil(conta.id, {
-    sobre: sobre.texto,
-    ...(fotoId ? { fotoId } : {}),
-    ...(capaId ? { capaId } : {}),
+  await comGravacoesDoPedido(() => {
+    gravarPerfil(conta.id, {
+      sobre: sobre.texto,
+      ...(fotoId ? { fotoId } : {}),
+      ...(capaId ? { capaId } : {}),
+    });
   });
-  await aguardarGravacoes();
   revalidatePath("/", "layout");
   return { ok: true };
 }

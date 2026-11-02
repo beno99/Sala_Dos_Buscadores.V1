@@ -80,10 +80,10 @@ export function conteudoParaPublico(c: ConteudoEditorial): Conteudo {
 }
 
 export function videoParaPublico(v: VideoEditorial): Video {
-  const slugs = v.artigos
+  const artigosRelacionados = v.artigos
     .map((id) => acervo().conteudos.get(id))
-    .filter((c): c is ConteudoEditorial => c?.status === "publicado" && c.sala === v.sala)
-    .map((c) => c.slug);
+    .filter((c): c is ConteudoEditorial => Boolean(c && publicados().some((p) => p.id === c.id)))
+    .map(({ id, sala, slug, titulo }) => ({ id, sala, slug, titulo }));
   return {
     id: v.id,
     sala: v.sala,
@@ -95,7 +95,8 @@ export function videoParaPublico(v: VideoEditorial): Video {
     publicadoEm: v.publicadoEm,
     url: v.url,
     placa: v.placa,
-    conteudos: slugs,
+    conteudos: artigosRelacionados.filter((c) => c.sala === v.sala).map((c) => c.slug),
+    artigosRelacionados,
     imagem: imagem("episodios", v.id),
   };
 }
@@ -107,7 +108,9 @@ export function videoParaPublico(v: VideoEditorial): Video {
  */
 const publicados = () => {
   const visiveis = new Set(todasAsSalas().map((s) => s.slug));
-  return [...acervo().conteudos.values()].filter((c) => c.status === "publicado" && visiveis.has(c.sala));
+  return [...acervo().conteudos.values()].filter(
+    (c) => !c.lixeira && c.status === "publicado" && visiveis.has(c.sala),
+  );
 };
 /** Vídeo no ar: publicado e numa Sala visível (Sala arquivada leva os vídeos dela junto). */
 const videosPublicados = () => {
@@ -178,7 +181,11 @@ export function videosDaSala(sala: SalaSlug): Video[] {
 
 /** Vídeos publicados ligados a um conteúdo (RF-16). */
 export function videosDoConteudo(sala: SalaSlug, slug: string): Video[] {
-  return videosDaSala(sala).filter((v) => v.conteudos?.includes(slug));
+  const artigo = publicados().find((c) => c.sala === sala && c.slug === slug);
+  if (!artigo) return [];
+  return videosPublicados()
+    .filter((v) => v.artigos.includes(artigo.id))
+    .map(videoParaPublico);
 }
 
 /** Fontes do catálogo público. As propostas por anfitriões só aparecem depois da aprovação do artigo. */
@@ -281,7 +288,7 @@ export interface ItemMaisPesquisado extends ConteudoVitrine {
 }
 
 function imagemDoConteudo(c: { slug: string; sala: SalaSlug; tipo: Conteudo["tipo"] }): string | undefined {
-  return imagemDoCard(c) ?? (c.tipo === "fonte-primaria" ? imagem("salas", c.sala) : undefined);
+  return imagemDoCard(c);
 }
 
 function paraVitrine(c: ConteudoEditorial): ConteudoVitrine {
@@ -322,7 +329,7 @@ export async function obterDestaques(): Promise<DestaquesPublicos> {
   const textos = (lista: { id: string | null }[]) =>
     lista.flatMap(({ id }) => {
       const c = conteudo(id);
-      return c?.status === "publicado" ? [paraVitrine(c)] : [];
+      return c?.status === "publicado" && !c.lixeira ? [paraVitrine(c)] : [];
     });
   const idVideo = vagas.video[0]?.id;
   const video = idVideo ? acervo().videos.get(idVideo) : undefined;

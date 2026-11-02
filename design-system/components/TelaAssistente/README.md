@@ -56,3 +56,7 @@ Ao integrar no portal, reutilize a estrutura, os estilos e os renderizadores com
 A variante `.sdb-assistant-screen--portal` reutiliza a navegação e o rodapé da moldura. O cabeçalho aprovado substitui a barra superior somente em `/assistente`, preservando busca e conta. `.session-nav` contém Nova conversa; sem persistência, identifica apenas a conversa da sessão. `.study-messages` e `.study-turn` acomodam os turnos reais, com `.answer-context` registrando modo/Sala de cada pedido. O diálogo `.study-dialog` usa `showModal()`, título acessível, foco contido, Escape e devolução ao gatilho. Controles móveis têm área mínima de 44 px.
 
 A integração não importa `preview.js` nem `demo-data.js`. Ausência de IA deve ser informada, mantendo o rascunho e sem fabricar etapas, respostas, fontes ou histórico. O tema escuro é local à moldura desta rota; o tema salvo da conta não é modificado.
+
+### Preferência de aparência na integração React
+
+A tela herda o tema global do Portal, sem sobrescrever `data-theme`. Os botões Dourada/Escura afetam apenas a esfera da tela cheia. A escolha é salva em `localStorage` (`sdb-esfera-aparencia`), compartilhada pelas contas que usam esse navegador, e não é uma configuração de conta. Sem armazenamento, vale durante a visita. O parâmetro explícito `orb=gold|dark` também seleciona e salva a aparência. O lançador flutuante conserva a identidade dourada. Pausa é temporária na sessão; movimento reduzido e fallback sem WebGL continuam disponíveis. Nenhuma conversa é gravada por essa preferência.

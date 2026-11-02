@@ -44,6 +44,11 @@ export interface ContaRepositorio {
   porEmail(email: string): Promise<Membro | null>;
   listar(): Promise<Membro[]>;
   criar(conta: NovaConta): Promise<Membro>;
+  corrigirEmailPendente(
+    id: string,
+    email: string,
+    verificacao?: { tokenHash: string; expiraEm: Date },
+  ): Promise<Membro | null>;
   definirPapel(id: string, papel: Papel): Promise<Membro | null>;
   definirPreferencias(id: string, preferencias: Preferencias | null): Promise<Membro | null>;
   definirSenha(id: string, senhaHash: string): Promise<void>;
@@ -67,7 +72,8 @@ export interface RedefinicaoRepositorio {
 }
 
 export interface VerificacaoRepositorio {
-  criar(pedido: { tokenHash: string; usuarioId: string; expiraEm: Date }): Promise<void>;
+  criar(pedido: { tokenHash: string; usuarioId: string; email: string; expiraEm: Date }): Promise<boolean>;
+  /** Consome e confirma a conta na mesma transação; serializa com troca de endereço. */
   consumir(tokenHash: string, agora: Date): Promise<string | null>;
 }
 

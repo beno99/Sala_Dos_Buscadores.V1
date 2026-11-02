@@ -9,6 +9,7 @@ export const auditoria = pgTable(
     id: text("id").primaryKey(),
     quando: text("quando").notNull(),
     quem: text("quem").notNull(),
+    atorId: text("ator_id"),
     acao: text("acao").notNull().$type<AcaoAuditada>(),
     tipoItem: text("tipo_item").notNull().$type<TipoItemAuditado>(),
     itemId: text("item_id").notNull(),

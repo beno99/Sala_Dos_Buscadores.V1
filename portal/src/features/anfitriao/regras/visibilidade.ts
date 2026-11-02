@@ -16,13 +16,14 @@ export interface SalaParaVisibilidade {
 }
 
 export interface ArtigoParaVisibilidade {
+  lixeira?: { em: string; por: string };
   sala: string;
   status: StatusEditorial;
 }
 
 export function salaVisivel(sala: SalaParaVisibilidade, artigos: Iterable<ArtigoParaVisibilidade>): boolean {
   if (sala.lixeira || sala.status !== "publicado") return false;
-  for (const a of artigos) if (a.sala === sala.slug && a.status === "publicado") return true;
+  for (const a of artigos) if (!a.lixeira && a.sala === sala.slug && a.status === "publicado") return true;
   return false;
 }
 

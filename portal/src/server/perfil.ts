@@ -8,7 +8,7 @@ import type { Nivel, SalaSlug } from "@/data/types";
 import type { SalaNaGrade } from "@/features/acervo/GradeSalas";
 import { avaliarConquistas } from "@/features/estudo/conquistas";
 import { nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
-import { leiturasEmAndamento } from "@/features/estudo/painel";
+import { leiturasEmAndamento, resumirVisitas } from "@/features/estudo/painel";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { imagem, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
@@ -41,6 +41,10 @@ export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
   const acervo = acervoDeEstudo();
   const salas = await listarSalas();
   const oficiais = salas.filter((s) => s.origem === "oficial");
+  const visitas = resumirVisitas(
+    p.salasVisitadas,
+    salas.map((s) => s.slug),
+  );
   const lidas = p.leituras.filter((l) => l.concluidaEm).length;
   const conquistas = avaliarConquistas(p, { acervo, totalSalas: oficiais.length });
 
@@ -76,7 +80,7 @@ export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
     ...(perfil.foto ? { foto: perfil.foto } : {}),
     sobre: perfil.sobre,
     numeros: {
-      salas: `${p.salasVisitadas.filter((s) => oficiais.some((o) => o.slug === s)).length}/${oficiais.length}`,
+      salas: `${visitas.visitadas.length}/${visitas.total}`,
       lidos: lidas,
       temas: p.temasComparados.length,
       conquistas: `${conquistas.filter((c) => c.obtida).length}/${conquistas.length}`,

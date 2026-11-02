@@ -29,10 +29,14 @@ export async function redefinirSenhaAcao(token: string, senha: string): Promise<
   return conta.redefinirSenha(token, senha);
 }
 
-export async function confirmarEmailAcao(token: string): Promise<Resultado<Membro>> {
+export async function confirmarEmailAcao(token: string) {
   return conta.confirmarEmail(token);
 }
 
 export async function reenviarVerificacaoAcao(): Promise<Resultado<true>> {
   return conta.reenviarVerificacao();
+}
+
+export async function corrigirEmailPendenteAcao(email: string) {
+  return conta.corrigirEmailPendente(email);
 }

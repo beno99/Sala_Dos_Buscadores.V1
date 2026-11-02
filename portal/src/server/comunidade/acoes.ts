@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import type { AlvoComunidade, MotivoDenunciaComunidade, TipoReacaoComunidade } from "@/data/types";
 import type { Membro } from "@/modules/conta/conta.contratos";
+import { auditarComo } from "@/server/auditoria";
 import type { ResultadoAcao } from "../anfitriao/comum";
 import { AcessoNegado, exigirAdmin, membroAtual } from "../sessao";
-import { aguardarGravacoes } from "../store";
+import { comGravacoesDoPedido } from "../store";
 import * as operacoes from "./operacoes";
 
 /*
@@ -16,8 +17,7 @@ import * as operacoes from "./operacoes";
 async function comConta<T>(fazer: (conta: Membro) => ResultadoAcao<T>): Promise<ResultadoAcao<T>> {
   const conta = await membroAtual();
   if (!conta) return { ok: false, mensagem: "Erro: entre na sua conta." };
-  const r = fazer(conta);
-  await aguardarGravacoes();
+  const r = await comGravacoesDoPedido(() => auditarComo(conta.id, () => fazer(conta)));
   if (r.ok) revalidatePath("/", "layout");
   return r;
 }
@@ -25,8 +25,7 @@ async function comConta<T>(fazer: (conta: Membro) => ResultadoAcao<T>): Promise<
 async function comAdmin<T>(fazer: (admin: Membro) => ResultadoAcao<T>): Promise<ResultadoAcao<T>> {
   try {
     const admin = await exigirAdmin();
-    const r = fazer(admin);
-    await aguardarGravacoes();
+    const r = await comGravacoesDoPedido(() => auditarComo(admin.id, () => fazer(admin)));
     if (r.ok) revalidatePath("/", "layout");
     return r;
   } catch (e) {

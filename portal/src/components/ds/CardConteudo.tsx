@@ -34,7 +34,7 @@ export function CardConteudo({
 }) {
   const sala = salaPorSlug(conteudo.sala);
   const card = (
-    <article className="sdb-card sdb-card--interactive">
+    <article className={cx("sdb-card sdb-card--interactive", conteudo.anfitriao && "sdb-content--host")}>
       <div className="sdb-card__body">
         <div className="sdb-content__top">
           <span className="sdb-content__type">
@@ -68,6 +68,12 @@ export function CardConteudo({
           <b>{conteudo.autoria.nome}</b> · {conteudo.autoria.credencial}
         </p>
         <SeloProveniencia tipo={conteudo.proveniencia} />
+        {conteudo.anfitriao && (
+          <p className="sdb-host-signature">
+            Sala de Anfitrião ·{" "}
+            <Link href={`/anfitrioes/${conteudo.anfitriao.slug}` as Route}>{conteudo.anfitriao.nome}</Link>
+          </p>
+        )}
       </div>
     </article>
   );
@@ -93,7 +99,12 @@ export function CardConteudoLinha({
   const placa = sala?.placa ?? "bordo";
   const percentual = progresso === undefined ? undefined : Math.max(0, Math.min(100, progresso));
   return (
-    <article className="sdb-card sdb-card--row sdb-card--interactive">
+    <article
+      className={cx(
+        "sdb-card sdb-card--row sdb-card--interactive",
+        conteudo.anfitriao && "sdb-content--host",
+      )}
+    >
       <div className={cx("sdb-plate overflow-hidden", `sdb-plate--${placa}`)} aria-hidden="true">
         {imagem ? (
           // biome-ignore lint/performance/noImgElement: miniatura decorativa servida de public/imagens.
@@ -126,6 +137,12 @@ export function CardConteudoLinha({
           <span className="sdb-progress__track" aria-hidden="true">
             <i style={{ "--p": percentual / 100 } as CSSProperties} />
           </span>
+        )}
+        {conteudo.anfitriao && (
+          <p className="sdb-host-signature">
+            Sala de Anfitrião ·{" "}
+            <Link href={`/anfitrioes/${conteudo.anfitriao.slug}` as Route}>{conteudo.anfitriao.nome}</Link>
+          </p>
         )}
         <div className="sdb-card__actions">
           {percentual !== undefined ? (

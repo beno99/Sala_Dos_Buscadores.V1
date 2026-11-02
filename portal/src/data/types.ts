@@ -67,9 +67,9 @@ export interface Sala {
   origem: OrigemSala;
   /** Grade comparativa e acervo do assistente. Nas oficiais, sempre true; nas de anfitrião, só o admin liga. */
   naComparacao: boolean;
-  /** Banner da Sala (topo da página e, sem imagem do card, o card); sem ela, a placa da marca com a inicial. */
+  /** Banner da Sala, exclusivo do topo; sem ele, a placa da marca. */
   imagem?: string;
-  /** Imagem própria do card vertical da Sala; sem ela, o card usa o banner. */
+  /** Imagem própria do card da Sala; sem ela, a placa da marca. */
   imagemCard?: string;
   /** Link geral da Sala (site ou canal do anfitrião), só https. */
   link?: string;
@@ -126,7 +126,7 @@ export interface Conteudo {
   link?: LinkArtigo;
   /** Imagem do card (URL de /midia); sem ela, a placa da marca. */
   imagem?: string;
-  /** Topo da página do artigo (URL de /midia); sem ela, a imagem do card ou a placa. */
+  /** Topo da página do artigo (URL de /midia); sem ela, a placa. */
   thumb?: string;
   /** Artigo de anfitrião: quem assina (leva à página pública do anfitrião). */
   anfitriao?: AssinaturaAnfitriao;
@@ -172,6 +172,8 @@ export interface Video {
   placa: Placa;
   /** Slugs dos conteúdos da mesma Sala junto dos quais o vídeo aparece. */
   conteudos?: string[];
+  /** Somente artigos publicados em Salas visíveis; referências entre Salas sem ambiguidade. */
+  artigosRelacionados?: { id: string; sala: SalaSlug; slug: string; titulo: string }[];
   /** Miniatura em public/imagens/episodios, quando existe; sem ela, a placa da marca. */
   imagem?: string;
 }
@@ -305,6 +307,7 @@ export interface MetaEditorial {
  * campos editoriais. `publicadoEm` fica vazio até a primeira publicação.
  */
 export interface ConteudoEditorial extends Conteudo, MetaEditorial {
+  lixeira?: { em: string; por: string };
   situacaoJuridica: SituacaoJuridica | null;
   temaDivergente: boolean;
   notaDivergencia: string;
@@ -455,6 +458,8 @@ export interface RegistroAuditoria {
   id: string;
   quando: string;
   quem: string;
+  /** Identidade imutável nas operações novas; histórico legado não é reatribuído. */
+  atorId?: string;
   acao: AcaoAuditada;
   tipoItem: TipoItemAuditado;
   itemId: string;
@@ -475,6 +480,8 @@ export interface Publicacao {
   imagem?: { src: string; alt: string; credito?: string };
   citacao?: { trecho: string; obra: string; passagem: string };
   conteudoId?: string;
+  /** Vídeo publicado do acervo; não é upload nem prévia de URL arbitrária. */
+  videoId?: string;
   perguntaDirigidaA?: string;
   respostaQueAjudouId?: string;
   fixada: boolean;

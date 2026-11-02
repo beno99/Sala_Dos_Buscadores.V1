@@ -10,6 +10,7 @@ import { gerarSlug } from "./slug";
  */
 
 export interface FormSalaOficial {
+  versaoEsperada?: string | null;
   id: string | null;
   nome: string;
   /** Gerado no servidor no primeiro salvamento; somente leitura daí em diante. */

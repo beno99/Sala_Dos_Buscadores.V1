@@ -7,7 +7,6 @@ import { BannerRotativo, type SlideBanner } from "@/components/ds/BannerRotativo
 import { Button, ButtonLink } from "@/components/ds/Button";
 import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardSala } from "@/components/ds/CardSala";
-import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
@@ -22,8 +21,9 @@ import { TIPO_ROTULO } from "@/data/rotulos";
 import type { TemaSlug } from "@/data/types";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { intercalarSlides } from "@/features/estudo/banner";
+import { formatarData } from "@/lib/texto";
 import type { ModeloPortal } from "@/server/estudo";
-import { comporLeituras } from "./composicao";
+import { comporLeituras, type PreviaComunidade } from "./composicao";
 import { ModalPoliticaAnuncios } from "./ModalPoliticaAnuncios";
 
 function Cabecalho({ id, titulo, acao, href }: { id: string; titulo: string; acao?: string; href?: Route }) {
@@ -41,7 +41,13 @@ function Cabecalho({ id, titulo, acao, href }: { id: string; titulo: string; aca
 }
 
 /** Frame 15:355: composição sobre dados privados e recomendações existentes. */
-export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
+export function PortalCliente({
+  modelo,
+  comunidade = [],
+}: {
+  modelo: ModeloPortal;
+  comunidade?: PreviaComunidade[];
+}) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [politica, setPolitica] = useState(false);
   const temaEscolhido = modelo.temas.find((t) => t.slug === tema);
@@ -107,6 +113,13 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       </ButtonLink>
     ),
   };
+  const salaUrantia = modelo.salas.find(({ sala }) =>
+    sala.nome
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()
+      .includes("urantia"),
+  );
   const horizonte: SlideBanner = {
     id: "destaque-horizonte",
     tipo: "arte",
@@ -114,8 +127,11 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
       "Amplie o horizonte das suas perguntas. Conheça a visão de universo apresentada pelo Livro de Urântia. Explore sua cosmologia e suas narrativas espirituais com curiosidade e discernimento.",
     midia: { placa: "grafite", imagem: "/imagens/banner/horizonte-perguntas.webp" },
     acoes: (
-      <ButtonLink href={"/salas/urantia" as Route} variant="secondary">
-        Explorar a Sala
+      <ButtonLink
+        href={salaUrantia ? (`/salas/${salaUrantia.sala.slug}` as Route) : "/salas"}
+        variant="secondary"
+      >
+        {salaUrantia ? "Explorar a Sala" : "Explorar Salas"}
       </ButtonLink>
     ),
   };
@@ -129,6 +145,73 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
     <div className="sdb-home">
       <h1 className="sdb-sr">Portal</h1>
       <BannerRotativo slides={slides} onPorQue={() => setPolitica(true)} />
+      <section className="sdb-home__section sdb-home__salas" aria-labelledby="salas-recomendadas-titulo">
+        <Cabecalho
+          id="salas-recomendadas-titulo"
+          titulo="Encontre sua Sala de estudo"
+          acao="Ver todas as Salas"
+          href="/salas"
+        />
+        <p className="sdb-home__intro">Explore os assuntos do acervo e as fontes de cada tradição.</p>
+        {modelo.temas.length > 0 && (
+          <details className="sdb-home__filtros">
+            <summary>Filtrar Salas por tema{temaEscolhido ? `: ${temaEscolhido.nome}` : ""}</summary>
+            <div className="sdb-carousel__chips" role="group" aria-label="Filtrar Salas por tema">
+              {modelo.temas.map((t) => (
+                <Chip
+                  key={t.slug}
+                  areia
+                  pressed={tema === t.slug}
+                  count={t.contagem}
+                  onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
+                >
+                  {t.nome}
+                </Chip>
+              ))}
+            </div>
+          </details>
+        )}
+        <div className={`sdb-home__grid${salas.length === 1 ? " sdb-home__grid--single" : ""}`}>
+          {salas.map((s) => (
+            <CardSala
+              key={s.sala.slug}
+              sala={s.sala}
+              progresso={s.progresso}
+              ampliar={s.motivo === "ampliar"}
+              imagem={s.imagem}
+              acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
+            />
+          ))}
+        </div>
+        {salas.length === 0 && (
+          <EstadoSecao
+            compacto
+            simbolo="busca"
+            titulo={tema ? "Nenhuma Sala para este tema" : "Nenhuma Sala disponível por enquanto"}
+            descricao={
+              tema ? "Escolha outro tema ou consulte todas as Salas." : "As Salas publicadas aparecerão aqui."
+            }
+          />
+        )}
+        {temaEscolhido && (
+          <p className="sdb-footnote" aria-live="polite">
+            {salas.length} {salas.length === 1 ? "Sala trata" : "Salas tratam"} de{" "}
+            {temaEscolhido.nome.toLowerCase()}.{" "}
+            <Link className="sdb-link" href={`/comparar?tema=${temaEscolhido.slug}`}>
+              Comparar perspectivas deste tema
+            </Link>
+          </p>
+        )}
+      </section>
+      <section className="sdb-home__assistant" aria-labelledby="home-assistente">
+        <div>
+          <h2 id="home-assistente">Assistente do acervo</h2>
+          <p>Faça uma pergunta, conecte perspectivas e consulte as fontes das Salas.</p>
+        </div>
+        <ButtonLink href="/assistente" variant="secondary" icon="assistente">
+          Perguntar ao assistente
+        </ButtonLink>
+      </section>
       <PainelIndicadores rotulo="Seu progresso no acervo" itens={modelo.indicadores} />
       <div className="sdb-home__columns">
         <div className="sdb-home__editorial">
@@ -190,98 +273,37 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
               />
             )}
           </section>
-          <Carrossel
-            id="proximas-leituras"
-            className="sdb-home__leituras"
-            titulo="Para sua próxima leitura"
-            rotuloItens="leituras"
-            larguraItem={300}
-            acoes={
-              <ButtonLink href="/biblioteca" variant="plain" size="sm">
-                Explorar o acervo
-              </ButtonLink>
-            }
-            rodape={
-              sugestoes.length === 0 ? (
-                <p className="sdb-home__intro">Explore o acervo para encontrar sua próxima leitura.</p>
-              ) : undefined
-            }
+          <section
+            className="sdb-home__section sdb-home__leituras"
+            aria-labelledby="proximas-leituras-titulo"
           >
-            {sugestoes.map(({ conteudo }) => (
-              <CardConteudo
-                key={`${conteudo.sala}/${conteudo.slug}`}
-                conteudo={conteudo}
-                mostrarNivel={modelo.mostrarNiveis}
-                acoes={
-                  <BotaoSalvar
-                    tipo="conteudo"
-                    estilo="card"
-                    alvo={`${conteudo.sala}/${conteudo.slug}`}
-                    titulo={conteudo.titulo}
-                  />
-                }
-              />
-            ))}
-          </Carrossel>
-          <Carrossel
-            id="salas-recomendadas"
-            className="sdb-home__salas"
-            titulo="Conheça outras Salas"
-            rotuloItens="Salas"
-            larguraItem={388}
-            acoes={
-              <ButtonLink href="/salas" variant="plain" size="sm">
-                Ver Salas
-              </ButtonLink>
-            }
-            filtros={
-              <details className="sdb-home__filtros">
-                <summary>Filtrar Salas por tema{temaEscolhido ? `: ${temaEscolhido.nome}` : ""}</summary>
-                <div className="sdb-carousel__chips" role="group" aria-label="Filtrar Salas por tema">
-                  {modelo.temas.map((t) => (
-                    <Chip
-                      key={t.slug}
-                      areia
-                      pressed={tema === t.slug}
-                      count={t.contagem}
-                      onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
-                    >
-                      {t.nome}
-                    </Chip>
-                  ))}
-                </div>
-              </details>
-            }
-            rodape={
-              temaEscolhido ? (
-                <p className="sdb-footnote" aria-live="polite">
-                  {salas.length} {salas.length === 1 ? "Sala trata" : "Salas tratam"} de{" "}
-                  {temaEscolhido.nome.toLowerCase()}.{" "}
-                  <Link className="sdb-link" href={`/comparar?tema=${temaEscolhido.slug}`}>
-                    Comparar {temaEscolhido.nome.toLowerCase()} entre as Salas
-                  </Link>
-                </p>
-              ) : salas.length === 0 ? (
-                <EstadoSecao
-                  compacto
-                  simbolo="busca"
-                  titulo="Nenhuma Sala disponível por enquanto."
-                  descricao="As Salas publicadas aparecerão aqui."
+            <Cabecalho
+              id="proximas-leituras-titulo"
+              titulo="Para sua próxima leitura"
+              acao="Explorar o acervo"
+              href="/biblioteca"
+            />
+            <div className={`sdb-home__grid${sugestoes.length === 1 ? " sdb-home__grid--single" : ""}`}>
+              {sugestoes.map(({ conteudo }) => (
+                <CardConteudo
+                  key={`${conteudo.sala}/${conteudo.slug}`}
+                  conteudo={conteudo}
+                  mostrarNivel={modelo.mostrarNiveis}
+                  acoes={
+                    <BotaoSalvar
+                      tipo="conteudo"
+                      estilo="card"
+                      alvo={`${conteudo.sala}/${conteudo.slug}`}
+                      titulo={conteudo.titulo}
+                    />
+                  }
                 />
-              ) : undefined
-            }
-          >
-            {salas.map((s) => (
-              <CardSala
-                key={s.sala.slug}
-                sala={s.sala}
-                progresso={s.progresso}
-                ampliar={s.motivo === "ampliar"}
-                imagem={s.imagem}
-                acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
-              />
-            ))}
-          </Carrossel>
+              ))}
+            </div>
+            {sugestoes.length === 0 && (
+              <p className="sdb-home__intro">Explore o acervo para encontrar sua próxima leitura.</p>
+            )}
+          </section>
           <section className="sdb-home__section" aria-labelledby="home-perguntas">
             <Cabecalho id="home-perguntas" titulo="Explore uma pergunta" />
             <div className="sdb-home__perguntas">
@@ -339,6 +361,36 @@ export function PortalCliente({ modelo }: { modelo: ModeloPortal }) {
             <ButtonLink href="/conquistas" variant="secondary" size="sm" icon="trilha">
               Ver conquistas
             </ButtonLink>
+          </section>
+          <section className="sdb-home__section" aria-labelledby="home-comunidade">
+            <Cabecalho
+              id="home-comunidade"
+              titulo="Na Comunidade"
+              acao="Abrir Comunidade"
+              href="/comunidade"
+            />
+            <p className="sdb-home__intro">Publicações e conversas de quem participa do Portal.</p>
+            <div className="sdb-home__community">
+              {comunidade.map((p) => (
+                <article key={p.id}>
+                  <p className="sdb-footnote">
+                    <Link className="sdb-link" href={p.autorHref as Route}>
+                      {p.autorNome}
+                    </Link>{" "}
+                    · <time dateTime={p.criadaEm}>{formatarData(p.criadaEm)}</time>
+                  </p>
+                  <p className="sdb-body-sm">{p.texto || "Uma nova publicação na Comunidade."}</p>
+                  <Link className="sdb-link" href={`/comunidade/p/${p.id}` as Route}>
+                    Ver publicação e conversa
+                  </Link>
+                </article>
+              ))}
+              {comunidade.length === 0 && (
+                <p className="sdb-body-sm">
+                  As publicações visíveis da Comunidade aparecerão aqui. Conheça o espaço e suas conversas.
+                </p>
+              )}
+            </div>
           </section>
           {modelo.anuncioPainel && (
             <EspacoPublicitario

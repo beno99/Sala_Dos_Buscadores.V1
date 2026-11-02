@@ -4,9 +4,12 @@ import { revalidatePath } from "next/cache";
 import type { FormArtigo, FormFonte, FormVideo } from "@/features/admin/formularios";
 import type { FormSalaOficial } from "@/features/admin/regras/sala";
 import type { GrupoVaga } from "@/features/destaques/vagas";
+import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
 import type { Membro } from "@/modules/conta/conta.contratos";
+import { excluirArtigoPermanentemente, mudarLixeiraArtigo } from "@/server/artigos/lixeira";
+import { auditarComo } from "@/server/auditoria";
 import { AcessoNegado, exigirAdmin } from "../sessao";
-import { aguardarGravacoes } from "../store";
+import { acervo, comGravacoesDoPedido } from "../store";
 import { listarArtigosParaVideo } from "./consultas";
 import * as destaques from "./destaques";
 import type { AcaoStatus, ModoSalvar, ResultadoAcao } from "./editorial";
@@ -43,8 +46,13 @@ async function comConta<T>(
       };
     throw e;
   }
-  const resultado = await fazer(admin);
-  await aguardarGravacoes();
+  let resultado: ResultadoAcao<T>;
+  try {
+    resultado = await comGravacoesDoPedido(() => auditarComo(admin.id, () => fazer(admin)));
+  } catch (e) {
+    if (e instanceof ConflitoEditorial) return { ok: false, conflito: true, mensagem: e.message };
+    throw e;
+  }
   if (resultado.ok && revalidar) revalidatePath("/", "layout");
   return resultado;
 }
@@ -55,6 +63,12 @@ async function comConta<T>(
  * para /[id]). Item publicado só muda com o salvamento manual, que invalida.
  */
 export async function salvarArtigoAcao(form: FormArtigo, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string")
+    return {
+      ok: false as const,
+      conflito: true,
+      mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+    };
   return comConta((admin) => editorial.salvarArtigo(form, admin.pseudonimo, modo, admin.id), {
     revalidar: modo === "manual",
   });
@@ -67,6 +81,12 @@ export async function moverArtigoAcao(id: string, destino: string) {
 // ---------- Salas oficiais ----------
 
 export async function salvarSalaOficialAcao(form: FormSalaOficial, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string")
+    return {
+      ok: false as const,
+      conflito: true,
+      mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+    };
   return comConta((admin) => salas.salvarSalaOficial(form, admin, modo), { revalidar: modo === "manual" });
 }
 
@@ -78,11 +98,17 @@ export async function mudarStatusSalaAcao(id: string, acao: salas.AcaoSala) {
 }
 
 export async function mudarStatusArtigoAcao(id: string, acao: AcaoStatus) {
+  if (acao === "restaurar")
+    return comConta((admin) =>
+      acervo().conteudos.get(id)?.lixeira
+        ? mudarLixeiraArtigo(id, "restaurar", admin)
+        : editorial.mudarStatusArtigo(id, acao, admin.pseudonimo),
+    );
   return comAdmin((quem) => editorial.mudarStatusArtigo(id, acao, quem));
 }
 
 export async function excluirArtigoDefinitivamenteAcao(id: string) {
-  return comAdmin((quem) => editorial.excluirArtigoDefinitivamente(id, quem));
+  return comConta((admin) => excluirArtigoPermanentemente(id, admin));
 }
 
 export async function duplicarArtigoAcao(id: string) {
@@ -101,6 +127,12 @@ export async function atualizarArtigosParaVideoAcao(sala: string) {
 }
 
 export async function salvarVideoAcao(form: FormVideo, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string")
+    return {
+      ok: false as const,
+      conflito: true,
+      mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+    };
   return comAdmin((quem) => editorial.salvarVideo(form, quem, modo), { revalidar: modo === "manual" });
 }
 
@@ -126,4 +158,8 @@ export async function definirVagaDestaqueAcao(grupo: GrupoVaga, indice: number, 
 
 export async function moverVagaDestaqueAcao(grupo: GrupoVaga, indice: number, direcao: 1 | -1) {
   return comAdmin((quem) => destaques.moverVaga(grupo, indice, direcao, quem));
+}
+
+export async function mandarArtigoLixeiraAcao(id: string) {
+  return comConta((admin) => mudarLixeiraArtigo(id, "excluir", admin));
 }

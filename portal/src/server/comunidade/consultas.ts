@@ -16,6 +16,7 @@ export interface OpcoesCompositor {
   salas: { slug: string; nome: string; anfitriao?: string }[];
   temas: { slug: string; nome: string }[];
   conteudos: { id: string; titulo: string; salaNome: string }[];
+  videos?: { id: string; titulo: string; salaNome: string }[];
 }
 
 /** Cada página obtém a sessão no servidor; nenhuma consulta aceita identidade vinda do cliente. */
@@ -73,6 +74,9 @@ export async function consultarComunidade() {
   };
   const salasDisponiveis = todasAsSalas();
   const opcoes: OpcoesCompositor = {
+    videos: [...acervo().videos.values()]
+      .filter((v) => v.status === "publicado" && salasDisponiveis.some((s) => s.slug === v.sala))
+      .map((v) => ({ id: v.id, titulo: v.titulo, salaNome: salaPorSlug(v.sala)?.nome ?? v.sala })),
     salas: salasDisponiveis.map((s) => ({
       slug: s.slug,
       nome: s.nome,

@@ -38,7 +38,10 @@ export function CardSala({
   const pct = progresso ? Math.round(progresso.pct * 100) : 0;
 
   return (
-    <article className={cx("sala", horizontal && "sala--horizontal")} aria-labelledby={id}>
+    <article
+      className={cx("sala", horizontal && "sala--horizontal", sala.origem === "anfitriao" && "sala--host")}
+      aria-labelledby={id}
+    >
       <div className="sala__media">
         {imagem ? (
           <ImagemAcervo className="sala__image" src={imagem} placa={sala.placa} />
@@ -59,7 +62,14 @@ export function CardSala({
             {sala.nome}
           </h3>
           <p className="sala__description">{sala.tradicao}</p>
-          {sala.origem === "anfitriao" && <SeloProveniencia tipo="anfitriao" compacto />}
+          {sala.origem === "anfitriao" && (
+            <SeloProveniencia tipo="anfitriao" rotulo="Sala de Anfitrião" compacto />
+          )}
+          {sala.origem === "anfitriao" && sala.anfitriao && (
+            <p className="sala__signature">
+              Por <Link href={`/anfitrioes/${sala.anfitriao.slug}` as Route}>{sala.anfitriao.nome}</Link>
+            </p>
+          )}
           {progresso ? (
             <div className="sala__progress">
               <div className="sala__progress-heading">

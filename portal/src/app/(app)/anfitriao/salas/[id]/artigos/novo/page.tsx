@@ -4,6 +4,7 @@ import { EditorArtigoAnfitriao } from "@/features/anfitriao/ui/EditorArtigoAnfit
 import { salaDoAnfitriao } from "@/server/anfitriao/consultas";
 import { dadosDoEditorDeArtigo } from "@/server/anfitriao/editor";
 import { anfitriaoDaPagina, ouNaoEncontrado } from "@/server/anfitriao/pagina";
+import { videosSelecionaveis } from "@/server/vinculos-editoriais";
 
 export const metadata: Metadata = { title: "Novo artigo" };
 
@@ -20,6 +21,7 @@ export default async function NovoArtigo(props: PageProps<"/anfitriao/salas/[id]
       congelado={Boolean(sala.revisao?.congelado)}
       sala={dados.sala}
       assinatura={dados.assinaturaPadrao}
+      videos={videosSelecionaveis("anfitriao")}
       fontes={dados.fontes}
       publicados={dados.publicados}
       imagens={{ card: null, thumb: null }}

@@ -42,6 +42,7 @@ function Formulario({
   const [salaSlug, setSalaSlug] = useState(edicao?.salaSlug ?? "");
   const [temas, setTemas] = useState<string[]>(edicao?.temas ?? []);
   const [conteudoId, setConteudoId] = useState(edicao?.conteudoId ?? "");
+  const [videoId, setVideoId] = useState(edicao?.videoId ?? "");
   const [buscaConteudo, setBuscaConteudo] = useState("");
   const [dirigida, setDirigida] = useState(Boolean(edicao?.perguntaDirigidaA));
   const [imagem, setImagem] = useState<ImagemEnviada | null>(
@@ -74,6 +75,7 @@ function Formulario({
       citacao: tipo === "citacao" ? citacao : undefined,
       conteudoId: tipo === "achado" ? conteudoId : undefined,
       dirigirAoAnfitriao: dirigida,
+      videoId: videoId || undefined,
     };
     executar(
       () => (edicao ? editarPublicacaoAcao(edicao.id, form) : publicarAcao(form)),
@@ -172,6 +174,19 @@ function Formulario({
         </>
       )}
       <div className="sdb-composer__context">
+        <Select
+          label="Vídeo do acervo (opcional)"
+          value={videoId}
+          onChange={(e) => setVideoId(e.target.value)}
+          opcoes={[
+            { value: "", label: "Sem vídeo" },
+            ...(videoId && !opcoes.videos?.some((v) => v.id === videoId)
+              ? [{ value: videoId, label: "Vídeo indisponível — remova para salvar" }]
+              : []),
+            ...(opcoes.videos ?? []).map((v) => ({ value: v.id, label: `${v.titulo} · ${v.salaNome}` })),
+          ]}
+          help="Escolha um vídeo já publicado. A reprodução usa o YouTube; não há envio de arquivos de vídeo."
+        />
         {tipo !== "achado" && (
           <Select
             className="sdb-composer__room"

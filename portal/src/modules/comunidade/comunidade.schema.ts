@@ -13,6 +13,7 @@ export const publicacoes = pgTable("publicacoes", {
   imagem: jsonb("imagem").$type<NonNullable<Publicacao["imagem"]>>(),
   citacao: jsonb("citacao").$type<NonNullable<Publicacao["citacao"]>>(),
   conteudoId: text("conteudo_id"),
+  videoId: text("video_id"),
   perguntaDirigidaA: text("pergunta_dirigida_a"),
   respostaQueAjudouId: text("resposta_que_ajudou_id"),
   fixada: boolean("fixada").notNull(),

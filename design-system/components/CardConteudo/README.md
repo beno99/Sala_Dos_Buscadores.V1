@@ -55,3 +55,10 @@ As classes `.sala--conteudo` preservam seus formatos editorial, compacto e acerv
 ## Inicial editorial automática (31/10/2026)
 
 A capa de fonte e o fallback de capa de artigo usam a primeira letra ou número Unicode do próprio título, em maiúscula, ignorando pontuação e espaços iniciais. Acentos e artigos gramaticais permanecem. A inicial não é editável; sem título utilizável usa o ícone neutro da biblioteca. Imagens disponíveis têm precedência. No BannerSala a variante de artigo recebe `tituloFallback`; o banner de Sala conserva o arco.
+
+## Refinamento 02/11/2026
+Todas as variantes de Destaques mostram duração do mesmo registro. Cards de vídeo podem usar MiniaturaVideo no slot de mídia com `.sala__image--inteira`: imagem completa sem recorte e fallback do YouTube. Títulos e assinaturas não dependem de cor para identificar anfitriões.
+
+## Assinatura pública de Anfitrião (02/11/2026)
+
+Para material com assinatura confirmada, `.sdb-content--host` acrescenta filete dourado. Preserve a autoria original e o selo de proveniência; abaixo, `.sdb-host-signature` identifica Sala de Anfitrião e leva ao perfil público de quem mantém a Sala. Isso supera a antiga restrição de autoria sem página: somente a assinatura pública confirmada recebe link; nunca o último editor ou responsável pelo upload. Cards em linha usam a mesma identificação.

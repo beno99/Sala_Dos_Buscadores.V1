@@ -51,7 +51,24 @@ export function ConversaProvider({
   consultar?: Consultar;
 }) {
   const [turnos, setTurnos] = useState<Turno[]>([]);
-  const [aparencia, setAparencia] = useState<AparenciaEsfera>("dark");
+  const [aparencia, atualizarAparencia] = useState<AparenciaEsfera>("dark");
+  // Preferência deste navegador, independente do tema e da conta. Sem histórico de conversa.
+  useEffect(() => {
+    try {
+      const salva = localStorage.getItem("sdb-esfera-aparencia");
+      if (salva === "gold" || salva === "dark") atualizarAparencia(salva);
+    } catch {
+      // Armazenamento bloqueado: mantém a preferência somente nesta visita.
+    }
+  }, []);
+  const setAparencia = useCallback((nova: AparenciaEsfera) => {
+    atualizarAparencia(nova);
+    try {
+      localStorage.setItem("sdb-esfera-aparencia", nova);
+    } catch {
+      // A troca continua funcionando sem armazenamento local.
+    }
+  }, []);
   const [pausado, setPausado] = useState(false);
   const controle = useRef<{ id: string; ctrl: AbortController } | null>(null);
   useEffect(
@@ -168,7 +185,7 @@ export function ConversaProvider({
       pausado,
       setPausado,
     }),
-    [turnos, gerando, perguntar, gerarNovamente, interromper, novaConversa, aparencia, pausado],
+    [turnos, gerando, perguntar, gerarNovamente, interromper, novaConversa, aparencia, pausado, setAparencia],
   );
   return <ContextoConversa.Provider value={valor}>{children}</ContextoConversa.Provider>;
 }

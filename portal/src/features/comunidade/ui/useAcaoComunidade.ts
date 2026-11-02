@@ -1,5 +1,5 @@
 "use client";
-import { useTransition } from "react";
+import { useRef, useTransition } from "react";
 import { useToast } from "@/components/ds/Toast";
 
 interface Resultado {
@@ -11,12 +11,24 @@ interface Resultado {
 export function useAcaoComunidade() {
   const toast = useToast();
   const [pendente, iniciar] = useTransition();
-  const executar = (acao: () => Promise<Resultado>, antes?: () => void, depois?: () => void) =>
+  const enviando = useRef(false);
+  const executar = (acao: () => Promise<Resultado>, antes?: () => void, depois?: () => void) => {
+    if (enviando.current) return;
+    enviando.current = true;
     iniciar(async () => {
-      antes?.();
-      const r = await acao();
-      if (r.mensagem) toast(r.mensagem, r.ok ? undefined : { variant: "erro" });
-      if (r.ok) depois?.();
+      try {
+        antes?.();
+        const r = await acao();
+        if (r.mensagem) toast(r.mensagem, r.ok ? undefined : { variant: "erro" });
+        if (r.ok) depois?.();
+      } catch {
+        toast("Erro: não foi possível concluir. Seu texto foi mantido; tente novamente.", {
+          variant: "erro",
+        });
+      } finally {
+        enviando.current = false;
+      }
     });
+  };
   return { pendente, executar };
 }

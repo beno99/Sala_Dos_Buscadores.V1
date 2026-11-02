@@ -23,13 +23,13 @@ export function imagemDaSala(sala: { slug: string; imagem?: string }): string | 
   return sala.imagem ?? imagem("salas", sala.slug);
 }
 
-/** Imagem do card vertical da Sala: a própria do card ou, sem ela, o banner. */
+/** Cada finalidade é independente: sem arte de card, a peça usa a placa neutra. */
 export function imagemDoCardDaSala(sala: {
   slug: string;
   imagem?: string;
   imagemCard?: string;
 }): string | undefined {
-  return sala.imagemCard ?? imagemDaSala(sala);
+  return sala.imagemCard;
 }
 
 /** Imagem do card do conteúdo: a enviada pelo anfitrião ou a foto de public/imagens/conteudos. */

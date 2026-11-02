@@ -652,6 +652,11 @@
   --space-8: 48px;
   --space-9: 64px;
   --article-reading-width: 46rem;
+  --home-card-min: 17.5rem;
+  --home-room-height: 26.875rem;
+  --home-room-single-height: 22.5rem;
+  --home-room-text-width: 40rem;
+  --selection-list-height: 20rem;
   --radius-xs: 8px;
   --radius-sm: 16px;
   --radius-md: 16px;

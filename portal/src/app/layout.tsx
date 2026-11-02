@@ -21,7 +21,7 @@ import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";
 import { COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie, temaDoCookie } from "@/features/aparencia/tema";
-import { membroAtual } from "@/server/sessao";
+import { membroDaSessaoAtual as membroAtual } from "@/server/sessao";
 import { leiturasParaAssistente, salasVisiveis, temasDoAcervo } from "@/server/store";
 
 export const metadata: Metadata = {

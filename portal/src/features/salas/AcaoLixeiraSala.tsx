@@ -114,11 +114,11 @@ export function AcaoLixeiraSala({
               {
                 {
                   mover:
-                    "A Sala, seus artigos, vídeos e conversas saem do portal e das listas de trabalho. Os conteúdos e vínculos são preservados. Somente a curadoria poderá restaurar a Sala.",
+                    "A Sala sai do portal e das listas de trabalho. Antes, todos os artigos, inclusive rascunhos e arquivados, precisam estar na lixeira. Os conteúdos e vínculos são preservados. Somente a curadoria poderá restaurar a Sala.",
                   restaurar:
                     "A Sala volta às listas com o mesmo endereço e os estados anteriores. Se já estava publicada, ela e seus conteúdos publicados voltam ao portal. Rascunhos continuam rascunhos.",
                   permanente:
-                    "Esta ação não pode ser desfeita. A Sala, seus artigos, vídeos e citações são apagados para sempre do acervo. Conversas da comunidade sobre ela permanecem, sem o vínculo com a Sala.",
+                    "Esta ação não pode ser desfeita. A Sala só será apagada se não houver conteúdos, vídeos, citações, conversas ou outros vínculos dependentes. Resolva esses vínculos antes de continuar.",
                 }[modo]
               }
             </p>

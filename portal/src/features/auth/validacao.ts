@@ -26,6 +26,27 @@ export function validarPseudonimo(pseudonimo: string): string | null {
 }
 
 /** Aceita só caminhos internos, para o "voltar" não levar a outro site. */
+function retornoInterno(voltar: string | null | undefined): string | null {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: rejeita controles em destinos de navegação.
+  if (!voltar?.startsWith("/") || /[\\\u0000-\u0020]/.test(voltar) || voltar.startsWith("//")) return null;
+  return voltar;
+}
 export function destinoSeguro(voltar: string | null | undefined): string {
-  return voltar?.startsWith("/") && !voltar.startsWith("//") ? voltar : "/";
+  return retornoInterno(voltar) ?? "/";
+}
+export function destinoAposLogin(
+  membro: { papel: "membro" | "anfitriao" | "administrador"; emailVerificadoEm: string | null },
+  voltar?: string | null,
+): string {
+  if (!membro.emailVerificadoEm) return "/confirmar-email";
+  const retorno = retornoInterno(voltar);
+  return (
+    (retorno &&
+    !["/entrar", "/cadastro", "/confirmar-email", "/recuperar-senha"].includes(
+      new URL(retorno, "https://portal.invalid").pathname,
+    )
+      ? retorno
+      : null) ??
+    (membro.papel === "administrador" ? "/admin" : membro.papel === "anfitriao" ? "/anfitriao" : "/")
+  );
 }

@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useRef, useState, useTransition } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState, useTransition } from "react";
 import { Icon } from "@/components/ds/Icon";
 
 /**
@@ -36,6 +36,7 @@ export function CampoBuscaLista({
   onBuscar: (q: string) => void;
   rotulo: string;
 }) {
+  const id = useId();
   const [texto, setTexto] = useState(valor);
   const primeira = useRef(true);
   // biome-ignore lint/correctness/useExhaustiveDependencies: dispara só quando o texto muda.
@@ -49,12 +50,12 @@ export function CampoBuscaLista({
   }, [texto]);
   return (
     <div className="sdb-field">
-      <label className="sdb-label" htmlFor="busca-lista">
+      <label className="sdb-label" htmlFor={id}>
         {rotulo}
       </label>
       <div className="sdb-control sdb-control--search">
         <Icon name="busca" />
-        <input id="busca-lista" type="search" value={texto} onChange={(e) => setTexto(e.target.value)} />
+        <input id={id} type="search" value={texto} onChange={(e) => setTexto(e.target.value)} />
       </div>
     </div>
   );

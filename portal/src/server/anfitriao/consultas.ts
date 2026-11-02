@@ -30,10 +30,12 @@ const salasDe = (donoId: string) =>
   );
 
 const artigosDe = (donoId: string) =>
-  [...acervo().conteudos.values()].filter((c) => !salaNaLixeira(c.sala) && c.revisao?.donoId === donoId);
+  [...acervo().conteudos.values()].filter(
+    (c) => !c.lixeira && !salaNaLixeira(c.sala) && c.revisao?.donoId === donoId,
+  );
 
 const artigosDaSala = (sala: SalaEditorial) =>
-  [...acervo().conteudos.values()].filter((c) => c.sala === sala.slug && c.revisao);
+  [...acervo().conteudos.values()].filter((c) => !c.lixeira && c.sala === sala.slug && c.revisao);
 
 function contar(artigos: ConteudoEditorial[]) {
   const n = (s: StatusEditorial) => artigos.filter((a) => a.status === s).length;
@@ -196,7 +198,7 @@ export function totalPendenteRevisao(): number {
       (s) => !s.lixeira && s.origem === "anfitriao" && s.status === "em_revisao",
     ).length +
     [...acervo().conteudos.values()].filter(
-      (c) => !salaNaLixeira(c.sala) && c.revisao && c.status === "em_revisao",
+      (c) => !c.lixeira && !salaNaLixeira(c.sala) && c.revisao && c.status === "em_revisao",
     ).length
   );
 }

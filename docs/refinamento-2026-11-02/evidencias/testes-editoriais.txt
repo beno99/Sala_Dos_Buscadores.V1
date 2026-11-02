@@ -1,0 +1,131 @@
+
+> sala-dos-buscadores-portal@0.1.0 test:editorial
+> tsx --conditions=react-server --test tests/*.test.ts src/features/admin/regras/*.test.ts
+
+(node:60369) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ tenta maxres, hq e mq; placeholder de 120 px não vira sucesso (0.8275ms)
+✔ erro total permite nova tentativa e cancelamento descarta resposta antiga (0.125333ms)
+(node:60370) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ ordena por criação desc e ID, busca antes de paginar e exclui itens inelegíveis (6.878667ms)
+✔ deduplica IDs, permite outras Salas e restringe revisão privada (0.09875ms)
+(node:60371) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ aceita watch, short link, shorts e embed com ID estável (0.808042ms)
+✔ recusa domínios falsos, credenciais, porta e caminhos arbitrários (0.146167ms)
+(node:60372) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ P25 PostgreSQL isolado: lixeira, bloqueios, rollback e definitiva sem cascata (3140.573708ms)
+(node:60373) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ lixeira preserva todos os estados e só curadoria restaura (1.981167ms)
+✔ Sala bloqueia rascunho e arquivado; anfitrião envia à lixeira e curador restaura (3.053375ms)
+✔ harddelete bloqueia vídeos dependentes sem apagar o artigo ou auditar sucesso (0.394375ms)
+(node:60374) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ P15 chamada direta de Buscador não cria post, Curadoria e Anfitrião criam (418.6345ms)
+(node:60375) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Comunidade: somente Curadoria/Anfitrião publicam; videoId persiste e só referencia vídeo público (189.959916ms)
+(node:60376) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ destino padrão respeita papel e conta pendente (0.469375ms)
+✔ retorno explícito é interno e não contorna papel (0.129333ms)
+✔ conta ativa exige confirmação independentemente de papel (0.056375ms)
+✔ intervalo de reenvio deriva da validade persistida e admite fronteira de um minuto (0.7235ms)
+✔ verificação não entrega token quando persistência recusa emissão (0.370542ms)
+✔ token enviado é aleatório, persistido apenas como hash e consumido uma única vez (0.218959ms)
+✔ correção emite token junto à troca e informa falha de envio sem perder endereço atualizado (0.204708ms)
+✔ correção recusada não tenta envio e sucesso informa o endereço usado (0.133042ms)
+✔ correção relê o endereço atual antes de informar sucesso de envio (0.123375ms)
+(node:60377) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ contas PostgreSQL isolado: expiração, reenvio, correção, unicidade e confirmação atômica (3054.682458ms)
+(node:60378) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ conta+acervo SQL: promoção/rebaixamento/exclusão e auditoria fazem rollback juntos (3260.804209ms)
+(node:60379) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ releitura sob lock conserva vínculo paralelo e rejeita CAS antigo (3.000583ms)
+✔ anfitrião vincula vídeo só da Sala quando a Sala tem outro artigo publicado (0.330041ms)
+(node:60380) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ SQL: CAS, delta entre processos, rollback de artigo/relações/citação e elegibilidade sob lock (2985.641834ms)
+(node:60381) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ visitas e faltantes usam IDs únicos do mesmo universo elegível (1.418417ms)
+✔ painel não conta visitas antigas, privadas nem duplicadas (0.332791ms)
+✔ diretório reaproveita somente assinaturas publicadas e não duplica Anfitriões (0.220375ms)
+(node:60382) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ prévia pública tem projeção mínima, três registros únicos e ordenação recente (25.767084ms)
+✔ texto longo tem limite e conteúdo HTML permanece apenas texto (0.092458ms)
+(node:60383) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ P14 projeção pública preserva banner e card independentes (0.7305ms)
+(node:60384) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ R2 aprovação inteira reverte Sala, primeiro artigo, fontes e auditoria se segundo artigo conflita (285.819625ms)
+✔ R3 pedidos concorrentes não compartilham erro ou alterações locais: falha A, sucesso B (1.433584ms)
+✔ R5 falha de auditoria reverte comando editorial junto com artigo/vídeos (13.9515ms)
+✔ avisos externos só são agendados após confirmação, nunca após rollback (2.566209ms)
+(node:60392) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ P22 contador e lista de revisão excluem lixeira e somam Salas e artigos, sem duplicar (198.500417ms)
+✔ P02 nomes iguais não misturam identidade da auditoria em chamadas assíncronas (34.250125ms)
+(node:60405) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ C05 reabrir fonte ignora inicial manual antiga e usa seu próprio título Unicode (11.916584ms)
+✔ C06 corpo vazio não satisfaz abertura obrigatória para publicar (0.220875ms)
+✔ C06 pendências explicam abertura e imagens sem jargão (0.593958ms)
+✔ C02 inicial segue título sem excluir artigo gramatical, preserva acento e número (0.328125ms)
+✔ C06 erro acompanha imagem após reordenação e salvar/reabrir, sem usar posição (1.493667ms)
+✔ C06 parágrafo de abertura válido não exige conteúdo inventado (0.076ms)
+(node:60411) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ C05 servidor ignora inicial manipulada e reabertura preserva demais dados bibliográficos (9.996125ms)
+✔ C06 rascunho incompleto é salvo, mas servidor bloqueia publicação sem abertura e campos editoriais (5.507292ms)
+(node:60414) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Sala na lixeira não aparece no catálogo nem na lista editorial ativa (6.317916ms)
+✔ anfitrião exclui sua Sala publicada; curador restaura endereço, estados e vínculos após reabertura (283.328542ms)
+✔ membro e outro anfitrião não excluem; curador exclui Salas oficiais e de anfitriões (1.424333ms)
+✔ abas antigas não editam, publicam, arquivam ou movem conteúdos de Sala na lixeira (1.328959ms)
+✔ lixeira não altera nenhum estado editorial, inclusive arquivada ou em revisão (0.7685ms)
+✔ editar perfil do anfitrião continua funcionando e não regrava Sala da lixeira (15.281792ms)
+(node:60424) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ SQL PostgreSQL: colisões, preservação de slug e FK em banco isolado (1904.376958ms)
+(node:60432) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ normaliza acentos, espaços, pontuação e corte sem hífen final (95.996708ms)
+✔ primeiro salvamento ignora slug manipulado e trava já no rascunho (10.115792ms)
+✔ reservado e duplicados são resolvidos sem pedir edição manual (7.317208ms)
+✔ colisão que só existe no banco retorna endereço confirmado e sincroniza snapshot (1.355167ms)
+✔ formulário inválido não cria Sala; slug cliente não participa da validação (0.459917ms)
+✔ nome novo conserva endereço legado e relações, inclusive após publicação (1.411875ms)
+✔ anfitrião compartilha reserva global, conserva rascunho e checa posse (171.050667ms)
+(node:60440) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ salvar mantém ID, deduplica vínculos e remover associação não exclui artigo (8.191791ms)
+✔ vídeos e artigos rascunhos não vazam no público, mas aparecem na prévia administrativa (8.374125ms)
+✔ POST automático não altera vídeo publicado (3.925875ms)
+✔ vínculo arquivado existente é preservado até remoção explícita; ID inexistente é recusado e artigo de outra Sala é elegível (4.722459ms)
+(node:60441) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ vínculo pelo artigo cruza Salas, reflete leitura pública e conserva os demais (21.571ms)
+✔ anfitrião não seleciona rascunhos; vínculo inelegível anterior é preservado (0.492459ms)
+✔ servidor aplica posse host A/B e persiste multitemas sem editar vídeo alheio (114.64075ms)
+✔ admin salva/reabre artigo e vídeo com múltiplos temas e filtros não duplicam (2.050333ms)
+✔ referências públicas entre Salas omitem rascunho e lixeira sem colidir slugs (1.042209ms)
+✔ duas edições simultâneas recebem resultado próprio: uma confirma, a outra conflita sem sobrescrever (2.701417ms)
+✔ artigo e cópia preservam citações na operação atômica (5.899958ms)
+ℹ tests 71
+ℹ suites 0
+ℹ pass 71
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3973.785959

@@ -154,6 +154,11 @@ export function EditorSalaOficial({
         </div>
         <h1 className="sdb-title-1">{titulo}</h1>
       </header>
+      {edicao.conflito && (
+        <Alerta variant="error" title="Conflito de edição">
+          {edicao.conflito}
+        </Alerta>
+      )}
       <div className="sdb-row">
         {edicao.id.current && (
           <AcaoLixeiraSala
@@ -293,7 +298,7 @@ export function EditorSalaOficial({
                 label="Imagem do card"
                 opcional
                 finalidade="card-sala"
-                help="Só imagem com direito de uso registrado. Sem ela, o card usa o banner, inteiro."
+                help="Só imagem com direito de uso registrado. Sem imagem de card, será exibida a placa da Sala. O banner permanece independente."
                 valor={form.imagemCard ? { id: form.imagemCard, url: `/midia/${form.imagemCard}` } : null}
                 disabled={arquivado}
                 onMudar={(nova) => mudar({ imagemCard: nova?.id ?? null })}
