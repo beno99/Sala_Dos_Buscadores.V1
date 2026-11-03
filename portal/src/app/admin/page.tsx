@@ -7,6 +7,7 @@ import { Icon } from "@/components/ds/Icon";
 import { PROVENIENCIA_ROTULO } from "@/data/rotulos";
 import type { Proveniencia } from "@/data/types";
 import { DIAS_RASCUNHO_PARADO } from "@/features/admin/regras/config";
+import { ListaPendencias } from "@/features/admin/ui/ListaPendencias";
 import { resumoPainel } from "@/server/admin/consultas";
 import { rotaDoArtigo, rotaDoVideo } from "@/server/admin/rotas";
 import { listarCandidaturas, totalPendenteRevisao } from "@/server/anfitriao/consultas";
@@ -212,24 +213,7 @@ export default function PainelCuradoria() {
           <h2 id="titulo-pendencias" className="sdb-title-2">
             Com pendência no checklist
           </h2>
-          {r.comPendencia.length === 0 ? (
-            <p className="sdb-hint">Nenhum item ativo com pendência.</p>
-          ) : (
-            <ul className="sdb-list m-0 list-none p-0">
-              {r.comPendencia.map((i) => (
-                <li key={i.id} className="sdb-list-row">
-                  <span className="flex min-w-0 flex-col gap-1">
-                    <Link className="sdb-link" href={hrefItem(i.tipo, i.id)}>
-                      {i.titulo || "Sem título"}
-                    </Link>
-                    <span className="sdb-footnote">
-                      {i.tipo === "video" ? "Vídeo" : "Artigo"} · falta: {i.pendencias.join(" · ")}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ListaPendencias itens={r.comPendencia.map((i) => ({ ...i, href: hrefItem(i.tipo, i.id) }))} />
         </section>
 
         <section className="flex flex-col gap-3" aria-labelledby="titulo-parados">
