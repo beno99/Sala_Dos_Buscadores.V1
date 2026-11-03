@@ -12,6 +12,9 @@ import type { StatusEditorial } from "@/data/types";
 import {
   aprovarAnuncioAcao,
   aprovarVideoAnfitriaoAcao,
+  ocultarAnuncioAcao,
+  reexibirAnuncioAcao,
+  removerAnuncioAcao,
   reprovarAnuncioAcao,
   reprovarVideoAnfitriaoAcao,
 } from "@/server/anfitriao/acoes-admin";
@@ -31,11 +34,14 @@ export interface VideoParaRevisao {
 export interface AnuncioParaRevisao extends DadosCardAnuncio {
   id: string;
   status: StatusEditorial;
+  /** Ocultado pela curadoria: motivo e data. */
+  oculto?: { motivo: string; quando: string };
 }
 
 type Pedido =
   | { tipo: "aprovar-video" | "reprovar-video"; id: string; titulo: string }
-  | { tipo: "aprovar-anuncio" | "reprovar-anuncio"; id: string; titulo: string };
+  | { tipo: "aprovar-anuncio" | "reprovar-anuncio"; id: string; titulo: string }
+  | { tipo: "ocultar-anuncio" | "reexibir-anuncio" | "remover-anuncio"; id: string; titulo: string };
 
 /**
  * Revisão dos vídeos e anúncios de um anfitrião. A curadoria só julga:
@@ -148,8 +154,39 @@ export function RevisaoMidiasAnfitriao({
                   <SeloStatus status={a.status} />
                   <span className="sdb-footnote">Destino: {a.href || "sem link"}</span>
                 </div>
+                {a.oculto && <p className="sdb-footnote m-0">Oculto pela curadoria: {a.oculto.motivo}</p>}
                 <CardAnuncio anuncio={a} />
                 {a.status === "em_revisao" && decisao("anuncio", a.id, a.titulo)}
+                <div className="sdb-row">
+                  {a.status === "publicado" && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon="olhoFechado"
+                      onClick={() => setPedido({ tipo: "ocultar-anuncio", id: a.id, titulo: a.titulo })}
+                    >
+                      Ocultar do Portal
+                    </Button>
+                  )}
+                  {a.oculto && a.status === "arquivado" && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon="olho"
+                      onClick={() => setPedido({ tipo: "reexibir-anuncio", id: a.id, titulo: a.titulo })}
+                    >
+                      Reexibir no Portal
+                    </Button>
+                  )}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    icon="lixeira"
+                    onClick={() => setPedido({ tipo: "remover-anuncio", id: a.id, titulo: a.titulo })}
+                  >
+                    Remover
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -194,6 +231,46 @@ export function RevisaoMidiasAnfitriao({
         }
       >
         <p className="sdb-body-sm m-0">“{pedido?.titulo ?? ""}” volta ao anfitrião com este motivo.</p>
+      </SheetMotivo>
+
+      <SheetMotivo
+        aberto={pedido?.tipo === "ocultar-anuncio"}
+        titulo="Ocultar o anúncio do Portal"
+        rotuloConfirmar="Ocultar"
+        carregando={ocupado}
+        onFechar={() => setPedido(null)}
+        onConfirmar={(motivo) => pedido && executar(() => ocultarAnuncioAcao(pedido.id, motivo))}
+      >
+        <p className="sdb-body-sm m-0">
+          “{pedido?.titulo ?? ""}” sai do Portal na hora e o anfitrião recebe o motivo por e-mail. Você pode
+          reexibir depois.
+        </p>
+      </SheetMotivo>
+
+      <ModalConfirmacao
+        open={pedido?.tipo === "reexibir-anuncio"}
+        titulo="Reexibir o anúncio no Portal?"
+        icone="olho"
+        rotuloConfirmar="Reexibir"
+        carregando={ocupado}
+        onCancelar={() => setPedido(null)}
+        onConfirmar={() => pedido && executar(() => reexibirAnuncioAcao(pedido.id))}
+      >
+        “{pedido?.titulo ?? ""}” volta a aparecer no Portal. O anfitrião recebe um e-mail.
+      </ModalConfirmacao>
+
+      <SheetMotivo
+        aberto={pedido?.tipo === "remover-anuncio"}
+        titulo="Remover o anúncio"
+        rotuloConfirmar="Remover de vez"
+        carregando={ocupado}
+        onFechar={() => setPedido(null)}
+        onConfirmar={(motivo) => pedido && executar(() => removerAnuncioAcao(pedido.id, motivo))}
+      >
+        <p className="sdb-body-sm m-0">
+          “{pedido?.titulo ?? ""}” é apagado de vez e não pode ser recuperado. O anfitrião recebe o motivo por
+          e-mail e a remoção fica no Histórico.
+        </p>
       </SheetMotivo>
     </>
   );

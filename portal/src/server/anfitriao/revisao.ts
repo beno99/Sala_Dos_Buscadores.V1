@@ -1,5 +1,5 @@
 import "server-only";
-import type { ConteudoEditorial, SalaEditorial } from "@/data/types";
+import type { ConteudoEditorial, RevisaoAnfitriao, SalaEditorial } from "@/data/types";
 import {
   planejarAprovacaoSala,
   planejarReprovacaoSala,
@@ -350,9 +350,9 @@ function decidirAnuncioPlano(anuncioId: string, quem: string, motivo: string | n
     status: t.para,
     ...(texto ? {} : { publicadoEm: anuncio.publicadoEm ?? agora() }),
     atualizadoEm: agora(),
-    revisao: comDecisao(
-      revisaoDoAnuncio(anuncio),
-      novaDecisao(quem, texto ? "reprovado" : "aprovado", texto),
+    revisao: semOcultacao(
+      comDecisao(revisaoDoAnuncio(anuncio), novaDecisao(quem, texto ? "reprovado" : "aprovado", texto)),
+      !texto,
     ),
   });
   registrar({
@@ -381,6 +381,111 @@ function decidirAnuncioPlano(anuncioId: string, quem: string, motivo: string | n
         : `Seu anúncio “${anuncio.titulo}” foi aprovado e já pode aparecer no Portal.`,
     });
   return ok(undefined, texto ? "Anúncio devolvido ao anfitrião com o motivo." : "Anúncio aprovado.");
+}
+
+const semOcultacao = (r: RevisaoAnfitriao, limpar: boolean): RevisaoAnfitriao => {
+  if (!limpar || !r.oculto) return r;
+  const { oculto: _x, ...resto } = r;
+  return resto;
+};
+
+function avisarDonoDoAnuncio(donoId: string, assunto: string, corpo: string) {
+  const para = emailDoDono(donoId);
+  if (para) enviarEmail({ para, assunto, corpo });
+}
+
+/** Curadoria tira do Portal um anúncio publicado, com motivo; o anfitrião é avisado. */
+function ocultarAnuncioPlano(anuncioId: string, motivo: string, quem: string): ResultadoAcao {
+  const anuncio = acervo().anuncios.get(anuncioId);
+  if (!anuncio) return erro("este anúncio não existe mais.");
+  if (anuncio.status !== "publicado") return erro("só anúncios publicados podem ser ocultados.");
+  const texto = motivo.trim().replace(/\s+/g, " ");
+  if (!texto) return erro("informe o motivo.");
+  acervo().anuncios.set(anuncio.id, {
+    ...anuncio,
+    status: "arquivado",
+    atualizadoEm: agora(),
+    revisao: { ...revisaoDoAnuncio(anuncio), oculto: { quem, quando: agora(), motivo: texto } },
+  });
+  registrar({
+    quem,
+    acao: "despublicou",
+    tipoItem: "anuncio",
+    itemId: anuncio.id,
+    itemTitulo: anuncio.titulo,
+    mudancas: [{ campo: "Motivo", antes: "publicado", depois: texto }],
+  });
+  avisarDonoDoAnuncio(
+    anuncio.donoId,
+    `Seu anúncio “${anuncio.titulo}” saiu do Portal`,
+    [
+      `A curadoria ocultou o anúncio “${anuncio.titulo}” do Portal.`,
+      `Motivo: ${texto}`,
+      "Ajuste no seu painel de anfitrião e envie de novo para revisão, se quiser.",
+    ].join("\n\n"),
+  );
+  return ok(undefined, "Anúncio ocultado do Portal.");
+}
+
+/** Curadoria volta a exibir um anúncio que ela mesma ocultou. */
+function reexibirAnuncioPlano(anuncioId: string, quem: string): ResultadoAcao {
+  const anuncio = acervo().anuncios.get(anuncioId);
+  if (!anuncio) return erro("este anúncio não existe mais.");
+  if (anuncio.status !== "arquivado" || !anuncio.revisao?.oculto)
+    return erro("só anúncios ocultados pela curadoria podem ser reexibidos.");
+  acervo().anuncios.set(anuncio.id, {
+    ...anuncio,
+    status: "publicado",
+    atualizadoEm: agora(),
+    revisao: semOcultacao(anuncio.revisao, true),
+  });
+  registrar({
+    quem,
+    acao: "publicou",
+    tipoItem: "anuncio",
+    itemId: anuncio.id,
+    itemTitulo: anuncio.titulo,
+    mudancas: [{ campo: "Status", antes: "oculto pela curadoria", depois: "publicado" }],
+  });
+  avisarDonoDoAnuncio(
+    anuncio.donoId,
+    `Seu anúncio “${anuncio.titulo}” voltou ao Portal`,
+    `A curadoria voltou a exibir o anúncio “${anuncio.titulo}” no Portal.`,
+  );
+  return ok(undefined, "Anúncio de volta ao Portal.");
+}
+
+/** Curadoria apaga um anúncio de vez, em qualquer situação; fica no Histórico e o anfitrião é avisado. */
+function removerAnuncioPlano(anuncioId: string, motivo: string, quem: string): ResultadoAcao {
+  const anuncio = acervo().anuncios.get(anuncioId);
+  if (!anuncio) return erro("este anúncio não existe mais.");
+  const texto = motivo.trim().replace(/\s+/g, " ");
+  if (!texto) return erro("informe o motivo.");
+  acervo().anuncios.delete(anuncio.id);
+  registrar({
+    quem,
+    acao: "excluiu-definitivamente",
+    tipoItem: "anuncio",
+    itemId: anuncio.id,
+    itemTitulo: anuncio.titulo || "Anúncio sem título",
+    mudancas: [{ campo: "Motivo", antes: anuncio.status, depois: texto }],
+  });
+  avisarDonoDoAnuncio(
+    anuncio.donoId,
+    `Seu anúncio “${anuncio.titulo || "sem título"}” foi removido`,
+    [`A curadoria removeu o anúncio “${anuncio.titulo || "sem título"}”.`, `Motivo: ${texto}`].join("\n\n"),
+  );
+  return ok(undefined, "Anúncio removido.");
+}
+
+export async function ocultarAnuncio(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => ocultarAnuncioPlano(id, motivo, quem));
+}
+export async function reexibirAnuncio(id: string, quem: string) {
+  return comGravacoesDoPedido(() => reexibirAnuncioPlano(id, quem));
+}
+export async function removerAnuncio(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => removerAnuncioPlano(id, motivo, quem));
 }
 
 /** A curadoria só julga: aprova ou reprova com motivo, sem editar o vídeo ou o anúncio. */

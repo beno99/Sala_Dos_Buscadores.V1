@@ -48,6 +48,11 @@ export default async function PublicidadeDoAnfitriao() {
                 {a.status === "reprovado" && revisaoDoAnuncio(a).ultimoMotivo && (
                   <span className="sdb-footnote">Motivo: {revisaoDoAnuncio(a).ultimoMotivo}</span>
                 )}
+                {a.status === "arquivado" && a.revisao?.oculto && (
+                  <span className="sdb-footnote">
+                    Ocultado do Portal pela curadoria. Motivo: {a.revisao.oculto.motivo}
+                  </span>
+                )}
               </div>
               <SeloStatus status={a.status} />
             </div>

@@ -127,6 +127,18 @@ export async function reprovarAnuncioAcao(anuncioId: string, motivo: string) {
   return comAdmin((quem) => revisao.reprovarAnuncio(String(anuncioId), String(motivo ?? ""), quem));
 }
 
+export async function ocultarAnuncioAcao(anuncioId: string, motivo: string) {
+  return comAdmin((quem) => revisao.ocultarAnuncio(String(anuncioId), String(motivo ?? ""), quem));
+}
+
+export async function reexibirAnuncioAcao(anuncioId: string) {
+  return comAdmin((quem) => revisao.reexibirAnuncio(String(anuncioId), quem));
+}
+
+export async function removerAnuncioAcao(anuncioId: string, motivo: string) {
+  return comAdmin((quem) => revisao.removerAnuncio(String(anuncioId), String(motivo ?? ""), quem));
+}
+
 export async function apagarConviteAcao(id: string) {
   return comAdmin((quem) => usuarios.apagarConvite(String(id), quem));
 }

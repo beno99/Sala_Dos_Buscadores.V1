@@ -81,6 +81,9 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
         anuncios={midias.anuncios.map((a) => ({
           id: a.id,
           status: a.status,
+          ...(a.revisao?.oculto
+            ? { oculto: { motivo: a.revisao.oculto.motivo, quando: a.revisao.oculto.quando } }
+            : {}),
           imagem: a.midia ? urlDaMidia(a.midia) : null,
           focoX: a.focoX,
           focoY: a.focoY,

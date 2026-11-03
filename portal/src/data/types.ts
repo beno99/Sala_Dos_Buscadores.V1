@@ -283,6 +283,8 @@ export interface RevisaoAnfitriao {
   decisoes: DecisaoRevisao[];
   /** Conta rebaixada com "manter publicado e congelado": ninguém edita; o admin só despublica ou transfere. */
   congelado?: boolean;
+  /** Anúncio tirado do ar pela curadoria (fica arquivado até ela reexibir ou o anfitrião reenviar). */
+  oculto?: { quem: string; quando: string; motivo: string };
 }
 
 /** Situação jurídica declarada do texto (RF-15, RNF-DOM-04). */
