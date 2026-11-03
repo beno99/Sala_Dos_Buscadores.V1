@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { CardSala } from "@/components/ds/CardSala";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
@@ -22,74 +22,98 @@ export interface SalaNaGrade {
  */
 export function GradeSalas({
   id,
-  salas,
+  salas: lista,
+  secoes = [{ id: "", cabecalho: null, salas: lista ?? [] }],
   temas,
 }: {
   id: string;
-  salas: SalaNaGrade[];
+  salas?: SalaNaGrade[];
+  secoes?: { id: string; cabecalho: ReactNode; salas: SalaNaGrade[] }[];
   temas: { slug: TemaSlug; nome: string; contagem: number }[];
 }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [busca, setBusca] = useState("");
   const termo = normalizar(busca.trim());
-  const porTema = tema ? salas.filter((s) => s.temas.includes(tema)) : salas;
-  const visiveis = termo ? porTema.filter((s) => normalizar(s.sala.nome).includes(termo)) : porTema;
+  const filtrar = (lista: SalaNaGrade[]) =>
+    lista.filter(
+      (s) => (!tema || s.temas.includes(tema)) && (!termo || normalizar(s.sala.nome).includes(termo)),
+    );
+  const salas = secoes.flatMap((g) => g.salas);
+  const visiveis = filtrar(salas);
   const escolhido = temas.find((t) => t.slug === tema);
   return (
-    <div className="flex flex-col gap-5">
-      {salas.length > 1 && (
-        <form className="sdb-searchbar" role="search" onSubmit={(e) => e.preventDefault()}>
-          <div className="sdb-searchbar__row">
-            <Icon name="busca" />
-            <label className="sdb-sr" htmlFor={`${id}-busca`}>
-              Buscar uma Sala
-            </label>
-            <input
-              id={`${id}-busca`}
-              type="search"
-              autoComplete="off"
-              enterKeyHint="search"
-              value={busca}
-              placeholder="Buscar uma Sala"
-              onChange={(e) => setBusca(e.target.value)}
-            />
+    <div className="flex flex-col gap-9">
+      <div className="flex flex-col gap-5">
+        {salas.length > 1 && (
+          <form className="sdb-searchbar" role="search" onSubmit={(e) => e.preventDefault()}>
+            <div className="sdb-searchbar__row">
+              <Icon name="busca" />
+              <label className="sdb-sr" htmlFor={`${id}-busca`}>
+                Buscar uma Sala
+              </label>
+              <input
+                id={`${id}-busca`}
+                type="search"
+                autoComplete="off"
+                enterKeyHint="search"
+                value={busca}
+                placeholder="Buscar uma Sala"
+                onChange={(e) => setBusca(e.target.value)}
+              />
+            </div>
+          </form>
+        )}
+        {temas.length > 0 && (
+          <div
+            className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
+            style={{ gap: 8 }}
+            role="group"
+            aria-label="Filtrar Salas por tema"
+          >
+            {temas.map((t) => (
+              <Chip
+                key={t.slug}
+                areia
+                pressed={tema === t.slug}
+                count={t.contagem}
+                onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
+              >
+                {t.nome}
+              </Chip>
+            ))}
           </div>
-        </form>
-      )}
-      {temas.length > 0 && (
-        <div
-          className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
-          style={{ gap: 8 }}
-          role="group"
-          aria-label="Filtrar Salas por tema"
-        >
-          {temas.map((t) => (
-            <Chip
-              key={t.slug}
-              areia
-              pressed={tema === t.slug}
-              count={t.contagem}
-              onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
-            >
-              {t.nome}
-            </Chip>
-          ))}
-        </div>
-      )}
+        )}
+      </div>
       <p className="sdb-sr" aria-live="polite">
         {escolhido ? `${visiveis.length} Salas tratam de ${escolhido.nome.toLowerCase()}.` : ""}
       </p>
       {visiveis.length > 0 ? (
-        <div id={id} className="grid grid-cols-3 gap-5 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1">
-          {visiveis.map((s) => (
-            <CardSala
-              key={s.sala.slug}
-              sala={s.sala}
-              imagem={s.imagem}
-              acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
-            />
-          ))}
-        </div>
+        secoes.map((g) => {
+          const daSecao = filtrar(g.salas);
+          if (!daSecao.length) return null;
+          return (
+            <section
+              key={g.id}
+              className="flex flex-col gap-5"
+              aria-labelledby={g.cabecalho ? `titulo-${g.id}` : undefined}
+            >
+              {g.cabecalho}
+              <div
+                id={g.id ? `${id}-${g.id}` : id}
+                className="grid grid-cols-3 gap-5 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1"
+              >
+                {daSecao.map((s) => (
+                  <CardSala
+                    key={s.sala.slug}
+                    sala={s.sala}
+                    imagem={s.imagem}
+                    acoes={<BotaoSalvar estilo="sala" tipo="sala" alvo={s.sala.slug} titulo={s.sala.nome} />}
+                  />
+                ))}
+              </div>
+            </section>
+          );
+        })
       ) : (
         <EstadoSecao
           simbolo="busca"
