@@ -2,100 +2,182 @@ import type { SalaSlug, TemaSlug } from "@/data/types";
 import { chaveLeitura, type ItemAcervo, type ItemVideo, type ProgressoEstudo } from "@/features/estudo/tipos";
 
 /*
- * Jornada do Buscador, especificação v1.0 (03/11/2026). Etapa 1 ativa:
- * conclusões declaradas de leitura e vídeo, progresso por Sala, histórico,
- * título Explorador e as gemas Citrino, Esmeralda e Opala. O resto do catálogo
- * aparece "Em preparação", sem progresso fictício, até o fluxo existir.
+ * Jornada do Buscador: catálogo inicial de 12 gemas (03/11/2026), todas ativas,
+ * calculadas por conteúdos concluídos, dias de conclusão e Salas. Títulos por
+ * tema são camada separada; só Explorador está ativo.
  * Registra atividades; não certifica conhecimento nem superioridade espiritual.
  */
 
-export const FUSO_PADRAO = "America/Sao_Paulo";
+export const FUSO_PADRAO = "America/Fortaleza";
 
 export type CodigoGema =
   | "citrino"
   | "esmeralda"
-  | "cristal-de-rocha"
-  | "safira"
-  | "turmalina"
   | "opala"
-  | "ametista"
-  | "rubi";
+  | "agata"
+  | "jaspe"
+  | "quartzo-rosa"
+  | "fluorita"
+  | "lapis-lazuli"
+  | "amazonita"
+  | "granada"
+  | "pedra-da-lua"
+  | "topazio";
+
+/** Contadores reais de uma conta, a partir das conclusões ativas. */
+export interface Medidas {
+  conteudos: number;
+  dias: number;
+  salas: number;
+  maiorSala: number;
+}
 
 export interface DefinicaoGema {
   codigo: CodigoGema;
+  /** J01…J12, identificador estável do catálogo. */
+  ordem: string;
   nome: string;
-  /** Modalidade de estudo que a gema reconhece ("Primeiro passo"). */
   modalidade: string;
   criterio: string;
-  escopo: "geral" | "tema";
-  /** Fluxo ainda não entregue: aparece como "Em preparação". */
-  emPreparacao?: string;
+  escopo: "geral";
+  requisitos: (m: Medidas) => { rotulo: string; atual: number; alvo: number }[];
 }
 
+const req = (rotulo: string, atual: number, alvo: number) => ({ rotulo, atual: Math.min(atual, alvo), alvo });
+
+/** Catálogo inicial de 12 gemas (03/11/2026): conclusão de conteúdos, dias de estudo e Salas. */
 export const GEMAS: DefinicaoGema[] = [
   {
     codigo: "citrino",
+    ordem: "J01",
     nome: "Citrino",
     modalidade: "Primeiro passo",
-    criterio: "Concluir o primeiro artigo ou vídeo elegível.",
+    criterio: "Concluir 1 conteúdo.",
     escopo: "geral",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 1)],
   },
   {
     codigo: "esmeralda",
+    ordem: "J02",
     nome: "Esmeralda",
     modalidade: "Continuidade",
-    criterio: "Concluir 5 conteúdos distintos em pelo menos 3 dias diferentes (não precisam ser seguidos).",
+    criterio: "Concluir 5 conteúdos em pelo menos 3 dias diferentes, sem precisar ser seguidos.",
     escopo: "geral",
-  },
-  {
-    codigo: "cristal-de-rocha",
-    nome: "Cristal de Rocha",
-    modalidade: "Na fonte",
-    criterio: "Registrar consulta a 3 fontes distintas vinculadas ao acervo.",
-    escopo: "geral",
-    emPreparacao: "O registro de consulta às fontes ainda está em preparação.",
-  },
-  {
-    codigo: "safira",
-    nome: "Safira",
-    modalidade: "Aprofundamento",
-    criterio: "Alcançar Investigador em um tema. Uma por tema.",
-    escopo: "tema",
-    emPreparacao: "Depende do registro de consulta às fontes, ainda em preparação.",
-  },
-  {
-    codigo: "turmalina",
-    nome: "Turmalina",
-    modalidade: "Perspectivas em diálogo",
-    criterio:
-      "Concluir uma comparação orientada de dois conteúdos de Salas diferentes no mesmo tema. Uma por tema.",
-    escopo: "tema",
-    emPreparacao: "A comparação orientada ainda está em preparação.",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 5), req("dias de conclusão", m.dias, 3)],
   },
   {
     codigo: "opala",
+    ordem: "J03",
     nome: "Opala",
     modalidade: "Entre Salas",
-    criterio: "Concluir pelo menos um conteúdo elegível em cada uma de 3 Salas diferentes.",
+    criterio: "Concluir pelo menos 1 conteúdo em cada uma de 3 Salas.",
     escopo: "geral",
+    requisitos: (m) => [req("Salas com conclusão", m.salas, 3)],
   },
   {
-    codigo: "ametista",
-    nome: "Ametista",
-    modalidade: "Leitura reflexiva",
-    criterio: "Salvar reflexões próprias associadas a 3 conteúdos distintos.",
+    codigo: "agata",
+    ordem: "J04",
+    nome: "Ágata",
+    modalidade: "Novas leituras",
+    criterio: "Concluir 3 conteúdos.",
     escopo: "geral",
-    emPreparacao: "As reflexões privadas ainda estão em preparação.",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 3)],
   },
   {
-    codigo: "rubi",
-    nome: "Rubi",
-    modalidade: "Contribuição à comunidade",
-    criterio: "Receber reconhecimento da moderação por uma contribuição relevante ao estudo ou ao diálogo.",
+    codigo: "jaspe",
+    ordem: "J05",
+    nome: "Jaspe",
+    modalidade: "Primeiro percurso",
+    criterio: "Concluir 5 conteúdos.",
     escopo: "geral",
-    emPreparacao: "O reconhecimento pela moderação ainda está em preparação.",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 5)],
+  },
+  {
+    codigo: "quartzo-rosa",
+    ordem: "J06",
+    nome: "Quartzo Rosa",
+    modalidade: "Retomar a busca",
+    criterio: "Concluir conteúdos em pelo menos 2 dias diferentes.",
+    escopo: "geral",
+    requisitos: (m) => [req("dias de conclusão", m.dias, 2)],
+  },
+  {
+    codigo: "fluorita",
+    ordem: "J07",
+    nome: "Fluorita",
+    modalidade: "Duas perspectivas",
+    criterio: "Concluir pelo menos 1 conteúdo em cada uma de 2 Salas.",
+    escopo: "geral",
+    requisitos: (m) => [req("Salas com conclusão", m.salas, 2)],
+  },
+  {
+    codigo: "lapis-lazuli",
+    ordem: "J08",
+    nome: "Lápis Lazúli",
+    modalidade: "Permanecer em uma Sala",
+    criterio: "Concluir 3 conteúdos em uma mesma Sala.",
+    escopo: "geral",
+    requisitos: (m) => [req("maior progresso em uma Sala", m.maiorSala, 3)],
+  },
+  {
+    codigo: "amazonita",
+    ordem: "J09",
+    nome: "Amazonita",
+    modalidade: "Horizontes do acervo",
+    criterio: "Concluir pelo menos 1 conteúdo em cada uma de 4 Salas.",
+    escopo: "geral",
+    requisitos: (m) => [req("Salas com conclusão", m.salas, 4)],
+  },
+  {
+    codigo: "granada",
+    ordem: "J10",
+    nome: "Granada",
+    modalidade: "Percurso ampliado",
+    criterio: "Concluir 10 conteúdos.",
+    escopo: "geral",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 10)],
+  },
+  {
+    codigo: "pedra-da-lua",
+    ordem: "J11",
+    nome: "Pedra da Lua",
+    modalidade: "Ritmo próprio",
+    criterio: "Concluir conteúdos em pelo menos 5 dias diferentes, sem exigir sequência.",
+    escopo: "geral",
+    requisitos: (m) => [req("dias de conclusão", m.dias, 5)],
+  },
+  {
+    codigo: "topazio",
+    ordem: "J12",
+    nome: "Topázio",
+    modalidade: "Caminho construído",
+    criterio: "Concluir 15 conteúdos, em pelo menos 3 Salas e 5 dias diferentes.",
+    escopo: "geral",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 15), req("Salas", m.salas, 3), req("dias", m.dias, 5)],
   },
 ];
+
+/** Gemas do catálogo anterior, fora do catálogo ativo: só aparecem no histórico se já tiverem sido concedidas. */
+export const GEMAS_ANTERIORES: Record<string, string> = {
+  "cristal-de-rocha": "Cristal de Rocha · Na fonte",
+  safira: "Safira · Aprofundamento",
+  turmalina: "Turmalina · Perspectivas em diálogo",
+  ametista: "Ametista · Leitura reflexiva",
+  rubi: "Rubi · Contribuição à comunidade",
+};
+
+export function medir(conclusoes: Conclusao[], fuso = FUSO_PADRAO): Medidas {
+  const porSala = new Map<string, number>();
+  for (const c of conclusoes) porSala.set(c.sala, (porSala.get(c.sala) ?? 0) + 1);
+  return {
+    conteudos: conclusoes.length,
+    dias: new Set(conclusoes.map((c) => diaLocal(c.em, fuso))).size,
+    salas: porSala.size,
+    maiorSala: Math.max(0, ...porSala.values()),
+  };
+}
+
+const cumprida = (g: DefinicaoGema, m: Medidas) => g.requisitos(m).every((r) => r.atual >= r.alvo);
 
 export type CodigoTitulo = "explorador" | "investigador" | "articulador" | "aprofundador";
 
@@ -207,75 +289,61 @@ export function conquistasCumpridas(conclusoes: Conclusao[], fuso = FUSO_PADRAO)
   return { gemas, exploradorEm };
 }
 
-/**
- * Quando cada gema da Etapa 1 foi cumprida, pela ordem das conclusões ativas.
- * Serve para mostrar como conquistado o que já estava cumprido antes de qualquer
- * marcação nova (leituras importadas), com a data em que foi cumprido.
- */
+/** Quando cada gema foi cumprida, pela ordem das conclusões (mostra como conquistado o que já estava cumprido). */
 export function datasDeCumprimento(
   conclusoes: Conclusao[],
   fuso = FUSO_PADRAO,
 ): Partial<Record<CodigoGema, string>> {
   const ordem = [...conclusoes].sort((a, b) => a.em.localeCompare(b.em));
   const datas: Partial<Record<CodigoGema, string>> = {};
-  const dias = new Set<string>();
-  const salas = new Set<string>();
   ordem.forEach((c, i) => {
-    dias.add(diaLocal(c.em, fuso));
-    salas.add(c.sala);
-    if (!datas.citrino) datas.citrino = c.em;
-    if (!datas.esmeralda && i + 1 >= 5 && dias.size >= 3) datas.esmeralda = c.em;
-    if (!datas.opala && salas.size >= 3) datas.opala = c.em;
+    const m = medir(ordem.slice(0, i + 1), fuso);
+    for (const g of GEMAS) if (!datas[g.codigo] && cumprida(g, m)) datas[g.codigo] = c.em;
   });
   return datas;
 }
 
-/**
- * Concede, sem nunca retirar, o que já foi cumprido. Devolve as gemas novas.
- * Idempotente: repetir o mesmo evento não concede de novo.
- */
+/** Títulos por tema (camada separada das gemas): só Explorador está ativo. */
+function exploradorEm(conclusoes: Conclusao[]) {
+  return [...new Set(conclusoes.flatMap((c) => c.temas))];
+}
+
+/** Concede, sem nunca retirar, o que já foi cumprido. Idempotente. Devolve as gemas novas. */
 export function conceder(p: ProgressoEstudo, ctx: ContextoJornada, agora: string): CodigoGema[] {
-  const { gemas, exploradorEm } = conquistasCumpridas(conclusoesAtivas(p, ctx), ctx.fuso);
+  const conclusoes = conclusoesAtivas(p, ctx);
+  const m = medir(conclusoes, ctx.fuso);
   const atuais = { ...(p.gemas ?? {}) };
-  const novas = gemas.filter((g) => !atuais[g]);
+  const novas = GEMAS.filter((g) => !atuais[g.codigo] && cumprida(g, m)).map((g) => g.codigo);
   for (const g of novas) atuais[g] = agora;
   p.gemas = atuais;
   const titulos = { ...(p.titulos ?? {}) };
-  for (const tema of exploradorEm) {
+  for (const tema of exploradorEm(conclusoes)) {
     if (!titulos[tema]?.explorador) titulos[tema] = { ...titulos[tema], explorador: agora };
   }
   p.titulos = titulos;
   return novas;
 }
 
-export type EstadoGema = "conquistada" | "em-progresso" | "disponivel" | "em-preparacao";
+export type EstadoGema = "conquistada" | "em-progresso";
 
 export interface GemaVisivel extends DefinicaoGema {
   estado: EstadoGema;
   em?: string;
-  progresso?: { rotulo: string; atual: number; alvo: number }[];
+  progresso: { rotulo: string; atual: number; alvo: number }[];
 }
 
 export function estadoDasGemas(p: ProgressoEstudo, ctx: ContextoJornada): GemaVisivel[] {
   const conclusoes = conclusoesAtivas(p, ctx);
-  const cumpridas = datasDeCumprimento(conclusoes, ctx.fuso);
-  const dias = new Set(conclusoes.map((c) => diaLocal(c.em, ctx.fuso))).size;
-  const salas = new Set(conclusoes.map((c) => c.sala)).size;
-  const medir: Partial<Record<CodigoGema, { rotulo: string; atual: number; alvo: number }[]>> = {
-    citrino: [{ rotulo: "conteúdo concluído", atual: Math.min(1, conclusoes.length), alvo: 1 }],
-    esmeralda: [
-      { rotulo: "conteúdos distintos", atual: Math.min(5, conclusoes.length), alvo: 5 },
-      { rotulo: "dias diferentes", atual: Math.min(3, dias), alvo: 3 },
-    ],
-    opala: [{ rotulo: "Salas com conteúdo concluído", atual: Math.min(3, salas), alvo: 3 }],
-  };
+  const m = medir(conclusoes, ctx.fuso);
+  const datas = datasDeCumprimento(conclusoes, ctx.fuso);
   return GEMAS.map((g) => {
-    const em = p.gemas?.[g.codigo] ?? cumpridas[g.codigo];
-    if (em) return { ...g, estado: "conquistada", em };
-    if (g.emPreparacao) return { ...g, estado: "em-preparacao" };
-    const progresso = medir[g.codigo];
-    const comecou = progresso?.some((m) => m.atual > 0);
-    return { ...g, estado: comecou ? "em-progresso" : "disponivel", ...(progresso ? { progresso } : {}) };
+    const em = p.gemas?.[g.codigo] ?? datas[g.codigo];
+    return {
+      ...g,
+      estado: em ? "conquistada" : "em-progresso",
+      ...(em ? { em } : {}),
+      progresso: g.requisitos(m),
+    };
   });
 }
 
@@ -305,7 +373,8 @@ export function percursosPorTema(p: ProgressoEstudo, ctx: ContextoJornada): Perc
         ...(p.titulos?.[tema] ?? {}),
       };
       const atual = [...TITULOS].reverse().find((t) => obtidos[t.codigo]);
-      const proximo = TITULOS[atual ? TITULOS.indexOf(atual) + 1 : 0];
+      const candidato = TITULOS[atual ? TITULOS.indexOf(atual) + 1 : 0];
+      const proximo = candidato && !candidato.emPreparacao ? candidato : undefined;
       return {
         tema,
         conteudos: doTema.length,

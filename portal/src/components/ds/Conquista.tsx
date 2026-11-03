@@ -32,16 +32,14 @@ export function CardConquista({ c, numero }: { c: ConquistaVisual; numero: numbe
     ? "Conquistada"
     : c.disponibilidade === "em-breve"
       ? "Em preparação"
-      : c.parcial && c.parcial.atual > 0
-        ? "Em progresso"
-        : "Disponível";
+      : "Em progresso";
   const rodape = c.obtida
     ? c.em
       ? `Conquistada em ${formatarData(c.em.slice(0, 10))}`
       : "Conquistada"
     : c.disponibilidade === "em-breve"
       ? `${c.criterio} ${c.indisponibilidade ?? ""}`.trim()
-      : `${c.criterio}${c.parcial ? ` · ${c.parcial.atual} de ${c.parcial.alvo}` : ""}`;
+      : c.criterio;
   return (
     <article
       data-theme="solido-escuro"
@@ -84,10 +82,7 @@ export function ConquistaLinha({ c }: { c: ConquistaVisual }) {
         {c.nome}
         <span className="sdb-sr">{c.obtida ? ", obtida" : ", bloqueada"}</span>
       </span>
-      <p className="sdb-achv__crit">
-        {c.obtida ? c.feito : c.criterio}
-        {c.parcial && ` · ${c.parcial.atual} de ${c.parcial.alvo}`}
-      </p>
+      <p className="sdb-achv__crit">{c.obtida ? c.feito : c.criterio}</p>
       {c.obtida && c.em && <span className="sdb-achv__when">{formatarData(c.em.slice(0, 10))}</span>}
     </div>
   );

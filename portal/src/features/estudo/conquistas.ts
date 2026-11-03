@@ -11,12 +11,16 @@ import type { ProgressoEstudo } from "./tipos";
 const ICONE: Record<CodigoGema, IconName> = {
   citrino: "biblioteca",
   esmeralda: "relogio",
-  "cristal-de-rocha": "fontePrimaria",
-  safira: "trilha",
-  turmalina: "comparar",
   opala: "salas",
-  ametista: "editar",
-  rubi: "comunidade",
+  agata: "artigo",
+  jaspe: "trilha",
+  "quartzo-rosa": "regenerar",
+  fluorita: "comparar",
+  "lapis-lazuli": "estante",
+  amazonita: "salas",
+  granada: "biblioteca",
+  "pedra-da-lua": "relogio",
+  topazio: "trilha",
 };
 
 export interface EstadoConquista {
@@ -35,20 +39,20 @@ export interface EstadoConquista {
 
 export function avaliarConquistas(p: ProgressoEstudo, ctx: ContextoJornada): EstadoConquista[] {
   return estadoDasGemas(p, ctx).map((g) => {
-    const principal = g.progresso?.find((m) => m.atual < m.alvo) ?? g.progresso?.[0];
+    const principal = g.progresso.find((m) => m.atual < m.alvo) ?? g.progresso[0];
     return {
       id: g.codigo,
       nome: g.nome,
       modalidade: g.modalidade,
-      criterio: g.criterio,
+      criterio:
+        g.estado === "conquistada"
+          ? g.criterio
+          : `${g.criterio} ${g.progresso.map((r) => `${r.rotulo}: ${r.atual}/${r.alvo}`).join(" · ")}.`,
       feito: g.em ? `${g.criterio} Conquistada em ${formatarData(g.em.slice(0, 10))}.` : g.criterio,
       icone: ICONE[g.codigo],
       obtida: g.estado === "conquistada",
       ...(g.em ? { em: g.em } : {}),
-      ...(g.estado === "em-preparacao"
-        ? { disponibilidade: "em-breve" as const, indisponibilidade: g.emPreparacao }
-        : {}),
-      ...(g.estado !== "conquistada" && principal && principal.alvo > 1
+      ...(g.estado !== "conquistada" && principal
         ? { parcial: { atual: principal.atual, alvo: principal.alvo } }
         : {}),
     };

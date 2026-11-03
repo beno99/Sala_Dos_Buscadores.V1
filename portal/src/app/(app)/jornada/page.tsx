@@ -5,7 +5,6 @@ import { ProgressoReal } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { Badge } from "@/components/ds/Selos";
 import { ColecaoConquistas } from "@/features/conquistas/ColecaoConquistas";
-import { TITULOS } from "@/features/jornada/regras";
 import { formatarData } from "@/lib/texto";
 import { modeloDaJornada } from "@/server/jornada";
 import { progressoDe } from "@/server/progresso";
@@ -94,12 +93,6 @@ export default async function MinhaJornada() {
                           </li>
                         ))}
                       </ul>
-                      {t.proximo.emPreparacao && (
-                        <p className="sdb-footnote m-0">
-                          Em preparação: {t.proximo.emPreparacao} Novas possibilidades deste percurso serão
-                          abertas conforme o acervo e as ferramentas crescerem.
-                        </p>
-                      )}
                     </div>
                   )}
                 </article>
@@ -123,7 +116,7 @@ export default async function MinhaJornada() {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <ButtonLink href={m.proxima.href} variant="primary" size="sm" iconEnd="chevronDireita">
-                    Abrir leitura
+                    Continuar minha jornada
                   </ButtonLink>
                   <ButtonLink href="/salas" variant="secondary" size="sm">
                     Explorar outro tema
@@ -242,8 +235,9 @@ export default async function MinhaJornada() {
           ))}
         </div>
         <p className="sdb-body-sm m-0">
-          Títulos por tema: {TITULOS.map((t) => t.nome).join(" → ")}. Hoje está ativo o título Explorador; os
-          demais dependem de ferramentas em preparação.
+          Acompanhe seus passos pelo acervo. Conclua conteúdos, retome suas leituras e explore diferentes
+          Salas para conquistar gemas no seu próprio ritmo. Por tema, o primeiro conteúdo concluído dá o
+          título Explorador.
         </p>
         <p className="sdb-footnote m-0">
           As conquistas reconhecem atividades de estudo e participação no acervo. Não representam certificação

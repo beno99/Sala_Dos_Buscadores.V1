@@ -8,6 +8,7 @@ import {
   type ContextoJornada,
   conclusoesAtivas,
   GEMAS,
+  GEMAS_ANTERIORES,
   type PercursoTema,
   type ProgressoSala,
   percursosPorTema,
@@ -75,11 +76,11 @@ export async function modeloDaJornada(m: Membro): Promise<ModeloJornada> {
     })),
     ...Object.entries(p.gemas ?? {}).map(([codigo, em]) => {
       const g = GEMAS.find((x) => x.codigo === codigo.split(":")[0]);
-      const tema = codigo.split(":")[1];
       return {
         em,
-        texto: `Gema da Jornada: ${g?.nome ?? codigo} · ${g?.modalidade ?? ""}`.trim(),
-        ...(tema ? { detalhe: nomeTema(tema) } : {}),
+        texto: g
+          ? `Gema da Jornada: ${g.nome} · ${g.modalidade}`
+          : `Conquista anterior: ${GEMAS_ANTERIORES[codigo.split(":")[0] ?? codigo] ?? codigo}`,
       };
     }),
     ...Object.entries(p.titulos ?? {}).flatMap(([tema, obtidos]) =>
