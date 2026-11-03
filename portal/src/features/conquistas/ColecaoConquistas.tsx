@@ -11,9 +11,11 @@ type Filtro = "Todas" | "Conquistadas" | "Em progresso";
 export function ColecaoConquistas({
   conquistas,
   compacta = false,
+  legenda = "Pequenas marcas da sua jornada no acervo.",
 }: {
   conquistas: ConquistaVisual[];
   compacta?: boolean;
+  legenda?: string;
 }) {
   const [filtro, setFiltro] = useState<Filtro>("Todas");
   const obtidas = conquistas.filter((c) => c.obtida).length;
@@ -22,7 +24,7 @@ export function ColecaoConquistas({
     <div className="sdb-collection">
       <div className="sdb-collection__toolbar">
         {compacta ? (
-          <p className="sdb-footnote m-0">Pequenas marcas da sua jornada no acervo.</p>
+          <p className="sdb-footnote m-0">{legenda}</p>
         ) : (
           <div className="sdb-collection__filters" role="group" aria-label="Filtrar conquistas">
             {(["Todas", "Em progresso", "Conquistadas"] as const).map((f) => (
