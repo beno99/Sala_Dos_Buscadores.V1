@@ -48,14 +48,16 @@ export default async function MinhaJornada() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <section className="flex flex-col gap-4" aria-labelledby="j-percursos">
-          <h2 id="j-percursos" className="sdb-title-2 m-0">
-            Percursos por tema
-          </h2>
-          {m.percursos.length > 0 && (
-            <p className="sdb-footnote m-0">
-              {m.percursos.filter((t) => t.titulo).length} de {m.percursos.length} temas com título.
-            </p>
-          )}
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+            <h2 id="j-percursos" className="sdb-title-2 m-0">
+              Percursos por tema
+            </h2>
+            {m.percursos.length > 0 && (
+              <p className="sdb-footnote m-0">
+                {m.percursos.filter((t) => t.titulo).length} de {m.percursos.length} temas com título
+              </p>
+            )}
+          </div>
           {m.percursos.length === 0 ? (
             <div className="sdb-material sdb-panel flex flex-col gap-2">
               <p className="sdb-body-sm m-0">
@@ -106,34 +108,35 @@ export default async function MinhaJornada() {
           )}
         </section>
 
-        <section
-          className="sdb-material sdb-panel flex flex-col gap-3 self-start"
-          aria-labelledby="j-proxima"
-        >
-          <h2 id="j-proxima" className="sdb-title-2 m-0">
-            Próxima descoberta
-          </h2>
-          {m.proxima ? (
-            <>
+        <section className="flex flex-col gap-4 lg:self-start" aria-labelledby="j-proxima">
+          <div className="flex items-baseline">
+            <h2 id="j-proxima" className="sdb-title-2 m-0">
+              Próxima descoberta
+            </h2>
+          </div>
+          <div className="sdb-material sdb-panel flex flex-col gap-3">
+            {m.proxima ? (
+              <>
+                <p className="sdb-body-sm m-0">
+                  {m.proxima.tema ? `Continue em ${m.proxima.tema}: ` : "Uma leitura para começar: "}
+                  <b>{m.proxima.titulo}</b>, na Sala {m.proxima.sala}.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <ButtonLink href={m.proxima.href} variant="primary" size="sm" iconEnd="chevronDireita">
+                    Abrir leitura
+                  </ButtonLink>
+                  <ButtonLink href="/salas" variant="secondary" size="sm">
+                    Explorar outro tema
+                  </ButtonLink>
+                </div>
+              </>
+            ) : (
               <p className="sdb-body-sm m-0">
-                {m.proxima.tema ? `Continue em ${m.proxima.tema}: ` : "Uma leitura para começar: "}
-                <b>{m.proxima.titulo}</b>, na Sala {m.proxima.sala}.
+                Você concluiu tudo o que está publicado agora. Novos conteúdos aparecem aqui quando entrarem
+                no acervo.
               </p>
-              <div className="flex flex-wrap gap-3">
-                <ButtonLink href={m.proxima.href} variant="primary" size="sm" iconEnd="chevronDireita">
-                  Abrir leitura
-                </ButtonLink>
-                <ButtonLink href="/salas" variant="secondary" size="sm">
-                  Explorar outro tema
-                </ButtonLink>
-              </div>
-            </>
-          ) : (
-            <p className="sdb-body-sm m-0">
-              Você concluiu tudo o que está publicado agora. Novos conteúdos aparecem aqui quando entrarem no
-              acervo.
-            </p>
-          )}
+            )}
+          </div>
         </section>
       </div>
 
