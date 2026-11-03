@@ -2326,16 +2326,15 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
    Nenhuma imagem enviada pela curadoria, por anfitriões ou por membros é recortada nem deformada.
    Banner da Sala e topo do artigo: a altura acompanha o arquivo, na largura toda (até 72% da
    altura da tela; acima disso, a imagem inteira cabe com fundo nas laterais).
-   Molduras de proporção fixa (cards, miniaturas, capa do perfil): a imagem inteira cabe dentro,
+   Exceção (03/11/2026): Card de Sala, Card de conteúdo e miniatura dos Destaques preenchem a moldura (cover).
+   Molduras de proporção fixa (cards de conteúdo, miniaturas, capa do perfil): a imagem inteira cabe dentro,
    com o fundo da moldura onde sobrar. Dimensões recomendadas por uso: CampoImagem/README.md. */
 .sdb-roombanner > .video-embed__frame:has(> img) { aspect-ratio: auto; }
 .sdb-roombanner > .video-embed__frame > img { position: static; inset: auto; height: auto; max-height: min(72svh, 760px); object-fit: contain; }
-.sala .sdb-imagem-acervo > img,
 .sdb-retomada__media .sdb-imagem-acervo > img,
 .sdb-entry__thumb > img,
-.sdb-toplist__thumb > img,
 .sdb-profilehead__cover > img { object-fit: contain; object-position: 50% 50%; }
-.sdb-entry__thumb:has(> img), .sdb-toplist__thumb:has(> img) { background: var(--fill); }
+.sdb-entry__thumb:has(> img) { background: var(--fill); }
 .sdb-post__media img { aspect-ratio: auto; max-height: min(72svh, 720px); object-fit: contain; background: var(--fill); }
 /* Retomada do Portal: a imagem inteira ocupa a metade esquerda, ao lado do painel (no celular, a faixa de cima). */
 .sdb-retomada__media > .sdb-imagem-acervo { right: 50%; }
