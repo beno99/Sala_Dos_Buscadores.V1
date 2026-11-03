@@ -27,6 +27,7 @@ const nomes = [
   "publicacoes",
   "comentarios",
   "denuncias",
+  "anuncios",
 ] as const;
 
 /** Repositório isolado: nenhum teste abre conexão com DATABASE_URL. */

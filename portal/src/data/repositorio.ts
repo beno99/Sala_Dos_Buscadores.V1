@@ -340,16 +340,27 @@ export async function obterDestaques(): Promise<DestaquesPublicos> {
   };
 }
 
-/** "Mais pesquisados": conteúdos publicados com buscas nos últimos 30 dias, do mais buscado ao menos. */
+/**
+ * "Mais pesquisados": conteúdos publicados com buscas nos últimos 30 dias, do mais buscado ao menos.
+ * Sem buscas registradas, os publicados mais recentes (todos com `buscas: 0`).
+ */
 export async function listarMaisPesquisados(): Promise<ItemMaisPesquisado[]> {
-  return ordenarRanking(
-    publicados().map((c) => ({
+  const todos = publicados();
+  const ranking = ordenarRanking(
+    todos.map((c) => ({
       ...paraVitrine(c),
       titulo: c.titulo,
-      // TODO(buscas): contar as buscas reais dos últimos 30 dias; sem registro de buscas, vale a ordem de publicação.
+      // TODO(buscas): contar as buscas reais dos últimos 30 dias.
       buscas: 0,
     })),
   ).map(({ titulo: _t, ...item }) => item);
+  if (ranking.length > 0) return ranking;
+  return todos
+    .toSorted(
+      (a, b) => b.publicadoEm.localeCompare(a.publicadoEm) || a.titulo.localeCompare(b.titulo, "pt-BR"),
+    )
+    .slice(0, 21)
+    .map((c) => ({ ...paraVitrine(c), buscas: 0 }));
 }
 
 // Comunidade: contrato público separado do conteúdo editorial; só registros visíveis.

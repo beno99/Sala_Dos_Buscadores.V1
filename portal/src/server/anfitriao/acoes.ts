@@ -7,11 +7,13 @@ import type {
   FormSalaAnfitriao,
 } from "@/features/anfitriao/regras/artigo";
 import type { FormCandidatura, FormPerfil } from "@/features/anfitriao/regras/perfil";
+import type { FormAnuncio, ModoAnuncio } from "@/features/anuncios/regras";
 import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { gravarSessao } from "@/modules/conta/conta.controller";
 import { auditarComo } from "@/server/auditoria";
 import type { ModoSalvar } from "../admin/editorial";
+import { salvarAnuncio } from "../anuncios";
 import { AcessoNegado, exigirAnfitriao, membroAtual } from "../sessao";
 import { comGravacoesDoPedido, sincronizarAcervo } from "../store";
 import type { ResultadoAcao } from "./comum";
@@ -105,6 +107,10 @@ export async function marcarNovidadesVistasAcao(tipo: editorial.TipoItemAnfitria
 
 export async function salvarPerfilAcao(form: FormPerfil) {
   return comAnfitriao((dono) => usuarios.salvarPerfil(form, dono));
+}
+
+export async function salvarAnuncioAcao(form: FormAnuncio, modo: ModoAnuncio) {
+  return comAnfitriao((dono) => salvarAnuncio(form, dono, modo));
 }
 
 // ---------- membro ----------

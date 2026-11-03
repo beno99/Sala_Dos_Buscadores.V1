@@ -24,6 +24,7 @@ import type {
   VideoEditorial,
 } from "@/data/types";
 import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilidade";
+import type { Anuncio } from "@/features/anuncios/regras";
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
 import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
@@ -119,6 +120,7 @@ export interface Acervo {
   /** Imagens enviadas (metadados; os bytes ficam no armazenamento S3). */
   midias: Map<string, MidiaGuardada>;
   temas: Map<string, TemaEditorial>;
+  anuncios: Map<string, Anuncio>;
 }
 
 interface Store {
@@ -422,6 +424,7 @@ function snapshotDoStore(s: Store): DadosCarregados {
       publicacoes: a.comunidade.publicacoes,
       comentarios: a.comunidade.comentarios,
       denuncias: a.comunidade.denuncias,
+      anuncios: a.anuncios,
     },
     destaques: a.destaques,
     comunidade: {
@@ -455,6 +458,7 @@ function montar(d: DadosCarregados): Store {
     convites: new MapPersistido("convites", c.convites),
     midias: new MapPersistido("midias", c.midias),
     temas: new MapPersistido("temas", c.temas),
+    anuncios: new MapPersistido("anuncios", c.anuncios),
   };
   Object.defineProperty(acervo, "destaques", {
     enumerable: true,

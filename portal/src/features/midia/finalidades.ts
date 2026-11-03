@@ -20,7 +20,8 @@ export type Finalidade =
   | "corpo-artigo"
   | "avatar"
   | "capa-perfil"
-  | "comunidade";
+  | "comunidade"
+  | "anuncio";
 
 export interface OrientacaoImagem {
   /** Nome da finalidade, como aparece no campo ("Banner da Sala"). */
@@ -31,6 +32,8 @@ export interface OrientacaoImagem {
   proporcao: string;
   /** A altura acompanha o arquivo: a moldura não impõe proporção. */
   alturaLivre?: boolean;
+  /** A imagem preenche a moldura e quem envia escolhe o enquadramento. */
+  enquadravel?: boolean;
   /** Como a imagem aparece, em linguagem de quem opera o portal. */
   exibicao: string;
   /** Onde o mesmo arquivo aparece. */
@@ -124,6 +127,16 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
     exibicao: "Aparece inteira, na largura da publicação; a altura acompanha a proporção do arquivo.",
     usos: ["publicação na Comunidade"],
   },
+  // Card de publicidade do Portal: até ~420 px de largura, dobrado para telas 2×.
+  anuncio: {
+    rotulo: "Imagem do produto",
+    largura: 1400,
+    altura: 1000,
+    proporcao: "7:5",
+    enquadravel: true,
+    exibicao: "Preenche a moldura 7:5 do card, sem deformar; ajuste o enquadramento depois do envio.",
+    usos: ["card de publicidade no Portal"],
+  },
 };
 
 const numero = (n: number) => n.toLocaleString("pt-BR");
@@ -157,6 +170,7 @@ export function proporcaoDoArquivo(largura: number, altura: number): string {
     "4:5",
     "9:16",
     "3:5",
+    "7:5",
   ];
   const perto = comuns.find((p) => Math.abs(razao(p) / r - 1) < 0.015);
   if (perto) return perto;

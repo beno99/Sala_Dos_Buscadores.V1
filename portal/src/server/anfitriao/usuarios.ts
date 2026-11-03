@@ -3,7 +3,16 @@ import { randomBytes } from "node:crypto";
 import type { Candidatura, ConteudoEditorial, Convite, PerfilAnfitriao, SalaEditorial } from "@/data/types";
 import { slugUnico } from "@/features/admin/regras/slug";
 import { validarMotivo } from "@/features/anfitriao/regras/ciclo";
-import { erroDoConvite, expiraEm, statusDoConvite } from "@/features/anfitriao/regras/convite";
+import {
+  ASSUNTO_CONVITE,
+  corpoDoConvite,
+  erroDoConvite,
+  expiraEm,
+  type PersonalizacaoConvite,
+  SEM_PERSONALIZACAO,
+  statusDoConvite,
+  validarPersonalizacao,
+} from "@/features/anfitriao/regras/convite";
 import {
   type FormCandidatura,
   type FormPerfil,
@@ -465,9 +474,13 @@ export async function convidar(
   email: string,
   quem: string,
   quando = new Date(),
+  personalizacao: PersonalizacaoConvite = SEM_PERSONALIZACAO,
 ): Promise<ResultadoAcao<{ id: string; link: string }>> {
   const erroEmail = validarEmail(email);
   if (erroEmail) return falha(`Erro: ${erroEmail}`, { "campo-email": erroEmail });
+  const errosPersonalizacao = validarPersonalizacao(personalizacao);
+  if (Object.keys(errosPersonalizacao).length)
+    return falha("Erro: confira os campos indicados.", errosPersonalizacao);
   const para = email.trim().toLowerCase();
   if (await contas.porEmail(para)) {
     return falha("Erro: já existe uma conta com este e-mail.", {
@@ -479,7 +492,7 @@ export async function convidar(
   );
   if (pendente) {
     return falha("Erro: já há um convite pendente para este e-mail.", {
-      "campo-email": "já há um convite pendente para este e-mail. Revogue-o para enviar outro.",
+      "campo-email": "já há um convite pendente para este e-mail. Apague-o para enviar outro.",
     });
   }
   const token = randomBytes(24).toString("base64url");
@@ -498,12 +511,8 @@ export async function convidar(
   enviarEmail(
     {
       para,
-      assunto: "Convite para ser anfitrião na Sala dos Buscadores",
-      corpo: [
-        "A curadoria da Sala dos Buscadores convida você a ser anfitrião: manter uma Sala própria, com leituras suas, revisadas pela curadoria antes de ir ao ar.",
-        `Para aceitar, crie sua conta por este link, que vale 7 dias e só pode ser usado uma vez:\n${link}`,
-        "Se não esperava este convite, ignore esta mensagem.",
-      ].join("\n\n"),
+      assunto: ASSUNTO_CONVITE,
+      corpo: corpoDoConvite(personalizacao, link),
     },
     quando,
   );
@@ -517,6 +526,16 @@ export function revogarConvite(id: string, quem: string): ResultadoAcao {
   acervo().convites.set(id, { ...c, status: "revogado", revogadoEm: agora() });
   registrar({ quem, acao: "revogou-convite", tipoItem: "convite", itemId: id, itemTitulo: c.email });
   return ok(undefined, "Convite revogado. O link deixa de funcionar.");
+}
+
+export function apagarConvite(id: string, quem: string): ResultadoAcao {
+  const c = acervo().convites.get(id);
+  if (!c) return erro("este convite não existe mais.");
+  if (statusDoConvite(c) === "usado")
+    return erro("convite já usado não pode ser apagado: ele registra a criação da conta.");
+  acervo().convites.delete(id);
+  registrar({ quem, acao: "apagou-convite", tipoItem: "convite", itemId: id, itemTitulo: c.email });
+  return ok(undefined, "Convite apagado. Se ainda valia, o link deixa de funcionar.");
 }
 
 export function conviteDoToken(token: string | undefined | null): Convite | undefined {

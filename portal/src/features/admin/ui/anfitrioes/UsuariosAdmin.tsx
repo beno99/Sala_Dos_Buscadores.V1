@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useId, useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ds/Button";
 import { CampoTexto } from "@/components/ds/Campos";
 import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
@@ -16,14 +16,14 @@ import { useToast } from "@/components/ds/Toast";
 import type { StatusCandidatura, StatusConvite } from "@/data/types";
 import { formatarData } from "@/lib/texto";
 import {
-  convidarAcao,
+  apagarConviteAcao,
   decidirCandidaturaAcao,
   excluirUsuarioAcao,
   promoverAcao,
   rebaixarAcao,
-  revogarConviteAcao,
 } from "@/server/anfitriao/acoes-admin";
 import { SheetMotivo } from "../SheetMotivo";
+import { FormConvite } from "./FormConvite";
 
 export type Aba = "usuarios" | "candidaturas" | "convites";
 
@@ -118,7 +118,7 @@ type Pedido =
   | { tipo: "excluir"; usuario: UsuarioVisual }
   | { tipo: "aprovar"; candidatura: CandidaturaVisual }
   | { tipo: "recusar"; candidatura: CandidaturaVisual }
-  | { tipo: "revogar"; convite: ConviteVisual };
+  | { tipo: "apagar"; convite: ConviteVisual };
 
 /** Usuários, candidaturas e convites (§6 · /admin/usuarios). */
 export function UsuariosAdmin({
@@ -151,8 +151,6 @@ export function UsuariosAdmin({
   const [aba, setAba] = useState<Aba>(abaInicial);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [ocupado, setOcupado] = useState(false);
-  const [email, setEmail] = useState("");
-  const [erroEmail, setErroEmail] = useState<string | null>(null);
   const pendentes = candidaturas.filter((c) => c.status === "pendente").length;
 
   const executar = async (acao: () => Promise<{ ok: boolean; mensagem: string }>) => {
@@ -167,21 +165,6 @@ export function UsuariosAdmin({
     toast(r.mensagem);
     router.refresh();
     return true;
-  };
-
-  const convidar = async (e: FormEvent) => {
-    e.preventDefault();
-    setOcupado(true);
-    const r = await convidarAcao(email);
-    setOcupado(false);
-    if (!r.ok) {
-      const campo = (r as { erros?: Record<string, string> }).erros?.["campo-email"];
-      setErroEmail(campo ?? r.mensagem.replace(/^Erro: /, ""));
-      return;
-    }
-    setEmail("");
-    toast(r.mensagem);
-    router.refresh();
   };
 
   return (
@@ -387,33 +370,7 @@ export function UsuariosAdmin({
         hidden={aba !== "convites"}
       >
         <div className="flex flex-col gap-4">
-          <form
-            className="sdb-material sdb-panel max-w-read"
-            noValidate
-            onSubmit={convidar}
-            aria-label="Convidar anfitrião"
-          >
-            <h2 className="sdb-headline">Convidar</h2>
-            <CampoTexto
-              id="campo-email"
-              label="E-mail"
-              type="email"
-              inputMode="email"
-              placeholder="nome@exemplo.com"
-              help="O convite vale 7 dias e só pode ser usado uma vez. O e-mail fica na caixa de saída."
-              value={email}
-              error={erroEmail ?? undefined}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setErroEmail(null);
-              }}
-            />
-            <div>
-              <Button type="submit" variant="primary" icon="enviar" loading={ocupado && !pedido}>
-                Convidar
-              </Button>
-            </div>
-          </form>
+          <FormConvite />
           <TabelaDados<ConviteVisual>
             legenda={`Convites · ${convites.length}`}
             itens={convites}
@@ -445,13 +402,13 @@ export function UsuariosAdmin({
                 cabecalhoOculto: true,
                 className: "sdb-table__actions",
                 celula: (c) =>
-                  c.situacao === "pendente" ? (
+                  c.situacao !== "usado" ? (
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => setPedido({ tipo: "revogar", convite: c })}
+                      onClick={() => setPedido({ tipo: "apagar", convite: c })}
                     >
-                      Revogar
+                      Apagar
                     </Button>
                   ) : null,
               },
@@ -490,18 +447,18 @@ export function UsuariosAdmin({
       </ModalConfirmacao>
 
       <ModalConfirmacao
-        open={pedido?.tipo === "revogar"}
-        titulo="Revogar o convite?"
-        icone="cadeado"
+        open={pedido?.tipo === "apagar"}
+        titulo="Apagar o convite?"
+        icone="lixeira"
         destrutivo
-        rotuloConfirmar="Revogar"
+        rotuloConfirmar="Apagar"
         carregando={ocupado}
         onCancelar={() => setPedido(null)}
-        onConfirmar={() =>
-          pedido?.tipo === "revogar" && executar(() => revogarConviteAcao(pedido.convite.id))
-        }
+        onConfirmar={() => pedido?.tipo === "apagar" && executar(() => apagarConviteAcao(pedido.convite.id))}
       >
-        O link enviado para {pedido?.tipo === "revogar" ? pedido.convite.email : ""} deixa de funcionar.
+        O convite para {pedido?.tipo === "apagar" ? pedido.convite.email : ""} sai da lista e, se ainda valia,
+        o link deixa de funcionar. O registro fica no Histórico. Depois, dá para enviar um convite novo para o
+        mesmo e-mail.
       </ModalConfirmacao>
 
       <SheetMotivo

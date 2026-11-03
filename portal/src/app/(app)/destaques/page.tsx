@@ -9,7 +9,7 @@ import { salaPorSlug, todosOsTemas } from "@/data/catalogo";
 import { type ConteudoVitrine, listarMaisPesquisados, obterDestaques } from "@/data/repositorio";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { cx } from "@/lib/cx";
-import { plural } from "@/lib/texto";
+import { formatarData, plural } from "@/lib/texto";
 
 export const metadata: Metadata = { title: "Destaques" };
 
@@ -33,6 +33,7 @@ export default async function Destaques(props: PageProps<"/destaques">) {
     }))
     .filter((t) => t.contagem > 0);
   const tema = temas.find((t) => t.slug === busca.tema);
+  const comBuscas = maisPesquisados.some((m) => m.buscas > 0);
   const [alto, ...horizontais] = destaques.cards;
   const [centro, ...laterais] = destaques.artigos;
   const card = (item: ConteudoVitrine | undefined, formato: "alto" | "horizontal" | "normal") =>
@@ -130,12 +131,16 @@ export default async function Destaques(props: PageProps<"/destaques">) {
 
         <ListaDestaques
           id="mais-pesquisados"
-          titulo="Mais pesquisados"
-          legenda="Mais pesquisados no acervo nos últimos 30 dias."
+          titulo={comBuscas ? "Mais pesquisados" : "Publicados recentemente"}
+          legenda={
+            comBuscas
+              ? "Mais pesquisados no acervo nos últimos 30 dias."
+              : "Ainda sem buscas registradas: por ora, os publicados mais recentes."
+          }
           itens={maisPesquisados.map((m) => ({
             href: `/salas/${m.conteudo.sala}/${m.conteudo.slug}` as Route,
             titulo: m.conteudo.titulo,
-            meta: `${salaPorSlug(m.conteudo.sala)?.nome} · ${plural(m.buscas, "busca", "buscas")}`,
+            meta: `${salaPorSlug(m.conteudo.sala)?.nome} · ${comBuscas ? plural(m.buscas, "busca", "buscas") : formatarData(m.conteudo.publicadoEm)}`,
             imagem: m.imagem,
             placa: m.placa,
           }))}

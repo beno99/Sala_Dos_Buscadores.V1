@@ -47,6 +47,10 @@ export function BarraSuperior({
 
   return (
     <header className={cx("sdb-topbar", rolou && "is-scrolled")}>
+      <Link href="/" className="sdb-topbar__logo" aria-label="A Sala dos Buscadores, início">
+        {/* biome-ignore lint/performance/noImgElement: logo fixa, sem necessidade de otimização do next/image */}
+        <img src="/imagens/logo_sala.png" alt="" />
+      </Link>
       <div className="sdb-topbar__titles">
         <p className="sdb-topbar__title">{titulo}</p>
         {saudacao && <p className="sdb-topbar__greeting">{saudacao}</p>}

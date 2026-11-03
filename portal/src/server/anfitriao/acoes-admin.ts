@@ -98,10 +98,19 @@ export async function decidirCandidaturaAcao(id: string, decisao: "aprovar" | "r
   return comAdmin((quem) => usuarios.decidirCandidatura(String(id), decisao, motivo, quem));
 }
 
-export async function convidarAcao(email: string) {
-  return comAdmin((quem) => usuarios.convidar(String(email), quem));
+export async function convidarAcao(email: string, personalizacao?: { nome?: string; mensagem?: string }) {
+  return comAdmin((quem) =>
+    usuarios.convidar(String(email), quem, new Date(), {
+      nome: String(personalizacao?.nome ?? ""),
+      mensagem: String(personalizacao?.mensagem ?? ""),
+    }),
+  );
 }
 
 export async function revogarConviteAcao(id: string) {
   return comAdmin((quem) => usuarios.revogarConvite(String(id), quem));
+}
+
+export async function apagarConviteAcao(id: string) {
+  return comAdmin((quem) => usuarios.apagarConvite(String(id), quem));
 }

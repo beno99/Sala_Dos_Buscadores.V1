@@ -12,7 +12,7 @@ import {
   planejarExclusaoPermanenteSala,
   planejarLixeiraSala,
 } from "@/features/salas/lixeira";
-import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
+import { anuncios, candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
 import { versaoDados } from "@/modules/compartilhado/banco/versao.schema";
@@ -101,6 +101,7 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
   publicacoes: mapaDireto(publicacoes, publicacoes.id),
   comentarios: mapaDireto(comentarios, comentarios.id),
   denuncias: mapaDenuncias(),
+  anuncios: mapaDireto(anuncios, anuncios.id),
 };
 
 /** O domínio guarda o alvo como objeto; a tabela, em duas colunas. */

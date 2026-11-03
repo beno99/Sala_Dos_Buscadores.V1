@@ -71,6 +71,20 @@
       "when": 1793630983384,
       "tag": "0009_auditoria_ator",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793720352372,
+      "tag": "0010_conversa_curadoria",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793720367377,
+      "tag": "0011_anuncios_anfitriao",
+      "breakpoints": true
     }
   ]
 }

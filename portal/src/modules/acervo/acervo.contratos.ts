@@ -19,6 +19,7 @@ import type {
   VideoEditorial,
 } from "@/data/types";
 import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
+import type { Anuncio } from "@/features/anuncios/regras";
 import type { PedidoLixeiraArtigo } from "@/features/artigos/lixeira";
 import type { EscolhaDestaques } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
@@ -67,6 +68,7 @@ export interface Colecoes {
   publicacoes: Publicacao;
   comentarios: ComentarioComunidade;
   denuncias: DenunciaComunidade;
+  anuncios: Anuncio;
 }
 
 export type NomeColecao = keyof Colecoes;

@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 import { usuarios } from "@/modules/conta/conta.schema";
 
 /* Anfitriões: perfil público, candidaturas e convites. */
@@ -47,3 +47,31 @@ export const convites = pgTable("convites", {
   usadoEm: text("usado_em"),
   revogadoEm: text("revogado_em"),
 }).enableRLS();
+
+export const statusAnuncioEnum = pgEnum("status_anuncio", ["rascunho", "publicado"]);
+
+/* Publicidade do anfitrião no Portal. Rascunho só o dono vê; publicado aparece no Portal. */
+export const anuncios = pgTable(
+  "anuncios",
+  {
+    id: text("id").primaryKey(),
+    donoId: text("dono_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    status: statusAnuncioEnum("status").notNull(),
+    midia: text("midia"),
+    focoX: integer("foco_x").notNull().default(50),
+    focoY: integer("foco_y").notNull().default(50),
+    alt: text("alt").notNull().default(""),
+    categoria: text("categoria").notNull().default(""),
+    titulo: text("titulo").notNull().default(""),
+    descricao: text("descricao").notNull().default(""),
+    href: text("href").notNull().default(""),
+    chamada: text("chamada").notNull().default(""),
+    anunciante: text("anunciante").notNull().default(""),
+    criadoEm: text("criado_em").notNull(),
+    atualizadoEm: text("atualizado_em").notNull(),
+    publicadoEm: text("publicado_em"),
+  },
+  (t) => [index("anuncios_dono_idx").on(t.donoId)],
+).enableRLS();

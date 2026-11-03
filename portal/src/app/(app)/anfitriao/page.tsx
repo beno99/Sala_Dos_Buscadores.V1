@@ -43,6 +43,12 @@ export default async function PainelAnfitriao() {
           <ButtonLink href={"/anfitriao/perfil" as Route} variant="secondary" icon="pessoa">
             Perfil público
           </ButtonLink>
+          <ButtonLink href={"/anfitriao/publicidade" as Route} variant="secondary" icon="externo">
+            Publicidade
+          </ButtonLink>
+          <ButtonLink href={"/anfitriao/conversa" as Route} variant="secondary" icon="comunidade">
+            Falar com a curadoria
+          </ButtonLink>
         </div>
       </header>
 

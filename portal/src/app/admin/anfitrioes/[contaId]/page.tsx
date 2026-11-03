@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
+import { ButtonLink } from "@/components/ds/Button";
 import { ListaSalasRevisao } from "@/features/admin/ui/anfitrioes/ListaSalasRevisao";
 import { painelDoAnfitriao, salasDoAnfitriaoParaRevisao } from "@/server/anfitriao/consultas";
 import { contaNoDiretorio as contaPorId } from "@/server/store";
@@ -42,6 +43,13 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
           {perfil?.credencial && ` · ${perfil.credencial}`}
           {conta.papel !== "anfitriao" && " · não é mais anfitrião"}
         </p>
+        {conta.papel === "anfitriao" && (
+          <div className="sdb-row">
+            <ButtonLink href={`/admin/conversas/${contaId}` as Route} variant="secondary" icon="comunidade">
+              Conversar
+            </ButtonLink>
+          </div>
+        )}
         {perfil && (
           <p className="sdb-footnote">
             Página pública:{" "}

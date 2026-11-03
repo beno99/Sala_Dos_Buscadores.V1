@@ -15,6 +15,8 @@ interface Contagens {
   revisao: number;
   /** Denúncias da Comunidade esperando decisão. */
   denuncias: number;
+  /** Conversas cuja última mensagem é do anfitrião. */
+  conversas: number;
 }
 
 /*
@@ -48,6 +50,13 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       icone: "comunidade",
       ativo: em("/admin/comunidade"),
       contagem: c.denuncias || undefined,
+    },
+    {
+      href: "/admin/conversas" as Route,
+      rotulo: "Conversas",
+      icone: "comunidade",
+      ativo: em("/admin/conversas"),
+      contagem: c.conversas || undefined,
     },
     { href: "/admin/videos" as Route, rotulo: "Vídeos", icone: "video", ativo: em("/admin/videos") },
     {

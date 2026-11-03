@@ -447,6 +447,7 @@ export type AcaoAuditada =
   | "rebaixou"
   | "convidou"
   | "revogou-convite"
+  | "apagou-convite"
   | "transferiu"
   | "incluiu-na-comparacao"
   | "removeu-da-comparacao"

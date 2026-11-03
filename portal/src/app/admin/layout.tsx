@@ -10,6 +10,7 @@ import { listarFontes } from "@/server/admin/consultas";
 import { listarSalasAdmin } from "@/server/admin/salas";
 import { totalPendenteRevisao } from "@/server/anfitriao/consultas";
 import { totalDenunciasPendentes } from "@/server/comunidade/moderacao";
+import { conversasDaCuradoria } from "@/server/conversa/consultas";
 import { acessoAtual, redirecionarParaEntrar } from "@/server/sessao";
 
 export const metadata: Metadata = {
@@ -61,12 +62,13 @@ function AcessoRestrito() {
   );
 }
 
-function AreaCuradoria({ children }: { children: ReactNode }) {
+async function AreaCuradoria({ children }: { children: ReactNode }) {
   const contagens = {
     salas: listarSalasAdmin().length,
     fontes: listarFontes().length,
     revisao: totalPendenteRevisao(),
     denuncias: totalDenunciasPendentes(),
+    conversas: (await conversasDaCuradoria()).filter((c) => c.aguardando).length,
   };
   return <CascaCuradoria contagens={contagens}>{children}</CascaCuradoria>;
 }

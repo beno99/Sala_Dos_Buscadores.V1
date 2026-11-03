@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { after } from "next/server";
 import type { EmailEnviado } from "@/data/types";
+import { ASSINATURA_EMAIL } from "@/lib/email";
 import { aposConfirmarPedido, caixaSaidaBruta, incluirEmail } from "./store";
 
 /*
@@ -25,8 +26,7 @@ export const EMAIL_CURADORIA = "curadoria@saladosbuscadores.org";
 
 export const URL_PUBLICA = process.env.SDB_URL_PUBLICA ?? "http://localhost:3000";
 
-/** Assinatura dos e-mails, na voz da casa. */
-const RODAPE = "\n\nA Sala dos Buscadores · curadoria do acervo";
+const RODAPE = `\n\n${ASSINATURA_EMAIL}`;
 
 const REMETENTE =
   process.env.SDB_EMAIL_REMETENTE ??

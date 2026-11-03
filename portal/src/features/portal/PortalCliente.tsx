@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { BannerRotativo, type SlideBanner } from "@/components/ds/BannerRotativo";
 import { Button, ButtonLink } from "@/components/ds/Button";
+import { CardAnuncio } from "@/components/ds/CardAnuncio";
 import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardSala } from "@/components/ds/CardSala";
 import { Chip } from "@/components/ds/Chip";
-import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { LinhaConteudo, ListaLinhas } from "@/components/ds/ListaConteudos";
@@ -392,12 +392,13 @@ export function PortalCliente({
               )}
             </div>
           </section>
-          {modelo.anuncioPainel && (
-            <EspacoPublicitario
-              anuncio={modelo.anuncioPainel}
-              variante="portal"
-              onPorQue={() => setPolitica(true)}
-            />
+          {modelo.anuncioPortal && (
+            <div className="sdb-home__publicidade">
+              <CardAnuncio anuncio={modelo.anuncioPortal} />
+              <Button variant="plain" size="sm" onClick={() => setPolitica(true)}>
+                Sobre os anúncios
+              </Button>
+            </div>
           )}
         </div>
       </div>
