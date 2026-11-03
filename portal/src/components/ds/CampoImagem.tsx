@@ -70,6 +70,7 @@ export function CampoImagem({
   valor,
   onMudar,
   disabled,
+  error,
 }: {
   id?: string;
   label: ReactNode;
@@ -81,13 +82,16 @@ export function CampoImagem({
   valor: ImagemEnviada | null;
   onMudar: (imagem: ImagemEnviada | null) => void;
   disabled?: boolean;
+  /** Erro vindo do formulário (campo obrigatório, imagem recusada no servidor). */
+  error?: string;
 }) {
   const gerado = useId();
   const campo = id ?? gerado;
   const o = FINALIDADES[finalidade];
   const quadrado = finalidade === "avatar";
   const entrada = useRef<HTMLInputElement>(null);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erroLocal, setErro] = useState<string | null>(null);
+  const erro = erroLocal ?? error ?? null;
   const [enviando, setEnviando] = useState(false);
   const [arrastando, setArrastando] = useState(false);
   const [arquivo, setArquivo] = useState<{ nome: string; tamanho: string } | null>(null);
@@ -281,11 +285,13 @@ export function CampoImagem({
             </>
           )}
           {aviso.outraProporcao &&
-            (o.alturaLivre
-              ? "A imagem tem outra proporção e será exibida inteira, com a altura ajustada ao arquivo."
-              : quadrado
-                ? "A imagem não é quadrada: no círculo, as bordas do arquivo ficam de fora. Prefira uma foto quadrada."
-                : "A imagem tem outra proporção e será exibida inteira, com espaço de fundo.")}{" "}
+            (o.enquadravel
+              ? "A imagem tem outra proporção: use o enquadramento para escolher a parte que aparece."
+              : o.alturaLivre
+                ? "A imagem tem outra proporção e será exibida inteira, com a altura ajustada ao arquivo."
+                : quadrado
+                  ? "A imagem não é quadrada: no círculo, as bordas do arquivo ficam de fora. Prefira uma foto quadrada."
+                  : "A imagem tem outra proporção e será exibida inteira, com espaço de fundo.")}{" "}
           A imagem pode ser salva assim.
         </p>
       )}

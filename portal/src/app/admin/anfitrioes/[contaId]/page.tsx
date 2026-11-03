@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
+import { ButtonLink } from "@/components/ds/Button";
 import { ListaSalasRevisao } from "@/features/admin/ui/anfitrioes/ListaSalasRevisao";
 import { RevisaoMidiasAnfitriao } from "@/features/admin/ui/anfitrioes/RevisaoMidiasAnfitriao";
 import {
@@ -9,6 +10,7 @@ import {
   salasDoAnfitriaoParaRevisao,
   videosEAnunciosParaRevisao,
 } from "@/server/anfitriao/consultas";
+import { urlDaMidia } from "@/server/midia";
 import { contaNoDiretorio as contaPorId } from "@/server/store";
 
 export const metadata: Metadata = { title: "Salas do anfitrião" };
@@ -48,6 +50,13 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
           {perfil?.credencial && ` · ${perfil.credencial}`}
           {conta.papel !== "anfitriao" && " · não é mais anfitrião"}
         </p>
+        {conta.papel === "anfitriao" && (
+          <div className="sdb-row">
+            <ButtonLink href={`/admin/conversas/${contaId}` as Route} variant="secondary" icon="comunidade">
+              Conversar
+            </ButtonLink>
+          </div>
+        )}
         {perfil && (
           <p className="sdb-footnote">
             Página pública:{" "}
@@ -71,15 +80,17 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
         }))}
         anuncios={midias.anuncios.map((a) => ({
           id: a.id,
+          status: a.status,
+          imagem: a.midia ? urlDaMidia(a.midia) : null,
+          focoX: a.focoX,
+          focoY: a.focoY,
+          alt: a.alt,
+          categoria: a.categoria,
           titulo: a.titulo,
           descricao: a.descricao,
-          categoria: a.categoria,
           href: a.href,
-          anunciante: a.anunciante,
           chamada: a.chamada,
-          textoAlternativo: a.textoAlternativo,
-          imagem: a.imagem,
-          status: a.status,
+          anunciante: a.anunciante,
         }))}
       />
     </>

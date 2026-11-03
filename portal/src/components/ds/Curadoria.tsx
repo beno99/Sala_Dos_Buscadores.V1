@@ -210,6 +210,7 @@ const ACAO_ROTULO: Record<RegistroAuditoria["acao"], string> = {
   rebaixou: "Tirou o papel de anfitrião",
   convidou: "Convidou",
   "revogou-convite": "Revogou o convite",
+  "apagou-convite": "Apagou o convite",
   transferiu: "Transferiu",
   "incluiu-na-comparacao": "Incluiu na comparação",
   "removeu-da-comparacao": "Tirou da comparação",

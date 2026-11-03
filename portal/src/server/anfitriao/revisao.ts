@@ -6,6 +6,7 @@ import {
   reprovar,
   transicao,
 } from "@/features/anfitriao/regras/ciclo";
+import { revisaoDoAnuncio } from "@/features/anuncios/regras";
 import { registrar } from "../auditoria";
 import { enviarEmail } from "../caixa-saida";
 import { SALA_NA_LIXEIRA, salaNaLixeira } from "../salas/lixeira";
@@ -347,10 +348,12 @@ function decidirAnuncioPlano(anuncioId: string, quem: string, motivo: string | n
   acervo().anuncios.set(anuncio.id, {
     ...anuncio,
     status: t.para,
-    ...(texto ? {} : { publicadoEm: anuncio.publicadoEm ?? hoje() }),
+    ...(texto ? {} : { publicadoEm: anuncio.publicadoEm ?? agora() }),
     atualizadoEm: agora(),
-    atualizadoPor: quem,
-    revisao: comDecisao(anuncio.revisao, novaDecisao(quem, texto ? "reprovado" : "aprovado", texto)),
+    revisao: comDecisao(
+      revisaoDoAnuncio(anuncio),
+      novaDecisao(quem, texto ? "reprovado" : "aprovado", texto),
+    ),
   });
   registrar({
     quem,
@@ -362,7 +365,7 @@ function decidirAnuncioPlano(anuncioId: string, quem: string, motivo: string | n
       ? [{ campo: "Motivo", antes: "", depois: texto }]
       : [{ campo: "Status", antes: "em revisão", depois: "publicado" }],
   });
-  const para = emailDoDono(anuncio.revisao.donoId);
+  const para = emailDoDono(anuncio.donoId);
   if (para)
     enviarEmail({
       para,

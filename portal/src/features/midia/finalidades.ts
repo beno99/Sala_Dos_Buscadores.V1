@@ -34,6 +34,8 @@ export interface OrientacaoImagem {
   proporcao: string;
   /** A altura acompanha o arquivo: a moldura não impõe proporção. */
   alturaLivre?: boolean;
+  /** A imagem preenche a moldura e quem envia escolhe o enquadramento. */
+  enquadravel?: boolean;
   /** Como a imagem aparece, em linguagem de quem opera o portal. */
   exibicao: string;
   /** Onde o mesmo arquivo aparece. */
@@ -135,16 +137,16 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
     exibicao: "Aparece inteira, na largura da publicação; a altura acompanha a proporção do arquivo.",
     usos: ["publicação na Comunidade"],
   },
-  // Anúncio na coluna direita do Portal: até 352 px de largura, dobrados para telas 2×.
+  // Card de publicidade do Portal: até ~420 px de largura, dobrado para telas 2×.
   anuncio: {
     rotulo: "Imagem do produto",
     descricao: "Mostre o produto com clareza, sem texto sobre a imagem.",
-    largura: 1200,
-    altura: 900,
-    proporcao: "4:3",
-    exibicao:
-      "Aparece inteira no anúncio do Portal; arquivos de outra proporção ganham fundo em cima e embaixo ou nas laterais.",
-    usos: ["anúncio na coluna direita do Portal"],
+    largura: 1400,
+    altura: 1000,
+    proporcao: "7:5",
+    enquadravel: true,
+    exibicao: "Preenche a moldura 7:5 do card, sem deformar; ajuste o enquadramento depois do envio.",
+    usos: ["card de publicidade no Portal"],
   },
 };
 
@@ -179,6 +181,7 @@ export function proporcaoDoArquivo(largura: number, altura: number): string {
     "4:5",
     "9:16",
     "3:5",
+    "7:5",
   ];
   const perto = comuns.find((p) => Math.abs(razao(p) / r - 1) < 0.015);
   if (perto) return perto;

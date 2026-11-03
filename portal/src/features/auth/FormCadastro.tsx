@@ -139,6 +139,12 @@ export function FormCadastro({ voltar }: { voltar: string }) {
           Entrar
         </Link>
       </p>
+      <p className="sdb-footnote sdb-conta__alternativa">
+        Quer manter uma Sala própria?{" "}
+        <Link href={"/cadastro/anfitriao" as Route} className="sdb-link">
+          Cadastre-se como anfitrião
+        </Link>
+      </p>
     </form>
   );
 }

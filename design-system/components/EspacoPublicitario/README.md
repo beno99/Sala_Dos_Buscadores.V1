@@ -23,15 +23,9 @@ Anúncio identificado, em três versões: painel (dentro do Painel de progresso 
 ### Por que ela pode encostar nas bordas e ter imagem cheia
 No painel, todo conteúdo editorial é linha ou item compacto, nunca card com imagem. A única área com imagem cheia é o anúncio, então a diferença de forma já separa publicidade de acervo. Além disso o rótulo "Publicidade" e o anunciante ficam sempre visíveis no topo, e o anúncio não tem Selo de proveniência nem o tracejado da IA, que marcam conteúdo do acervo.
 
-## Coluna da nova home (26/10/2026)
-A variante `.sdb-ad--portal`, documentada em PortalInicio, usa título
-Fraunces 24/30 e label PUBLICIDADE em Fraunces 16/18 conforme o frame atual.
-O anunciante e a identificação de demonstração continuam separados da curadoria;
-nunca leva SeloProveniencia. `demonstracao` vem do contrato do anúncio fictício.
-
-## Anúncio de anfitrião (03/11/2026)
-Na coluna direita da Home, logo abaixo de “Seu caminho”, a variante `--portal`
-mostra o anúncio aprovado pela curadoria: PUBLICIDADE, imagem (com a descrição
-dada pelo anfitrião como `alt`), `.sdb-ad__category` opcional, título, texto,
-`a.sdb-ad__link` e `.sdb-ad__foot` com o anunciante. Quem cria é o anfitrião,
-no EditorAnuncio; nada vai ao ar sem a aprovação da curadoria.
+## Card do Portal (`--portal`, 03/11/2026)
+Publicidade cadastrada pelo anfitrião em `/anfitriao/publicidade`; só aparece no Portal depois da aprovação da curadoria. O mesmo componente (`CardAnuncio` no portal) desenha o card no Portal e a prévia do formulário.
+- Ordem: `.sdb-ad__label` "PUBLICIDADE" (Fraunces, sempre visível), `.sdb-ad__media` 7:5 com `object-fit: cover` e o enquadramento escolhido em `--sdb-ad-foco` ("x% y%"), `.sdb-ad__category` opcional (`label-brand`), `.sdb-ad__title` (Fraunces, `label`), `.sdb-ad__text` (Inter, `label-secondary`), `.sdb-ad__link` (`accent`, sublinhado, seta ↗, nova aba com `rel="sponsored noopener noreferrer"` e "(abre em nova aba)" para leitor de tela) e `.sdb-ad__advertiser` no rodapé, com filete.
+- Fundo `material-regular` (creme), borda de 1 px em `nav-edge` (bege dourado), `radius-lg`, sem sombra, texto à esquerda, largura fluida e altura pelo conteúdo.
+- Na prévia, campo vazio mostra `.is-placeholder` (`label-tertiary`, itálico) e `.sdb-ad__vazio` no lugar da imagem; nada disso é salvo.
+- Nunca leva Selo de proveniência.

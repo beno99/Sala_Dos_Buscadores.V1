@@ -47,6 +47,21 @@ export function OrbeAssistente({
   useEffect(() => renderizador.current?.setPaused(pausado), [pausado]);
   useEffect(() => renderizador.current?.setHovered(sobre), [sobre]);
 
+  useEffect(() => {
+    const semHover = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!semHover || reduzido || pausado) return;
+    let abrir = true;
+    const ciclo = window.setInterval(() => {
+      setSobre(abrir);
+      abrir = !abrir;
+    }, 2400);
+    return () => {
+      window.clearInterval(ciclo);
+      setSobre(false);
+    };
+  }, [pausado]);
+
   // O hover só abre os anéis com ponteiro fino; ao sair (ou esconder a aba), eles se fecham.
   useEffect(() => {
     const esconder = () => document.hidden && setSobre(false);

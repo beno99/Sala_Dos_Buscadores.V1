@@ -1,6 +1,5 @@
 import "server-only";
 import type {
-  AnuncioEditorial,
   Candidatura,
   Convite,
   DecisaoRevisao,
@@ -12,6 +11,7 @@ import type {
   VideoEditorial,
 } from "@/data/types";
 import { statusDoConvite } from "@/features/anfitriao/regras/convite";
+import { type Anuncio, revisaoDoAnuncio } from "@/features/anuncios/regras";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { salaNaLixeira } from "../salas/lixeira";
 import { artigoDoDono, salaDoDono } from "../sessao";
@@ -38,8 +38,7 @@ const artigosDe = (donoId: string) =>
 const videosDe = (donoId: string) =>
   [...acervo().videos.values()].filter((v) => !salaNaLixeira(v.sala) && v.revisao?.donoId === donoId);
 
-const anunciosDe = (donoId: string) =>
-  [...acervo().anuncios.values()].filter((a) => a.revisao.donoId === donoId);
+const anunciosDe = (donoId: string) => [...acervo().anuncios.values()].filter((a) => a.donoId === donoId);
 
 const artigosDaSala = (sala: SalaEditorial) =>
   [...acervo().conteudos.values()].filter((c) => !c.lixeira && c.sala === sala.slug && c.revisao);
@@ -97,8 +96,8 @@ export function novidadesDe(donoId: string): Novidade[] {
       })),
   );
   const doAnuncio = anunciosDe(donoId).flatMap((a) =>
-    a.revisao.decisoes
-      .filter((d) => !d.vista)
+    revisaoDoAnuncio(a)
+      .decisoes.filter((d) => !d.vista)
       .map((decisao) => ({ tipo: "anuncio" as const, id: a.id, salaId: "", titulo: a.titulo, decisao })),
   );
   return [...daSala, ...doArtigo, ...doVideo, ...doAnuncio]
@@ -156,7 +155,7 @@ export function videosDoAnfitriao(donoId: string): (VideoEditorial & { salaNome:
     .map((v) => ({ ...clone(v), salaNome: nomes.get(v.sala) ?? v.sala }));
 }
 
-export function anunciosDoAnfitriao(donoId: string): AnuncioEditorial[] {
+export function anunciosDoAnfitriao(donoId: string): Anuncio[] {
   return anunciosDe(donoId)
     .sort((a, b) => b.atualizadoEm.localeCompare(a.atualizadoEm))
     .map(clone);

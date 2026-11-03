@@ -17,7 +17,7 @@ limitadas a `.sdb-home` ou `[data-portal="inicio"]`; as demais páginas conserva
   listas com duplicatas. Filtros das Salas ficam em details, operável por teclado.
 - `.sdb-ad--portal` (logo abaixo de “Seu caminho”): label PUBLICIDADE, imagem,
   categoria opcional, título, descrição, link patrocinado em texto e o anunciante
-  no rodapé (ver EditorAnuncio). Vem dos anúncios de anfitriões aprovados pela
+  no rodapé (card do Portal, ver EspacoPublicitario). Vem dos anúncios de anfitriões aprovados pela
   curadoria. Política fica abaixo, fora do card. Sem anúncio elegível, omitir os dois.
 - Todos os materiais e cores vêm dos tokens dos quatro temas. A borda utiliza
   `separator`; fontes Gambetta, Fraunces, Source Serif 4 e Inter são preservadas.

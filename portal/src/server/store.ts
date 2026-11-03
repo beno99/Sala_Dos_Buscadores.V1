@@ -5,7 +5,6 @@ import { type PedidoEditorial, proximoInstante } from "@/modules/acervo/editoria
 import "server-only";
 import { instalarRegistroSalas, instalarRegistroTemas } from "@/data/catalogo";
 import type {
-  AnuncioEditorial,
   Candidatura,
   Citacao,
   ConteudoEditorial,
@@ -25,6 +24,7 @@ import type {
   VideoEditorial,
 } from "@/data/types";
 import { ordenarSalas, salaVisivel } from "@/features/anfitriao/regras/visibilidade";
+import type { Anuncio } from "@/features/anuncios/regras";
 import { instalarLeiturasDoAssistente, type LeituraParaAssistente } from "@/features/assistente/motor";
 import { type EscolhaDestaques, VAGAS_VAZIAS } from "@/features/destaques/vagas";
 import type { ProgressoEstudo } from "@/features/estudo/tipos";
@@ -120,8 +120,7 @@ export interface Acervo {
   /** Imagens enviadas (metadados; os bytes ficam no armazenamento S3). */
   midias: Map<string, MidiaGuardada>;
   temas: Map<string, TemaEditorial>;
-  /** Anúncios de anfitriões (só os aprovados aparecem no Portal). */
-  anuncios: Map<string, AnuncioEditorial>;
+  anuncios: Map<string, Anuncio>;
 }
 
 interface Store {

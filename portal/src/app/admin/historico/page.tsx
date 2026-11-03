@@ -40,7 +40,15 @@ const GRUPOS: { value: string; label: string; acoes: AcaoAuditada[] }[] = [
   {
     value: "usuarios",
     label: "Papéis, convites e perfis",
-    acoes: ["promoveu", "rebaixou", "convidou", "revogou-convite", "transferiu", "editou-perfil"],
+    acoes: [
+      "promoveu",
+      "rebaixou",
+      "convidou",
+      "revogou-convite",
+      "apagou-convite",
+      "transferiu",
+      "editou-perfil",
+    ],
   },
 ];
 

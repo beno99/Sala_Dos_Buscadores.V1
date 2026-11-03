@@ -20,6 +20,7 @@ Nas páginas de detalhe dentro da moldura (ex.: a página da Sala), a segunda li
 - 14 px, secundária; o item atual em `label`; separador "/" terciário, desenhado pelo CSS.
 - O título da barra continua sendo a seção ("Salas") e é um `p`: o `h1` é o título da página.
 - Trilha e saudação se excluem: uma página tem uma ou outra.
+- Abaixo de 900 px, quando a lateral some, a marca entra à esquerda do título: `a.sdb-topbar__logo` (link para o início, `aria-label="A Sala dos Buscadores, início"`) com o arco com escada em 40 px. Acima disso fica oculta, porque a lateral já mostra a marca.
 - Abaixo de 900 px a trilha some. A página põe no topo do conteúdo um botão secundário pequeno "‹ Salas" (`.sdb-roomhead__back` no [Cabeçalho da Sala](../CabecalhoSala/README.md)), que só aparece nessa largura.
 
 ## Paleta areia (out 2026)

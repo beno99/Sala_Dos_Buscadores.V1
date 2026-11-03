@@ -35,8 +35,8 @@ O Carrossel de salas reutiliza esta mesma estrutura. O exemplo de CardSala demon
 
 `preview.html` é a fonte do exemplo. Execute `node scripts/build.mjs` na raiz do design system após alterações; não edite os exemplos gerados.
 
-## Imagem inteira (revisão de 31/10/2026)
-`img.sala__image` (e a `ImagemAcervo` dentro do card) usa `object-fit: contain`: a imagem aparece inteira, e onde a proporção difere sobra o fundo do card. A Sala tem uma **imagem do card** própria (vertical, recomendado 1.200 × 1.800 px, 2:3); sem ela, o card usa o banner da Sala, inteiro.
+## Imagem que preenche o card (revisão de 03/11/2026)
+`img.sala__image` (e a `ImagemAcervo` dentro do card) usa `object-fit: cover`: a imagem preenche a moldura inteira, sem faixas de fundo; quando a proporção difere, as bordas são aparadas a partir do centro. A Sala tem uma **imagem do card** própria (vertical, recomendado 1.200 × 1.800 px, 2:3); sem ela, o card usa o banner da Sala, inteiro.
 
 
 ## Imagens por finalidade 02/11/2026

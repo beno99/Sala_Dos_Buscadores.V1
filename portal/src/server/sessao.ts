@@ -1,13 +1,7 @@
 import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import type {
-  AnuncioEditorial,
-  ConteudoEditorial,
-  FonteEditorial,
-  SalaEditorial,
-  VideoEditorial,
-} from "@/data/types";
+import type { ConteudoEditorial, FonteEditorial, SalaEditorial, VideoEditorial } from "@/data/types";
 import { contaAtiva } from "@/modules/conta/acesso";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import * as conta from "@/modules/conta/conta.controller";
@@ -120,12 +114,6 @@ export function videoDoDono(videoId: string, donoId: string): VideoEditorial {
   if (!video?.revisao || video.revisao.donoId !== donoId) throw new AcessoNegado(NEGADO_ANFITRIAO);
   if (salaNaLixeira(video.sala)) throw new AcessoNegado(SALA_NA_LIXEIRA);
   return video;
-}
-
-export function anuncioDoDono(anuncioId: string, donoId: string): AnuncioEditorial {
-  const anuncio = acervo().anuncios.get(anuncioId);
-  if (anuncio?.revisao.donoId !== donoId) throw new AcessoNegado(NEGADO_ANFITRIAO);
-  return anuncio;
 }
 
 /** Fonte que o anfitrião pode citar: do catálogo público ou proposta por ele mesmo. */

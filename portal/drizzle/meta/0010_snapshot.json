@@ -1,5 +1,5 @@
 {
-  "id": "7bd517fc-fe15-41ee-9eea-cdef13c0f5c5",
+  "id": "449fc34a-dd51-489b-9b01-e0006de18a24",
   "prevId": "13827512-0886-4938-a4c6-0f58f6b4ae22",
   "version": "7",
   "dialect": "postgresql",
@@ -841,37 +841,9 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "dono_id": {
-          "name": "dono_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "revisao": {
-          "name": "revisao",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
         }
       },
-      "indexes": {
-        "videos_dono_idx": {
-          "name": "videos_dono_idx",
-          "columns": [
-            {
-              "expression": "dono_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "videos_sala_salas_slug_fk": {
           "name": "videos_sala_salas_slug_fk",
@@ -1132,33 +1104,6 @@
           "columns": ["slug"]
         }
       },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": true
-    },
-    "public.versao_dados": {
-      "name": "versao_dados",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "default": 1
-        },
-        "versao": {
-          "name": "versao",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": true
@@ -1778,6 +1723,81 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
+    "public.mensagens_curadoria": {
+      "name": "mensagens_curadoria",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "anfitriao_id": {
+          "name": "anfitriao_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "autor_id": {
+          "name": "autor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "texto": {
+          "name": "texto",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "criada_em": {
+          "name": "criada_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "mensagens_curadoria_anfitriao_idx": {
+          "name": "mensagens_curadoria_anfitriao_idx",
+          "columns": [
+            {
+              "expression": "anfitriao_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "criada_em",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "mensagens_curadoria_anfitriao_id_usuarios_id_fk": {
+          "name": "mensagens_curadoria_anfitriao_id_usuarios_id_fk",
+          "tableFrom": "mensagens_curadoria",
+          "tableTo": "usuarios",
+          "columnsFrom": ["anfitriao_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
     "public.perfis_buscador": {
       "name": "perfis_buscador",
       "schema": "",
@@ -2036,152 +2056,26 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
-    "public.anuncios": {
-      "name": "anuncios",
+    "public.versao_dados": {
+      "name": "versao_dados",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": 1
         },
-        "titulo": {
-          "name": "titulo",
-          "type": "text",
+        "versao": {
+          "name": "versao",
+          "type": "bigint",
           "primaryKey": false,
-          "notNull": true
-        },
-        "descricao": {
-          "name": "descricao",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "categoria": {
-          "name": "categoria",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "href": {
-          "name": "href",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "anunciante": {
-          "name": "anunciante",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "chamada": {
-          "name": "chamada",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "texto_alternativo": {
-          "name": "texto_alternativo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "midia": {
-          "name": "midia",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "imagem": {
-          "name": "imagem",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "publicado_em": {
-          "name": "publicado_em",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "status_editorial",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "criado_em": {
-          "name": "criado_em",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "atualizado_em": {
-          "name": "atualizado_em",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "criado_por": {
-          "name": "criado_por",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "atualizado_por": {
-          "name": "atualizado_por",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "dono_id": {
-          "name": "dono_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "revisao": {
-          "name": "revisao",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 0
         }
       },
-      "indexes": {
-        "anuncios_dono_idx": {
-          "name": "anuncios_dono_idx",
-          "columns": [
-            {
-              "expression": "dono_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "anuncios_status_idx": {
-          "name": "anuncios_status_idx",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

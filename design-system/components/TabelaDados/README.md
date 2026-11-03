@@ -8,6 +8,7 @@ Lista editorial com colunas, ordenação e seleção, para a área de curadoria.
 - Título em `.sdb-table__title` com link e `.sdb-table__sub` para a Sala ou o slug. Ações em `.sdb-table__actions` (botões pequenos ou Menu).
 - Status pelo Badge com marcador (cheio, meio, vazio) e palavra, nunca só cor. Números em `.sdb-table__num`.
 - Abaixo de 720 px a tabela vira lista: cada célula precisa de `data-label` com o nome da coluna.
+- Células `td.sdb-tabular` (datas, contagens) não quebram linha: "28 out 2026" fica inteiro mesmo em coluna estreita (03/11/2026).
 - Vazio: uma linha com `.sdb-table__empty` que diz o que fazer. Carregando: linhas de `.sdb-skel`.
 
 ## Navegação em níveis (`.sdb-table--nav`)

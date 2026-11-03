@@ -193,16 +193,7 @@
     padding: var(--space-4);
   }
 
-  .sdb-conta__imagem {
-    width: min(480px, 100%);
-    min-height: 0;
-    height: clamp(160px, 26dvh, 240px);
-    justify-self: center;
-  }
-
-  .sdb-conta__imagem img { object-position: 50% 27%; }
-  .sdb-conta__imagem-controls { left: 8px; bottom: 8px; gap: 4px; }
-  .sdb-conta__imagem-controls .sdb-dots { padding: 4px; }
+  .sdb-conta__imagem { display: none; }
   .sdb-conta__conteudo { justify-self: center; padding-block: 0 var(--space-4); }
   .sdb-conta__marca { max-width: none; font-size: 36px; margin-bottom: var(--space-4); }
   .sdb-conta__form--entrar .sdb-conta__lead { font-size: 20px; }

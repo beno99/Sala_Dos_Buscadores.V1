@@ -58,7 +58,7 @@ export default async function PainelAnfitriao() {
           <ButtonLink href={"/anfitriao/videos/novo" as Route} variant="secondary" icon="play">
             Criar vídeo
           </ButtonLink>
-          <ButtonLink href={"/anfitriao/publicidade/novo" as Route} variant="secondary" icon="editar">
+          <ButtonLink href={"/anfitriao/publicidade/nova" as Route} variant="secondary" icon="editar">
             Criar publicidade
           </ButtonLink>
         </div>

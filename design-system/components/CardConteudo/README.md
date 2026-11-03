@@ -62,3 +62,6 @@ Todas as variantes de Destaques mostram duração do mesmo registro. Cards de v�
 ## Assinatura pública de Anfitrião (02/11/2026)
 
 Para material com assinatura confirmada, `.sdb-content--host` acrescenta filete dourado. Preserve a autoria original e o selo de proveniência; abaixo, `.sdb-host-signature` identifica Sala de Anfitrião e leva ao perfil público de quem mantém a Sala. Isso supera a antiga restrição de autoria sem página: somente a assinatura pública confirmada recebe link; nunca o último editor ou responsável pelo upload. Cards em linha usam a mesma identificação.
+
+## Imagem que preenche o card (revisão de 03/11/2026)
+`.sala__image` no Card de conteúdo usa `object-fit: cover`: a imagem preenche a moldura, sem faixas de fundo; quando a proporção difere, as bordas são aparadas a partir do centro. A miniatura da lista de Destaques (`.sdb-toplist__thumb`) segue a mesma regra. Vídeos com `.sala__image--inteira` continuam inteiros.

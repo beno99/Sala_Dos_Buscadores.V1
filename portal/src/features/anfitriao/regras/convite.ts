@@ -33,3 +33,37 @@ export function erroDoConvite(
       return null;
   }
 }
+
+export const ASSUNTO_CONVITE = "Convite para ser anfitrião na Sala dos Buscadores";
+export const LIMITE_NOME_CONVITE = 80;
+export const LIMITE_MENSAGEM_CONVITE = 1200;
+
+export interface PersonalizacaoConvite {
+  nome: string;
+  mensagem: string;
+}
+
+export const SEM_PERSONALIZACAO: PersonalizacaoConvite = { nome: "", mensagem: "" };
+
+export function validarPersonalizacao(p: PersonalizacaoConvite): Record<string, string> {
+  const erros: Record<string, string> = {};
+  if (p.nome.trim().length > LIMITE_NOME_CONVITE)
+    erros["campo-nome-convite"] = `o nome tem mais de ${LIMITE_NOME_CONVITE} caracteres.`;
+  if (p.mensagem.trim().length > LIMITE_MENSAGEM_CONVITE)
+    erros["campo-mensagem-convite"] = `a mensagem tem mais de ${LIMITE_MENSAGEM_CONVITE} caracteres.`;
+  return erros;
+}
+
+export function corpoDoConvite(p: PersonalizacaoConvite, link: string): string {
+  const nome = p.nome.trim().replace(/\s+/g, " ");
+  const mensagem = p.mensagem.trim().replace(/\n{3,}/g, "\n\n");
+  return [
+    nome ? `Olá, ${nome}.` : "Olá.",
+    mensagem,
+    "A curadoria da Sala dos Buscadores convida você a ser anfitrião: manter uma Sala própria, com leituras suas, revisadas pela curadoria antes de ir ao ar.",
+    `Para aceitar, crie sua conta por este link, que vale ${DIAS_VALIDADE_CONVITE} dias e só pode ser usado uma vez:\n${link}`,
+    "Se não esperava este convite, ignore esta mensagem.",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}

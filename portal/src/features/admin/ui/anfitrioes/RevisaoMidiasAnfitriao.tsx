@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ds/Button";
+import { CardAnuncio, type DadosCardAnuncio } from "@/components/ds/CardAnuncio";
 import { SeloStatus } from "@/components/ds/Curadoria";
-import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
 import { Icon } from "@/components/ds/Icon";
 import { ModalConfirmacao } from "@/components/ds/Modal";
 import { useToast } from "@/components/ds/Toast";
@@ -28,16 +28,8 @@ export interface VideoParaRevisao {
   enviadoEm?: string;
 }
 
-export interface AnuncioParaRevisao {
+export interface AnuncioParaRevisao extends DadosCardAnuncio {
   id: string;
-  titulo: string;
-  descricao: string;
-  categoria?: string;
-  href: string;
-  anunciante: string;
-  chamada: string;
-  textoAlternativo: string;
-  imagem?: string;
   status: StatusEditorial;
 }
 
@@ -156,22 +148,7 @@ export function RevisaoMidiasAnfitriao({
                   <SeloStatus status={a.status} />
                   <span className="sdb-footnote">Destino: {a.href || "sem link"}</span>
                 </div>
-                <EspacoPublicitario
-                  variante="portal"
-                  onPorQue={() => {}}
-                  anuncio={{
-                    id: a.id,
-                    anunciante: a.anunciante,
-                    titulo: [a.titulo, ""],
-                    texto: a.descricao,
-                    chamada: a.chamada,
-                    href: a.href || "#",
-                    placa: "bege",
-                    imagem: a.imagem,
-                    categoria: a.categoria,
-                    textoAlternativo: a.textoAlternativo,
-                  }}
-                />
+                <CardAnuncio anuncio={a} />
                 {a.status === "em_revisao" && decisao("anuncio", a.id, a.titulo)}
               </div>
             ))}

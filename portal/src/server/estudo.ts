@@ -1,6 +1,5 @@
 import "server-only";
 import type { Route } from "next";
-import type { AnuncioVisual } from "@/components/ds/EspacoPublicitario";
 import type { Indicador } from "@/components/ds/PainelIndicadores";
 import { salaPorSlug, salasOficiais, temaPorSlug, todosOsTemas } from "@/data/catalogo";
 import { DESTAQUES_DO_CANAL } from "@/data/referencia/banner";
@@ -8,7 +7,6 @@ import {
   acervoDeEstudo,
   acervoPublico,
   alcanceDoTema,
-  anunciosPublicados,
   listarSalas,
   type SalaResumo,
 } from "@/data/repositorio";
@@ -27,6 +25,7 @@ import {
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
 import type { Membro } from "@/modules/conta/conta.contratos";
+import { type AnuncioNoPortal, anuncioParaOPortal } from "./anuncios";
 import { imagem, imagemDoCard, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
@@ -51,14 +50,6 @@ interface Anuncio {
   categoria?: string;
   textoAlternativo?: string;
   locais: ("banner" | "painel")[];
-}
-
-/** Índice estável em [0, n) a partir de um texto (rodízio de anúncios sem estado). */
-function rodizio(texto: string, n: number): number {
-  if (n <= 1) return 0;
-  let h = 0;
-  for (const c of texto) h = (h * 31 + (c.codePointAt(0) ?? 0)) >>> 0;
-  return h % n;
 }
 
 export interface SlideAnuncio {
@@ -124,7 +115,7 @@ export interface ModeloPortal {
   ultimaLida?: ConteudoComImagem;
   recentes: ConteudoComImagem[];
   ampliar?: ConteudoComImagem & { motivo: string };
-  anuncioPainel?: AnuncioVisual;
+  anuncioPortal?: AnuncioNoPortal;
   nivelFoco?: NivelEmFoco;
   mostrarNiveis: boolean;
 }
@@ -297,22 +288,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   );
   const temaEmComum = conteudoAmpliar?.temas.find((t) => temasLidos.has(t));
 
-  // Anúncios de anfitriões aprovados pela curadoria. Hoje só no painel da coluna direita.
-  const anuncios: (Anuncio & { imagem?: string })[] = anunciosPublicados().map((a) => ({
-    id: a.id,
-    anunciante: a.anunciante,
-    titulo: [a.titulo, ""],
-    texto: a.descricao,
-    chamada: a.chamada,
-    href: a.href,
-    placa: "bege",
-    imagem: a.imagem,
-    categoria: a.categoria,
-    textoAlternativo: a.textoAlternativo,
-    locais: ["painel"],
-  }));
-  // Rodízio estável por pessoa e por dia: a mesma pessoa vê o mesmo anúncio no dia todo.
-  const vez = rodizio(`${m.id}:${new Date().toISOString().slice(0, 10)}`, anuncios.length);
+  const anuncios: (Anuncio & { imagem?: string })[] = [];
   const episodios = DESTAQUES_DO_CANAL.flatMap((d) => {
     const v = videos.find((x) => x.id === d.video);
     if (!v) return [];
@@ -364,7 +340,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
         }
       : {}),
     ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
-    anuncioPainel: anuncios.filter((a) => a.locais.includes("painel"))[vez],
+    anuncioPortal: anuncioParaOPortal(m.id),
     mostrarNiveis: p.mostrarNiveis,
   };
 }

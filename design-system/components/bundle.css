@@ -1036,6 +1036,7 @@ li.is-done .sdb-mark .sdb-icon path { stroke: currentColor; stroke-width: 10; st
 .sdb-table caption { caption-side: top; padding: 16px 16px 4px; text-align: left; font: 600 13px/1.3 var(--font-ui); color: var(--label-secondary); }
 .sdb-table th { padding: 16px 16px; border-bottom: 1px solid var(--separator); text-align: left; white-space: nowrap; font: 600 11.5px/1.3 var(--font-meta); letter-spacing: 0.06em; text-transform: uppercase; color: var(--label-secondary); }
 .sdb-table td { padding: 16px 16px; border-bottom: 1px solid var(--separator); vertical-align: middle; }
+.sdb-table td.sdb-tabular { white-space: nowrap; }
 .sdb-table tbody tr:last-child td { border-bottom: 0; }
 .sdb-table tbody tr { transition: background-color 150ms ease; }
 .sdb-table tbody tr:hover { background: var(--accent-soft); }
@@ -1382,6 +1383,9 @@ button.sdb-sidenav__cta { border: 0; cursor: pointer; }
 }
 .sdb-topbar:not(.is-scrolled) { box-shadow: inset 0 -1px 0 var(--topbar-edge); }
 .sdb-topbar.is-scrolled { box-shadow: 0 1px 0 var(--float-edge), var(--float-shadow); }
+.sdb-topbar__logo { display: none; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius-sm); }
+.sdb-topbar__logo img { display: block; width: 40px; height: 40px; object-fit: contain; }
+.sdb-topbar__logo:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 .sdb-topbar__titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .sdb-topbar__title { margin: 0; font: 500 24px/1.15 var(--font-display-lower); letter-spacing: -0.015em; color: var(--label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sdb-topbar__greeting { margin: 0; font-size: 14px; line-height: 1.35; color: var(--label-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1416,6 +1420,7 @@ button.sdb-sidenav__cta { border: 0; cursor: pointer; }
   .sdb-topbar__search { min-width: 0; width: 44px; padding: 0; justify-content: center; }
   .sdb-topbar__search > :not(.sdb-icon) { display: none; }
 }
+@media (max-width: 899.98px) { .sdb-topbar__logo { display: inline-flex; } }
 
 /* ---------- Botão flutuante ---------- */
 .sdb-fab {
@@ -1805,16 +1810,15 @@ label.sdb-option { cursor: pointer; }
    miniatura por cima do título e ganha accent; os outros encolhem e esmaecem.
    O estado vem de [data-sdb-toplist] (bundle.js): .is-active no item e
    .has-active na lista, só onde há ponteiro fino com hover.
-   Itens com base natural e crescimento proporcional: preenchem a coluna quando
-   ela tem altura, e ficam na altura natural quando não tem. Sem hover, só texto. */
+   Itens na altura natural, um logo abaixo do outro (03/11/2026). Sem hover, só texto. */
 .sdb-toplist { display: flex; flex-direction: column; gap: 16px; min-width: 0; height: 100%; }
 .sdb-toplist__head { display: flex; flex-direction: column; gap: 4px; }
 .sdb-toplist__label { margin: 0; font: 600 11.5px/1.3 var(--font-meta); letter-spacing: 0.06em; text-transform: uppercase; color: var(--label-secondary); }
 .sdb-toplist__caption { margin: 0; font-size: 13px; line-height: 1.38; color: var(--label-secondary); }
 .sdb-toplist__list { display: flex; flex: 1; flex-direction: column; margin: 0; padding: 0; list-style: none; }
-.sdb-toplist__item { flex: 1 0 auto; border-top: 1px solid var(--separator); transition: flex-grow var(--duration-spring) var(--sdb-spring), opacity var(--duration-fast) ease; }
+.sdb-toplist__item { flex: none; border-top: 1px solid var(--separator); transition: opacity var(--duration-fast) ease; }
 .sdb-toplist__item:first-child { border-top: 0; }
-.sdb-toplist__link { display: flex; flex-direction: column; justify-content: center; gap: 0; height: 100%; padding: 16px 0; border-radius: var(--radius-sm); color: inherit; text-decoration: none; transition: gap var(--duration-spring) var(--sdb-spring); }
+.sdb-toplist__link { display: flex; flex-direction: column; justify-content: center; gap: 0; height: 100%; padding: 12px 0; border-radius: var(--radius-sm); color: inherit; text-decoration: none; transition: gap var(--duration-spring) var(--sdb-spring); }
 .sdb-toplist__link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 .sdb-toplist__thumb { position: relative; flex: none; display: block; height: 0; overflow: hidden; border-radius: var(--radius-md); opacity: 0; transform: translateY(8px) scale(0.985); transform-origin: top center; transition: height var(--duration-spring) var(--sdb-spring), opacity var(--duration-fast) ease, transform var(--duration-spring) var(--sdb-spring); }
 .sdb-toplist__thumb > img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -1824,8 +1828,8 @@ label.sdb-option { cursor: pointer; }
 .sdb-toplist__meta { display: block; margin-top: 8px; font-size: 12px; line-height: 1.35; color: var(--label-secondary); }
 .sdb-toplist__pag { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 @media (hover: hover) and (pointer: fine) {
-  .sdb-toplist__list.has-active > .sdb-toplist__item { flex-grow: 0.82; opacity: 0.52; }
-  .sdb-toplist__list.has-active > .sdb-toplist__item.is-active { flex-grow: 2.6; opacity: 1; }
+  .sdb-toplist__list.has-active > .sdb-toplist__item { opacity: 0.52; }
+  .sdb-toplist__list.has-active > .sdb-toplist__item.is-active { opacity: 1; }
   .sdb-toplist__item.is-active .sdb-toplist__link { justify-content: flex-start; gap: 16px; }
   .sdb-toplist__item.is-active .sdb-toplist__thumb { height: 132px; opacity: 1; transform: none; }
   .sdb-toplist__item.is-active .sdb-toplist__title { color: var(--accent); }
@@ -2262,36 +2266,21 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 .sdb-home__caminho .sdb-levelup { width: 100%; }
 .sdb-home__caminho > .sdb-btn { margin-top: auto; }
 .sdb-home__publicidade { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); }
-.sdb-ad--portal { display: flex; flex-direction: column; gap: calc(var(--space-4) - 2px); padding: calc(var(--space-4) + var(--space-1)); background: var(--material-regular); border: 1px solid var(--separator); border-radius: var(--radius-lg); box-shadow: none; }
-.sdb-ad--portal .sdb-ad__label { align-self: flex-start; padding: 0; background: none; color: var(--label-secondary); font: 400 16px/18px var(--font-display-lower); letter-spacing: 1.2px; }
-.sdb-ad--portal .sdb-ad__media { width: 100%; height: auto; aspect-ratio: 272 / 194; margin: 0; border-radius: calc(var(--radius-md) - var(--space-1)); }
-.sdb-ad--portal .sdb-ad__title { margin: 0; font: 400 24px/30px var(--font-display-lower); }
-.sdb-ad--portal .sdb-ad__advertiser { font: 400 12px/18px var(--font-ui); color: var(--label-secondary); }
-.sdb-ad--portal .sdb-ad__text { margin: 0; font: 400 14px/22px var(--font-ui); }
-.sdb-ad--portal .sdb-ad__demo { margin: 0; color: var(--label-secondary); font: 400 10px/18px var(--font-ui); }
-.sdb-ad--portal > .sdb-btn { align-self: flex-start; white-space: normal; }
-/* Anúncio de anfitrião (03/11/2026): categoria, link em texto e anunciante no rodapé. */
-.sdb-ad--portal .sdb-ad__category { margin: 0; font: 500 14px/20px var(--font-ui); color: var(--label-brand); }
-.sdb-ad--portal .sdb-ad__link { align-self: flex-start; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--accent); font: 500 15px/22px var(--font-ui); text-decoration: none; border-radius: var(--radius-xs); }
-.sdb-ad--portal .sdb-ad__link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.sdb-ad--portal .sdb-ad__link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
-.sdb-ad--portal .sdb-ad__foot { display: block; padding-top: var(--space-2); }
-/* EditorAnuncio: formulário à esquerda, prévia ao vivo à direita (fixa ao rolar no desktop). */
-.sdb-ad-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); gap: var(--space-7); align-items: start; }
-.sdb-ad-editor__form { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
-.sdb-ad-editor__label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); width: 100%; }
-.sdb-ad-editor__label > small { font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
-.sdb-ad-editor__preview { position: sticky; top: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
-.sdb-ad-editor__preview-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
-.sdb-ad-editor__preview-title { margin: 0; font: 500 13px/18px var(--font-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--label-secondary); }
-.sdb-ad-editor__live { display: inline-flex; align-items: center; gap: var(--space-2); font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
-.sdb-ad-editor__live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--positive); }
-.sdb-ad-editor__caption { margin: 0; text-align: center; font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
-.sdb-ad-editor__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-5); border-top: 1px solid var(--separator); }
-@media (max-width: 960px) {
-  .sdb-ad-editor { grid-template-columns: minmax(0, 1fr); }
-  .sdb-ad-editor__preview { position: static; }
-}
+/* Card de publicidade do Portal (03/11/2026): mesmo componente na prévia do anfitrião e no Portal.
+   Ordem: PUBLICIDADE, imagem 7:5, categoria, título, descrição, link ↗, anunciante. */
+.sdb-ad--portal { display: flex; flex-direction: column; gap: var(--space-3); width: 100%; padding: var(--space-5); background: var(--material-regular); border: 1px solid var(--nav-edge); border-radius: var(--radius-lg); box-shadow: none; text-align: left; }
+.sdb-ad--portal .sdb-ad__label { align-self: flex-start; padding: 0; background: none; color: var(--label-secondary); font: 400 14px/18px var(--font-display-lower); letter-spacing: 0.12em; text-transform: uppercase; }
+.sdb-ad--portal .sdb-ad__media { width: 100%; height: auto; aspect-ratio: 7 / 5; margin: var(--space-1) 0; border-radius: var(--radius-md); background: var(--fill); }
+.sdb-ad--portal .sdb-ad__media > img { object-fit: cover; object-position: var(--sdb-ad-foco, 50% 50%); }
+.sdb-ad__vazio { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-4); color: var(--label-secondary); font: 400 13px/18px var(--font-ui); text-align: center; }
+.sdb-ad__category { margin: 0; color: var(--label-brand); font: 600 12px/16px var(--font-ui); letter-spacing: 0.06em; text-transform: uppercase; }
+.sdb-ad--portal .sdb-ad__title { margin: 0; color: var(--label); font: 400 24px/30px var(--font-display-lower); overflow-wrap: anywhere; }
+.sdb-ad--portal .sdb-ad__text { margin: 0; color: var(--label-secondary); font: 400 14px/22px var(--font-ui); overflow-wrap: anywhere; }
+.sdb-ad__link { align-self: flex-start; display: inline-flex; align-items: center; gap: var(--space-1); margin-top: var(--space-1); border-radius: var(--radius-xs); color: var(--accent); font: 600 14px/22px var(--font-ui); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.sdb-ad__link:hover { text-decoration-thickness: 2px; }
+.sdb-ad__link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.sdb-ad--portal .sdb-ad__advertiser { margin: var(--space-2) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--separator); color: var(--label-secondary); font: 400 12px/18px var(--font-ui); }
+.sdb-ad--portal .is-placeholder { color: var(--label-tertiary); font-style: italic; }
 .sdb-imagem-acervo { position: absolute; inset: 0; overflow: hidden; }
 .sdb-imagem-acervo__fallback { position: absolute; inset: 0; display: grid; place-items: center; }
 .sdb-imagem-acervo__fallback > .sdb-arc { width: 24%; max-width: 120px; }
@@ -2315,7 +2304,6 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
   .sdb-home__columns { grid-template-columns: minmax(0, 1fr); }
   .sdb-home > .sdb-stats { --cols: 2; }
   .sdb-home__apoio { width: 100%; }
-  .sdb-ad--portal .sdb-ad__media { max-height: 260px; }
 }
 @container portal (max-width: 760px) {
   .sdb-home .sdb-banner--cheio .sdb-banner__slide { min-height: 0; }
@@ -2352,22 +2340,20 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
   .sdb-home .sdb-banner__media .sdb-imagem-acervo > img { object-position: 70% center; }
 }
 
-.sdb-ad--portal .sdb-imagem-acervo__fallback { background: var(--nav-control); }
 
 /* ---------- Imagens enviadas, sempre inteiras (revisão de 31/10/2026) ----------
    Nenhuma imagem enviada pela curadoria, por anfitriões ou por membros é recortada nem deformada.
    Banner da Sala e topo do artigo: a altura acompanha o arquivo, na largura toda (até 72% da
    altura da tela; acima disso, a imagem inteira cabe com fundo nas laterais).
-   Molduras de proporção fixa (cards, miniaturas, capa do perfil): a imagem inteira cabe dentro,
+   Exceção (03/11/2026): Card de Sala, Card de conteúdo e miniatura dos Destaques preenchem a moldura (cover).
+   Molduras de proporção fixa (cards de conteúdo, miniaturas, capa do perfil): a imagem inteira cabe dentro,
    com o fundo da moldura onde sobrar. Dimensões recomendadas por uso: CampoImagem/README.md. */
 .sdb-roombanner > .video-embed__frame:has(> img) { aspect-ratio: auto; }
 .sdb-roombanner > .video-embed__frame > img { position: static; inset: auto; height: auto; max-height: min(72svh, 760px); object-fit: contain; }
-.sala .sdb-imagem-acervo > img,
 .sdb-retomada__media .sdb-imagem-acervo > img,
 .sdb-entry__thumb > img,
-.sdb-toplist__thumb > img,
 .sdb-profilehead__cover > img { object-fit: contain; object-position: 50% 50%; }
-.sdb-entry__thumb:has(> img), .sdb-toplist__thumb:has(> img) { background: var(--fill); }
+.sdb-entry__thumb:has(> img) { background: var(--fill); }
 .sdb-post__media img { aspect-ratio: auto; max-height: min(72svh, 720px); object-fit: contain; background: var(--fill); }
 /* Retomada do Portal: a imagem inteira ocupa a metade esquerda, ao lado do painel (no celular, a faixa de cima). */
 .sdb-retomada__media > .sdb-imagem-acervo { right: 50%; }

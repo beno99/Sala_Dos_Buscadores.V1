@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { ButtonLink } from "@/components/ds/Button";
 import { SeloStatus } from "@/components/ds/Curadoria";
+import { revisaoDoAnuncio } from "@/features/anuncios/regras";
 import { formatarData } from "@/lib/texto";
 import { anunciosDoAnfitriao } from "@/server/anfitriao/consultas";
 import { anfitriaoDaPagina } from "@/server/anfitriao/pagina";
@@ -21,7 +22,7 @@ export default async function PublicidadeDoAnfitriao() {
           de ele aparecer no Portal: sem promessa de cura, manipulação religiosa ou urgência.
         </p>
         <div className="sdb-row">
-          <ButtonLink href={"/anfitriao/publicidade/novo" as Route} variant="primary" icon="editar">
+          <ButtonLink href={"/anfitriao/publicidade/nova" as Route} variant="primary" icon="editar">
             Criar publicidade
           </ButtonLink>
         </div>
@@ -36,14 +37,16 @@ export default async function PublicidadeDoAnfitriao() {
             <div key={a.id} className="sdb-list-row">
               <div className="flex flex-col gap-1">
                 <span className="sdb-callout">
-                  <Link href={`/anfitriao/publicidade/${a.id}` as Route}>{a.titulo || "Sem título"}</Link>
+                  <Link href={`/anfitriao/publicidade/${a.id}` as Route}>
+                    {a.titulo || "Anúncio sem título"}
+                  </Link>
                 </span>
                 <span className="sdb-footnote">
                   {a.anunciante || "Sem anunciante"} · atualizado em{" "}
                   {formatarData(a.atualizadoEm.slice(0, 10))}
                 </span>
-                {a.status === "reprovado" && a.revisao.ultimoMotivo && (
-                  <span className="sdb-footnote">Motivo: {a.revisao.ultimoMotivo}</span>
+                {a.status === "reprovado" && revisaoDoAnuncio(a).ultimoMotivo && (
+                  <span className="sdb-footnote">Motivo: {revisaoDoAnuncio(a).ultimoMotivo}</span>
                 )}
               </div>
               <SeloStatus status={a.status} />

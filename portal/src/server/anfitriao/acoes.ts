@@ -8,15 +8,15 @@ import type {
   FormSalaAnfitriao,
 } from "@/features/anfitriao/regras/artigo";
 import type { FormCandidatura, FormPerfil } from "@/features/anfitriao/regras/perfil";
-import type { FormAnuncio } from "@/features/publicidade/regras";
+import type { FormAnuncio } from "@/features/anuncios/regras";
 import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { gravarSessao } from "@/modules/conta/conta.controller";
 import { auditarComo } from "@/server/auditoria";
 import type { ModoSalvar } from "../admin/editorial";
+import * as anuncios from "../anuncios";
 import { AcessoNegado, exigirAnfitriao, membroAtual } from "../sessao";
 import { comGravacoesDoPedido, sincronizarAcervo } from "../store";
-import * as anuncios from "./anuncios";
 import type { ResultadoAcao } from "./comum";
 import * as editorial from "./editorial";
 import * as usuarios from "./usuarios";

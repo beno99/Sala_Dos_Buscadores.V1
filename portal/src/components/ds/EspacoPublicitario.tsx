@@ -3,7 +3,6 @@ import { cx } from "@/lib/cx";
 import { Arc } from "./Arc";
 import { Button } from "./Button";
 import { Icon, type IconName } from "./Icon";
-import { ImagemAcervo } from "./ImagemAcervo";
 
 export interface AnuncioVisual {
   id: string;
@@ -14,13 +13,7 @@ export interface AnuncioVisual {
   href: string;
   placa: Placa;
   imagem?: string;
-  /** Até dois atributos com ícone, só na variante painel ("Domínio público"). */
-  demonstracao?: boolean;
   atributos?: { icone: IconName; texto: string }[];
-  /** Linha curta acima do título, só na variante portal (anúncio de anfitrião). */
-  categoria?: string;
-  /** Descrição da imagem para leitores de tela; sem ela, a imagem é decorativa. */
-  textoAlternativo?: string;
 }
 
 /**
@@ -34,7 +27,7 @@ export function EspacoPublicitario({
   onPorQue,
 }: {
   anuncio: AnuncioVisual;
-  variante?: "painel" | "coluna" | "banner" | "portal";
+  variante?: "painel" | "coluna" | "banner";
   onPorQue: () => void;
 }) {
   const cabeca = (
@@ -55,37 +48,6 @@ export function EspacoPublicitario({
       )}
     </div>
   );
-
-  if (variante === "portal")
-    return (
-      <div className="sdb-home__publicidade">
-        <aside className="sdb-ad sdb-ad--portal" aria-label="Publicidade">
-          <span className="sdb-ad__label">PUBLICIDADE</span>
-          <div className="sdb-ad__media">
-            {anuncio.imagem && anuncio.textoAlternativo ? (
-              // biome-ignore lint/performance/noImgElement: imagem do anunciante servida por /midia, com descrição própria.
-              <img src={anuncio.imagem} alt={anuncio.textoAlternativo} decoding="async" />
-            ) : (
-              <ImagemAcervo src={anuncio.imagem} placa={anuncio.placa} />
-            )}
-          </div>
-          {anuncio.categoria && <p className="sdb-ad__category">{anuncio.categoria}</p>}
-          <h2 className="sdb-ad__title">{anuncio.titulo.filter(Boolean).join(" ")}</h2>
-          <p className="sdb-ad__text">{anuncio.texto}</p>
-          <a className="sdb-ad__link" href={anuncio.href} target="_blank" rel="sponsored noopener noreferrer">
-            {anuncio.chamada}
-            <Icon name="externo" size="sm" />
-          </a>
-          <p className="sdb-ad__foot">
-            <span className="sdb-ad__advertiser">{anuncio.anunciante}</span>
-          </p>
-          {anuncio.demonstracao && <p className="sdb-ad__demo">Anunciante fictício · exemplo de anúncio</p>}
-        </aside>
-        <Button variant="plain" size="sm" onClick={onPorQue}>
-          Sobre os anúncios
-        </Button>
-      </div>
-    );
 
   if (variante === "painel") {
     return (

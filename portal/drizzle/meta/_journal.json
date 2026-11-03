@@ -75,8 +75,22 @@
     {
       "idx": 10,
       "version": "7",
-      "when": 1793718103980,
-      "tag": "0010_anfitriao_videos_anuncios",
+      "when": 1793720352372,
+      "tag": "0010_conversa_curadoria",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793720367377,
+      "tag": "0011_anuncios_anfitriao",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793725722002,
+      "tag": "0012_anuncios_revisao",
       "breakpoints": true
     }
   ]

@@ -76,17 +76,23 @@ function itens(caminho: string, c: ContagensAnfitriao): ItemNavegacao[] {
       ativo: caminho === "/anfitriao/videos/novo",
     },
     {
-      href: "/anfitriao/publicidade/novo" as Route,
+      href: "/anfitriao/publicidade/nova" as Route,
       rotulo: "Criar publicidade",
       icone: "editar",
-      ativo: caminho === "/anfitriao/publicidade/novo",
+      ativo: caminho === "/anfitriao/publicidade/nova",
+    },
+    {
+      href: "/anfitriao/conversa" as Route,
+      rotulo: "Conversa com a curadoria",
+      icone: "comunidade",
+      ativo: em("/anfitriao/conversa"),
+      separarAntes: true,
     },
     {
       href: "/comunidade" as Route,
       rotulo: "Comunidade",
       icone: "comunidade",
       ativo: false,
-      separarAntes: true,
     },
     {
       href: "/anfitriao/perfil" as Route,

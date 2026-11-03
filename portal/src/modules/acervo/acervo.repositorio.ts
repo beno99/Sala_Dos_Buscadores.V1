@@ -12,7 +12,7 @@ import {
   planejarExclusaoPermanenteSala,
   planejarLixeiraSala,
 } from "@/features/salas/lixeira";
-import { candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
+import { anuncios, candidaturas, convites, perfisAnfitriao } from "@/modules/anfitriao/anfitriao.schema";
 import { banco } from "@/modules/compartilhado/banco/cliente";
 import { somarVersao } from "@/modules/compartilhado/banco/versao";
 import { versaoDados } from "@/modules/compartilhado/banco/versao.schema";
@@ -28,7 +28,6 @@ import { contaRepositorio } from "@/modules/conta/conta.repositorio";
 import { perfisBuscador, progressoEstudo } from "@/modules/estudo/estudo.schema";
 import { midias } from "@/modules/midia/midia.schema";
 import { auditoria, emailsEnviados } from "@/modules/operacao/operacao.schema";
-import { anuncios } from "@/modules/publicidade/publicidade.schema";
 import type { AcervoRepositorio, Colecoes, DadosCarregados, Gravacao, NomeColecao } from "./acervo.contratos";
 import { citacoes, conteudos, destaques, fontes, salas, temas, videos } from "./acervo.schema";
 import { bloquearAcervoReferenciado, validarNovasReferencias } from "./referencias-integridade";
@@ -105,10 +104,7 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
   publicacoes: mapaDireto(publicacoes, publicacoes.id),
   comentarios: mapaDireto(comentarios, comentarios.id),
   denuncias: mapaDenuncias(),
-  anuncios: mapaDireto(anuncios, anuncios.id, {
-    derivar: (a) => ({ donoId: a.revisao.donoId }),
-    omitir: ["donoId"],
-  }),
+  anuncios: mapaDireto(anuncios, anuncios.id),
 };
 
 /** O domínio guarda o alvo como objeto; a tabela, em duas colunas. */

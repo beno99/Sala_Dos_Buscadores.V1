@@ -2,7 +2,7 @@
 
 Composição de Entrar, Redefinir senha e Criar conta, conforme a seção Conta e onboarding do Figma (19537:4958).
 
-- `.sdb-conta--entrada`: imagem lateral e coluna de marca/formulário. No celular, a imagem vira uma faixa acima do formulário.
+- `.sdb-conta--entrada`: imagem lateral e coluna de marca/formulário. Abaixo de 900 px o carrossel some e fica só a marca com o formulário.
 - `.sdb-conta--cadastro`: imagem ao fundo e painel de 480 px. A página cresce com o conteúdo, inclusive mensagens de erro e cadastro por convite.
 - `.sdb-conta__form`, `__cabecalho`, `__titulo`, `__lead`, `__alternativa`: ritmo e hierarquia dos formulários. Campos, botões, consentimento e alertas usam os componentes existentes.
 - Superfícies `nav-fill` e `card-warm`, títulos `label-brand`, texto `label`/`label-secondary`. Os quatro temas continuam disponíveis.

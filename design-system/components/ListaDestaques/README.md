@@ -10,9 +10,9 @@ Ranking curto de conteúdos ("Mais pesquisados") numa coluna estreita. O item ap
 
 ## Comportamento
 - `bundle.js` liga `[data-sdb-toplist]`: o item apontado pelo mouse ou com foco recebe `.is-active`, e a lista recebe `.has-active`. Em React, o estado faz o mesmo.
-- Item ativo: cresce (`flex-grow` 2,6), a miniatura abre de 0 a 132 px, o título passa a `accent`. Demais itens: `flex-grow` 0,82 e 52% de opacidade.
+- Item ativo: a miniatura abre de 0 a 132 px e o título passa a `accent`. Demais itens: 52% de opacidade.
 - Movimento com a mola dos tokens (`--sdb-spring`, `--duration-spring`), por transição: é interrompível, e passar de um item a outro não espera a animação terminar.
-- Itens com base natural e crescimento proporcional: numa coluna com altura, dividem o espaço; sem altura, ficam na altura natural.
+- Itens na altura natural (12 px acima e abaixo, filete entre eles), um logo abaixo do outro, sem esticar para preencher a coluna (03/11/2026).
 - O foco por teclado produz o mesmo efeito que o mouse.
 - Sem hover (`(hover: none)` ou ponteiro grosso, celular e tablet): a lista é só texto, sem miniatura, e nada expande.
 - `prefers-reduced-motion`: a miniatura aparece e some sem animação.

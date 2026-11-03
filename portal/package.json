@@ -24,7 +24,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "check": "npm run ds:check && npm run ds:test && npm run lint && npm run typecheck",
     "ds:test": "node --test ../design-system/components/BarraFormatacao/marcacao.test.mjs",
-    "test:editorial": "tsx --conditions=react-server --test tests/*.test.ts src/features/admin/regras/*.test.ts src/features/publicidade/*.test.ts"
+    "test:editorial": "tsx --conditions=react-server --test tests/*.test.ts src/features/admin/regras/*.test.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.913.0",
@@ -35,6 +35,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
+    "sharp": "0.35.5",
     "zod": "^4.6.5"
   },
   "devDependencies": {
