@@ -2,7 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import type { BlocoCorpo } from "@/data/types";
 import { campoDoBloco } from "@/features/admin/regras/corpo";
-import { validarImagem } from "@/features/anfitriao/regras/imagem";
+import { type TipoImagem, validarImagem } from "@/features/anfitriao/regras/imagem";
 import { armazenamentoS3 } from "@/modules/midia/armazenamento.s3";
 import type { ArmazenamentoDeArquivos } from "@/modules/midia/midia.contratos";
 import { acervo, comGravacoesDoPedido, type MidiaGuardada } from "./store";
@@ -23,6 +23,28 @@ export function usarArmazenamento(a: ArmazenamentoDeArquivos) {
 
 export const urlDaMidia = (id: string) => `/midia/${id}`;
 
+const LADO_MAXIMO = 2560;
+
+async function compactar(
+  bytes: Uint8Array,
+  tipo: TipoImagem,
+): Promise<{ bytes: Uint8Array; tipo: TipoImagem }> {
+  try {
+    const { default: sharp } = await import("sharp");
+    sharp.cache(false);
+    const saida = await sharp(bytes, { animated: true, failOn: "error" })
+      .rotate()
+      .resize({ width: LADO_MAXIMO, height: LADO_MAXIMO, fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 88, alphaQuality: 100, smartSubsample: true, effort: 5 })
+      .toBuffer();
+    return saida.byteLength < bytes.byteLength
+      ? { bytes: new Uint8Array(saida), tipo: "image/webp" }
+      : { bytes, tipo };
+  } catch {
+    return { bytes, tipo };
+  }
+}
+
 export async function guardarImagem(
   bytes: Uint8Array,
   donoId: string,
@@ -31,12 +53,13 @@ export async function guardarImagem(
   if (!validacao.ok) return validacao;
   const id = `m-${randomBytes(9).toString("base64url")}`;
   const chave = `midias/${donoId}/${id}`;
-  await armazenamento.enviar(chave, bytes, validacao.tipo);
+  const final = await compactar(bytes, validacao.tipo);
+  await armazenamento.enviar(chave, final.bytes, final.tipo);
   const midia: MidiaGuardada = {
     id,
     chave,
-    tipo: validacao.tipo,
-    tamanho: bytes.byteLength,
+    tipo: final.tipo,
+    tamanho: final.bytes.byteLength,
     donoId,
     criadoEm: new Date().toISOString(),
   };
