@@ -19,6 +19,7 @@ import { abrirNaMoldura } from "@/components/layout/aberturas";
 import { salaPorSlug } from "@/data/catalogo";
 import { TIPO_ROTULO } from "@/data/rotulos";
 import type { TemaSlug } from "@/data/types";
+import { useSessao } from "@/features/auth/SessaoProvider";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { intercalarSlides } from "@/features/estudo/banner";
 import { formatarData } from "@/lib/texto";
@@ -50,6 +51,7 @@ export function PortalCliente({
 }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [politica, setPolitica] = useState(false);
+  const { membro } = useSessao();
   const temaEscolhido = modelo.temas.find((t) => t.slug === tema);
   const salas = tema ? modelo.salas.filter((s) => s.temas.includes(tema)) : modelo.salas;
   const { retomada, inicio, revisao, sugestoes, novidades } = comporLeituras(modelo);
@@ -362,6 +364,18 @@ export function PortalCliente({
               Ver conquistas
             </ButtonLink>
           </section>
+          {membro?.papel === "membro" && (
+            <section className="sdb-home__caminho" aria-labelledby="home-anfitriao">
+              <h2 id="home-anfitriao">Seja anfitrião</h2>
+              <p>
+                Mantenha uma Sala própria com seus estudos e fontes. A curadoria revisa cada Sala antes de ir
+                ao ar.
+              </p>
+              <ButtonLink href={"/ajustes#ser-anfitriao" as Route} variant="secondary" size="sm" icon="salas">
+                Quero ser anfitrião
+              </ButtonLink>
+            </section>
+          )}
           {modelo.anuncioPortal && (
             <div className="sdb-home__publicidade">
               <CardAnuncio anuncio={modelo.anuncioPortal} />

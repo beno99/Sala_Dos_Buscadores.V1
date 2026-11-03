@@ -9,6 +9,7 @@ import { CampoTexto } from "@/components/ds/Campos";
 import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
 import { Icon } from "@/components/ds/Icon";
 import { ModalConfirmacao } from "@/components/ds/Modal";
+import { Paginacao } from "@/components/ds/Paginacao";
 import { Segmented } from "@/components/ds/Segmented";
 import { Sheet } from "@/components/ds/Sheet";
 import { TabelaDados } from "@/components/ds/TabelaDados";
@@ -59,6 +60,8 @@ export interface ConviteVisual {
   expiraEm: string;
   situacao: StatusConvite;
 }
+
+const POR_PAGINA = 20;
 
 const PAPEL: Record<UsuarioVisual["papel"], string> = {
   membro: "Buscador",
@@ -151,6 +154,14 @@ export function UsuariosAdmin({
       (!situacaoFiltro || (u.emailVerificadoEm ? "ativo" : "pendente") === situacaoFiltro) &&
       normalizar(`${u.pseudonimo} ${u.nomePublico ?? ""} ${u.email}`).includes(normalizar(busca.trim())),
   );
+  const [paginaPedida, setPagina] = useState(1);
+  const paginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
+  const pagina = Math.min(paginaPedida, paginas);
+  const visiveis = filtrados.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+  const filtrar = (mudar: () => void) => {
+    mudar();
+    setPagina(1);
+  };
   const [aba, setAba] = useState<Aba>(abaInicial);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [ocupado, setOcupado] = useState(false);
@@ -194,22 +205,22 @@ export function UsuariosAdmin({
         aria-labelledby="usuarios-aba-usuarios"
         hidden={aba !== "usuarios"}
       >
-        <div className="mb-4 flex justify-end">
+        <div className="mb-6 flex justify-end">
           <Button variant="primary" size="sm" icon="mais" onClick={() => setCriando(true)}>
             Criar usuário
           </Button>
         </div>
-        <div className="grid gap-3 nav:grid-cols-3">
+        <div className="mb-8 grid gap-x-6 gap-y-5 nav:grid-cols-3">
           <CampoTexto
             label="Buscar usuário"
             type="search"
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
+            onChange={(e) => filtrar(() => setBusca(e.target.value))}
           />
           <Select
             label="Perfil"
             value={papelFiltro}
-            onChange={(e) => setPapelFiltro(e.target.value)}
+            onChange={(e) => filtrar(() => setPapelFiltro(e.target.value))}
             opcoes={[
               { value: "", label: "Todos os perfis" },
               ...Object.entries(PAPEL).map(([value, label]) => ({ value, label })),
@@ -218,7 +229,7 @@ export function UsuariosAdmin({
           <Select
             label="Situação do cadastro"
             value={situacaoFiltro}
-            onChange={(e) => setSituacaoFiltro(e.target.value)}
+            onChange={(e) => filtrar(() => setSituacaoFiltro(e.target.value))}
             opcoes={[
               { value: "", label: "Todas as situações" },
               { value: "ativo", label: "Ativo" },
@@ -227,8 +238,8 @@ export function UsuariosAdmin({
           />
         </div>
         <TabelaDados<UsuarioVisual>
-          legenda={`Contas · ${filtrados.length} de ${usuarios.length}`}
-          itens={filtrados}
+          legenda={`Contas · ${filtrados.length} de ${usuarios.length}${paginas > 1 ? ` · página ${pagina} de ${paginas}` : ""}`}
+          itens={visiveis}
           chave={(u) => u.id}
           rotuloItem={(u) => u.pseudonimo}
           vazio="Nenhuma conta corresponde aos filtros."
@@ -319,6 +330,9 @@ export function UsuariosAdmin({
             },
           ]}
         />
+        <div className="mt-6 flex justify-center">
+          <Paginacao pagina={pagina} total={paginas} onPagina={setPagina} rotulo="Páginas de usuários" />
+        </div>
       </div>
 
       <div

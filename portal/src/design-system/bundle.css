@@ -1022,6 +1022,9 @@ li.is-done .sdb-mark .sdb-icon path { stroke: currentColor; stroke-width: 10; st
 .sdb-sidenav__item:active { transform: scale(0.97); transition-duration: 90ms; }
 .sdb-sidenav__item[aria-current="page"] { background: var(--fill); color: var(--accent); }
 .sdb-sidenav__count { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--label-tertiary); }
+/* Rótulo longo quebra em mais linhas dentro da lateral, em vez de vazar da caixa (03/11/2026). */
+.sdb-sidenav__item > .sdb-icon, .sdb-sidenav__count { flex: none; }
+.sdb-sidenav__label { flex: 1; min-width: 0; padding-block: 12px; white-space: normal; line-height: 1.25; overflow-wrap: anywhere; }
 .sdb-sidenav__sep { height: 1px; margin: 8px 16px; background: var(--separator); }
 .sdb-sidenav.is-collapsed { width: 64px; }
 .sdb-sidenav.is-collapsed .sdb-sidenav__head { justify-content: center; padding: 0 0 8px; }

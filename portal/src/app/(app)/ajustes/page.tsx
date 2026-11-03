@@ -21,7 +21,7 @@ export default async function Pagina() {
       </div>
 
       {membro?.papel === "membro" && (
-        <section className="sdb-material sdb-panel" aria-labelledby="titulo-anfitriao">
+        <section id="ser-anfitriao" className="sdb-material sdb-panel" aria-labelledby="titulo-anfitriao">
           <h2 id="titulo-anfitriao" className="sdb-headline">
             Ser anfitrião
           </h2>
