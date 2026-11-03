@@ -12,7 +12,7 @@ const ABAS: Aba[] = ["usuarios", "candidaturas", "convites"];
 export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
   const membro = await membroAtual();
   if (membro?.papel !== "administrador") return null;
-  const { aba, busca, perfil, situacao, pagina } = await props.searchParams;
+  const { aba, busca, perfil, situacao, ordem, pagina } = await props.searchParams;
   const texto = (v: unknown) => (typeof v === "string" ? v : "");
   const salasPorDono = new Map<string, number>();
   for (const s of acervo().salas.values()) {
@@ -45,6 +45,7 @@ export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
           busca: texto(busca).slice(0, 100),
           perfil: ["membro", "anfitriao", "administrador"].includes(texto(perfil)) ? texto(perfil) : "",
           situacao: ["ativo", "pendente"].includes(texto(situacao)) ? texto(situacao) : "",
+          ordem: ["antigos", "nome"].includes(texto(ordem)) ? texto(ordem) : "",
           pagina: Math.max(1, Number.parseInt(texto(pagina), 10) || 1),
         }}
         usuarios={usuarios}

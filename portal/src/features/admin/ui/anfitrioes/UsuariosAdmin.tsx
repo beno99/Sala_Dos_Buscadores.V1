@@ -8,6 +8,7 @@ import { Button } from "@/components/ds/Button";
 import { CampoTexto } from "@/components/ds/Campos";
 import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
 import { Icon } from "@/components/ds/Icon";
+import { Menu } from "@/components/ds/Menu";
 import { ModalConfirmacao } from "@/components/ds/Modal";
 import { Paginacao } from "@/components/ds/Paginacao";
 import { Segmented } from "@/components/ds/Segmented";
@@ -68,6 +69,8 @@ export interface FiltrosUsuarios {
   busca: string;
   perfil: string;
   situacao: string;
+  /** "" = mais recentes (padrão), "antigos" ou "nome". */
+  ordem: string;
   pagina: number;
 }
 
@@ -78,6 +81,7 @@ function enderecoDosFiltros(aba: Aba, f: FiltrosUsuarios) {
   if (f.busca.trim()) q.set("busca", f.busca.trim());
   if (f.perfil) q.set("perfil", f.perfil);
   if (f.situacao) q.set("situacao", f.situacao);
+  if (f.ordem) q.set("ordem", f.ordem);
   if (f.pagina > 1) q.set("pagina", String(f.pagina));
   const texto = q.toString();
   return `/admin/usuarios${texto ? `?${texto}` : ""}`;
@@ -170,12 +174,20 @@ export function UsuariosAdmin({
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
-  const filtrados = usuarios.filter(
-    (u) =>
-      (!papelFiltro || u.papel === papelFiltro) &&
-      (!situacaoFiltro || (u.emailVerificadoEm ? "ativo" : "pendente") === situacaoFiltro) &&
-      normalizar(`${u.pseudonimo} ${u.nomePublico ?? ""} ${u.email}`).includes(normalizar(busca.trim())),
-  );
+  const filtrados = usuarios
+    .filter(
+      (u) =>
+        (!papelFiltro || u.papel === papelFiltro) &&
+        (!situacaoFiltro || (u.emailVerificadoEm ? "ativo" : "pendente") === situacaoFiltro) &&
+        normalizar(`${u.pseudonimo} ${u.nomePublico ?? ""} ${u.email}`).includes(normalizar(busca.trim())),
+    )
+    .sort((a, b) =>
+      filtros.ordem === "nome"
+        ? a.pseudonimo.localeCompare(b.pseudonimo, "pt-BR")
+        : filtros.ordem === "antigos"
+          ? a.membroDesde.localeCompare(b.membroDesde)
+          : b.membroDesde.localeCompare(a.membroDesde),
+    );
   const paginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
   const pagina = Math.min(Math.max(1, filtros.pagina), paginas);
   const visiveis = filtrados.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
@@ -236,7 +248,7 @@ export function UsuariosAdmin({
             Criar usuário
           </Button>
         </div>
-        <div className="mb-8 grid gap-x-6 gap-y-5 nav:grid-cols-3">
+        <div className="mb-8 grid gap-x-6 gap-y-5 nav:grid-cols-2 xl:grid-cols-4">
           <CampoTexto
             label="Buscar por nome ou e-mail"
             type="search"
@@ -262,6 +274,16 @@ export function UsuariosAdmin({
               { value: "", label: "Todas as situações" },
               { value: "ativo", label: "Ativo" },
               { value: "pendente", label: "Pendente de confirmação" },
+            ]}
+          />
+          <Select
+            label="Ordenar por"
+            value={filtros.ordem}
+            onChange={(e) => atualizar({ ordem: e.target.value })}
+            opcoes={[
+              { value: "", label: "Mais recentes" },
+              { value: "antigos", label: "Mais antigos" },
+              { value: "nome", label: "Nome (A–Z)" },
             ]}
           />
         </div>
@@ -318,48 +340,47 @@ export function UsuariosAdmin({
                   >
                     Editar
                   </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setPedido({ tipo: "senha", usuario: u })}
-                  >
-                    Redefinir senha
-                  </Button>
-                  {u.papel === "membro" ? (
-                    <>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setPedido({ tipo: "promover", usuario: u })}
-                      >
-                        Promover a anfitrião
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setPedido({ tipo: "excluir", usuario: u })}
-                      >
-                        Remover usuário
-                      </Button>
-                    </>
-                  ) : u.papel === "anfitriao" ? (
-                    <>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setPedido({ tipo: "rebaixar", usuario: u })}
-                      >
-                        Tirar o papel
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setPedido({ tipo: "excluir", usuario: u })}
-                      >
-                        Remover usuário
-                      </Button>
-                    </>
-                  ) : null}
+                  <Menu
+                    right
+                    up={visiveis.length > 3 && visiveis.indexOf(u) >= visiveis.length - 2}
+                    trigger={<Icon name="reticencias" />}
+                    triggerLabel={`Mais ações para ${u.pseudonimo}`}
+                    items={[
+                      {
+                        label: "Redefinir senha",
+                        icon: "cadeado",
+                        onSelect: () => setPedido({ tipo: "senha", usuario: u }),
+                      },
+                      ...(u.papel === "membro"
+                        ? [
+                            {
+                              label: "Promover a anfitrião",
+                              icon: "anfitriao" as const,
+                              onSelect: () => setPedido({ tipo: "promover", usuario: u }),
+                            },
+                          ]
+                        : u.papel === "anfitriao"
+                          ? [
+                              {
+                                label: "Tirar o papel de anfitrião",
+                                icon: "devolver" as const,
+                                onSelect: () => setPedido({ tipo: "rebaixar", usuario: u }),
+                              },
+                            ]
+                          : []),
+                      ...(u.papel !== "administrador"
+                        ? [
+                            {
+                              label: "Remover usuário",
+                              icon: "lixeira" as const,
+                              danger: true,
+                              separarAntes: true,
+                              onSelect: () => setPedido({ tipo: "excluir", usuario: u }),
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
                 </>
               ),
             },

@@ -37,7 +37,7 @@ export default async function LayoutAnfitriao({ children }: { children: ReactNod
       <main
         id="conteudo"
         tabIndex={-1}
-        className="flex w-full max-w-[1440px] flex-1 flex-col gap-8 px-4 pt-4 pb-7 nav:px-7"
+        className="flex w-full max-w-[1760px] flex-1 flex-col gap-8 px-4 pt-4 pb-7 nav:px-7"
       >
         {acesso.tipo === "anfitriao" ? (
           <AreaAnfitriao donoId={acesso.membro.id}>{children}</AreaAnfitriao>
