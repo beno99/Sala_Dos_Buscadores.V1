@@ -28,6 +28,7 @@ import { contaRepositorio } from "@/modules/conta/conta.repositorio";
 import { perfisBuscador, progressoEstudo } from "@/modules/estudo/estudo.schema";
 import { midias } from "@/modules/midia/midia.schema";
 import { auditoria, emailsEnviados } from "@/modules/operacao/operacao.schema";
+import { anuncios } from "@/modules/publicidade/publicidade.schema";
 import type { AcervoRepositorio, Colecoes, DadosCarregados, Gravacao, NomeColecao } from "./acervo.contratos";
 import { citacoes, conteudos, destaques, fontes, salas, temas, videos } from "./acervo.schema";
 import { bloquearAcervoReferenciado, validarNovasReferencias } from "./referencias-integridade";
@@ -84,7 +85,10 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
     manterNulos: ["situacaoJuridica"],
   }),
   citacoes: mapaDireto(citacoes, citacoes.id),
-  videos: mapaDireto(videos, videos.id),
+  videos: mapaDireto(videos, videos.id, {
+    derivar: (v) => ({ donoId: v.revisao?.donoId ?? null }),
+    omitir: ["donoId"],
+  }),
   fontes: mapaDireto(fontes, fontes.id),
   perfis: mapaDireto(perfisAnfitriao, perfisAnfitriao.contaId),
   candidaturas: mapaDireto(candidaturas, candidaturas.id),
@@ -101,6 +105,10 @@ const MAPAS: { [K in NomeColecao]: Mapa<Colecoes[K]> } = {
   publicacoes: mapaDireto(publicacoes, publicacoes.id),
   comentarios: mapaDireto(comentarios, comentarios.id),
   denuncias: mapaDenuncias(),
+  anuncios: mapaDireto(anuncios, anuncios.id, {
+    derivar: (a) => ({ donoId: a.revisao.donoId }),
+    omitir: ["donoId"],
+  }),
 };
 
 /** O domínio guarda o alvo como objeto; a tabela, em duas colunas. */

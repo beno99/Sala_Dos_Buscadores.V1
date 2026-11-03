@@ -10,6 +10,7 @@ import { acervo } from "@/server/store";
 import { salaPorSlug, todasAsSalas } from "./catalogo";
 import { copiarCorpo } from "./corpo";
 import type {
+  AnuncioEditorial,
   Citacao,
   Conteudo,
   ConteudoEditorial,
@@ -119,6 +120,22 @@ const videosPublicados = () => {
 };
 
 // ---------- leitura pública ----------
+
+/**
+ * Anúncios aprovados pela curadoria, só os campos públicos. Sem imagem não há
+ * anúncio (a imagem é obrigatória no envio).
+ */
+export function anunciosPublicados(): Omit<
+  AnuncioEditorial,
+  "revisao" | "status" | "criadoPor" | "atualizadoPor" | "midia"
+>[] {
+  return [...acervo().anuncios.values()]
+    .filter((a) => a.status === "publicado" && a.imagem && !a.revisao.congelado)
+    .sort((a, b) => (b.publicadoEm ?? "").localeCompare(a.publicadoEm ?? "") || a.id.localeCompare(b.id))
+    .map(({ revisao: _r, status: _s, criadoPor: _c, atualizadoPor: _a, midia: _m, ...publico }) => ({
+      ...publico,
+    }));
+}
 
 export function conteudosDaSala(sala: SalaSlug): Conteudo[] {
   return publicados()

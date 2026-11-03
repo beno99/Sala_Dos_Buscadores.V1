@@ -2,7 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { marcarNovidadesVistasAcao } from "@/server/anfitriao/acoes";
+import {
+  marcarAnuncioVistoAcao,
+  marcarNovidadesVistasAcao,
+  marcarVideoVistoAcao,
+} from "@/server/anfitriao/acoes";
 
 /** Abrir o item marca como vistas as decisões da curadoria sobre ele (§10) e atualiza o contador. */
 export function MarcarVisto({
@@ -10,7 +14,7 @@ export function MarcarVisto({
   id,
   pendente,
 }: {
-  tipo: "sala" | "artigo";
+  tipo: "sala" | "artigo" | "video" | "anuncio";
   id: string;
   pendente: boolean;
 }) {
@@ -19,7 +23,13 @@ export function MarcarVisto({
   useEffect(() => {
     if (!pendente || feito.current) return;
     feito.current = true;
-    void marcarNovidadesVistasAcao(tipo, id).then((r) => {
+    const marcar =
+      tipo === "video"
+        ? marcarVideoVistoAcao(id)
+        : tipo === "anuncio"
+          ? marcarAnuncioVistoAcao(id)
+          : marcarNovidadesVistasAcao(tipo, id);
+    void marcar.then((r) => {
       if (r.ok) router.refresh();
     });
   }, [pendente, tipo, id, router]);

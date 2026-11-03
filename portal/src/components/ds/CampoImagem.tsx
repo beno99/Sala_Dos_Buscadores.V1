@@ -137,14 +137,16 @@ export function CampoImagem({
     onMudar(r.imagem);
   };
 
-  const soltar = (e: DragEvent<HTMLLabelElement>) => {
+  const soltar = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setArrastando(false);
     void escolher(e.dataTransfer.files[0]);
   };
 
   const descritores = [
+    `${campo}-descricao`,
     `${campo}-orientacao`,
+    `${campo}-exibicao`,
     help && `${campo}-ajuda`,
     erro && `${campo}-erro`,
     enviando && `${campo}-estado`,
@@ -154,50 +156,40 @@ export function CampoImagem({
     .join(" ");
 
   return (
-    <div className="sdb-field">
-      <span className="sdb-label" id={`${campo}-rotulo`}>
-        {label}
-        {opcional && <small>opcional</small>}
-      </span>
-      <p id={`${campo}-orientacao`} className="sdb-upload__guide">
-        <span>
-          {o.rotulo}. Recomendado: <b>{dimensoes(o)}</b> (largura × altura) · proporção {o.proporcao}.
+    <div className="sdb-field sdb-image-field">
+      <div className="sdb-upload__header">
+        <span className="sdb-label" id={`${campo}-rotulo`}>
+          {label}
+          {opcional && <small>opcional</small>}
         </span>
-        <span>
-          Formatos: {FORMATOS_IMAGEM}. Até {LIMITE_IMAGEM_MB} MB.
-        </span>
-        <span>{o.exibicao}</span>
-        {o.usos.length > 1 && <span>Este arquivo também aparece em: {o.usos.slice(1).join("; ")}.</span>}
-      </p>
-      {help && (
-        <p id={`${campo}-ajuda`} className="sdb-help">
-          {help}
+        <p id={`${campo}-descricao`} className="sdb-upload__description">
+          {o.descricao}
         </p>
-      )}
+      </div>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions lint/a11y/noNoninteractiveElementInteractions: arrastar é atalho; o input de arquivo é o controle acessível. */}
       <div
         className={cx(
           "sdb-upload",
+          arrastando && "is-over",
           quadrado && "sdb-upload--quadrado",
           o.alturaLivre && "sdb-upload--livre",
           valor && "has-file",
           erro && "is-error",
-          disabled && "is-disabled",
+          (disabled || enviando) && "is-disabled",
         )}
         style={{ "--sdb-upload-ratio": o.proporcao.replace(":", " / ") } as CSSProperties}
+        aria-busy={enviando}
+        onDragEnter={(e) => {
+          e.preventDefault();
+          if (!disabled && !enviando) setArrastando(true);
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDragLeave={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setArrastando(false);
+        }}
+        onDrop={soltar}
       >
-        {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: arrastar e soltar é atalho; o controle acessível é o input de arquivo dentro do rótulo. */}
-        <label
-          className={cx("sdb-upload__drop", arrastando && "is-over")}
-          onDragEnter={(e) => {
-            e.preventDefault();
-            if (!disabled) setArrastando(true);
-          }}
-          onDragOver={(e) => e.preventDefault()}
-          onDragLeave={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setArrastando(false);
-          }}
-          onDrop={soltar}
-        >
+        <label className="sdb-upload__drop">
           <input
             ref={entrada}
             id={campo}
@@ -211,11 +203,11 @@ export function CampoImagem({
             onChange={(e) => void escolher(e.target.files?.[0])}
           />
           <span className="sdb-upload__icon">
-            <Icon name="imagem" />
+            <Icon name="enviar" />
           </span>
           <span>
-            <b>{enviando ? "Enviando imagem…" : "Escolher imagem"}</b>
-            {!quadrado && !enviando && " ou arraste até aqui"}
+            <b>{enviando ? "Enviando imagem…" : "Clique para enviar"}</b>
+            {!enviando && " ou arraste a imagem aqui"}
           </span>
         </label>
         {valor && (
@@ -231,16 +223,14 @@ export function CampoImagem({
                   {arquivo ? arquivo.tamanho : "tamanho do arquivo não disponível nesta edição"}
                 </span>
               </span>
-              {!quadrado && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  disabled={disabled || enviando}
-                  onClick={() => entrada.current?.click()}
-                >
-                  Trocar
-                </Button>
-              )}
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={disabled || enviando}
+                onClick={() => entrada.current?.click()}
+              >
+                Trocar
+              </Button>
               <Button
                 variant="secondary"
                 size="sm"
@@ -259,7 +249,29 @@ export function CampoImagem({
             </figcaption>
           </figure>
         )}
+        <p id={`${campo}-orientacao`} className="sdb-upload__requirements">
+          <span>
+            Recomendado: <b>{dimensoes(o)}</b>
+          </span>
+          <span>
+            Largura × altura · proporção {o.proporcao}
+            {o.alturaLivre && " · altura livre"}
+          </span>
+          <span className="sdb-upload__formats">
+            {FORMATOS_IMAGEM}
+            <span className="sdb-upload__limit">Até {LIMITE_IMAGEM_MB} MB</span>
+          </span>
+        </p>
       </div>
+      <p id={`${campo}-exibicao`} className="sdb-help">
+        {o.exibicao}
+        {o.usos.length > 1 && <> Este arquivo também aparece em: {o.usos.slice(1).join("; ")}.</>}
+      </p>
+      {help && (
+        <p id={`${campo}-ajuda`} className="sdb-help">
+          {help}
+        </p>
+      )}
       {aviso && (aviso.baixaResolucao || aviso.outraProporcao) && (
         <p id={`${campo}-aviso`} className="sdb-help" role="status">
           {aviso.baixaResolucao && (
@@ -278,7 +290,7 @@ export function CampoImagem({
         </p>
       )}
       {erro && (
-        <p id={`${campo}-erro`} className="sdb-error-msg">
+        <p id={`${campo}-erro`} className="sdb-error-msg" role="alert">
           <Icon name="erro" />
           <span>
             <b>Erro:</b> {erro}
@@ -286,7 +298,7 @@ export function CampoImagem({
         </p>
       )}
       {enviando && (
-        <span id={`${campo}-estado`} className="sdb-sr" aria-live="polite">
+        <span id={`${campo}-estado`} className="sdb-help" role="status" aria-live="polite">
           Enviando imagem.
         </span>
       )}

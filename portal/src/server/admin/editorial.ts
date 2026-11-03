@@ -581,6 +581,7 @@ async function salvarVideoPlano(
 ): Promise<ResultadoAcao<{ id: string; salvoEm: string; status: StatusEditorial }>> {
   const anterior = f.id ? acervo().videos.get(f.id) : undefined;
   if (f.id && !anterior) return falha("Erro: este vídeo não existe mais.");
+  if (anterior?.revisao) return falha("Erro: vídeos de anfitriões são aprovados ou reprovados na revisão.");
   if (anterior?.status === "publicado" && modo !== "manual")
     return falha("Erro: use Salvar alterações para atualizar um vídeo publicado.");
   if (anterior?.status === "arquivado")
@@ -661,6 +662,7 @@ export function mudarStatusVideo(id: string, acao: AcaoStatus, quem: string): Re
   if (!Object.hasOwn(STATUS_DESTINO, acao)) return falha("Erro: ação desconhecida.");
   const video = acervo().videos.get(id);
   if (!video) return falha("Erro: este vídeo não existe mais.");
+  if (video.revisao) return falha("Erro: vídeos de anfitriões são aprovados ou reprovados na revisão.");
   if (salaNaLixeira(video.sala)) return falha(`Erro: ${SALA_NA_LIXEIRA}`);
   if (acao === "publicar") {
     const erroSala = conferirSala(video.sala, undefined);

@@ -213,6 +213,7 @@ As fontes desta revisão estão em `tokens.json`, `components/bundle.css` e nas 
 | [TabelaDados](components/TabelaDados/README.md) · [exemplo](exemplos/TabelaDados.html) | Lista editorial com colunas, ordenação e seleção; vira lista no celular. |
 | [BarraFormatacao](components/BarraFormatacao/README.md) · [exemplo](exemplos/BarraFormatacao.html) | Barra no topo do campo de texto longo: ênfase, termo, obra, chamada de fonte e limpar formatação, sem HTML. |
 | [EditorTextoMarcado](components/EditorTextoMarcado/README.md) · [exemplo](exemplos/EditorTextoMarcado.html) | Edita o corpo parágrafo por parágrafo, com estilos, listas, alinhamento, marcações de trecho e pré-visualização. |
+| [EditorAnuncio](components/EditorAnuncio/README.md) · [exemplo](exemplos/EditorAnuncio.html) | O anfitrião cria a publicidade e vê, ao vivo, como ela aparecerá no Portal; vai para a curadoria antes de ir ao ar. |
 | [ChecklistPublicacao](components/ChecklistPublicacao/README.md) · [exemplo](exemplos/ChecklistPublicacao.html) | O que falta para um item ir ao ar; pendências bloqueiam a publicação, alertas de voz só avisam. |
 | [IndicadorSalvamento](components/IndicadorSalvamento/README.md) · [exemplo](exemplos/IndicadorSalvamento.html) | Cápsula discreta que diz se o rascunho está salvo. |
 | [IndicadorNumerico](components/IndicadorNumerico/README.md) · [exemplo](exemplos/IndicadorNumerico.html) | Um total do acervo e como ele se divide, para o painel da curadoria. |

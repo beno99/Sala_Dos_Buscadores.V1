@@ -20,11 +20,14 @@ export type Finalidade =
   | "corpo-artigo"
   | "avatar"
   | "capa-perfil"
-  | "comunidade";
+  | "comunidade"
+  | "anuncio";
 
 export interface OrientacaoImagem {
   /** Nome da finalidade, como aparece no campo ("Banner da Sala"). */
   rotulo: string;
+  /** Breve orientação editorial exibida acima do upload. */
+  descricao: string;
   largura: number;
   altura: number;
   /** Proporção largura:altura, ex.: "3:1". */
@@ -44,6 +47,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Página da Sala: até 1.088 px de largura em 1440 e 1.568 px em 1920.
   "banner-sala": {
     rotulo: "Banner da Sala",
+    descricao: "Envie uma imagem para apresentar sua Sala.",
     largura: 2400,
     altura: 800,
     proporcao: "3:1",
@@ -54,6 +58,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Card vertical: de 274 × 552 (celular) a 491 × 552 (1920), quase sempre perto de 3:5.
   "card-sala": {
     rotulo: "Imagem do card da Sala",
+    descricao: "Escolha a imagem que representa sua Sala no acervo.",
     largura: 1200,
     altura: 1800,
     proporcao: "2:3",
@@ -64,6 +69,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Card de conteúdo 16:10, de 342 × 214 (celular) a 604 × 378 (Destaques em 1920).
   "card-artigo": {
     rotulo: "Imagem do card do artigo",
+    descricao: "Escolha a imagem que apresenta o artigo nas listagens.",
     largura: 1600,
     altura: 1000,
     proporcao: "16:10",
@@ -76,6 +82,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Mesma peça do banner da Sala, na página do artigo.
   "topo-artigo": {
     rotulo: "Imagem de topo do artigo",
+    descricao: "Envie a imagem de abertura do artigo.",
     largura: 2400,
     altura: 800,
     proporcao: "3:1",
@@ -86,6 +93,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Coluna de leitura de 46rem (736 px), dobrada para telas 2×.
   "corpo-artigo": {
     rotulo: "Imagem do corpo do artigo",
+    descricao: "Adicione uma imagem para ilustrar este trecho.",
     largura: 1472,
     altura: 981,
     proporcao: "3:2",
@@ -97,6 +105,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Avatar de até 120 px (Perfil) e 48 px (lateral).
   avatar: {
     rotulo: "Foto de perfil",
+    descricao: "Use uma foto quadrada, com o rosto no centro.",
     largura: 512,
     altura: 512,
     proporcao: "1:1",
@@ -107,6 +116,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Capa do Perfil: 1.088 × 218 em 1440; mínimo de 140 px de altura no celular.
   "capa-perfil": {
     rotulo: "Capa do perfil",
+    descricao: "Escolha uma imagem para o topo do seu perfil.",
     largura: 2400,
     altura: 480,
     proporcao: "5:1",
@@ -117,12 +127,24 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   // Publicação da Comunidade: coluna do feed de até 720 px.
   comunidade: {
     rotulo: "Imagem da publicação",
+    descricao: "Adicione uma imagem para acompanhar sua publicação.",
     largura: 1440,
     altura: 1080,
     proporcao: "4:3",
     alturaLivre: true,
     exibicao: "Aparece inteira, na largura da publicação; a altura acompanha a proporção do arquivo.",
     usos: ["publicação na Comunidade"],
+  },
+  // Anúncio na coluna direita do Portal: até 352 px de largura, dobrados para telas 2×.
+  anuncio: {
+    rotulo: "Imagem do produto",
+    descricao: "Mostre o produto com clareza, sem texto sobre a imagem.",
+    largura: 1200,
+    altura: 900,
+    proporcao: "4:3",
+    exibicao:
+      "Aparece inteira no anúncio do Portal; arquivos de outra proporção ganham fundo em cima e embaixo ou nas laterais.",
+    usos: ["anúncio na coluna direita do Portal"],
   },
 };
 

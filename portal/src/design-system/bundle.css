@@ -223,37 +223,47 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
 .sdb-control__btn:hover { background: var(--fill); color: var(--label); }
 .sdb-control__btn:active { transform: scale(0.9); transition-duration: 90ms; }
 /* ---------- Campo de imagem ---------- */
-.sdb-upload { --sdb-upload-ratio: 16 / 9; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.sdb-upload__drop {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 144px; padding: 24px 16px;
-  background: var(--fill); border-radius: var(--radius-md); color: var(--label-secondary); font: 400 15px/1.4 var(--font-ui); text-align: center; cursor: pointer;
-  transition: background-color 200ms ease, box-shadow 220ms var(--sdb-ease), transform 460ms var(--sdb-spring);
-}
-.sdb-upload__drop b { font-weight: 600; color: var(--accent); }
-.sdb-upload__drop:hover { background: var(--fill-strong); }
-.sdb-upload__drop:active { transform: scale(0.98); transition-duration: 90ms; }
-.sdb-upload__drop:focus-within, .sdb-upload__drop.is-over { background: var(--material-thick); box-shadow: 0 0 0 1.5px var(--focus-ring), 0 0 0 5px var(--accent-soft); }
+.sdb-image-field { container-type: inline-size; }
+/* Acima e abaixo da área: tudo à esquerda, na mesma borda da área tracejada. */
+.sdb-upload__header { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; text-align: left; }
+.sdb-image-field .sdb-label { margin: 0; padding-inline: 0; justify-content: flex-start; color: var(--label); }
+.sdb-upload__description { margin: 0; text-align: left; color: var(--label-secondary); font: 400 13px/1.5 var(--font-ui); }
+.sdb-image-field > .sdb-help, .sdb-image-field > .sdb-error-msg { padding-inline: 0; text-align: left; }
+/* Dentro da área: tudo centralizado, com respiro igual em cima e embaixo. */
+.sdb-upload { --sdb-upload-ratio: 16 / 9; display: flex; flex-direction: column; gap: 0; min-width: 0; border: 1px dashed var(--label-tertiary); border-radius: var(--radius-lg); background: var(--fill); transition: background-color 200ms ease, box-shadow 220ms var(--sdb-ease); }
+.sdb-upload__drop { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 32px 16px 12px; border-radius: var(--radius-lg); color: var(--label-secondary); font: 400 15px/1.5 var(--font-ui); text-align: center; cursor: pointer; }
+.sdb-upload__drop b { font-weight: 600; color: var(--label); }
+.sdb-upload:not(.is-disabled):hover { background: var(--fill-strong); }
+.sdb-upload:focus-within, .sdb-upload.is-over { background: var(--material-thick); box-shadow: 0 0 0 1.5px var(--focus-ring), 0 0 0 5px var(--accent-soft); }
 .sdb-upload__input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
-.sdb-upload__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
-.sdb-upload__preview { display: none; flex-direction: column; gap: 8px; margin: 0; }
-/* A prévia segue a regra da página pública: a imagem inteira, sem recorte; sobra fundo quando a proporção difere. */
+.sdb-upload__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.sdb-upload__requirements { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 0; padding: 0 16px 32px; text-align: center; color: var(--label-secondary); font: 400 12px/1.5 var(--font-ui); overflow-wrap: anywhere; }
+.sdb-upload__requirements > span { display: block; max-width: 100%; }
+.sdb-upload__requirements b { color: var(--label); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sdb-upload__requirements .sdb-upload__formats { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; }
+.sdb-upload.has-file .sdb-upload__requirements { padding: 4px 16px 20px; }
+@container (max-width: 420px) { .sdb-upload__bar .sdb-upload__meta { flex-basis: 100%; } }
+@container (max-width: 360px) {
+  .sdb-upload__drop { padding: 24px 12px 8px; font-size: 14px; }
+  .sdb-upload__requirements { padding: 0 12px 24px; }
+  .sdb-upload.has-file .sdb-upload__requirements { padding: 4px 12px 16px; }
+}
+.sdb-upload__limit { padding: 4px 8px; border-radius: var(--radius-xs); background: var(--fill-strong); color: var(--label); white-space: nowrap; }
+.sdb-upload__preview { display: none; flex-direction: column; gap: 8px; margin: 0; padding: 8px; }
+/* A prévia preserva a imagem inteira; somente o avatar usa recorte circular. */
 .sdb-upload__preview img { display: block; width: 100%; max-height: 480px; aspect-ratio: var(--sdb-upload-ratio); object-fit: contain; border-radius: var(--radius-sm); background: var(--fill); }
 .sdb-upload--corpo .sdb-upload__preview img, .sdb-upload--livre .sdb-upload__preview img { height: auto; max-height: 480px; aspect-ratio: auto; object-fit: contain; }
-.sdb-upload__guide { margin: 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--fill); color: var(--label-secondary); font: 400 13px/1.45 var(--font-ui); }
-.sdb-upload__guide b { color: var(--label); font-weight: 600; font-variant-numeric: tabular-nums; }
-.sdb-upload__guide > span { display: block; }
-.sdb-upload__guide > span + span { margin-top: 4px; }
-.sdb-upload__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; padding: 0 4px; }
-.sdb-upload__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font: 400 13px/1.3 var(--font-ui); color: var(--label-secondary); }
+.sdb-upload__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; padding: 8px; }
+.sdb-upload__meta { flex: 1 1 120px; min-width: 0; display: flex; flex-direction: column; gap: 2px; font: 400 13px/1.3 var(--font-ui); color: var(--label-secondary); }
 .sdb-upload__name { font-weight: 600; color: var(--label); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sdb-upload.has-file .sdb-upload__drop { display: none; }
 .sdb-upload.has-file .sdb-upload__preview { display: flex; }
-.sdb-upload.is-error .sdb-upload__drop { box-shadow: 0 0 0 1.5px var(--critical), 0 0 0 5px var(--critical-soft); }
+.sdb-upload.is-error { border-color: var(--critical); box-shadow: 0 0 0 1.5px var(--critical), 0 0 0 5px var(--critical-soft); }
 .sdb-upload.is-disabled { opacity: 0.45; }
 .sdb-upload.is-disabled .sdb-upload__drop { cursor: not-allowed; }
-.sdb-upload--quadrado { --sdb-upload-ratio: 1; max-width: 240px; }
-/* A foto de perfil aparece num círculo: a prévia mostra o mesmo círculo. */
-.sdb-upload--quadrado .sdb-upload__preview img { border-radius: 50%; object-fit: cover; }
+.sdb-upload--quadrado { --sdb-upload-ratio: 1; }
+.sdb-upload--quadrado .sdb-upload__preview img { max-width: 240px; margin-inline: auto; border-radius: 50%; object-fit: cover; }
+@media (prefers-reduced-motion: reduce) { .sdb-upload { transition: none; } }
 .sdb-counter { font-size: 12px; color: var(--label-tertiary); font-variant-numeric: tabular-nums; text-align: right; padding: 0 4px; }
 
 /* ---------- Checkbox · Radio ---------- */
@@ -2260,6 +2270,28 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 .sdb-ad--portal .sdb-ad__text { margin: 0; font: 400 14px/22px var(--font-ui); }
 .sdb-ad--portal .sdb-ad__demo { margin: 0; color: var(--label-secondary); font: 400 10px/18px var(--font-ui); }
 .sdb-ad--portal > .sdb-btn { align-self: flex-start; white-space: normal; }
+/* Anúncio de anfitrião (03/11/2026): categoria, link em texto e anunciante no rodapé. */
+.sdb-ad--portal .sdb-ad__category { margin: 0; font: 500 14px/20px var(--font-ui); color: var(--label-brand); }
+.sdb-ad--portal .sdb-ad__link { align-self: flex-start; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--accent); font: 500 15px/22px var(--font-ui); text-decoration: none; border-radius: var(--radius-xs); }
+.sdb-ad--portal .sdb-ad__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.sdb-ad--portal .sdb-ad__link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.sdb-ad--portal .sdb-ad__foot { display: block; padding-top: var(--space-2); }
+/* EditorAnuncio: formulário à esquerda, prévia ao vivo à direita (fixa ao rolar no desktop). */
+.sdb-ad-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); gap: var(--space-7); align-items: start; }
+.sdb-ad-editor__form { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+.sdb-ad-editor__label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); width: 100%; }
+.sdb-ad-editor__label > small { font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
+.sdb-ad-editor__preview { position: sticky; top: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.sdb-ad-editor__preview-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.sdb-ad-editor__preview-title { margin: 0; font: 500 13px/18px var(--font-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--label-secondary); }
+.sdb-ad-editor__live { display: inline-flex; align-items: center; gap: var(--space-2); font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
+.sdb-ad-editor__live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--positive); }
+.sdb-ad-editor__caption { margin: 0; text-align: center; font: 400 13px/18px var(--font-ui); color: var(--label-secondary); }
+.sdb-ad-editor__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-5); border-top: 1px solid var(--separator); }
+@media (max-width: 960px) {
+  .sdb-ad-editor { grid-template-columns: minmax(0, 1fr); }
+  .sdb-ad-editor__preview { position: static; }
+}
 .sdb-imagem-acervo { position: absolute; inset: 0; overflow: hidden; }
 .sdb-imagem-acervo__fallback { position: absolute; inset: 0; display: grid; place-items: center; }
 .sdb-imagem-acervo__fallback > .sdb-arc { width: 24%; max-width: 120px; }

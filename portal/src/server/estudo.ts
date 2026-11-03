@@ -8,6 +8,7 @@ import {
   acervoDeEstudo,
   acervoPublico,
   alcanceDoTema,
+  anunciosPublicados,
   listarSalas,
   type SalaResumo,
 } from "@/data/repositorio";
@@ -47,7 +48,17 @@ interface Anuncio {
   placa: Placa;
   /** Até dois atributos com ícone, mostrados no anúncio do painel. */
   atributos?: { icone: "fontePrimaria" | "glossario" | "relogio" | "artigo"; texto: string }[];
+  categoria?: string;
+  textoAlternativo?: string;
   locais: ("banner" | "painel")[];
+}
+
+/** Índice estável em [0, n) a partir de um texto (rodízio de anúncios sem estado). */
+function rodizio(texto: string, n: number): number {
+  if (n <= 1) return 0;
+  let h = 0;
+  for (const c of texto) h = (h * 31 + (c.codePointAt(0) ?? 0)) >>> 0;
+  return h % n;
 }
 
 export interface SlideAnuncio {
@@ -286,8 +297,22 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
   );
   const temaEmComum = conteudoAmpliar?.temas.find((t) => temasLidos.has(t));
 
-  // Anúncios entram quando houver anunciantes reais, com tabela própria e aprovação da curadoria.
-  const anuncios: (Anuncio & { imagem?: string })[] = [];
+  // Anúncios de anfitriões aprovados pela curadoria. Hoje só no painel da coluna direita.
+  const anuncios: (Anuncio & { imagem?: string })[] = anunciosPublicados().map((a) => ({
+    id: a.id,
+    anunciante: a.anunciante,
+    titulo: [a.titulo, ""],
+    texto: a.descricao,
+    chamada: a.chamada,
+    href: a.href,
+    placa: "bege",
+    imagem: a.imagem,
+    categoria: a.categoria,
+    textoAlternativo: a.textoAlternativo,
+    locais: ["painel"],
+  }));
+  // Rodízio estável por pessoa e por dia: a mesma pessoa vê o mesmo anúncio no dia todo.
+  const vez = rodizio(`${m.id}:${new Date().toISOString().slice(0, 10)}`, anuncios.length);
   const episodios = DESTAQUES_DO_CANAL.flatMap((d) => {
     const v = videos.find((x) => x.id === d.video);
     if (!v) return [];
@@ -339,7 +364,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
         }
       : {}),
     ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
-    anuncioPainel: anuncios.find((a) => a.locais.includes("painel")),
+    anuncioPainel: anuncios.filter((a) => a.locais.includes("painel"))[vez],
     mostrarNiveis: p.mostrarNiveis,
   };
 }

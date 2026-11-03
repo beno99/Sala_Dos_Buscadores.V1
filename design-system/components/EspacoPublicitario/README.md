@@ -28,3 +28,10 @@ A variante `.sdb-ad--portal`, documentada em PortalInicio, usa título
 Fraunces 24/30 e label PUBLICIDADE em Fraunces 16/18 conforme o frame atual.
 O anunciante e a identificação de demonstração continuam separados da curadoria;
 nunca leva SeloProveniencia. `demonstracao` vem do contrato do anúncio fictício.
+
+## Anúncio de anfitrião (03/11/2026)
+Na coluna direita da Home, logo abaixo de “Seu caminho”, a variante `--portal`
+mostra o anúncio aprovado pela curadoria: PUBLICIDADE, imagem (com a descrição
+dada pelo anfitrião como `alt`), `.sdb-ad__category` opcional, título, texto,
+`a.sdb-ad__link` e `.sdb-ad__foot` com o anunciante. Quem cria é o anfitrião,
+no EditorAnuncio; nada vai ao ar sem a aprovação da curadoria.

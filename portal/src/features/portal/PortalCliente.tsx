@@ -362,6 +362,13 @@ export function PortalCliente({
               Ver conquistas
             </ButtonLink>
           </section>
+          {modelo.anuncioPainel && (
+            <EspacoPublicitario
+              anuncio={modelo.anuncioPainel}
+              variante="portal"
+              onPorQue={() => setPolitica(true)}
+            />
+          )}
           <section className="sdb-home__section" aria-labelledby="home-comunidade">
             <Cabecalho
               id="home-comunidade"
@@ -392,13 +399,6 @@ export function PortalCliente({
               )}
             </div>
           </section>
-          {modelo.anuncioPainel && (
-            <EspacoPublicitario
-              anuncio={modelo.anuncioPainel}
-              variante="portal"
-              onPorQue={() => setPolitica(true)}
-            />
-          )}
         </div>
       </div>
       <ModalPoliticaAnuncios aberto={politica} onFechar={() => setPolitica(false)} />

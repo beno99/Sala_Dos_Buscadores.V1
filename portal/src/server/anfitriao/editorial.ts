@@ -66,14 +66,14 @@ function exigirPerfil(dono: Membro): PerfilAnfitriao {
 }
 
 /** O anfitrião precisa ter o papel e um perfil público antes de criar qualquer coisa. */
-function conferirAnfitriao(dono: Membro): string | null {
+export function conferirAnfitriao(dono: Membro): string | null {
   if (dono.papel !== "anfitriao") return "só anfitriões mantêm Salas.";
   if (!perfilDe(dono.id)) return "complete seu perfil de anfitrião antes de criar uma Sala.";
   return null;
 }
 
-const congelado = (item: { revisao?: { congelado?: boolean } }) => Boolean(item.revisao?.congelado);
-const ERRO_CONGELADO = "este item foi congelado pela curadoria e não é mais editado.";
+export const congelado = (item: { revisao?: { congelado?: boolean } }) => Boolean(item.revisao?.congelado);
+export const ERRO_CONGELADO = "este item foi congelado pela curadoria e não é mais editado.";
 
 function slugsDeArtigos(salaSlug: string, exceto: string | null): string[] {
   return [...acervo().conteudos.values()]
@@ -378,7 +378,7 @@ export function proporFonte(f: FormFonteProposta, dono: Membro): ResultadoAcao<{
 
 // ---------- envio para revisão ----------
 
-const aceiteDe = (dono: Membro) => ({ quem: dono.pseudonimo, quando: agora() });
+export const aceiteDe = (dono: Membro) => ({ quem: dono.pseudonimo, quando: agora() });
 
 function pendenciasDoArtigo(a: ConteudoEditorial): ItemChecklist[] {
   return checklistEnvioArtigo(
@@ -398,7 +398,7 @@ function pendenciasDoArtigo(a: ConteudoEditorial): ItemChecklist[] {
   ).filter((i) => i.estado === "pendente");
 }
 
-const ERRO_ACEITE = "marque a declaração de que tem direito de usar as imagens e os textos enviados.";
+export const ERRO_ACEITE = "marque a declaração de que tem direito de usar as imagens e os textos enviados.";
 
 /**
  * Envia a Sala para revisão. No primeiro envio vão junto os artigos escolhidos

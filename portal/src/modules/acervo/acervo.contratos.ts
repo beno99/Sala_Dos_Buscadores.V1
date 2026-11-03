@@ -1,4 +1,5 @@
 import type {
+  AnuncioEditorial,
   Candidatura,
   Citacao,
   ComentarioComunidade,
@@ -67,6 +68,7 @@ export interface Colecoes {
   publicacoes: Publicacao;
   comentarios: ComentarioComunidade;
   denuncias: DenunciaComunidade;
+  anuncios: AnuncioEditorial;
 }
 
 export type NomeColecao = keyof Colecoes;

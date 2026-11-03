@@ -292,3 +292,104 @@ export async function aprovarArtigo(id: string, quem: string) {
 export async function reprovarArtigo(id: string, motivo: string, quem: string) {
   return comGravacoesDoPedido(() => reprovarArtigoPlano(id, motivo, quem));
 }
+
+// ---------- vídeos e anúncios de anfitriões ----------
+
+function decidirVideoPlano(videoId: string, quem: string, motivo: string | null): ResultadoAcao {
+  const video = acervo().videos.get(videoId);
+  if (!video?.revisao) return erro("este vídeo não existe mais.");
+  if (salaNaLixeira(video.sala)) return erro(SALA_NA_LIXEIRA);
+  const t = motivo === null ? transicao(video.status, "aprovar") : reprovar(video.status, motivo);
+  if (!t.ok) return erro(t.erro);
+  const texto = motivo?.trim().replace(/\s+/g, " ");
+  acervo().videos.set(video.id, {
+    ...video,
+    status: t.para,
+    publicadoEm: video.publicadoEm || hoje(),
+    atualizadoEm: agora(),
+    atualizadoPor: quem,
+    revisao: comDecisao(video.revisao, novaDecisao(quem, texto ? "reprovado" : "aprovado", texto)),
+  });
+  registrar({
+    quem,
+    acao: texto ? "reprovou" : "aprovou",
+    tipoItem: "video",
+    itemId: video.id,
+    itemTitulo: video.titulo,
+    mudancas: texto
+      ? [{ campo: "Motivo", antes: "", depois: texto }]
+      : [{ campo: "Status", antes: "em revisão", depois: "publicado" }],
+  });
+  const para = emailDoDono(video.revisao.donoId);
+  if (para)
+    enviarEmail({
+      para,
+      assunto: texto
+        ? `Seu vídeo “${video.titulo}” voltou para ajustes`
+        : `Seu vídeo “${video.titulo}” foi publicado`,
+      corpo: texto
+        ? [
+            `A curadoria revisou o vídeo “${video.titulo}” e pediu ajustes antes da publicação.`,
+            `Motivo: ${texto}`,
+            "Corrija no seu painel de anfitrião e envie de novo quando quiser.",
+          ].join("\n\n")
+        : `Seu vídeo “${video.titulo}” foi publicado e aparece na sua Sala quando ela estiver no ar.`,
+    });
+  return ok(undefined, texto ? "Vídeo devolvido ao anfitrião com o motivo." : "Vídeo publicado.");
+}
+
+function decidirAnuncioPlano(anuncioId: string, quem: string, motivo: string | null): ResultadoAcao {
+  const anuncio = acervo().anuncios.get(anuncioId);
+  if (!anuncio) return erro("este anúncio não existe mais.");
+  const t = motivo === null ? transicao(anuncio.status, "aprovar") : reprovar(anuncio.status, motivo);
+  if (!t.ok) return erro(t.erro);
+  const texto = motivo?.trim().replace(/\s+/g, " ");
+  acervo().anuncios.set(anuncio.id, {
+    ...anuncio,
+    status: t.para,
+    ...(texto ? {} : { publicadoEm: anuncio.publicadoEm ?? hoje() }),
+    atualizadoEm: agora(),
+    atualizadoPor: quem,
+    revisao: comDecisao(anuncio.revisao, novaDecisao(quem, texto ? "reprovado" : "aprovado", texto)),
+  });
+  registrar({
+    quem,
+    acao: texto ? "reprovou" : "aprovou",
+    tipoItem: "anuncio",
+    itemId: anuncio.id,
+    itemTitulo: anuncio.titulo,
+    mudancas: texto
+      ? [{ campo: "Motivo", antes: "", depois: texto }]
+      : [{ campo: "Status", antes: "em revisão", depois: "publicado" }],
+  });
+  const para = emailDoDono(anuncio.revisao.donoId);
+  if (para)
+    enviarEmail({
+      para,
+      assunto: texto
+        ? `Seu anúncio “${anuncio.titulo}” voltou para ajustes`
+        : `Seu anúncio “${anuncio.titulo}” foi aprovado`,
+      corpo: texto
+        ? [
+            `A curadoria revisou o anúncio “${anuncio.titulo}” e pediu ajustes antes da publicação.`,
+            `Motivo: ${texto}`,
+            "Corrija no seu painel de anfitrião e envie de novo quando quiser.",
+          ].join("\n\n")
+        : `Seu anúncio “${anuncio.titulo}” foi aprovado e já pode aparecer no Portal.`,
+    });
+  return ok(undefined, texto ? "Anúncio devolvido ao anfitrião com o motivo." : "Anúncio aprovado.");
+}
+
+/** A curadoria só julga: aprova ou reprova com motivo, sem editar o vídeo ou o anúncio. */
+export async function aprovarVideo(id: string, quem: string) {
+  return comGravacoesDoPedido(() => decidirVideoPlano(id, quem, null));
+}
+export async function reprovarVideo(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => decidirVideoPlano(id, quem, motivo));
+}
+export async function aprovarAnuncio(id: string, quem: string) {
+  return comGravacoesDoPedido(() => decidirAnuncioPlano(id, quem, null));
+}
+export async function reprovarAnuncio(id: string, motivo: string, quem: string) {
+  return comGravacoesDoPedido(() => decidirAnuncioPlano(id, quem, motivo));
+}

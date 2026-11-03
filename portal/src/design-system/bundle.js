@@ -977,23 +977,23 @@ function initFormatacao(bar) {
   });
   ["dragenter", "dragover"].forEach(function (tipo) {
     document.addEventListener(tipo, function (e) {
-      var d = e.target.closest && e.target.closest(".sdb-upload__drop");
-      if (!d || d.closest(".sdb-upload").classList.contains("is-disabled")) return;
+      var d = e.target.closest && e.target.closest(".sdb-upload");
+      if (!d || d.classList.contains("is-disabled")) return;
       e.preventDefault();
       d.classList.add("is-over");
     });
   });
   document.addEventListener("dragleave", function (e) {
-    var d = e.target.closest && e.target.closest(".sdb-upload__drop");
+    var d = e.target.closest && e.target.closest(".sdb-upload");
     if (d && !d.contains(e.relatedTarget)) d.classList.remove("is-over");
   });
   document.addEventListener("drop", function (e) {
-    var d = e.target.closest && e.target.closest(".sdb-upload__drop");
+    var d = e.target.closest && e.target.closest(".sdb-upload");
     if (!d) return;
     e.preventDefault();
     d.classList.remove("is-over");
     var input = d.querySelector(".sdb-upload__input");
-    if (!input || input.disabled || !e.dataTransfer.files.length) return;
+    if (!input || input.disabled || d.classList.contains("is-disabled") || !e.dataTransfer.files.length) return;
     try { input.files = e.dataTransfer.files; } catch (err) { return; }
     pickUpload(input);
   });

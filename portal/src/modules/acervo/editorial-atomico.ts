@@ -42,12 +42,11 @@ export function planejarEditorial(p: PedidoEditorial, e: EstadoEditorial): Resul
   const dono = p.ator.papel === "anfitriao";
   if (
     dono &&
-    (p.colecao === "videos" ||
-      !("revisao" in p.valor) ||
+    (!("revisao" in p.valor) ||
       p.valor.revisao?.donoId !== p.ator.id ||
       (atual && (!("revisao" in atual) || atual.revisao?.donoId !== p.ator.id)))
   )
-    throw new Error("Acesso restrito ao proprietário do artigo ou Sala.");
+    throw new Error("Acesso restrito ao proprietário do artigo, vídeo ou Sala.");
   const sala =
     p.colecao === "salas"
       ? (atual as SalaEditorial | undefined)
@@ -62,12 +61,13 @@ export function planejarEditorial(p: PedidoEditorial, e: EstadoEditorial): Resul
     const s = salaDo(slug);
     return Boolean(s && salaVisivel(s, e.conteudos));
   };
+  const doAtor = (item: { revisao?: { donoId: string } }) => item.revisao?.donoId === p.ator.id;
   const elegivelVideo = (v: VideoEditorial) =>
     Boolean(
       salaDo(v.sala) &&
         !salaDo(v.sala)?.lixeira &&
         v.status !== "arquivado" &&
-        (!dono || (v.status === "publicado" && salaPublica(v.sala))),
+        (!dono || doAtor(v) || (v.status === "publicado" && salaPublica(v.sala))),
     );
   const mudados: VideoEditorial[] = [];
   let valor = { ...p.valor, atualizadoEm: p.valor.atualizadoEm } as ValorEditorial;
@@ -94,7 +94,6 @@ export function planejarEditorial(p: PedidoEditorial, e: EstadoEditorial): Resul
     }
   }
   if (p.colecao === "videos") {
-    if (dono) throw new Error("Vídeos são administrados pela curadoria.");
     const v = valor as VideoEditorial;
     const antigo = atual as VideoEditorial | undefined;
     const elegivelArtigo = (id: string) => {
@@ -105,7 +104,8 @@ export function planejarEditorial(p: PedidoEditorial, e: EstadoEditorial): Resul
           salaDo(a.sala) &&
           !salaDo(a.sala)?.lixeira &&
           a.status !== "arquivado" &&
-          (!a.revisao || a.status === "publicado"),
+          // O anfitrião liga os próprios artigos em qualquer estado; os dos outros, só publicados.
+          (!a.revisao || a.status === "publicado" || (dono && doAtor(a))),
       );
     };
     for (const id of v.artigos)

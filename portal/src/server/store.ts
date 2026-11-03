@@ -5,6 +5,7 @@ import { type PedidoEditorial, proximoInstante } from "@/modules/acervo/editoria
 import "server-only";
 import { instalarRegistroSalas, instalarRegistroTemas } from "@/data/catalogo";
 import type {
+  AnuncioEditorial,
   Candidatura,
   Citacao,
   ConteudoEditorial,
@@ -119,6 +120,8 @@ export interface Acervo {
   /** Imagens enviadas (metadados; os bytes ficam no armazenamento S3). */
   midias: Map<string, MidiaGuardada>;
   temas: Map<string, TemaEditorial>;
+  /** Anúncios de anfitriões (só os aprovados aparecem no Portal). */
+  anuncios: Map<string, AnuncioEditorial>;
 }
 
 interface Store {
@@ -422,6 +425,7 @@ function snapshotDoStore(s: Store): DadosCarregados {
       publicacoes: a.comunidade.publicacoes,
       comentarios: a.comunidade.comentarios,
       denuncias: a.comunidade.denuncias,
+      anuncios: a.anuncios,
     },
     destaques: a.destaques,
     comunidade: {
@@ -455,6 +459,7 @@ function montar(d: DadosCarregados): Store {
     convites: new MapPersistido("convites", c.convites),
     midias: new MapPersistido("midias", c.midias),
     temas: new MapPersistido("temas", c.temas),
+    anuncios: new MapPersistido("anuncios", c.anuncios),
   };
   Object.defineProperty(acervo, "destaques", {
     enumerable: true,

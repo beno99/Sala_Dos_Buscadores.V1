@@ -65,8 +65,9 @@ export function obterArtigo(id: string): { artigo: ConteudoEditorial; citacao?: 
   return { artigo: clone(artigo), citacao: citacao ? clone(citacao) : undefined };
 }
 
+/** Vídeos da curadoria. Os de anfitriões ficam na revisão: a curadoria julga, não edita. */
 export function listarVideos(): VideoEditorial[] {
-  return [...acervo().videos.values()].filter((v) => !salaNaLixeira(v.sala)).map(clone);
+  return [...acervo().videos.values()].filter((v) => !salaNaLixeira(v.sala) && !v.revisao).map(clone);
 }
 
 /** Seleção por ID, na mesma Sala oficial, com ordem de criação estável. */
@@ -91,7 +92,7 @@ export function videosDaPreviaDoArtigo(id: string) {
 
 export function obterVideo(id: string): VideoEditorial | undefined {
   const v = acervo().videos.get(id);
-  return v && !salaNaLixeira(v.sala) ? clone(v) : undefined;
+  return v && !salaNaLixeira(v.sala) && !v.revisao ? clone(v) : undefined;
 }
 
 /** Catálogo de fontes: as propostas por anfitriões só entram quando o artigo que as usa é aprovado. */

@@ -3,7 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { ListaSalasRevisao } from "@/features/admin/ui/anfitrioes/ListaSalasRevisao";
-import { painelDoAnfitriao, salasDoAnfitriaoParaRevisao } from "@/server/anfitriao/consultas";
+import { RevisaoMidiasAnfitriao } from "@/features/admin/ui/anfitrioes/RevisaoMidiasAnfitriao";
+import {
+  painelDoAnfitriao,
+  salasDoAnfitriaoParaRevisao,
+  videosEAnunciosParaRevisao,
+} from "@/server/anfitriao/consultas";
 import { contaNoDiretorio as contaPorId } from "@/server/store";
 
 export const metadata: Metadata = { title: "Salas do anfitrião" };
@@ -26,6 +31,7 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
     congelada: Boolean(sala.revisao?.congelado),
     atualizadaEm: sala.atualizadoEm,
   }));
+  const midias = videosEAnunciosParaRevisao(contaId);
   return (
     <>
       <Breadcrumbs
@@ -52,6 +58,30 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
         )}
       </header>
       <ListaSalasRevisao contaId={contaId} salas={salas} />
+      <RevisaoMidiasAnfitriao
+        videos={midias.videos.map((v) => ({
+          id: v.id,
+          titulo: v.titulo,
+          salaNome: v.salaNome,
+          url: v.url,
+          duracao: v.duracao,
+          status: v.status,
+          artigos: v.artigos.length,
+          enviadoEm: v.revisao?.enviadoEm,
+        }))}
+        anuncios={midias.anuncios.map((a) => ({
+          id: a.id,
+          titulo: a.titulo,
+          descricao: a.descricao,
+          categoria: a.categoria,
+          href: a.href,
+          anunciante: a.anunciante,
+          chamada: a.chamada,
+          textoAlternativo: a.textoAlternativo,
+          imagem: a.imagem,
+          status: a.status,
+        }))}
+      />
     </>
   );
 }

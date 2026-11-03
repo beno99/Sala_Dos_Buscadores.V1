@@ -1,7 +1,7 @@
 import "server-only";
 import type {
+  AnuncioEditorial,
   Candidatura,
-  ConteudoEditorial,
   Convite,
   DecisaoRevisao,
   FonteEditorial,
@@ -9,6 +9,7 @@ import type {
   SalaEditorial,
   StatusConvite,
   StatusEditorial,
+  VideoEditorial,
 } from "@/data/types";
 import { statusDoConvite } from "@/features/anfitriao/regras/convite";
 import type { Membro } from "@/modules/conta/conta.contratos";
@@ -34,10 +35,16 @@ const artigosDe = (donoId: string) =>
     (c) => !c.lixeira && !salaNaLixeira(c.sala) && c.revisao?.donoId === donoId,
   );
 
+const videosDe = (donoId: string) =>
+  [...acervo().videos.values()].filter((v) => !salaNaLixeira(v.sala) && v.revisao?.donoId === donoId);
+
+const anunciosDe = (donoId: string) =>
+  [...acervo().anuncios.values()].filter((a) => a.revisao.donoId === donoId);
+
 const artigosDaSala = (sala: SalaEditorial) =>
   [...acervo().conteudos.values()].filter((c) => !c.lixeira && c.sala === sala.slug && c.revisao);
 
-function contar(artigos: ConteudoEditorial[]) {
+function contar(artigos: { status: StatusEditorial }[]) {
   const n = (s: StatusEditorial) => artigos.filter((a) => a.status === s).length;
   return {
     publicados: n("publicado"),
@@ -51,7 +58,7 @@ function contar(artigos: ConteudoEditorial[]) {
 // ---------- lado do anfitrião ----------
 
 export interface Novidade {
-  tipo: "sala" | "artigo";
+  tipo: "sala" | "artigo" | "video" | "anuncio";
   id: string;
   /** A Sala do item (ela mesma, ou a Sala do artigo). */
   salaId: string;
@@ -78,7 +85,25 @@ export function novidadesDe(donoId: string): Novidade[] {
         decisao,
       })),
   );
-  return [...daSala, ...doArtigo].sort((a, b) => b.decisao.quando.localeCompare(a.decisao.quando)).map(clone);
+  const doVideo = videosDe(donoId).flatMap((v) =>
+    (v.revisao?.decisoes ?? [])
+      .filter((d) => !d.vista)
+      .map((decisao) => ({
+        tipo: "video" as const,
+        id: v.id,
+        salaId: salaPorSlug.get(v.sala) ?? "",
+        titulo: v.titulo,
+        decisao,
+      })),
+  );
+  const doAnuncio = anunciosDe(donoId).flatMap((a) =>
+    a.revisao.decisoes
+      .filter((d) => !d.vista)
+      .map((decisao) => ({ tipo: "anuncio" as const, id: a.id, salaId: "", titulo: a.titulo, decisao })),
+  );
+  return [...daSala, ...doArtigo, ...doVideo, ...doAnuncio]
+    .sort((a, b) => b.decisao.quando.localeCompare(a.decisao.quando))
+    .map(clone);
 }
 
 export interface ResumoSalaAnfitriao {
@@ -88,7 +113,14 @@ export interface ResumoSalaAnfitriao {
 
 export interface PainelAnfitriao {
   perfil: PerfilAnfitriao | undefined;
-  indicadores: { salas: number; publicados: number; emRevisao: number; reprovados: number };
+  indicadores: {
+    salas: number;
+    publicados: number;
+    emRevisao: number;
+    reprovados: number;
+    videos: number;
+    anuncios: number;
+  };
   novidades: Novidade[];
   salas: ResumoSalaAnfitriao[];
 }
@@ -96,7 +128,8 @@ export interface PainelAnfitriao {
 export function painelDoAnfitriao(donoId: string): PainelAnfitriao {
   const salas = salasDe(donoId).sort((a, b) => b.atualizadoEm.localeCompare(a.atualizadoEm));
   const artigos = artigosDe(donoId);
-  const total = contar(artigos);
+  const itens = [...artigos, ...videosDe(donoId), ...anunciosDe(donoId)];
+  const total = contar(itens);
   return {
     perfil: clone(acervo().perfis.get(donoId)),
     indicadores: {
@@ -104,6 +137,8 @@ export function painelDoAnfitriao(donoId: string): PainelAnfitriao {
       publicados: total.publicados,
       emRevisao: total.emRevisao,
       reprovados: total.reprovados,
+      videos: videosDe(donoId).length,
+      anuncios: anunciosDe(donoId).length,
     },
     novidades: novidadesDe(donoId),
     salas: salas.map((s) => {
@@ -111,6 +146,28 @@ export function painelDoAnfitriao(donoId: string): PainelAnfitriao {
       return { sala: clone(s), artigos: { ...contar(daSala), total: daSala.length } };
     }),
   };
+}
+
+/** Vídeos do anfitrião, os mais recentes primeiro, com o nome da Sala. */
+export function videosDoAnfitriao(donoId: string): (VideoEditorial & { salaNome: string })[] {
+  const nomes = new Map([...acervo().salas.values()].map((s) => [s.slug, s.nome]));
+  return videosDe(donoId)
+    .sort((a, b) => b.atualizadoEm.localeCompare(a.atualizadoEm))
+    .map((v) => ({ ...clone(v), salaNome: nomes.get(v.sala) ?? v.sala }));
+}
+
+export function anunciosDoAnfitriao(donoId: string): AnuncioEditorial[] {
+  return anunciosDe(donoId)
+    .sort((a, b) => b.atualizadoEm.localeCompare(a.atualizadoEm))
+    .map(clone);
+}
+
+/** Salas do anfitrião que podem receber vídeo ou artigo (fora da lixeira e não congeladas). */
+export function salasParaCriar(donoId: string) {
+  return salasDe(donoId)
+    .filter((s) => !s.revisao?.congelado)
+    .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"))
+    .map((s) => ({ id: s.id, slug: s.slug, nome: s.nome, status: s.status }));
 }
 
 /** A Sala do anfitrião com os artigos dela; recusa (AcessoNegado) se não for dele. */
@@ -155,6 +212,8 @@ function pendentesDe(donoId: string) {
   const itens = [
     ...salasDe(donoId).filter((s) => s.status === "em_revisao"),
     ...artigosDe(donoId).filter((a) => a.status === "em_revisao"),
+    ...videosDe(donoId).filter((v) => v.status === "em_revisao"),
+    ...anunciosDe(donoId).filter((a) => a.status === "em_revisao"),
   ];
   const datas = itens.map((i) => i.revisao?.enviadoEm ?? i.atualizadoEm).sort();
   return { total: itens.length, maisAntigo: datas[0] ?? null };
@@ -199,7 +258,11 @@ export function totalPendenteRevisao(): number {
     ).length +
     [...acervo().conteudos.values()].filter(
       (c) => !c.lixeira && !salaNaLixeira(c.sala) && c.revisao && c.status === "em_revisao",
-    ).length
+    ).length +
+    [...acervo().videos.values()].filter(
+      (v) => !salaNaLixeira(v.sala) && v.revisao && v.status === "em_revisao",
+    ).length +
+    [...acervo().anuncios.values()].filter((a) => a.status === "em_revisao").length
   );
 }
 
@@ -226,6 +289,17 @@ export function salaParaRevisao(salaId: string) {
   }));
   const dono = sala.revisao ? contasDoDiretorio().find((c) => c.id === sala.revisao?.donoId) : undefined;
   return { sala: clone(sala), dono, artigos };
+}
+
+/** Revisão: vídeos e anúncios de um anfitrião, os que esperam decisão primeiro. */
+export function videosEAnunciosParaRevisao(contaId: string) {
+  const primeiroEmRevisao = <T extends { status: StatusEditorial; atualizadoEm: string }>(a: T, b: T) =>
+    Number(b.status === "em_revisao") - Number(a.status === "em_revisao") ||
+    b.atualizadoEm.localeCompare(a.atualizadoEm);
+  return {
+    videos: videosDoAnfitriao(contaId).sort(primeiroEmRevisao),
+    anuncios: anunciosDoAnfitriao(contaId).sort(primeiroEmRevisao),
+  };
 }
 
 export function listarCandidaturas(): Candidatura[] {

@@ -1,4 +1,5 @@
 <!-- @dsCard group="Curadoria" height=1500 subtitle="Um parágrafo por bloco, com a barra de formatação; em blocos, com intertítulo, destaque e imagem" -->
+
 <div class="sdb-stage">
   <div class="sdb-editor" style="max-width:760px">
     <div class="sdb-editor__block">
@@ -122,11 +123,11 @@
       <div class="sdb-editor__main">
         <div class="sdb-editor__bar"><span class="sdb-meta sdb-editor__type">Imagem</span></div>
         <div class="sdb-editor__fields">
-          <div class="sdb-field"><span class="sdb-label" id="eb-img-l">Imagem</span>
-            <div class="sdb-upload has-file" data-max-mb="5">
-              <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="eb-img-l"><span class="sdb-upload__icon"><span data-icon="imagem"></span></span><span><b>Escolher imagem</b> ou arraste até aqui</span></label>
+          <div class="sdb-field sdb-image-field"><div class="sdb-upload__header"><span class="sdb-label" id="eb-img-l">Imagem</span><p id="eb-img-l-descricao" class="sdb-upload__description">Adicione uma imagem para ilustrar este trecho.</p></div>
+            <div class="sdb-upload has-file sdb-upload--livre" data-max-mb="5" data-upload-purpose="corpo-artigo" data-recommended-width="1472" style="--sdb-upload-ratio: 3 / 2">
+              <label class="sdb-upload__drop"><input class="sdb-upload__input" type="file" accept="image/jpeg,image/png,image/webp" aria-labelledby="eb-img-l" aria-describedby="eb-img-l-descricao eb-img-l-orientacao eb-img-l-exibicao"><span class="sdb-upload__icon"><span data-icon="enviar"></span></span><span><b>Clique para enviar</b> ou arraste a imagem aqui</span></label>
               <figure class="sdb-upload__preview"><img src="../assets/images/caibalion.webp" alt=""><figcaption class="sdb-upload__bar"><span class="sdb-upload__meta"><span class="sdb-upload__name">templo-sete-degraus.webp</span><span class="sdb-upload__size">286 KB</span></span><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-replace>Trocar</button><button class="sdb-btn sdb-btn--secondary sdb-btn--sm" type="button" data-upload-remove>Remover</button></figcaption></figure>
-            </div>
+            <p id="eb-img-l-orientacao" class="sdb-upload__requirements"><span>Recomendado: <b>1.472 × 981 px</b></span><span>Largura × altura · proporção 3:2 · altura livre</span><span class="sdb-upload__formats">JPEG, PNG ou WebP<span class="sdb-upload__limit">Até 5 MB</span></span></p></div><p id="eb-img-l-exibicao" class="sdb-help">Aparece inteira, na largura da coluna de texto; a altura acompanha a proporção do arquivo (vertical e quadrada também servem).</p>
             <p class="sdb-help">JPEG, PNG ou WebP, até 5 MB. Só domínio público, licença aberta ou imagem sua; nunca gerada por IA.</p>
           </div>
           <div class="sdb-field"><label class="sdb-label" for="eb-alt">Descreva a imagem para quem não pode vê-la</label><div class="sdb-control"><input id="eb-alt" value="Pintura de um templo no alto de sete degraus, cada um com o nome de uma operação alquímica"></div></div>

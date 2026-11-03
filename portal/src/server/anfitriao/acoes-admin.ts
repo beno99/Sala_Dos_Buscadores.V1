@@ -105,3 +105,19 @@ export async function convidarAcao(email: string) {
 export async function revogarConviteAcao(id: string) {
   return comAdmin((quem) => usuarios.revogarConvite(String(id), quem));
 }
+
+export async function aprovarVideoAnfitriaoAcao(videoId: string) {
+  return comAdmin((quem) => revisao.aprovarVideo(String(videoId), quem));
+}
+
+export async function reprovarVideoAnfitriaoAcao(videoId: string, motivo: string) {
+  return comAdmin((quem) => revisao.reprovarVideo(String(videoId), String(motivo ?? ""), quem));
+}
+
+export async function aprovarAnuncioAcao(anuncioId: string) {
+  return comAdmin((quem) => revisao.aprovarAnuncio(String(anuncioId), quem));
+}
+
+export async function reprovarAnuncioAcao(anuncioId: string, motivo: string) {
+  return comAdmin((quem) => revisao.reprovarAnuncio(String(anuncioId), String(motivo ?? ""), quem));
+}

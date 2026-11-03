@@ -340,6 +340,33 @@ export interface VideoEditorial extends Video, MetaEditorial {
   youtubeId: string;
   /** IDs dos conteúdos da mesma Sala ligados ao vídeo. */
   artigos: string[];
+  /** Vídeo de anfitrião: dono e decisões da curadoria (só vai ao ar aprovado). */
+  revisao?: RevisaoAnfitriao;
+}
+
+/**
+ * Anúncio enviado por um anfitrião. Só aparece no Portal depois da aprovação
+ * da curadoria (sem charlatanismo, promessa de cura, manipulação religiosa ou
+ * urgência), sempre com "Publicidade" e o nome do anunciante.
+ */
+export interface AnuncioEditorial extends MetaEditorial {
+  id: string;
+  titulo: string;
+  descricao: string;
+  /** Linha curta acima do título ("Incensos naturais"). Opcional. */
+  categoria?: string;
+  /** Destino do link, sempre https. */
+  href: string;
+  anunciante: string;
+  /** Texto do link ("Conhecer a coleção"). */
+  chamada: string;
+  /** Descrição da imagem para leitores de tela. */
+  textoAlternativo: string;
+  /** Id da mídia enviada (S3) e o endereço servido por /midia/[id]. */
+  midia?: string;
+  imagem?: string;
+  publicadoEm?: string;
+  revisao: RevisaoAnfitriao;
 }
 
 export interface FonteEditorial extends Fonte {
@@ -425,7 +452,8 @@ export type TipoItemAuditado =
   | "convite"
   | "tema"
   | "publicacao"
-  | "comentario";
+  | "comentario"
+  | "anuncio";
 
 export type AcaoAuditada =
   | "criou"

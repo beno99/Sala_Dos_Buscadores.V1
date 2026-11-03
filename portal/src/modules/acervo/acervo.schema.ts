@@ -134,25 +134,32 @@ export const citacoes = pgTable("citacoes", {
   inicial: text("inicial").notNull(),
 }).enableRLS();
 
-export const videos = pgTable("videos", {
-  id: text("id").primaryKey(),
-  sala: text("sala")
-    .notNull()
-    .references(() => salas.slug, { onUpdate: "cascade" }),
-  titulo: text("titulo").notNull(),
-  duracao: text("duracao").notNull(),
-  temas: text("temas").array().notNull().$type<TemaSlug[]>(),
-  nivel: integer("nivel").notNull().$type<1 | 2 | 3>(),
-  episodio: text("episodio").notNull(),
-  publicadoEm: text("publicado_em").notNull(),
-  url: text("url").notNull(),
-  placa: placaEnum("placa").notNull(),
-  imagem: text("imagem"),
-  youtubeId: text("youtube_id").notNull(),
-  /** IDs de artigos relacionados, inclusive de outras Salas. Fonte única da relação. */
-  artigos: text("artigos").array().notNull(),
-  ...meta,
-}).enableRLS();
+export const videos = pgTable(
+  "videos",
+  {
+    id: text("id").primaryKey(),
+    sala: text("sala")
+      .notNull()
+      .references(() => salas.slug, { onUpdate: "cascade" }),
+    titulo: text("titulo").notNull(),
+    duracao: text("duracao").notNull(),
+    temas: text("temas").array().notNull().$type<TemaSlug[]>(),
+    nivel: integer("nivel").notNull().$type<1 | 2 | 3>(),
+    episodio: text("episodio").notNull(),
+    publicadoEm: text("publicado_em").notNull(),
+    url: text("url").notNull(),
+    placa: placaEnum("placa").notNull(),
+    imagem: text("imagem"),
+    youtubeId: text("youtube_id").notNull(),
+    /** IDs de artigos relacionados, inclusive de outras Salas. Fonte única da relação. */
+    artigos: text("artigos").array().notNull(),
+    ...meta,
+    /** Dono do vídeo de anfitrião (o mesmo de revisao.donoId), para consultas. */
+    donoId: text("dono_id"),
+    revisao: jsonb("revisao").$type<RevisaoAnfitriao>(),
+  },
+  (t) => [index("videos_dono_idx").on(t.donoId)],
+).enableRLS();
 
 export const temas = pgTable("temas", {
   slug: text("slug").primaryKey(),

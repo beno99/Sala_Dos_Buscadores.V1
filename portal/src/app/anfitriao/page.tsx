@@ -12,13 +12,25 @@ import { perfilIncompleto } from "@/server/anfitriao/usuarios";
 
 export const metadata: Metadata = { title: "Painel" };
 
-const hrefNovidade = (n: Novidade) =>
-  (n.tipo === "sala" ? `/anfitriao/salas/${n.id}` : `/anfitriao/artigos/${n.id}`) as Route;
+const ROTA: Record<Novidade["tipo"], string> = {
+  sala: "/anfitriao/salas",
+  artigo: "/anfitriao/artigos",
+  video: "/anfitriao/videos",
+  anuncio: "/anfitriao/publicidade",
+};
+const ITEM: Record<Novidade["tipo"], (t: string) => string> = {
+  sala: (t) => `A Sala “${t}”`,
+  artigo: (t) => `O artigo “${t}”`,
+  video: (t) => `O vídeo “${t}”`,
+  anuncio: (t) => `O anúncio “${t}”`,
+};
+
+const hrefNovidade = (n: Novidade) => `${ROTA[n.tipo]}/${n.id}` as Route;
 
 function textoNovidade(n: Novidade) {
-  const item = n.tipo === "sala" ? `A Sala “${n.titulo}”` : `O artigo “${n.titulo}”`;
+  const item = ITEM[n.tipo](n.titulo);
   return n.decisao.decisao === "aprovado"
-    ? `${item} foi ${n.tipo === "sala" ? "publicada" : "publicado"}.`
+    ? `${item} foi ${n.tipo === "sala" ? "publicada" : n.tipo === "anuncio" ? "aprovado" : "publicado"}.`
     : `${item} voltou para ajustes.`;
 }
 
@@ -31,17 +43,23 @@ export default async function PainelAnfitriao() {
     <>
       <header className="flex flex-col gap-4">
         <p className="sdb-meta sdb-secondary">Anfitrião · {p.perfil?.nome ?? membro.pseudonimo}</p>
-        <h1 className="sdb-title-1">Minhas Salas</h1>
+        <h1 className="sdb-title-1">Painel</h1>
         <p className="sdb-body-sm sdb-secondary max-w-read">
-          O que você escreve vai para a revisão da curadoria antes de ir ao ar. Editar algo publicado tira o
-          item do ar até a nova aprovação.
+          Salas, artigos, vídeos e publicidade vão para a revisão da curadoria antes de ir ao ar. Editar algo
+          publicado tira o item do ar até a nova aprovação.
         </p>
         <div className="sdb-row">
           <ButtonLink href={"/anfitriao/salas/nova" as Route} variant="primary" icon="mais">
-            Nova Sala
+            Criar Sala
           </ButtonLink>
-          <ButtonLink href={"/anfitriao/perfil" as Route} variant="secondary" icon="pessoa">
-            Perfil público
+          <ButtonLink href={"/anfitriao/artigos/novo" as Route} variant="secondary" icon="artigo">
+            Criar artigo
+          </ButtonLink>
+          <ButtonLink href={"/anfitriao/videos/novo" as Route} variant="secondary" icon="play">
+            Criar vídeo
+          </ButtonLink>
+          <ButtonLink href={"/anfitriao/publicidade/novo" as Route} variant="secondary" icon="editar">
+            Criar publicidade
           </ButtonLink>
         </div>
       </header>
@@ -65,7 +83,13 @@ export default async function PainelAnfitriao() {
         aria-label="Totais"
       >
         <IndicadorNumerico rotulo="Salas" valor={p.indicadores.salas} />
-        <IndicadorNumerico rotulo="Artigos publicados" valor={p.indicadores.publicados} />
+        <IndicadorNumerico
+          rotulo="Publicados"
+          valor={p.indicadores.publicados}
+          dica="Artigos, vídeos e anúncios no ar."
+        />
+        <IndicadorNumerico rotulo="Vídeos" valor={p.indicadores.videos} />
+        <IndicadorNumerico rotulo="Anúncios" valor={p.indicadores.anuncios} />
         <IndicadorNumerico
           rotulo="Em revisão"
           valor={p.indicadores.emRevisao}

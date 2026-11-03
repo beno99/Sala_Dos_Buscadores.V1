@@ -1,12 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { FormVideo } from "@/features/admin/formularios";
 import type {
   FormArtigoAnfitriao,
   FormFonteProposta,
   FormSalaAnfitriao,
 } from "@/features/anfitriao/regras/artigo";
 import type { FormCandidatura, FormPerfil } from "@/features/anfitriao/regras/perfil";
+import type { FormAnuncio } from "@/features/publicidade/regras";
 import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { gravarSessao } from "@/modules/conta/conta.controller";
@@ -14,9 +16,11 @@ import { auditarComo } from "@/server/auditoria";
 import type { ModoSalvar } from "../admin/editorial";
 import { AcessoNegado, exigirAnfitriao, membroAtual } from "../sessao";
 import { comGravacoesDoPedido, sincronizarAcervo } from "../store";
+import * as anuncios from "./anuncios";
 import type { ResultadoAcao } from "./comum";
 import * as editorial from "./editorial";
 import * as usuarios from "./usuarios";
+import * as videos from "./videos";
 
 /*
  * Server Actions do anfitrião e do membro que se candidata. Podem ser chamadas
@@ -105,6 +109,58 @@ export async function marcarNovidadesVistasAcao(tipo: editorial.TipoItemAnfitria
 
 export async function salvarPerfilAcao(form: FormPerfil) {
   return comAnfitriao((dono) => usuarios.salvarPerfil(form, dono));
+}
+
+// ---------- vídeos ----------
+
+const SEM_VERSAO = {
+  ok: false as const,
+  conflito: true,
+  mensagem: "Reabra o editor para obter a versão atual. Seu rascunho continua nesta página.",
+};
+
+export async function salvarVideoAnfitriaoAcao(form: FormVideo, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string") return SEM_VERSAO;
+  return comAnfitriao((dono) => videos.salvarVideo(form, dono, modo), { revalidar: modo === "manual" });
+}
+
+export async function enviarVideoAcao(videoId: string, aceite: boolean) {
+  return comAnfitriao((dono) => videos.enviarVideo(String(videoId), aceite === true, dono));
+}
+
+export async function retirarVideoAcao(videoId: string) {
+  return comAnfitriao((dono) => videos.retirarVideo(String(videoId), dono));
+}
+
+export async function excluirVideoAcao(videoId: string) {
+  return comAnfitriao((dono) => videos.excluirVideo(String(videoId), dono));
+}
+
+export async function marcarVideoVistoAcao(videoId: string) {
+  return comAnfitriao((dono) => videos.marcarVideoVisto(String(videoId), dono));
+}
+
+// ---------- publicidade ----------
+
+export async function salvarAnuncioAcao(form: FormAnuncio, modo: ModoSalvar) {
+  if (form.id && typeof form.versaoEsperada !== "string") return SEM_VERSAO;
+  return comAnfitriao((dono) => anuncios.salvarAnuncio(form, dono, modo), { revalidar: modo === "manual" });
+}
+
+export async function enviarAnuncioAcao(anuncioId: string, aceite: boolean) {
+  return comAnfitriao((dono) => anuncios.enviarAnuncio(String(anuncioId), aceite === true, dono));
+}
+
+export async function retirarAnuncioAcao(anuncioId: string) {
+  return comAnfitriao((dono) => anuncios.retirarAnuncio(String(anuncioId), dono));
+}
+
+export async function excluirAnuncioAcao(anuncioId: string) {
+  return comAnfitriao((dono) => anuncios.excluirAnuncio(String(anuncioId), dono));
+}
+
+export async function marcarAnuncioVistoAcao(anuncioId: string) {
+  return comAnfitriao((dono) => anuncios.marcarAnuncioVisto(String(anuncioId), dono));
 }
 
 // ---------- membro ----------
