@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type KeyboardEvent,
   type ReactNode,
   type Ref,
   type SelectHTMLAttributes,
@@ -11,6 +12,7 @@ import {
   useState,
 } from "react";
 import { cx } from "@/lib/cx";
+import { normalizar } from "@/lib/texto";
 import { BarraFormatacao } from "./BarraFormatacao";
 import { Icon } from "./Icon";
 import { TextoMarcado } from "./TextoMarcado";
@@ -262,5 +264,133 @@ export function RadioGrupo<T extends string>({
       ))}
       <MensagemErro id={`${campo}-erro`} erro={error} />
     </fieldset>
+  );
+}
+
+interface ComboboxProps {
+  id?: string;
+  label: ReactNode;
+  help?: ReactNode;
+  placeholder?: string;
+  vazio?: string;
+  value: string;
+  onChange: (value: string) => void;
+  opcoes: { value: string; label: string; detalhe?: string; busca?: string }[];
+}
+
+/** Combobox: um único campo que busca e escolhe na lista (padrão WAI-ARIA, visual do Menu). */
+export function Combobox({
+  id,
+  label,
+  help,
+  placeholder,
+  vazio = "Nenhum resultado",
+  value,
+  onChange,
+  opcoes,
+}: ComboboxProps) {
+  const gerado = useId();
+  const campo = id ?? gerado;
+  const selecionada = opcoes.find((o) => o.value === value);
+  const [texto, setTexto] = useState<string | null>(null);
+  const [ativa, setAtiva] = useState(0);
+  const aberto = texto !== null;
+  const termo = normalizar(texto ?? "");
+  const lista = termo
+    ? opcoes.filter((o) => normalizar(`${o.label} ${o.detalhe ?? ""} ${o.busca ?? ""}`).includes(termo))
+    : opcoes;
+  const escolher = (valor: string) => {
+    onChange(valor);
+    setTexto(null);
+  };
+  const teclado = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!aberto) return setTexto("");
+      const passo = e.key === "ArrowDown" ? 1 : -1;
+      setAtiva((a) => (a + passo + lista.length) % Math.max(lista.length, 1));
+    } else if (e.key === "Enter" && aberto) {
+      e.preventDefault();
+      const opcao = lista[ativa];
+      if (opcao) escolher(opcao.value);
+    } else if (e.key === "Escape" && aberto) {
+      e.stopPropagation();
+      setTexto(null);
+    }
+  };
+  return (
+    <div className="sdb-field">
+      <label className="sdb-label" htmlFor={campo}>
+        {label}
+      </label>
+      <div className="relative">
+        <div className="sdb-control sdb-control--search">
+          <Icon name="busca" />
+          <input
+            id={campo}
+            type="text"
+            role="combobox"
+            autoComplete="off"
+            aria-autocomplete="list"
+            aria-expanded={aberto}
+            aria-controls={`${campo}-lista`}
+            aria-activedescendant={aberto && lista[ativa] ? `${campo}-op-${ativa}` : undefined}
+            aria-describedby={help ? `${campo}-ajuda` : undefined}
+            placeholder={placeholder}
+            value={texto ?? selecionada?.label ?? ""}
+            onChange={(e) => {
+              setTexto(e.target.value);
+              setAtiva(0);
+            }}
+            onFocus={(e) => e.currentTarget.select()}
+            onClick={() => aberto || setTexto("")}
+            onBlur={() => setTexto(null)}
+            onKeyDown={teclado}
+          />
+          {value && (
+            <button
+              type="button"
+              className="sdb-control__btn"
+              aria-label="Limpar seleção"
+              onClick={() => escolher("")}
+            >
+              <Icon name="fechar" />
+            </button>
+          )}
+        </div>
+        <div
+          id={`${campo}-lista`}
+          role="listbox"
+          className={cx("sdb-menu right-0 max-h-[18rem] overflow-y-auto", aberto && "is-open")}
+        >
+          {lista.length === 0 && <div className="sdb-menu__label">{vazio}</div>}
+          {lista.map((o, i) => (
+            // biome-ignore lint/a11y/useKeyWithClickEvents: teclado tratado no input via aria-activedescendant
+            <div
+              key={o.value}
+              id={`${campo}-op-${i}`}
+              role="option"
+              tabIndex={-1}
+              aria-selected={o.value === value}
+              className={cx("sdb-menu__item", i === ativa && "is-active")}
+              onPointerMove={() => setAtiva(i)}
+              onPointerDown={(e) => e.preventDefault()}
+              onClick={() => escolher(o.value)}
+            >
+              <span>
+                {o.label}
+                {o.detalhe && <small> · {o.detalhe}</small>}
+              </span>
+              {o.value === value && <Icon name="check" size="sm" />}
+            </div>
+          ))}
+        </div>
+      </div>
+      {help && (
+        <p id={`${campo}-ajuda`} className="sdb-help">
+          {help}
+        </p>
+      )}
+    </div>
   );
 }

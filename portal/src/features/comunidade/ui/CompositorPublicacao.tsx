@@ -4,7 +4,7 @@ import { type FormEvent, useId, useState } from "react";
 import { Button } from "@/components/ds/Button";
 import { CampoImagem, type ImagemEnviada } from "@/components/ds/CampoImagem";
 import { CampoTexto } from "@/components/ds/Campos";
-import { AreaTexto, Select } from "@/components/ds/CamposExtras";
+import { AreaTexto, Combobox, Select } from "@/components/ds/CamposExtras";
 import { CompositorComunidade } from "@/components/ds/CompositorComunidade";
 import { AvisoContextual } from "@/components/ds/EstadosInterface";
 import { Icon, type IconName } from "@/components/ds/Icon";
@@ -43,6 +43,11 @@ function Formulario({
   const [temas, setTemas] = useState<string[]>(edicao?.temas ?? []);
   const [conteudoId, setConteudoId] = useState(edicao?.conteudoId ?? "");
   const [videoId, setVideoId] = useState(edicao?.videoId ?? "");
+  const [autorVideo, setAutorVideo] = useState(
+    () => opcoes.videos?.find((v) => v.id === edicao?.videoId)?.autor ?? "",
+  );
+  const autores = [...new Set((opcoes.videos ?? []).map((v) => v.autor))];
+  const videosDoAutor = (opcoes.videos ?? []).filter((v) => !autorVideo || v.autor === autorVideo);
   const [buscaConteudo, setBuscaConteudo] = useState("");
   const [dirigida, setDirigida] = useState(Boolean(edicao?.perguntaDirigidaA));
   const [imagem, setImagem] = useState<ImagemEnviada | null>(
@@ -175,17 +180,37 @@ function Formulario({
       )}
       <div className="sdb-composer__context">
         <Select
-          label="Vídeo do acervo (opcional)"
-          value={videoId}
-          onChange={(e) => setVideoId(e.target.value)}
+          label="Autor do vídeo (opcional)"
+          value={autorVideo}
+          onChange={(e) => {
+            setAutorVideo(e.target.value);
+            setVideoId("");
+          }}
           opcoes={[
-            { value: "", label: "Sem vídeo" },
+            { value: "", label: "Todos os autores" },
+            ...autores.map((a) => ({
+              value: a,
+              label: `${a} · ${(opcoes.videos ?? []).filter((v) => v.autor === a).length} vídeos`,
+            })),
+          ]}
+        />
+        <Combobox
+          label={autorVideo ? `Vídeo de ${autorVideo}` : "Vídeo (opcional)"}
+          placeholder={autorVideo ? "Busque pelo título" : "Busque pelo título ou autor"}
+          vazio="Nenhum vídeo encontrado"
+          value={videoId}
+          onChange={setVideoId}
+          opcoes={[
             ...(videoId && !opcoes.videos?.some((v) => v.id === videoId)
               ? [{ value: videoId, label: "Vídeo indisponível — remova para salvar" }]
               : []),
-            ...(opcoes.videos ?? []).map((v) => ({ value: v.id, label: `${v.titulo} · ${v.salaNome}` })),
+            ...videosDoAutor.map((v) => ({
+              value: v.id,
+              label: v.titulo,
+              detalhe: `${v.autor} · ${v.salaNome}`,
+            })),
           ]}
-          help="Escolha um vídeo já publicado. A reprodução usa o YouTube; não há envio de arquivos de vídeo."
+          help="Vídeos já publicados. A reprodução usa o YouTube; não há envio de arquivos de vídeo."
         />
         {tipo !== "achado" && (
           <Select
@@ -214,7 +239,7 @@ function Formulario({
             ]}
           />
         )}
-        <details className="sdb-composer__optional">
+        <details className="sdb-composer__optional self-end">
           <summary>Adicionar temas</summary>
           <fieldset className="sdb-composer__types">
             <legend className="sdb-label">
@@ -235,7 +260,7 @@ function Formulario({
             ))}
           </fieldset>
         </details>
-        <details className="sdb-composer__optional" open={Boolean(imagem)}>
+        <details className="sdb-composer__optional self-end" open={Boolean(imagem)}>
           <summary>Imagem</summary>
           <CampoImagem
             label="Imagem"

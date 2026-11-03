@@ -17,11 +17,12 @@ interface Secao {
 
 const SECOES: Secao[] = [
   { href: "/", rotulo: "Portal", icone: "inicio", grupo: "Acervo" },
-  { href: "/destaques" as Route, rotulo: "Destaques", icone: "destaques", grupo: "Acervo" },
-  { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
-  { href: "/videos" as Route, rotulo: "Vídeos", icone: "video", grupo: "Acervo" },
-  { href: "/anfitrioes" as Route, rotulo: "Anfitriões", icone: "anfitriao", grupo: "Acervo" },
   { href: "/salas" as Route, rotulo: "Salas", icone: "salas", grupo: "Acervo" },
+  { href: "/artigos" as Route, rotulo: "Artigos", icone: "artigo", grupo: "Acervo" },
+  { href: "/videos" as Route, rotulo: "Vídeos", icone: "video", grupo: "Acervo" },
+  { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
+  { href: "/destaques" as Route, rotulo: "Destaques", icone: "destaques", grupo: "Acervo" },
+  { href: "/anfitrioes" as Route, rotulo: "Anfitriões", icone: "anfitriao", grupo: "Acervo" },
   { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "comunidade", grupo: "Estudo" },
   { href: "/trilhas" as Route, rotulo: "Trilhas", icone: "trilha", grupo: "Estudo" },
   { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },

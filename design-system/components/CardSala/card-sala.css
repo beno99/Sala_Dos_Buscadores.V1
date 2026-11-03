@@ -192,7 +192,15 @@
 .sala__body > .sdb-seal { align-self: flex-start; }
 
 /* Sala de Anfitrião: selo e assinatura textual, com detalhe dourado discreto. */
-.sala--host { --sala-rim: var(--gold); }
+/* Sala de anfitrião (03/11/2026): filete dourado de 2 px no card e a marca no topo, ao lado dos conteúdos. */
+.sala--host {
+  --sala-rim: var(--progress-gold-start);
+  --sala-frame: linear-gradient(135deg, var(--progress-gold-start) 0%, var(--progress-gold-bright) 45%, var(--progress-gold-end) 60%, var(--progress-gold-start) 100%);
+  box-shadow: inset 0 0 0 1.5px var(--button-focus-ring), 0 0 0 1px var(--progress-gold-start), 0 8px 24px -10px var(--progress-glow), var(--sala-shadow);
+}
+.sala--host .sala__chips { gap: calc(var(--sala-space) * 1.5); }
+.sala__count--host { display: inline-flex; align-items: center; gap: 6px; box-shadow: inset 0 0 0 1px var(--gold); }
+.sala__count--host .sdb-icon { width: 14px; height: 14px; color: var(--gold); }
 .sala__signature { position: relative; z-index: 2; margin: 0; font-size: 13px; line-height: 1.5; color: var(--label); overflow-wrap: anywhere; }
 .sala__signature a { color: inherit; text-decoration: underline; text-underline-offset: var(--space-1); }
 .sala--host .sdb-seal--anfitriao { color: var(--label); background: var(--fill); box-shadow: inset 0 0 0 1px var(--gold); }

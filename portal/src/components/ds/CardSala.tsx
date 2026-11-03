@@ -5,8 +5,9 @@ import type { SalaResumo } from "@/data/repositorio";
 import { cx } from "@/lib/cx";
 import { formatarData, plural } from "@/lib/texto";
 import { Arc } from "./Arc";
+import { Icon } from "./Icon";
 import { ImagemAcervo } from "./ImagemAcervo";
-import { SeloNivel, SeloProveniencia } from "./Selos";
+import { SeloNivel } from "./Selos";
 
 /**
  * Porta de entrada de uma Sala (CardSala 1.1, RF-09): imagem ocupando o fundo
@@ -53,6 +54,12 @@ export function CardSala({
         <div className="sala__tools">
           <div className="sala__chips">
             <span className="sala__count">{plural(sala.totalConteudos, "conteúdo", "conteúdos")}</span>
+            {sala.origem === "anfitriao" && (
+              <span className="sala__count sala__count--host">
+                <Icon name="anfitriao" size="sm" />
+                Sala de Anfitrião
+              </span>
+            )}
             {ampliar && <span className="sala__count">Para ampliar o olhar</span>}
           </div>
           {acoes}
@@ -62,9 +69,6 @@ export function CardSala({
             {sala.nome}
           </h3>
           <p className="sala__description">{sala.tradicao}</p>
-          {sala.origem === "anfitriao" && (
-            <SeloProveniencia tipo="anfitriao" rotulo="Sala de Anfitrião" compacto />
-          )}
           {sala.origem === "anfitriao" && sala.anfitriao && (
             <p className="sala__signature">
               Por <Link href={`/anfitrioes/${sala.anfitriao.slug}` as Route}>{sala.anfitriao.nome}</Link>

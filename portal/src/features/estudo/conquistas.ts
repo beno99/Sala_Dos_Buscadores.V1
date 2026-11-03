@@ -21,6 +21,14 @@ const ICONE: Record<CodigoGema, IconName> = {
   granada: "biblioteca",
   "pedra-da-lua": "relogio",
   topazio: "trilha",
+  alexandrita: "salas",
+  benitoita: "salas",
+  espinelio: "relogio",
+  demantoide: "relogio",
+  paraiba: "salas",
+  "rubi-estrela": "artigo",
+  padparadscha: "salas",
+  "diamante-rosa": "trilha",
 };
 
 export interface EstadoConquista {

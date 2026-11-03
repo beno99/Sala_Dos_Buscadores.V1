@@ -5,7 +5,7 @@ import { Button } from "@/components/ds/Button";
 import { CardConquista, type ConquistaVisual } from "@/components/ds/Conquista";
 import "./conquistas.css";
 
-type Filtro = "Todas" | "Obtidas" | "Bloqueadas";
+type Filtro = "Todas" | "Conquistadas" | "Em progresso";
 
 /** Coleção de conquistas: grade de cards de Conquista (`.sdb-badge-grid`), com filtro por estado. */
 export function ColecaoConquistas({
@@ -17,7 +17,7 @@ export function ColecaoConquistas({
 }) {
   const [filtro, setFiltro] = useState<Filtro>("Todas");
   const obtidas = conquistas.filter((c) => c.obtida).length;
-  const lista = conquistas.filter((c) => filtro === "Todas" || c.obtida === (filtro === "Obtidas"));
+  const lista = conquistas.filter((c) => filtro === "Todas" || c.obtida === (filtro === "Conquistadas"));
   return (
     <div className="sdb-collection">
       <div className="sdb-collection__toolbar">
@@ -25,13 +25,13 @@ export function ColecaoConquistas({
           <p className="sdb-footnote m-0">Pequenas marcas da sua jornada no acervo.</p>
         ) : (
           <div className="sdb-collection__filters" role="group" aria-label="Filtrar conquistas">
-            {(["Todas", "Obtidas", "Bloqueadas"] as const).map((f) => (
+            {(["Todas", "Em progresso", "Conquistadas"] as const).map((f) => (
               <button key={f} type="button" aria-pressed={filtro === f} onClick={() => setFiltro(f)}>
                 {f}
                 <span>
                   {f === "Todas"
                     ? conquistas.length
-                    : f === "Obtidas"
+                    : f === "Conquistadas"
                       ? obtidas
                       : conquistas.length - obtidas}
                 </span>
@@ -53,10 +53,10 @@ export function ColecaoConquistas({
       {lista.length === 0 && (
         <div className="sdb-collection__empty">
           <h3 className="sdb-title-2">
-            {filtro === "Obtidas" ? "Sua primeira descoberta está por vir" : "A coleção está completa"}
+            {filtro === "Conquistadas" ? "Sua primeira descoberta está por vir" : "A coleção está completa"}
           </h3>
           <p>
-            {filtro === "Obtidas"
+            {filtro === "Conquistadas"
               ? "Continue sua leitura. Cada conquista encontra seu tempo."
               : "Todas as conquistas desta coleção já fazem parte da sua coleção."}
           </p>

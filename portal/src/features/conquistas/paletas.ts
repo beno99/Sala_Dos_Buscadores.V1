@@ -135,6 +135,62 @@ export const PALETAS = {
     seed: 101,
     style: 1,
   },
+  alexandrita: {
+    gema: "Alexandrita",
+    sentido: "Raízes que se aprofundam numa Sala.",
+    colors: ["#2E8C86", "#B58CE0", "#1C3F4A"],
+    seed: 103,
+    style: 2,
+  },
+  benitoita: {
+    gema: "Benitoíta",
+    sentido: "Percursos que atravessam Salas.",
+    colors: ["#2A4FD6", "#9DB8FF", "#101E66"],
+    seed: 107,
+    style: 3,
+  },
+  espinelio: {
+    gema: "Espinélio",
+    sentido: "Uma busca que se mantém.",
+    colors: ["#D9465F", "#FFB3C0", "#6B1426"],
+    seed: 109,
+    style: 4,
+  },
+  demantoide: {
+    gema: "Demantoide",
+    sentido: "Continuidade construída dia a dia.",
+    colors: ["#3DBE3A", "#C6F7A8", "#1A5A16"],
+    seed: 113,
+    style: 5,
+  },
+  paraiba: {
+    gema: "Paraíba",
+    sentido: "Três caminhos aprofundados.",
+    colors: ["#20D2D6", "#C8FBFF", "#0B5F68"],
+    seed: 127,
+    style: 6,
+  },
+  "rubi-estrela": {
+    gema: "Rubi Estrela",
+    sentido: "Muitas leituras, um horizonte.",
+    colors: ["#C3133C", "#FFD0D9", "#550716"],
+    seed: 131,
+    style: 7,
+  },
+  padparadscha: {
+    gema: "Padparadscha",
+    sentido: "A amplitude do percurso.",
+    colors: ["#F08E6E", "#FFD9C7", "#8A3B2A"],
+    seed: 137,
+    style: 0,
+  },
+  "diamante-rosa": {
+    gema: "Diamante Rosa",
+    sentido: "Dedicação ao percurso.",
+    colors: ["#F4A9C8", "#FFF0F6", "#A0476F"],
+    seed: 139,
+    style: 1,
+  },
 } satisfies Record<string, ArteConquista>;
 
 export function arteDaConquista(id: string): ArteConquista {

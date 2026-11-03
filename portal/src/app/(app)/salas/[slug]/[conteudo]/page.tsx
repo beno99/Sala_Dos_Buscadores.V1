@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ds/Button";
 import {
   acervoDeEstudo,
   citacaoPorId,
+  conteudosDaSala,
   fontesPorId,
   obterConteudo,
   obterSala,
@@ -70,7 +71,25 @@ export default async function ConteudoPage(props: PageProps<"/salas/[slug]/[cont
         relacionados={relacionadosDoConteudo(conteudo)}
         imagemCard={imagemDoCard(conteudo)}
         jornada={jornada}
+        sequencia={sequenciaDaSala(sala.slug, conteudo.slug)}
       />
     </>
   );
+}
+
+function sequenciaDaSala(sala: string, slug: string) {
+  const lista = conteudosDaSala(sala);
+  const i = lista.findIndex((c) => c.slug === slug);
+  if (i < 0) return undefined;
+  const link = (c: (typeof lista)[number] | undefined) =>
+    c ? { titulo: c.titulo, href: `/salas/${sala}/${c.slug}` } : undefined;
+  const anterior = link(lista[i - 1]);
+  const proximo = link(lista[i + 1]);
+  return {
+    posicao: i + 1,
+    total: lista.length,
+    seguintes: lista.slice(i + 1),
+    ...(anterior ? { anterior } : {}),
+    ...(proximo ? { proximo } : {}),
+  };
 }

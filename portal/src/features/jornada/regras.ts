@@ -22,7 +22,15 @@ export type CodigoGema =
   | "amazonita"
   | "granada"
   | "pedra-da-lua"
-  | "topazio";
+  | "topazio"
+  | "alexandrita"
+  | "benitoita"
+  | "espinelio"
+  | "demantoide"
+  | "paraiba"
+  | "rubi-estrela"
+  | "padparadscha"
+  | "diamante-rosa";
 
 /** Contadores reais de uma conta, a partir das conclusões ativas. */
 export interface Medidas {
@@ -30,6 +38,9 @@ export interface Medidas {
   dias: number;
   salas: number;
   maiorSala: number;
+  porSala: { conteudos: number; dias: number }[];
+  artigos: number;
+  salasComArtigo: number;
 }
 
 export interface DefinicaoGema {
@@ -46,7 +57,7 @@ export interface DefinicaoGema {
 const req = (rotulo: string, atual: number, alvo: number) => ({ rotulo, atual: Math.min(atual, alvo), alvo });
 
 /** Catálogo inicial de 12 gemas (03/11/2026): conclusão de conteúdos, dias de estudo e Salas. */
-export const GEMAS: DefinicaoGema[] = [
+const GEMAS_EM_ORDEM: DefinicaoGema[] = [
   {
     codigo: "citrino",
     ordem: "J01",
@@ -147,6 +158,90 @@ export const GEMAS: DefinicaoGema[] = [
     requisitos: (m) => [req("dias de conclusão", m.dias, 5)],
   },
   {
+    codigo: "alexandrita",
+    ordem: "J13",
+    nome: "Alexandrita",
+    modalidade: "Raízes em uma Sala",
+    criterio: "Concluir 20 conteúdos em uma mesma Sala, em pelo menos 10 dias diferentes nessa Sala.",
+    escopo: "geral",
+    requisitos: (m) => {
+      const b = [...m.porSala].sort(
+        (x, y) => Math.min(y.conteudos / 20, y.dias / 10) - Math.min(x.conteudos / 20, x.dias / 10),
+      )[0] ?? { conteudos: 0, dias: 0 };
+      return [req("conteúdos na Sala mais avançada", b.conteudos, 20), req("dias nessa Sala", b.dias, 10)];
+    },
+  },
+  {
+    codigo: "benitoita",
+    ordem: "J14",
+    nome: "Benitoíta",
+    modalidade: "Percursos entre Salas",
+    criterio: "Concluir pelo menos 5 conteúdos em cada uma de 5 Salas.",
+    escopo: "geral",
+    requisitos: (m) => [req("Salas com 5 conteúdos", m.porSala.filter((x) => x.conteudos >= 5).length, 5)],
+  },
+  {
+    codigo: "espinelio",
+    ordem: "J15",
+    nome: "Espinélio",
+    modalidade: "Uma busca constante",
+    criterio: "Concluir 30 conteúdos em pelo menos 15 dias diferentes.",
+    escopo: "geral",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 30), req("dias", m.dias, 15)],
+  },
+  {
+    codigo: "demantoide",
+    ordem: "J16",
+    nome: "Demantoide",
+    modalidade: "Continuidade construída",
+    criterio: "Concluir 40 conteúdos em pelo menos 20 dias diferentes.",
+    escopo: "geral",
+    requisitos: (m) => [req("conteúdos", m.conteudos, 40), req("dias", m.dias, 20)],
+  },
+  {
+    codigo: "paraiba",
+    ordem: "J17",
+    nome: "Paraíba",
+    modalidade: "Três caminhos aprofundados",
+    criterio:
+      "Concluir 10 conteúdos em cada uma de 3 Salas, com conclusões em pelo menos 5 dias diferentes em cada Sala.",
+    escopo: "geral",
+    requisitos: (m) => [
+      req(
+        "Salas com 10 conteúdos e 5 dias",
+        m.porSala.filter((x) => x.conteudos >= 10 && x.dias >= 5).length,
+        3,
+      ),
+    ],
+  },
+  {
+    codigo: "rubi-estrela",
+    ordem: "J18",
+    nome: "Rubi Estrela",
+    modalidade: "Horizontes conectados",
+    criterio: "Concluir 50 artigos no acervo. Vídeos não contam.",
+    escopo: "geral",
+    requisitos: (m) => [req("artigos", m.artigos, 50)],
+  },
+  {
+    codigo: "padparadscha",
+    ordem: "J19",
+    nome: "Padparadscha",
+    modalidade: "Amplitude do percurso",
+    criterio: "Concluir pelo menos 1 artigo em cada uma de 25 Salas.",
+    escopo: "geral",
+    requisitos: (m) => [req("Salas com artigo concluído", m.salasComArtigo, 25)],
+  },
+  {
+    codigo: "diamante-rosa",
+    ordem: "J20",
+    nome: "Diamante Rosa",
+    modalidade: "Dedicação ao percurso",
+    criterio: "Concluir pelo menos 1 artigo em cada uma de 50 Salas.",
+    escopo: "geral",
+    requisitos: (m) => [req("Salas com artigo concluído", m.salasComArtigo, 50)],
+  },
+  {
     codigo: "topazio",
     ordem: "J12",
     nome: "Topázio",
@@ -156,6 +251,33 @@ export const GEMAS: DefinicaoGema[] = [
     requisitos: (m) => [req("conteúdos", m.conteudos, 15), req("Salas", m.salas, 3), req("dias", m.dias, 5)],
   },
 ];
+
+/** Quatro famílias (só organizam a interface; não criam pré-requisitos). */
+const FAMILIAS: CodigoGema[] = [
+  "citrino",
+  "agata",
+  "jaspe",
+  "granada",
+  "esmeralda",
+  "quartzo-rosa",
+  "pedra-da-lua",
+  "espinelio",
+  "demantoide",
+  "opala",
+  "fluorita",
+  "lapis-lazuli",
+  "amazonita",
+  "alexandrita",
+  "benitoita",
+  "paraiba",
+  "topazio",
+  "rubi-estrela",
+  "padparadscha",
+  "diamante-rosa",
+];
+export const GEMAS: DefinicaoGema[] = FAMILIAS.map(
+  (c) => GEMAS_EM_ORDEM.find((g) => g.codigo === c) as DefinicaoGema,
+);
 
 /** Gemas do catálogo anterior, fora do catálogo ativo: só aparecem no histórico se já tiverem sido concedidas. */
 export const GEMAS_ANTERIORES: Record<string, string> = {
@@ -167,13 +289,23 @@ export const GEMAS_ANTERIORES: Record<string, string> = {
 };
 
 export function medir(conclusoes: Conclusao[], fuso = FUSO_PADRAO): Medidas {
-  const porSala = new Map<string, number>();
-  for (const c of conclusoes) porSala.set(c.sala, (porSala.get(c.sala) ?? 0) + 1);
+  const porSala = new Map<string, { conteudos: number; dias: Set<string> }>();
+  for (const c of conclusoes) {
+    const x = porSala.get(c.sala) ?? { conteudos: 0, dias: new Set<string>() };
+    x.conteudos += 1;
+    x.dias.add(diaLocal(c.em, fuso));
+    porSala.set(c.sala, x);
+  }
+  const artigos = conclusoes.filter((c) => c.tipo === "artigo");
+  const salas = [...porSala.values()].map((x) => ({ conteudos: x.conteudos, dias: x.dias.size }));
   return {
     conteudos: conclusoes.length,
     dias: new Set(conclusoes.map((c) => diaLocal(c.em, fuso))).size,
     salas: porSala.size,
-    maiorSala: Math.max(0, ...porSala.values()),
+    maiorSala: Math.max(0, ...salas.map((x) => x.conteudos)),
+    porSala: salas,
+    artigos: artigos.length,
+    salasComArtigo: new Set(artigos.map((c) => c.sala)).size,
   };
 }
 

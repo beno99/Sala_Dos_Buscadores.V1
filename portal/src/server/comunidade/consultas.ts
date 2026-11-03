@@ -1,3 +1,4 @@
+import { auditoriaBruta, contaNoDiretorio } from "@/server/store";
 import "server-only";
 import { salaPorSlug, temaPorSlug, todasAsSalas, todosOsTemas } from "@/data/catalogo";
 import {
@@ -12,11 +13,25 @@ import { progressoDe } from "@/server/progresso";
 import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
 import { acervo } from "@/server/store";
 
+/** Quem assina cada vídeo: o anfitrião dono, o anfitrião da Sala ou quem o criou na curadoria. */
+export function autoresDosVideos() {
+  const criadorDoVideo = new Map<string, string>();
+  for (const r of auditoriaBruta())
+    if (r.tipoItem === "video" && r.acao === "criou" && !criadorDoVideo.has(r.itemId))
+      criadorDoVideo.set(r.itemId, r.quem);
+  return (v: { id: string; sala: string; revisao?: { donoId: string } }) =>
+    v.revisao?.donoId
+      ? (acervo().perfis.get(v.revisao.donoId)?.nome ??
+        contaNoDiretorio(v.revisao.donoId)?.pseudonimo ??
+        "Anfitrião")
+      : (salaPorSlug(v.sala)?.anfitriao?.nome ?? criadorDoVideo.get(v.id) ?? "Curadoria");
+}
+
 export interface OpcoesCompositor {
   salas: { slug: string; nome: string; anfitriao?: string }[];
   temas: { slug: string; nome: string }[];
   conteudos: { id: string; titulo: string; salaNome: string }[];
-  videos?: { id: string; titulo: string; salaNome: string }[];
+  videos?: { id: string; titulo: string; salaNome: string; autor: string }[];
 }
 
 /** Cada página obtém a sessão no servidor; nenhuma consulta aceita identidade vinda do cliente. */
@@ -73,10 +88,17 @@ export async function consultarComunidade() {
     seguindoSalas: seguindoSalas.map((s) => s.slug),
   };
   const salasDisponiveis = todasAsSalas();
+  const autorDoVideo = autoresDosVideos();
   const opcoes: OpcoesCompositor = {
     videos: [...acervo().videos.values()]
       .filter((v) => v.status === "publicado" && salasDisponiveis.some((s) => s.slug === v.sala))
-      .map((v) => ({ id: v.id, titulo: v.titulo, salaNome: salaPorSlug(v.sala)?.nome ?? v.sala })),
+      .map((v) => ({
+        id: v.id,
+        titulo: v.titulo,
+        salaNome: salaPorSlug(v.sala)?.nome ?? v.sala,
+        autor: autorDoVideo(v),
+      }))
+      .sort((a, b) => a.autor.localeCompare(b.autor, "pt-BR") || a.titulo.localeCompare(b.titulo, "pt-BR")),
     salas: salasDisponiveis.map((s) => ({
       slug: s.slug,
       nome: s.nome,

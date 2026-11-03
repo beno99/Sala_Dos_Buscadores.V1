@@ -38,6 +38,15 @@ interface LeituraConteudoProps {
     videosConcluidos: string[];
     videosProprios: string[];
   };
+  /** Leitura em sequência dentro da mesma Sala, na ordem da página da Sala. */
+  sequencia?: {
+    posicao: number;
+    total: number;
+    anterior?: { titulo: string; href: string };
+    proximo?: { titulo: string; href: string };
+    /** Artigos da mesma Sala depois deste, para o "Continuar a busca". */
+    seguintes: Conteudo[];
+  };
 }
 
 /**
@@ -57,6 +66,7 @@ export function LeituraConteudo({
   relacionados = [],
   imagemCard,
   jornada,
+  sequencia,
 }: LeituraConteudoProps) {
   const temas = conteudo.temas.map((t) => temaPorSlug(t)).filter((t) => t !== undefined);
   const assinatura = conteudo.anfitriao;
@@ -153,6 +163,42 @@ export function LeituraConteudo({
             />
           )}
 
+          {sequencia && sequencia.total > 1 && (
+            <nav
+              className="sdb-material sdb-panel flex flex-col gap-4"
+              aria-label={`Leitura em sequência em ${sala.nome}`}
+            >
+              <p className="sdb-caption sdb-secondary m-0">
+                LEITURA {sequencia.posicao} DE {sequencia.total} EM {sala.nome.toUpperCase()}
+              </p>
+              {sequencia.proximo ? (
+                <div className="flex flex-col gap-3">
+                  <p className="sdb-footnote m-0">Próxima leitura</p>
+                  <p className="sdb-title-2 m-0">{sequencia.proximo.titulo}</p>
+                  <div>
+                    <ButtonLink
+                      href={sequencia.proximo.href as Route}
+                      variant="primary"
+                      iconEnd="chevronDireita"
+                    >
+                      Continuar para a próxima leitura
+                    </ButtonLink>
+                  </div>
+                </div>
+              ) : (
+                <p className="sdb-body-sm m-0">
+                  Você chegou à última leitura desta Sala. Abaixo, conteúdos de outras Salas sobre o mesmo
+                  tema.
+                </p>
+              )}
+              {sequencia.anterior && (
+                <a className="sdb-link sdb-footnote" href={sequencia.anterior.href}>
+                  ← Leitura anterior: {sequencia.anterior.titulo}
+                </a>
+              )}
+            </nav>
+          )}
+
           {/* TODO(comunidade): comentários vinculados ao conteúdo (RF-32 a RF-36) entram aqui, no fim da coluna
               do texto, com moderação humana obrigatória em casos sensíveis. */}
         </CorpoArtigo>
@@ -205,7 +251,12 @@ export function LeituraConteudo({
         )}
       </article>
 
-      <ContinuarBusca sala={sala} temas={temas} relacionados={relacionados} />
+      <ContinuarBusca
+        sala={sala}
+        temas={temas}
+        relacionados={sequencia?.seguintes.length ? sequencia.seguintes : relacionados}
+        mesmaSala={Boolean(sequencia?.seguintes.length)}
+      />
     </div>
   );
 }
@@ -251,10 +302,13 @@ function ContinuarBusca({
   sala,
   temas,
   relacionados,
+  mesmaSala = false,
 }: {
   sala: Sala;
   temas: { slug: string; nome: string }[];
   relacionados: Conteudo[];
+  /** Ainda há leituras nesta Sala: o carrossel mostra as próximas dela; outras Salas só depois. */
+  mesmaSala?: boolean;
 }) {
   const nomes = temas.map((t) => t.nome);
   const listaDeTemas =
@@ -264,12 +318,14 @@ function ContinuarBusca({
     <Carrossel
       id="continuar"
       className="sdb-article__continue"
-      titulo="Continuar a busca"
+      titulo={mesmaSala ? `Próximas leituras em ${sala.nome}` : "Continuar a busca"}
       tituloGrande
       legenda={
-        relacionados.length
-          ? `Outros conteúdos sobre ${listaDeTemas} · primeiro das outras Salas`
-          : `Ainda não há outros conteúdos publicados sobre ${listaDeTemas}`
+        mesmaSala
+          ? "Siga a sequência desta Sala. Outras Salas aparecem aqui quando você chegar ao fim dela."
+          : relacionados.length
+            ? `Outros conteúdos sobre ${listaDeTemas} · primeiro das outras Salas`
+            : `Ainda não há outros conteúdos publicados sobre ${listaDeTemas}`
       }
       rotuloItens="conteúdos"
       larguraItem={300}

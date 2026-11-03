@@ -1,8 +1,6 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { Button } from "@/components/ds/Button";
-import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import type { TemaSlug } from "@/data/types";
@@ -24,7 +22,6 @@ export function FaixaBiblioteca({
   titulo,
   legenda,
   rotuloItens,
-  larguraItem,
   colunas = 3,
   temas,
   itens,
@@ -40,14 +37,13 @@ export function FaixaBiblioteca({
   itens: ItemDaFaixa[];
 }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
-  const [aberta, setAberta] = useState(false);
   const visiveis = tema ? itens.filter((i) => i.temas.includes(tema)) : itens;
   const comItens = temas
     .map((t) => ({ ...t, contagem: itens.filter((i) => i.temas.includes(t.slug)).length }))
     .filter((t) => t.contagem > 0);
   const escolhido = comItens.find((t) => t.slug === tema);
   const grade = cx(
-    "grid items-start gap-5 max-[640px]:grid-cols-1",
+    "grid items-stretch gap-5 max-[640px]:grid-cols-1",
     colunas === 1 && "grid-cols-1",
     colunas === 2 && "grid-cols-2",
     colunas === 3 && "grid-cols-3 max-[1100px]:grid-cols-2",
@@ -55,74 +51,53 @@ export function FaixaBiblioteca({
   );
 
   return (
-    <Carrossel
-      id={id}
-      titulo={titulo}
-      legenda={legenda}
-      rotuloItens={rotuloItens}
-      larguraItem={larguraItem}
-      filtros={
-        comItens.length > 1 && (
-          <div
-            className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
-            style={{ gap: 8 }}
-            role="group"
-            aria-label={`Filtrar ${rotuloItens} por tema`}
-          >
-            {comItens.map((t) => (
-              <Chip
-                key={t.slug}
-                areia
-                pressed={tema === t.slug}
-                count={t.contagem}
-                onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
-              >
-                {t.nome}
-              </Chip>
-            ))}
-          </div>
-        )
-      }
-      rodape={
-        <>
-          <p className="sdb-sr" aria-live="polite">
-            {escolhido ? `${visiveis.length} ${rotuloItens} sobre ${escolhido.nome.toLowerCase()}.` : ""}
-          </p>
-          {visiveis.length === 0 && (
-            <EstadoSecao
-              simbolo="busca"
-              compacto
-              titulo={`Nenhum item sobre ${escolhido?.nome.toLowerCase()} nesta faixa.`}
-              descricao="Tire o filtro de tema para ver tudo."
-              acao={{ rotulo: "Tirar o filtro", executar: () => setTema(null) }}
-            />
-          )}
-          {aberta && visiveis.length > 0 && (
-            <div className={grade}>
-              {visiveis.map((i) => (
-                <div key={i.chave} className="grid min-w-0">
-                  {i.card}
-                </div>
-              ))}
+    <section className="flex flex-col gap-5" aria-labelledby={`${id}-titulo`}>
+      <header className="flex flex-col gap-1">
+        <h2 id={`${id}-titulo`} className="sdb-title-1 m-0">
+          {titulo}
+        </h2>
+        <p className="sdb-footnote m-0">{legenda}</p>
+      </header>
+      {comItens.length > 1 && (
+        <div
+          className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
+          style={{ gap: 8 }}
+          role="group"
+          aria-label={`Filtrar ${rotuloItens} por tema`}
+        >
+          {comItens.map((t) => (
+            <Chip
+              key={t.slug}
+              areia
+              pressed={tema === t.slug}
+              count={t.contagem}
+              onClick={() => setTema((atual) => (atual === t.slug ? null : t.slug))}
+            >
+              {t.nome}
+            </Chip>
+          ))}
+        </div>
+      )}
+      <p className="sdb-sr" aria-live="polite">
+        {escolhido ? `${visiveis.length} ${rotuloItens} sobre ${escolhido.nome.toLowerCase()}.` : ""}
+      </p>
+      {visiveis.length === 0 ? (
+        <EstadoSecao
+          simbolo="busca"
+          compacto
+          titulo={`Nenhum item sobre ${escolhido?.nome.toLowerCase()} nesta faixa.`}
+          descricao="Tire o filtro de tema para ver tudo."
+          acao={{ rotulo: "Tirar o filtro", executar: () => setTema(null) }}
+        />
+      ) : (
+        <div id={id} className={grade}>
+          {visiveis.map((i) => (
+            <div key={i.chave} className="grid min-w-0">
+              {i.card}
             </div>
-          )}
-          {visiveis.length > 1 && (
-            <div className="flex justify-end">
-              <Button
-                variant="primary"
-                size="sm"
-                aria-expanded={aberta}
-                aria-controls={`${id}-trilho`}
-                onClick={() => setAberta((a) => !a)}
-              >
-                {aberta ? "Ver menos" : "Ver mais"}
-              </Button>
-            </div>
-          )}
-        </>
-      }
-    >
-      {aberta ? null : visiveis.map((i) => <div key={i.chave}>{i.card}</div>)}
-    </Carrossel>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

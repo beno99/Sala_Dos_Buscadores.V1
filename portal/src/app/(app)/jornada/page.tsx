@@ -195,7 +195,18 @@ export default async function MinhaJornada() {
             participar; não há ordem obrigatória entre elas.
           </p>
         </div>
+        {m.proxima && (
+          <div>
+            <ButtonLink href={m.proxima.href} variant="secondary" size="sm" iconEnd="chevronDireita">
+              Continuar minha jornada
+            </ButtonLink>
+          </div>
+        )}
         <ColecaoConquistas conquistas={m.gemas} />
+        <p className="sdb-footnote m-0">
+          As gemas de longo prazo acompanham o crescimento do acervo: novas Salas publicadas também farão
+          parte deste percurso.
+        </p>
       </section>
 
       <section className="flex flex-col gap-4" aria-labelledby="j-historico">
