@@ -208,6 +208,29 @@ export function conquistasCumpridas(conclusoes: Conclusao[], fuso = FUSO_PADRAO)
 }
 
 /**
+ * Quando cada gema da Etapa 1 foi cumprida, pela ordem das conclusões ativas.
+ * Serve para mostrar como conquistado o que já estava cumprido antes de qualquer
+ * marcação nova (leituras importadas), com a data em que foi cumprido.
+ */
+export function datasDeCumprimento(
+  conclusoes: Conclusao[],
+  fuso = FUSO_PADRAO,
+): Partial<Record<CodigoGema, string>> {
+  const ordem = [...conclusoes].sort((a, b) => a.em.localeCompare(b.em));
+  const datas: Partial<Record<CodigoGema, string>> = {};
+  const dias = new Set<string>();
+  const salas = new Set<string>();
+  ordem.forEach((c, i) => {
+    dias.add(diaLocal(c.em, fuso));
+    salas.add(c.sala);
+    if (!datas.citrino) datas.citrino = c.em;
+    if (!datas.esmeralda && i + 1 >= 5 && dias.size >= 3) datas.esmeralda = c.em;
+    if (!datas.opala && salas.size >= 3) datas.opala = c.em;
+  });
+  return datas;
+}
+
+/**
  * Concede, sem nunca retirar, o que já foi cumprido. Devolve as gemas novas.
  * Idempotente: repetir o mesmo evento não concede de novo.
  */
@@ -235,6 +258,7 @@ export interface GemaVisivel extends DefinicaoGema {
 
 export function estadoDasGemas(p: ProgressoEstudo, ctx: ContextoJornada): GemaVisivel[] {
   const conclusoes = conclusoesAtivas(p, ctx);
+  const cumpridas = datasDeCumprimento(conclusoes, ctx.fuso);
   const dias = new Set(conclusoes.map((c) => diaLocal(c.em, ctx.fuso))).size;
   const salas = new Set(conclusoes.map((c) => c.sala)).size;
   const medir: Partial<Record<CodigoGema, { rotulo: string; atual: number; alvo: number }[]>> = {
@@ -246,7 +270,7 @@ export function estadoDasGemas(p: ProgressoEstudo, ctx: ContextoJornada): GemaVi
     opala: [{ rotulo: "Salas com conteúdo concluído", atual: Math.min(3, salas), alvo: 3 }],
   };
   return GEMAS.map((g) => {
-    const em = p.gemas?.[g.codigo];
+    const em = p.gemas?.[g.codigo] ?? cumpridas[g.codigo];
     if (em) return { ...g, estado: "conquistada", em };
     if (g.emPreparacao) return { ...g, estado: "em-preparacao" };
     const progresso = medir[g.codigo];
@@ -275,7 +299,11 @@ export function percursosPorTema(p: ProgressoEstudo, ctx: ContextoJornada): Perc
     .map((tema): PercursoTema => {
       const doTema = conclusoes.filter((c) => c.temas.includes(tema));
       const salas = new Set(doTema.map((c) => c.sala)).size;
-      const obtidos = p.titulos?.[tema] ?? {};
+      const primeira = doTema.reduce((m, c) => (!m || c.em < m ? c.em : m), "");
+      const obtidos: Record<string, string> = {
+        ...(primeira ? { explorador: primeira } : {}),
+        ...(p.titulos?.[tema] ?? {}),
+      };
       const atual = [...TITULOS].reverse().find((t) => obtidos[t.codigo]);
       const proximo = TITULOS[atual ? TITULOS.indexOf(atual) + 1 : 0];
       return {

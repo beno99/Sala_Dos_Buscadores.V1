@@ -2,12 +2,14 @@
 import { useId, useState } from "react";
 import { Avatar } from "@/components/ds/Avatar";
 import { Button, ButtonLink } from "@/components/ds/Button";
+import { CampoTexto } from "@/components/ds/Campos";
 import { Icon } from "@/components/ds/Icon";
 import { Segmented } from "@/components/ds/Segmented";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
 import type { TipoPublicacao } from "@/data/types";
 import { TIPOS_PUBLICACAO } from "@/features/comunidade/regras";
 import { podeCriarPublicacao } from "@/features/comunidade/regras/publicacao-permitida";
+import { normalizar } from "@/lib/texto";
 import type { ModeloComunidade } from "@/server/comunidade/consultas";
 import { BotaoSeguir } from "./BotaoSeguir";
 import { CompositorPublicacao, ICONES_TIPO } from "./CompositorPublicacao";
@@ -24,7 +26,6 @@ export function FeedComunidade({
   tema?: string;
 }) {
   const [aba, setAba] = useState<"para-voce" | "seguindo">("para-voce");
-  const [buscar, setBuscar] = useState(false);
   const [busca, setBusca] = useState("");
   const [aviso, setAviso] = useState(true);
   const [compondo, setCompondo] = useState(false);
@@ -35,15 +36,27 @@ export function FeedComunidade({
     setTipoCompositor(tipo);
     setCompondo(true);
   };
+  const termo = normalizar(busca.trim());
   const filtrar = (lista: ModeloComunidade["publicacoes"]) =>
     lista.filter(
       (p) =>
         (!sala || p.salaSlug === sala) &&
         (!tema || p.temas.some((t) => t === tema)) &&
-        `${p.texto} ${p.autor.nome} ${p.citacao?.obra ?? ""}`
-          .toLocaleLowerCase("pt-BR")
-          .includes(busca.toLocaleLowerCase("pt-BR")),
+        normalizar(
+          [
+            p.texto,
+            p.autor.nome,
+            p.citacao?.obra,
+            p.citacao?.trecho,
+            p.salaNome,
+            ...p.temas.map((t) => temaPorSlug(t)?.nome ?? t),
+            TIPOS_PUBLICACAO[p.tipo],
+          ]
+            .filter(Boolean)
+            .join(" "),
+        ).includes(termo),
     );
+  const encontradas = termo ? filtrar(aba === "para-voce" ? m.publicacoes : m.seguindo).length : 0;
   return (
     <div className="sdb-community sdb-community--in-app">
       <header className="sdb-community__head">
@@ -71,38 +84,21 @@ export function FeedComunidade({
                 { value: "seguindo", label: "Seguindo" },
               ]}
             />
-            <Button
-              className="sdb-community__search-toggle"
-              variant="plain"
-              icon="busca"
-              iconOnly
-              data-tip-align="end"
-              aria-label="Buscar na comunidade"
-              aria-expanded={buscar}
-              aria-controls={`${id}-busca`}
-              onClick={() => setBuscar(!buscar)}
-            />
-            <label className="sdb-searchfield sdb-community__search">
-              <Icon name="busca" />
-              <span className="sdb-sr">Buscar publicações</span>
-              <input
-                type="search"
-                placeholder="Buscar publicações"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-              />
-            </label>
           </div>
-          <label id={`${id}-busca`} hidden={!buscar} className="sdb-searchfield sdb-community__search-mobile">
-            <Icon name="busca" />
-            <span className="sdb-sr">Buscar publicações</span>
-            <input
-              type="search"
-              placeholder="Buscar nas publicações…"
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-            />
-          </label>
+          <CampoTexto
+            id={`${id}-busca`}
+            type="search"
+            label="Buscar publicações"
+            placeholder="Texto, autor, obra citada, Sala ou tema"
+            autoComplete="off"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            help={
+              termo
+                ? `${encontradas} ${encontradas === 1 ? "publicação encontrada" : "publicações encontradas"} em “${aba === "para-voce" ? "Para você" : "Seguindo"}”.`
+                : undefined
+            }
+          />
           {(sala || tema) && (
             <div className="sdb-post__tags">
               <span className="sdb-chip">

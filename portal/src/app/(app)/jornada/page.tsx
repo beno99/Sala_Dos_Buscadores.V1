@@ -51,6 +51,11 @@ export default async function MinhaJornada() {
           <h2 id="j-percursos" className="sdb-title-2 m-0">
             Percursos por tema
           </h2>
+          {m.percursos.length > 0 && (
+            <p className="sdb-footnote m-0">
+              {m.percursos.filter((t) => t.titulo).length} de {m.percursos.length} temas com título.
+            </p>
+          )}
           {m.percursos.length === 0 ? (
             <div className="sdb-material sdb-panel flex flex-col gap-2">
               <p className="sdb-body-sm m-0">
@@ -59,43 +64,45 @@ export default async function MinhaJornada() {
               </p>
             </div>
           ) : (
-            m.percursos.map((t) => (
-              <article key={t.tema} className="sdb-material sdb-panel flex flex-col gap-3">
-                <p className="sdb-caption sdb-secondary m-0">PERCURSO POR TEMA</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="sdb-title-2 m-0">{t.nomeTema}</h3>
-                  {t.titulo && (
-                    <Badge variant="topic" icon="trilha">
-                      {t.titulo.nome} em {t.nomeTema}
-                    </Badge>
-                  )}
-                </div>
-                <p className="sdb-footnote m-0">
-                  {t.conteudos} {t.conteudos === 1 ? "conteúdo concluído" : "conteúdos concluídos"} ·{" "}
-                  {t.salas} {t.salas === 1 ? "Sala" : "Salas"}
-                </p>
-                {t.proximo && (
-                  <div className="flex flex-col gap-1">
-                    <p className="sdb-body-sm m-0">
-                      Próximo título: <b>{t.proximo.nome}</b>
-                    </p>
-                    <ul className="sdb-footnote m-0 flex flex-wrap gap-x-4 gap-y-1 p-0 list-none">
-                      {t.proximo.requisitos.map((r) => (
-                        <li key={r.rotulo}>
-                          {r.rotulo} {r.atual}/{r.alvo}
-                        </li>
-                      ))}
-                    </ul>
-                    {t.proximo.emPreparacao && (
-                      <p className="sdb-footnote m-0">
-                        Em preparação: {t.proximo.emPreparacao} Novas possibilidades deste percurso serão
-                        abertas conforme o acervo e as ferramentas crescerem.
-                      </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {m.percursos.map((t) => (
+                <article key={t.tema} className="sdb-material sdb-panel flex flex-col gap-3">
+                  <p className="sdb-caption sdb-secondary m-0">PERCURSO POR TEMA</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="sdb-title-2 m-0">{t.nomeTema}</h3>
+                    {t.titulo && (
+                      <Badge variant="topic" icon="trilha">
+                        {t.titulo.nome} em {t.nomeTema}
+                      </Badge>
                     )}
                   </div>
-                )}
-              </article>
-            ))
+                  <p className="sdb-footnote m-0">
+                    {t.conteudos} {t.conteudos === 1 ? "conteúdo concluído" : "conteúdos concluídos"} ·{" "}
+                    {t.salas} {t.salas === 1 ? "Sala" : "Salas"}
+                  </p>
+                  {t.proximo && (
+                    <div className="flex flex-col gap-1">
+                      <p className="sdb-body-sm m-0">
+                        Próximo título: <b>{t.proximo.nome}</b>
+                      </p>
+                      <ul className="sdb-footnote m-0 flex flex-wrap gap-x-4 gap-y-1 p-0 list-none">
+                        {t.proximo.requisitos.map((r) => (
+                          <li key={r.rotulo}>
+                            {r.rotulo} {r.atual}/{r.alvo}
+                          </li>
+                        ))}
+                      </ul>
+                      {t.proximo.emPreparacao && (
+                        <p className="sdb-footnote m-0">
+                          Em preparação: {t.proximo.emPreparacao} Novas possibilidades deste percurso serão
+                          abertas conforme o acervo e as ferramentas crescerem.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
           )}
         </section>
 
