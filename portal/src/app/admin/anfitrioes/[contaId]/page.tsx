@@ -10,7 +10,7 @@ import {
   salasDoAnfitriaoParaRevisao,
   videosEAnunciosParaRevisao,
 } from "@/server/anfitriao/consultas";
-import { urlDaMidia } from "@/server/midia";
+import { anuncioParaRevisao } from "@/server/anuncios";
 import { contaNoDiretorio as contaPorId } from "@/server/store";
 
 export const metadata: Metadata = { title: "Salas do anfitrião" };
@@ -78,23 +78,7 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
           artigos: v.artigos.length,
           enviadoEm: v.revisao?.enviadoEm,
         }))}
-        anuncios={midias.anuncios.map((a) => ({
-          id: a.id,
-          status: a.status,
-          ...(a.revisao?.oculto
-            ? { oculto: { motivo: a.revisao.oculto.motivo, quando: a.revisao.oculto.quando } }
-            : {}),
-          imagem: a.midia ? urlDaMidia(a.midia) : null,
-          focoX: a.focoX,
-          focoY: a.focoY,
-          alt: a.alt,
-          categoria: a.categoria,
-          titulo: a.titulo,
-          descricao: a.descricao,
-          href: a.href,
-          chamada: a.chamada,
-          anunciante: a.anunciante,
-        }))}
+        anuncios={midias.anuncios.map((a) => anuncioParaRevisao(a))}
       />
     </>
   );

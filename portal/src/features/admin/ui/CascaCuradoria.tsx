@@ -17,6 +17,8 @@ interface Contagens {
   denuncias: number;
   /** Conversas cuja última mensagem é do anfitrião. */
   conversas: number;
+  /** Anúncios esperando decisão da curadoria. */
+  anunciosEmRevisao: number;
 }
 
 /*
@@ -59,6 +61,13 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       contagem: c.conversas || undefined,
     },
     { href: "/admin/videos" as Route, rotulo: "Vídeos", icone: "video", ativo: em("/admin/videos") },
+    {
+      href: "/admin/publicidade" as Route,
+      rotulo: "Publicidade",
+      icone: "imagem",
+      ativo: em("/admin/publicidade"),
+      contagem: c.anunciosEmRevisao || undefined,
+    },
     {
       href: "/admin/fontes" as Route,
       rotulo: "Fontes",

@@ -1,4 +1,5 @@
 import "server-only";
+import type { AnuncioParaRevisao } from "@/features/admin/ui/anfitrioes/RevisaoMidiasAnfitriao";
 import { editar, transicao } from "@/features/anfitriao/regras/ciclo";
 import {
   type Anuncio,
@@ -253,4 +254,54 @@ export function marcarAnuncioVisto(anuncioId: string, dono: Membro): ResultadoAc
     });
     return ok(undefined, "");
   });
+}
+
+/** O anúncio como a curadoria vê na revisão (card, situação, ocultação e anfitrião). */
+export function anuncioParaRevisao(a: Anuncio, comAnfitriao = false): AnuncioParaRevisao {
+  const nome =
+    acervo().perfis.get(a.donoId)?.nome ?? contaNoDiretorio(a.donoId)?.pseudonimo ?? "Anfitrião removido";
+  return {
+    id: a.id,
+    status: a.status,
+    ...(a.revisao?.oculto
+      ? { oculto: { motivo: a.revisao.oculto.motivo, quando: a.revisao.oculto.quando } }
+      : {}),
+    ...(comAnfitriao ? { anfitriao: { nome, href: `/admin/anfitrioes/${a.donoId}` } } : {}),
+    imagem: a.midia ? urlDaMidia(a.midia) : null,
+    focoX: a.focoX,
+    focoY: a.focoY,
+    alt: a.alt,
+    categoria: a.categoria,
+    titulo: a.titulo,
+    descricao: a.descricao,
+    href: a.href,
+    chamada: a.chamada,
+    anunciante: a.anunciante,
+  };
+}
+
+const ORDEM_STATUS: Record<string, number> = {
+  em_revisao: 0,
+  publicado: 1,
+  arquivado: 2,
+  reprovado: 3,
+  rascunho: 4,
+};
+
+/** Todos os anúncios, para a página Publicidade da curadoria: em revisão primeiro, depois os mais recentes. */
+export function anunciosParaCuradoria(status?: string): AnuncioParaRevisao[] {
+  return [...acervo().anuncios.values()]
+    .filter((a) => !status || a.status === status)
+    .sort(
+      (a, b) =>
+        (ORDEM_STATUS[a.status] ?? 9) - (ORDEM_STATUS[b.status] ?? 9) ||
+        b.atualizadoEm.localeCompare(a.atualizadoEm),
+    )
+    .map((a) => anuncioParaRevisao(a, true));
+}
+
+export function contagemAnunciosPorStatus(): Record<string, number> {
+  const c: Record<string, number> = {};
+  for (const a of acervo().anuncios.values()) c[a.status] = (c[a.status] ?? 0) + 1;
+  return c;
 }

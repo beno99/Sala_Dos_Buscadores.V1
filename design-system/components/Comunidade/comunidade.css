@@ -16,6 +16,9 @@ main:has(> .sdb-community) { background: var(--community-canvas); }
 .sdb-community__head .sdb-title-1 { font: 400 var(--community-title)/1.5 var(--font-display-lower); margin: 0; }
 .sdb-community__head .sdb-body-sm { font: 400 var(--community-body)/1.5 var(--font-ui); color: var(--label-secondary); }
 .sdb-community__feed, .sdb-community__aside, .sdb-community-stack { gap: var(--community-gap); }
+/* Coluna da direita fixa enquanto o feed rola (03/11/2026), logo abaixo da barra superior de 72 px;
+   com rolagem própria quando passa da altura da tela. No layout de uma coluna, volta ao fluxo. */
+.sdb-community__layout > .sdb-community__aside { position: sticky; top: calc(72px + var(--space-4)); max-height: calc(100dvh - 72px - var(--space-6)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .sdb-community__toolbar { flex-wrap: nowrap; gap: var(--space-2); }
 .sdb-community__search { width: var(--community-search); min-width: 0; margin-inline-start: auto; }
 .sdb-community__search input { width: 100%; min-width: 0; }
@@ -112,6 +115,7 @@ main:has(> .sdb-community) { background: var(--community-canvas); }
 .sdb-composer__unavailable { margin: 0; color: var(--label-secondary); font-size: var(--community-small); }
 @container community (max-width: 900px) {
   .sdb-community__layout { grid-template-columns: minmax(0,1fr); }
+  .sdb-community__layout > .sdb-community__aside { position: static; max-height: none; overflow: visible; }
 }
 @media (max-width: 600px) {
   .sdb-community { padding-bottom: 0; }

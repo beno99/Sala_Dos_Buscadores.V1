@@ -50,7 +50,7 @@ export default async function PublicidadeDoAnfitriao() {
                 )}
                 {a.status === "arquivado" && a.revisao?.oculto && (
                   <span className="sdb-footnote">
-                    Ocultado do Portal pela curadoria. Motivo: {a.revisao.oculto.motivo}
+                    Arquivado pela curadoria (fora do Portal). Motivo: {a.revisao.oculto.motivo}
                   </span>
                 )}
               </div>

@@ -36,6 +36,8 @@ export interface AnuncioParaRevisao extends DadosCardAnuncio {
   status: StatusEditorial;
   /** Ocultado pela curadoria: motivo e data. */
   oculto?: { motivo: string; quando: string };
+  /** Na página Publicidade da curadoria: de quem é o anúncio. */
+  anfitriao?: { nome: string; href: string };
 }
 
 type Pedido =
@@ -50,9 +52,12 @@ type Pedido =
 export function RevisaoMidiasAnfitriao({
   videos,
   anuncios,
+  vazioAnuncios = "Nenhum anúncio deste anfitrião.",
 }: {
-  videos: VideoParaRevisao[];
+  /** Sem vídeos (página Publicidade), a seção de vídeos não aparece. */
+  videos?: VideoParaRevisao[];
   anuncios: AnuncioParaRevisao[];
+  vazioAnuncios?: string;
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -102,59 +107,66 @@ export function RevisaoMidiasAnfitriao({
 
   return (
     <>
-      <section className="flex flex-col gap-3" aria-labelledby="rev-videos">
-        <h2 id="rev-videos" className="sdb-title-2">
-          Vídeos · {videos.length}
-        </h2>
-        {videos.length === 0 ? (
-          <p className="sdb-body-sm sdb-secondary">Nenhum vídeo deste anfitrião.</p>
-        ) : (
-          <div className="sdb-material sdb-list">
-            {videos.map((v) => (
-              <div key={v.id} className="sdb-list-row">
-                <div className="flex min-w-0 flex-col gap-1">
-                  <span className="sdb-callout">{v.titulo}</span>
-                  <span className="sdb-footnote">
-                    {v.salaNome}
-                    {v.duracao && ` · ${v.duracao}`} · {v.artigos}{" "}
-                    {v.artigos === 1 ? "artigo ligado" : "artigos ligados"}
-                  </span>
-                  {v.url && (
-                    <a
-                      className="sdb-link sdb-footnote"
-                      href={v.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Abrir no YouTube <Icon name="externo" size="sm" />
-                    </a>
-                  )}
+      {videos && (
+        <section className="flex flex-col gap-3" aria-labelledby="rev-videos">
+          <h2 id="rev-videos" className="sdb-title-2">
+            Vídeos · {videos.length}
+          </h2>
+          {videos.length === 0 ? (
+            <p className="sdb-body-sm sdb-secondary">Nenhum vídeo deste anfitrião.</p>
+          ) : (
+            <div className="sdb-material sdb-list">
+              {videos.map((v) => (
+                <div key={v.id} className="sdb-list-row">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <span className="sdb-callout">{v.titulo}</span>
+                    <span className="sdb-footnote">
+                      {v.salaNome}
+                      {v.duracao && ` · ${v.duracao}`} · {v.artigos}{" "}
+                      {v.artigos === 1 ? "artigo ligado" : "artigos ligados"}
+                    </span>
+                    {v.url && (
+                      <a
+                        className="sdb-link sdb-footnote"
+                        href={v.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Abrir no YouTube <Icon name="externo" size="sm" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <SeloStatus status={v.status} />
+                    {v.status === "em_revisao" && decisao("video", v.id, v.titulo)}
+                  </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <SeloStatus status={v.status} />
-                  {v.status === "em_revisao" && decisao("video", v.id, v.titulo)}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="flex flex-col gap-3" aria-labelledby="rev-anuncios">
         <h2 id="rev-anuncios" className="sdb-title-2">
           Publicidade · {anuncios.length}
         </h2>
         {anuncios.length === 0 ? (
-          <p className="sdb-body-sm sdb-secondary">Nenhum anúncio deste anfitrião.</p>
+          <p className="sdb-body-sm sdb-secondary">{vazioAnuncios}</p>
         ) : (
           <div className="grid gap-6 [grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))]">
             {anuncios.map((a) => (
               <div key={a.id} className="flex flex-col gap-3">
+                {a.anfitriao && (
+                  <a className="sdb-link sdb-footnote" href={a.anfitriao.href}>
+                    {a.anfitriao.nome}
+                  </a>
+                )}
                 <div className="sdb-row">
                   <SeloStatus status={a.status} />
                   <span className="sdb-footnote">Destino: {a.href || "sem link"}</span>
                 </div>
-                {a.oculto && <p className="sdb-footnote m-0">Oculto pela curadoria: {a.oculto.motivo}</p>}
+                {a.oculto && <p className="sdb-footnote m-0">Arquivado pela curadoria: {a.oculto.motivo}</p>}
                 <CardAnuncio anuncio={a} />
                 {a.status === "em_revisao" && decisao("anuncio", a.id, a.titulo)}
                 <div className="sdb-row">
@@ -165,7 +177,7 @@ export function RevisaoMidiasAnfitriao({
                       icon="olhoFechado"
                       onClick={() => setPedido({ tipo: "ocultar-anuncio", id: a.id, titulo: a.titulo })}
                     >
-                      Ocultar do Portal
+                      Arquivar
                     </Button>
                   )}
                   {a.oculto && a.status === "arquivado" && (
@@ -175,7 +187,7 @@ export function RevisaoMidiasAnfitriao({
                       icon="olho"
                       onClick={() => setPedido({ tipo: "reexibir-anuncio", id: a.id, titulo: a.titulo })}
                     >
-                      Reexibir no Portal
+                      Desarquivar
                     </Button>
                   )}
                   <Button
@@ -184,7 +196,7 @@ export function RevisaoMidiasAnfitriao({
                     icon="lixeira"
                     onClick={() => setPedido({ tipo: "remover-anuncio", id: a.id, titulo: a.titulo })}
                   >
-                    Remover
+                    Apagar
                   </Button>
                 </div>
               </div>
@@ -235,23 +247,23 @@ export function RevisaoMidiasAnfitriao({
 
       <SheetMotivo
         aberto={pedido?.tipo === "ocultar-anuncio"}
-        titulo="Ocultar o anúncio do Portal"
-        rotuloConfirmar="Ocultar"
+        titulo="Arquivar o anúncio"
+        rotuloConfirmar="Arquivar"
         carregando={ocupado}
         onFechar={() => setPedido(null)}
         onConfirmar={(motivo) => pedido && executar(() => ocultarAnuncioAcao(pedido.id, motivo))}
       >
         <p className="sdb-body-sm m-0">
           “{pedido?.titulo ?? ""}” sai do Portal na hora e o anfitrião recebe o motivo por e-mail. Você pode
-          reexibir depois.
+          desarquivar depois.
         </p>
       </SheetMotivo>
 
       <ModalConfirmacao
         open={pedido?.tipo === "reexibir-anuncio"}
-        titulo="Reexibir o anúncio no Portal?"
+        titulo="Desarquivar o anúncio?"
         icone="olho"
-        rotuloConfirmar="Reexibir"
+        rotuloConfirmar="Desarquivar"
         carregando={ocupado}
         onCancelar={() => setPedido(null)}
         onConfirmar={() => pedido && executar(() => reexibirAnuncioAcao(pedido.id))}
@@ -261,15 +273,15 @@ export function RevisaoMidiasAnfitriao({
 
       <SheetMotivo
         aberto={pedido?.tipo === "remover-anuncio"}
-        titulo="Remover o anúncio"
-        rotuloConfirmar="Remover de vez"
+        titulo="Apagar o anúncio"
+        rotuloConfirmar="Apagar de vez"
         carregando={ocupado}
         onFechar={() => setPedido(null)}
         onConfirmar={(motivo) => pedido && executar(() => removerAnuncioAcao(pedido.id, motivo))}
       >
         <p className="sdb-body-sm m-0">
           “{pedido?.titulo ?? ""}” é apagado de vez e não pode ser recuperado. O anfitrião recebe o motivo por
-          e-mail e a remoção fica no Histórico.
+          e-mail e a exclusão fica no Histórico.
         </p>
       </SheetMotivo>
     </>

@@ -398,7 +398,7 @@ function avisarDonoDoAnuncio(donoId: string, assunto: string, corpo: string) {
 function ocultarAnuncioPlano(anuncioId: string, motivo: string, quem: string): ResultadoAcao {
   const anuncio = acervo().anuncios.get(anuncioId);
   if (!anuncio) return erro("este anúncio não existe mais.");
-  if (anuncio.status !== "publicado") return erro("só anúncios publicados podem ser ocultados.");
+  if (anuncio.status !== "publicado") return erro("só anúncios publicados podem ser arquivados.");
   const texto = motivo.trim().replace(/\s+/g, " ");
   if (!texto) return erro("informe o motivo.");
   acervo().anuncios.set(anuncio.id, {
@@ -419,12 +419,12 @@ function ocultarAnuncioPlano(anuncioId: string, motivo: string, quem: string): R
     anuncio.donoId,
     `Seu anúncio “${anuncio.titulo}” saiu do Portal`,
     [
-      `A curadoria ocultou o anúncio “${anuncio.titulo}” do Portal.`,
+      `A curadoria arquivou o anúncio “${anuncio.titulo}”: ele saiu do Portal.`,
       `Motivo: ${texto}`,
       "Ajuste no seu painel de anfitrião e envie de novo para revisão, se quiser.",
     ].join("\n\n"),
   );
-  return ok(undefined, "Anúncio ocultado do Portal.");
+  return ok(undefined, "Anúncio arquivado. Ele saiu do Portal.");
 }
 
 /** Curadoria volta a exibir um anúncio que ela mesma ocultou. */
@@ -432,7 +432,7 @@ function reexibirAnuncioPlano(anuncioId: string, quem: string): ResultadoAcao {
   const anuncio = acervo().anuncios.get(anuncioId);
   if (!anuncio) return erro("este anúncio não existe mais.");
   if (anuncio.status !== "arquivado" || !anuncio.revisao?.oculto)
-    return erro("só anúncios ocultados pela curadoria podem ser reexibidos.");
+    return erro("só anúncios arquivados pela curadoria podem ser desarquivados.");
   acervo().anuncios.set(anuncio.id, {
     ...anuncio,
     status: "publicado",
@@ -445,7 +445,7 @@ function reexibirAnuncioPlano(anuncioId: string, quem: string): ResultadoAcao {
     tipoItem: "anuncio",
     itemId: anuncio.id,
     itemTitulo: anuncio.titulo,
-    mudancas: [{ campo: "Status", antes: "oculto pela curadoria", depois: "publicado" }],
+    mudancas: [{ campo: "Status", antes: "arquivado pela curadoria", depois: "publicado" }],
   });
   avisarDonoDoAnuncio(
     anuncio.donoId,
@@ -472,10 +472,10 @@ function removerAnuncioPlano(anuncioId: string, motivo: string, quem: string): R
   });
   avisarDonoDoAnuncio(
     anuncio.donoId,
-    `Seu anúncio “${anuncio.titulo || "sem título"}” foi removido`,
-    [`A curadoria removeu o anúncio “${anuncio.titulo || "sem título"}”.`, `Motivo: ${texto}`].join("\n\n"),
+    `Seu anúncio “${anuncio.titulo || "sem título"}” foi apagado`,
+    [`A curadoria apagou o anúncio “${anuncio.titulo || "sem título"}”.`, `Motivo: ${texto}`].join("\n\n"),
   );
-  return ok(undefined, "Anúncio removido.");
+  return ok(undefined, "Anúncio apagado.");
 }
 
 export async function ocultarAnuncio(id: string, motivo: string, quem: string) {

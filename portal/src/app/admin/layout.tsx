@@ -9,6 +9,7 @@ import { aparenciaDoCookie, COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie } from 
 import { listarFontes } from "@/server/admin/consultas";
 import { listarSalasAdmin } from "@/server/admin/salas";
 import { totalPendenteRevisao } from "@/server/anfitriao/consultas";
+import { contagemAnunciosPorStatus } from "@/server/anuncios";
 import { totalDenunciasPendentes } from "@/server/comunidade/moderacao";
 import { conversasDaCuradoria } from "@/server/conversa/consultas";
 import { acessoAtual, redirecionarParaEntrar } from "@/server/sessao";
@@ -69,6 +70,7 @@ async function AreaCuradoria({ children }: { children: ReactNode }) {
     revisao: totalPendenteRevisao(),
     denuncias: totalDenunciasPendentes(),
     conversas: (await conversasDaCuradoria()).filter((c) => c.aguardando).length,
+    anunciosEmRevisao: contagemAnunciosPorStatus().em_revisao ?? 0,
   };
   return <CascaCuradoria contagens={contagens}>{children}</CascaCuradoria>;
 }
