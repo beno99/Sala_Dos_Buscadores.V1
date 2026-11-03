@@ -12,7 +12,8 @@ const ABAS: Aba[] = ["usuarios", "candidaturas", "convites"];
 export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
   const membro = await membroAtual();
   if (membro?.papel !== "administrador") return null;
-  const { aba } = await props.searchParams;
+  const { aba, busca, perfil, situacao, pagina } = await props.searchParams;
+  const texto = (v: unknown) => (typeof v === "string" ? v : "");
   const salasPorDono = new Map<string, number>();
   for (const s of acervo().salas.values()) {
     if (s.revisao) salasPorDono.set(s.revisao.donoId, (salasPorDono.get(s.revisao.donoId) ?? 0) + 1);
@@ -35,11 +36,17 @@ export default async function Usuarios(props: PageProps<"/admin/usuarios">) {
         <p className="sdb-meta sdb-secondary">Curadoria</p>
         <h1 className="sdb-title-1">Usuários</h1>
         <p className="sdb-body-sm sdb-secondary max-w-read">
-          Papéis, candidaturas e convites de anfitrião. O papel de administrador não muda por aqui.
+          Contas, papéis, candidaturas e convites de anfitrião. Busque por nome, nome público ou e-mail.
         </p>
       </header>
       <UsuariosAdmin
         abaInicial={ABAS.find((a) => a === aba) ?? "usuarios"}
+        filtrosIniciais={{
+          busca: texto(busca).slice(0, 100),
+          perfil: ["membro", "anfitriao", "administrador"].includes(texto(perfil)) ? texto(perfil) : "",
+          situacao: ["ativo", "pendente"].includes(texto(situacao)) ? texto(situacao) : "",
+          pagina: Math.max(1, Number.parseInt(texto(pagina), 10) || 1),
+        }}
         usuarios={usuarios}
         candidaturas={listarCandidaturas().map((c) => ({
           id: c.id,

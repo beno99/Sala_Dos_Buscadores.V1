@@ -16,7 +16,13 @@ import { useCopiar } from "@/components/ds/Toast";
 import { temaPorSlug } from "@/data/catalogo";
 import type { ComentarioPublicoComunidade, PublicacaoPublica } from "@/data/repositorio-comunidade";
 import type { TipoReacaoComunidade } from "@/data/types";
-import { podeOcultarComentario, TIPOS_PUBLICACAO, type VisaoComunidade } from "@/features/comunidade/regras";
+import {
+  limiteComentario,
+  podeComentar,
+  podeOcultarComentario,
+  TIPOS_PUBLICACAO,
+  type VisaoComunidade,
+} from "@/features/comunidade/regras";
 import { marcarRespostaAcao, reagirAcao, salvarAcao } from "@/server/comunidade/acoes";
 import type { OpcoesCompositor } from "@/server/comunidade/consultas";
 import { CampoComentario, type Respondendo } from "./CampoComentario";
@@ -105,6 +111,11 @@ function ItemComentario({
             <Button variant="plain" size="sm" onClick={() => setDialogo(proprio ? "excluir" : "denunciar")}>
               {proprio ? "Excluir" : "Denunciar"}
             </Button>
+            {!proprio && visao.papel === "administrador" && (
+              <Button variant="plain" size="sm" onClick={() => setDialogo("excluir")}>
+                Excluir
+              </Button>
+            )}
             {podeOcultar && (
               <Button variant="plain" size="sm" onClick={() => setDialogo("ocultar")}>
                 Ocultar
@@ -188,12 +199,15 @@ export function PublicacaoLeitura({
       () => mudar({ tipo: "salvar" }),
     );
   const proprio = p.autorId === visao.pessoaId;
-  const campo = (
+  const campo = podeComentar(visao.papel, visao.pessoaId, p) ? (
     <CampoComentario
       publicacaoId={p.id}
       respondendo={respondendo}
       onCancelarResposta={() => setRespondendo(null)}
+      limite={limiteComentario(visao.papel)}
     />
+  ) : (
+    <p className="sdb-footnote">Buscadores comentam nas publicações de outras pessoas.</p>
   );
   return (
     <>
@@ -238,7 +252,9 @@ export function PublicacaoLeitura({
               },
               ...(proprio
                 ? [
-                    { label: "Editar", icon: "editar" as const, onSelect: () => setEditando(true) },
+                    ...(visao.papel !== "membro"
+                      ? [{ label: "Editar", icon: "editar" as const, onSelect: () => setEditando(true) }]
+                      : []),
                     {
                       label: "Excluir",
                       icon: "lixeira" as const,
@@ -249,6 +265,16 @@ export function PublicacaoLeitura({
                 : [{ label: "Denunciar", icon: "aviso" as const, onSelect: () => setDialogo("denunciar") }]),
               ...(visao.papel === "administrador"
                 ? [{ label: "Ocultar", icon: "olhoFechado" as const, onSelect: () => setDialogo("ocultar") }]
+                : []),
+              ...(visao.papel === "administrador" && !proprio
+                ? [
+                    {
+                      label: "Excluir",
+                      icon: "lixeira" as const,
+                      danger: true,
+                      onSelect: () => setDialogo("excluir"),
+                    },
+                  ]
                 : []),
             ]}
           />

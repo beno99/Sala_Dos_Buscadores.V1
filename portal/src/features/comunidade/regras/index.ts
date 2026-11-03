@@ -11,6 +11,7 @@ import type { Papel } from "@/modules/conta/conta.contratos";
 export const LIMITES_COMUNIDADE = {
   texto: 1500,
   comentario: 600,
+  comentarioBuscador: 150,
   temas: 3,
   referencia: 160,
   descricaoImagem: 200,
@@ -76,14 +77,26 @@ export function validarPublicacao(
   if (p.tipo === "achado" && !p.conteudoId?.trim()) erros.push("Escolha um conteúdo do acervo.");
   return erros;
 }
+/** Buscador escreve comentários curtos; anfitrião e curadoria, até 600 caracteres. */
+export const limiteComentario = (papel: Papel) =>
+  papel === "membro" ? LIMITES_COMUNIDADE.comentarioBuscador : LIMITES_COMUNIDADE.comentario;
+
+/** Buscador só comenta em publicações de outras pessoas; anfitrião e curadoria também nas próprias. */
+export const podeComentar = (papel: Papel, atorId: string, publicacao: Pick<Publicacao, "autorId">) =>
+  papel !== "membro" || publicacao.autorId !== atorId;
+
 export function validarComentario(
   texto: string,
   pai?: Pick<ComentarioComunidade, "paiId" | "publicacaoId" | "estado">,
   publicacaoId?: string,
+  papel: Papel = "anfitriao",
 ): string[] {
   const limpo = normalizarTextoComunidade(texto);
+  const limite = limiteComentario(papel);
   const erros =
-    !limpo || limpo.length > LIMITES_COMUNIDADE.comentario ? ["Escreva entre 1 e 600 caracteres."] : [];
+    !limpo || limpo.length > limite
+      ? [`Escreva entre 1 e ${limite.toLocaleString("pt-BR")} caracteres.`]
+      : [];
   if (pai && (pai.paiId || pai.estado !== "visivel" || pai.publicacaoId !== publicacaoId))
     erros.push("Responda a um comentário visível desta publicação, sem criar outro nível.");
   return erros;
@@ -116,7 +129,7 @@ export function podeTransitar(
   proprio: boolean,
 ): boolean {
   if (de === para || de === "removida") return false;
-  if (para === "removida") return proprio;
+  if (para === "removida") return proprio || papel === "administrador";
   return (
     papel === "administrador" &&
     ((de === "visivel" && para === "oculta") || (de === "oculta" && para === "visivel"))

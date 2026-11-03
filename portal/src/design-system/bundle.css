@@ -209,6 +209,7 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
 .sdb-control textarea { height: auto; min-height: 128px; padding: 16px 0; resize: vertical; font-family: var(--font-reading); font-size: 17px; line-height: 1.55; }
 .sdb-control--search { border-radius: var(--radius-pill); min-height: 44px; padding: 0 16px; }
 .sdb-control--search input { height: 42px; }
+.sdb-control--search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
 .sdb-control:focus-within, .sdb-control.is-focus { background: var(--material-thick); box-shadow: 0 0 0 1.5px var(--focus-ring), 0 0 0 5px var(--accent-soft); }
 .sdb-control.is-error { box-shadow: 0 0 0 1.5px var(--critical), 0 0 0 5px var(--critical-soft); }
 .sdb-control.is-disabled { opacity: 0.45; }

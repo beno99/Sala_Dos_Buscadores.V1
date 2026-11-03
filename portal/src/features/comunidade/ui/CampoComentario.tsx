@@ -15,8 +15,11 @@ export function CampoComentario({
   publicacaoId,
   respondendo,
   onCancelarResposta,
+  limite = LIMITES_COMUNIDADE.comentario,
 }: {
   publicacaoId: string;
+  /** 150 para buscador, 600 para anfitrião e curadoria (o servidor confere de novo). */
+  limite?: number;
   respondendo: Respondendo | null;
   onCancelarResposta: () => void;
 }) {
@@ -47,8 +50,8 @@ export function CampoComentario({
         label="Adicione um comentário…"
         rows={2}
         required
-        contador={texto.length > LIMITES_COMUNIDADE.comentario - 100}
-        maxLength={LIMITES_COMUNIDADE.comentario}
+        contador={limite < LIMITES_COMUNIDADE.comentario || texto.length > limite - 100}
+        maxLength={limite}
         value={texto}
         onChange={(e) => setTexto(e.target.value)}
       />

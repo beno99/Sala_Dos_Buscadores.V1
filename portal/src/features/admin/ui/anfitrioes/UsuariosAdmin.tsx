@@ -62,7 +62,26 @@ export interface ConviteVisual {
   situacao: StatusConvite;
 }
 
-const POR_PAGINA = 20;
+const POR_PAGINA = 10;
+
+export interface FiltrosUsuarios {
+  busca: string;
+  perfil: string;
+  situacao: string;
+  pagina: number;
+}
+
+/** Busca, filtros, página e aba ficam no endereço: recarregar ou voltar mantém a mesma lista. */
+function enderecoDosFiltros(aba: Aba, f: FiltrosUsuarios) {
+  const q = new URLSearchParams();
+  if (aba !== "usuarios") q.set("aba", aba);
+  if (f.busca.trim()) q.set("busca", f.busca.trim());
+  if (f.perfil) q.set("perfil", f.perfil);
+  if (f.situacao) q.set("situacao", f.situacao);
+  if (f.pagina > 1) q.set("pagina", String(f.pagina));
+  const texto = q.toString();
+  return `/admin/usuarios${texto ? `?${texto}` : ""}`;
+}
 
 const PAPEL: Record<UsuarioVisual["papel"], string> = {
   membro: "Buscador",
@@ -131,20 +150,21 @@ type Pedido =
 /** Usuários, candidaturas e convites (§6 · /admin/usuarios). */
 export function UsuariosAdmin({
   abaInicial,
+  filtrosIniciais,
   usuarios,
   candidaturas,
   convites,
 }: {
   abaInicial: Aba;
+  filtrosIniciais: FiltrosUsuarios;
   usuarios: UsuarioVisual[];
   candidaturas: CandidaturaVisual[];
   convites: ConviteVisual[];
 }) {
   const router = useRouter();
   const toast = useToast();
-  const [busca, setBusca] = useState("");
-  const [papelFiltro, setPapelFiltro] = useState("");
-  const [situacaoFiltro, setSituacaoFiltro] = useState("");
+  const [filtros, setFiltros] = useState(filtrosIniciais);
+  const { busca, perfil: papelFiltro, situacao: situacaoFiltro } = filtros;
   const normalizar = (v: string) =>
     v
       .normalize("NFD")
@@ -156,15 +176,19 @@ export function UsuariosAdmin({
       (!situacaoFiltro || (u.emailVerificadoEm ? "ativo" : "pendente") === situacaoFiltro) &&
       normalizar(`${u.pseudonimo} ${u.nomePublico ?? ""} ${u.email}`).includes(normalizar(busca.trim())),
   );
-  const [paginaPedida, setPagina] = useState(1);
   const paginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
-  const pagina = Math.min(paginaPedida, paginas);
+  const pagina = Math.min(Math.max(1, filtros.pagina), paginas);
   const visiveis = filtrados.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
-  const filtrar = (mudar: () => void) => {
-    mudar();
-    setPagina(1);
-  };
   const [aba, setAba] = useState<Aba>(abaInicial);
+  const atualizar = (parcial: Partial<FiltrosUsuarios>) => {
+    const novos = { ...filtros, pagina: 1, ...parcial };
+    setFiltros(novos);
+    window.history.replaceState(null, "", enderecoDosFiltros(aba, novos));
+  };
+  const irParaPagina = (p: number) => {
+    atualizar({ pagina: p });
+    document.getElementById("usuarios-painel-usuarios")?.scrollIntoView({ block: "start" });
+  };
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [ocupado, setOcupado] = useState(false);
   const [criando, setCriando] = useState(false);
@@ -192,7 +216,7 @@ export function UsuariosAdmin({
         value={aba}
         onChange={(v) => {
           setAba(v);
-          window.history.replaceState(null, "", `/admin/usuarios${v === "usuarios" ? "" : `?aba=${v}`}`);
+          window.history.replaceState(null, "", enderecoDosFiltros(v, filtros));
         }}
         options={[
           { value: "usuarios", label: "Usuários", count: usuarios.length },
@@ -214,24 +238,26 @@ export function UsuariosAdmin({
         </div>
         <div className="mb-8 grid gap-x-6 gap-y-5 nav:grid-cols-3">
           <CampoTexto
-            label="Buscar usuário"
+            label="Buscar por nome ou e-mail"
             type="search"
+            placeholder="Ex.: Alex"
+            autoComplete="off"
             value={busca}
-            onChange={(e) => filtrar(() => setBusca(e.target.value))}
+            onChange={(e) => atualizar({ busca: e.target.value })}
           />
           <Select
-            label="Perfil"
+            label="Cargo"
             value={papelFiltro}
-            onChange={(e) => filtrar(() => setPapelFiltro(e.target.value))}
+            onChange={(e) => atualizar({ perfil: e.target.value })}
             opcoes={[
-              { value: "", label: "Todos os perfis" },
+              { value: "", label: "Todos os cargos" },
               ...Object.entries(PAPEL).map(([value, label]) => ({ value, label })),
             ]}
           />
           <Select
             label="Situação do cadastro"
             value={situacaoFiltro}
-            onChange={(e) => filtrar(() => setSituacaoFiltro(e.target.value))}
+            onChange={(e) => atualizar({ situacao: e.target.value })}
             opcoes={[
               { value: "", label: "Todas as situações" },
               { value: "ativo", label: "Ativo" },
@@ -340,7 +366,7 @@ export function UsuariosAdmin({
           ]}
         />
         <div className="mt-6 flex justify-center">
-          <Paginacao pagina={pagina} total={paginas} onPagina={setPagina} rotulo="Páginas de usuários" />
+          <Paginacao pagina={pagina} total={paginas} onPagina={irParaPagina} rotulo="Páginas de usuários" />
         </div>
       </div>
 

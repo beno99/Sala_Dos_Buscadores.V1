@@ -16,6 +16,7 @@ import {
   LIMITES_COMUNIDADE,
   MOTIVOS_DENUNCIA,
   normalizarTextoComunidade,
+  podeComentar,
   podeEditarPublicacao,
   podeOcultarComentario,
   podeTransitar,
@@ -151,6 +152,8 @@ export function editarPublicacao(
 ): ResultadoAcao<{ id: string }> {
   const atual = dados().publicacoes.get(id);
   if (!atual || !podeEditarPublicacao(autor.id, atual)) return erro("só o autor edita a publicação.");
+  if (!podeCriarPublicacao(autor.papel))
+    return erro("somente anfitriões e a Curadoria escrevem publicações; buscadores comentam.");
   const campos = lerPublicacao({ ...form, tipo: atual.tipo }, autor.id);
   if (typeof campos === "string") return erro(campos);
   dados().publicacoes.set(id, { ...atual, ...campos, editadaEm: agora() });
@@ -160,8 +163,9 @@ export function editarPublicacao(
 export function excluirPublicacao(id: string, autor: Membro): ResultadoAcao {
   const p = dados().publicacoes.get(id);
   if (!p || !podeTransitar(p.estado, "removida", autor.papel, p.autorId === autor.id))
-    return erro("só o autor exclui a publicação.");
+    return erro("só o autor ou a curadoria excluem a publicação.");
   dados().publicacoes.set(id, { ...p, estado: "removida" });
+  if (p.autorId !== autor.id) registrarExclusaoPelaCuradoria("publicacao", id, p.texto, autor);
   return ok(undefined, "Publicação excluída.");
 }
 
@@ -171,10 +175,13 @@ export function comentar(
   paiId: string | undefined,
   autor: Membro,
 ): ResultadoAcao<{ id: string }> {
-  if (!publicacaoComunidadePorId(publicacaoId)) return erro("esta publicação não está disponível.");
+  const publicacao = publicacaoComunidadePorId(publicacaoId);
+  if (!publicacao) return erro("esta publicação não está disponível.");
+  if (!podeComentar(autor.papel, autor.id, publicacao))
+    return erro("buscadores comentam só em publicações de outras pessoas.");
   const pai = paiId ? dados().comentarios.get(paiId) : undefined;
   if (paiId && !pai) return erro("este comentário não está disponível.");
-  const [problema] = validarComentario(texto, pai, publicacaoId);
+  const [problema] = validarComentario(texto, pai, publicacaoId, autor.papel);
   if (problema) return erro(problema.charAt(0).toLowerCase() + problema.slice(1));
   if (!dentroDoLimiteDiario("comentario", autor.id, [...dados().comentarios.values()], new Date()))
     return erro("você chegou ao limite de 60 comentários por dia.");
@@ -194,8 +201,9 @@ export function comentar(
 export function excluirComentario(id: string, autor: Membro): ResultadoAcao {
   const c = dados().comentarios.get(id);
   if (!c || !podeTransitar(c.estado, "removida", autor.papel, c.autorId === autor.id))
-    return erro("só o autor exclui o comentário.");
+    return erro("só o autor ou a curadoria excluem o comentário.");
   dados().comentarios.set(id, { ...c, estado: "removida" });
+  if (c.autorId !== autor.id) registrarExclusaoPelaCuradoria("comentario", id, c.texto, autor);
   return ok(undefined, "Comentário excluído.");
 }
 
@@ -284,6 +292,16 @@ export function denunciar(
     dados().denuncias.set(d.id, d);
   }
   return ok(undefined, "Denúncia recebida. A curadoria vai analisar.");
+}
+
+/** A curadoria excluiu o item de outra pessoa: fica no Histórico. */
+function registrarExclusaoPelaCuradoria(
+  tipoItem: "publicacao" | "comentario",
+  itemId: string,
+  texto: string,
+  quem: Membro,
+) {
+  registrar({ quem: quem.pseudonimo, acao: "excluiu", tipoItem, itemId, itemTitulo: rotulo(texto) });
 }
 
 function trocarEstado(alvo: AlvoComunidade, para: EstadoComunidade, motivo: string, quem: Membro) {
