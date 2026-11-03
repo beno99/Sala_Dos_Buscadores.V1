@@ -1,0 +1,246 @@
+/* Escopo exclusivo da publicidade; os componentes de formulário mantêm o DS. */
+.sdb-publicidade {
+  --publicidade-papel: color-mix(in srgb, var(--bege-damasco) 38%, var(--branco));
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--bege-damasco) 75%, var(--gold-texture));
+  border-radius: var(--radius-xl);
+  background: var(--publicidade-papel);
+  color: var(--grafite-profundo);
+  overflow-wrap: anywhere;
+}
+.sdb-publicidade__rotulo {
+  margin: 0 0 var(--space-4);
+  font: 500 15px / 1.4 var(--font-display-caps);
+  letter-spacing: 0.14em;
+  color: var(--bordo-rubro);
+}
+.sdb-publicidade__imagem,
+.sdb-publicidade__sem-imagem {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 7 / 5;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bege-damasco);
+}
+.sdb-publicidade__imagem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sdb-publicidade__sem-imagem {
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  color: var(--bordo-rubro);
+  text-align: center;
+  font: 400 15px / 1.5 var(--font-ui);
+}
+.sdb-publicidade__conteudo {
+  padding-top: var(--space-5);
+}
+.sdb-publicidade__categoria {
+  margin: 0 0 var(--space-2);
+  color: color-mix(in srgb, var(--gold-texture) 40%, var(--bordo-rubro));
+  font: 500 13px / 1.5 var(--font-ui);
+}
+.sdb-publicidade__titulo {
+  margin: 0 0 var(--space-3);
+  font: 450 clamp(26px, 2.7vw, 34px) / 1.15 var(--font-display-lower);
+  letter-spacing: -0.025em;
+  text-wrap: pretty;
+}
+.sdb-publicidade__descricao {
+  margin: 0 0 var(--space-4);
+  color: color-mix(in srgb, var(--grafite-profundo) 78%, var(--bege-damasco));
+  font: 400 15px / 1.65 var(--font-ui);
+  white-space: pre-line;
+}
+.sdb-publicidade__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  color: var(--bordo-rubro);
+  font: 600 14px / 1.5 var(--font-ui);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+.sdb-publicidade__link:hover {
+  text-decoration-thickness: 2px;
+}
+.sdb-publicidade__link:focus-visible {
+  outline: 2px solid var(--bordo-rubro);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius-xs);
+}
+.sdb-publicidade__rodape {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid color-mix(in srgb, var(--bordo-rubro) 12%, transparent);
+  color: color-mix(in srgb, var(--grafite-profundo) 72%, var(--bege-damasco));
+  font: 400 12px / 1.5 var(--font-ui);
+}
+.sdb-publicidade__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.sdb-publicidade-editor {
+  max-width: 1120px;
+  margin-inline: auto;
+  min-width: 0;
+}
+.sdb-publicidade-editor__cabecalho {
+  margin-bottom: var(--space-7);
+}
+.sdb-publicidade-editor__cabecalho h1 {
+  margin: var(--space-2) 0 var(--space-3);
+  color: var(--label);
+  font: 450 clamp(32px, 5vw, 48px) / 1.1 var(--font-display-lower);
+  letter-spacing: -0.035em;
+}
+.sdb-publicidade-editor__cabecalho p {
+  color: var(--label-secondary);
+}
+.sdb-publicidade-editor__sobretitulo {
+  font: 500 12px / 1.5 var(--font-ui);
+  letter-spacing: 0.06em;
+}
+.sdb-publicidade-editor__colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+.sdb-publicidade-editor__form {
+  min-width: 0;
+}
+.sdb-publicidade-editor__campos {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: 0;
+  margin: var(--space-5) 0;
+  border: 0;
+}
+.sdb-publicidade-editor__contador {
+  display: block;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.sdb-publicidade-editor__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 var(--space-3);
+}
+.sdb-publicidade-editor__previa {
+  position: sticky;
+  top: 100px;
+  min-width: 0;
+}
+.sdb-publicidade-editor__previa > h2 {
+  margin: 0 0 var(--space-4);
+  font: 500 14px / 1.6 var(--font-ui);
+  color: var(--label-secondary);
+}
+.sdb-publicidade-editor__previa > .sdb-help {
+  margin-top: var(--space-3);
+}
+.sdb-publicidade-editor__mensagem {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--positive);
+  background: var(--positive-soft);
+}
+.sdb-publicidade-editor__mensagem.is-error {
+  color: var(--critical);
+  background: var(--critical-soft);
+}
+.sdb-publicidade-upload h2 {
+  margin: 0 0 var(--space-2);
+}
+.sdb-publicidade-upload__area {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px dashed var(--separator);
+  border-radius: var(--radius-lg);
+  background: var(--material-regular);
+  text-align: center;
+}
+.sdb-publicidade-upload__area.is-dragging {
+  border-color: var(--accent);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: var(--space-1);
+}
+.sdb-publicidade-upload__area > p {
+  margin: var(--space-2) 0;
+}
+.sdb-publicidade-upload__enquadramento {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: var(--space-4);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+}
+.sdb-publicidade-upload__enquadramento legend {
+  padding-inline: var(--space-2);
+  font: 500 13px / 1.5 var(--font-ui);
+}
+.sdb-publicidade-upload__controle {
+  display: grid;
+  gap: var(--space-1);
+  font: 400 13px / 1.5 var(--font-ui);
+}
+.sdb-publicidade-upload__controle > span {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.sdb-publicidade-upload__controle output {
+  font-variant-numeric: tabular-nums;
+  color: var(--label-secondary);
+}
+.sdb-publicidade-upload__controle input {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.sdb-publicidade-upload__controle input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius-xs);
+}
+@media (max-width: 760px) {
+  .sdb-publicidade-editor__colunas {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+  .sdb-publicidade-editor__previa {
+    position: static;
+    max-width: 440px;
+    width: 100%;
+    justify-self: center;
+  }
+  .sdb-publicidade-editor__acoes > button {
+    flex: 1 1 180px;
+  }
+  .sdb-publicidade-editor__cabecalho {
+    margin-bottom: var(--space-5);
+  }
+}

@@ -50,6 +50,7 @@ function conteudoDaPagina(caminho: string, conteudos: readonly ConteudoBuscavel[
 
 export function tituloDaPagina(caminho: string, conteudos: readonly ConteudoBuscavel[] = []): string {
   if (caminho === "/perfil" || caminho.startsWith("/perfil/")) return "Perfil";
+  if (caminho.startsWith("/anfitriao/publicidade")) return "Minha publicidade";
   if (ativa(MINHAS_SALAS.href, caminho)) return MINHAS_SALAS.rotulo;
   // A página de um conteúdo fica dentro de Salas (layout do Figma); o tipo aparece no próprio artigo.
   if (conteudoDaPagina(caminho, conteudos)) return "Salas";
@@ -120,10 +121,16 @@ export function gruposDaLateral(
   const conta = grupos.at(-1);
   if (anfitriao) {
     conta?.itens.unshift({
+      rotulo: "Minha publicidade",
+      icone: "link",
+      href: "/anfitriao/publicidade" as Route,
+      ativo: caminho.startsWith("/anfitriao/publicidade"),
+    });
+    conta?.itens.unshift({
       rotulo: MINHAS_SALAS.rotulo,
       icone: MINHAS_SALAS.icone,
       href: MINHAS_SALAS.href,
-      ativo: ativa(MINHAS_SALAS.href, caminho),
+      ativo: ativa(MINHAS_SALAS.href, caminho) && !caminho.startsWith("/anfitriao/publicidade"),
       contagem: anfitriao.novidades > 0 ? anfitriao.novidades : undefined,
     });
   }

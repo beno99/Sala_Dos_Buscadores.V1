@@ -16,8 +16,8 @@ export function ModalPoliticaAnuncios({ aberto, onFechar }: { aberto: boolean; o
     >
       <div className="flex flex-col gap-4">
         <p className="sdb-body-sm m-0">
-          Os anúncios ajudam a manter o acervo aberto. Cada anunciante passa por curadoria editorial antes de
-          entrar.
+          Os anúncios são publicados pelos anfitriões para apresentar seus produtos. O nome do anunciante
+          aparece em cada peça; a oferta e o atendimento são de sua responsabilidade.
         </p>
         <p className="sdb-body-sm m-0">
           Não aceitamos charlatanismo, promessa de cura, manipulação religiosa, contagem regressiva ou

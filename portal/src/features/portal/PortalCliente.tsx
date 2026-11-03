@@ -8,7 +8,6 @@ import { Button, ButtonLink } from "@/components/ds/Button";
 import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardSala } from "@/components/ds/CardSala";
 import { Chip } from "@/components/ds/Chip";
-import { EspacoPublicitario } from "@/components/ds/EspacoPublicitario";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { LinhaConteudo, ListaLinhas } from "@/components/ds/ListaConteudos";
@@ -21,6 +20,8 @@ import { TIPO_ROTULO } from "@/data/rotulos";
 import type { TemaSlug } from "@/data/types";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
 import { intercalarSlides } from "@/features/estudo/banner";
+import { CardPublicidade } from "@/features/publicidade/CardPublicidade";
+import type { AnuncioPublico } from "@/features/publicidade/tipos";
 import { formatarData } from "@/lib/texto";
 import type { ModeloPortal } from "@/server/estudo";
 import { comporLeituras, type PreviaComunidade } from "./composicao";
@@ -44,9 +45,13 @@ function Cabecalho({ id, titulo, acao, href }: { id: string; titulo: string; aca
 export function PortalCliente({
   modelo,
   comunidade = [],
+  anuncios = [],
+  podeAnunciar = false,
 }: {
   modelo: ModeloPortal;
   comunidade?: PreviaComunidade[];
+  anuncios?: AnuncioPublico[] | null;
+  podeAnunciar?: boolean;
 }) {
   const [tema, setTema] = useState<TemaSlug | null>(null);
   const [politica, setPolitica] = useState(false);
@@ -392,13 +397,22 @@ export function PortalCliente({
               )}
             </div>
           </section>
-          {modelo.anuncioPainel && (
-            <EspacoPublicitario
-              anuncio={modelo.anuncioPainel}
-              variante="portal"
-              onPorQue={() => setPolitica(true)}
-            />
-          )}
+          <section className="sdb-home__publicidade" aria-label="Publicidade no Portal">
+            {anuncios?.map((anuncio) => (
+              <CardPublicidade key={anuncio.id} anuncio={anuncio} />
+            ))}
+            {anuncios === null && <p className="sdb-help">Publicidade temporariamente indisponível.</p>}
+            {podeAnunciar && (
+              <ButtonLink href={"/anfitriao/publicidade" as Route} variant="secondary">
+                Minha publicidade
+              </ButtonLink>
+            )}
+            {Boolean(anuncios?.length) && (
+              <Button variant="plain" size="sm" onClick={() => setPolitica(true)}>
+                Sobre os anúncios
+              </Button>
+            )}
+          </section>
         </div>
       </div>
       <ModalPoliticaAnuncios aberto={politica} onFechar={() => setPolitica(false)} />

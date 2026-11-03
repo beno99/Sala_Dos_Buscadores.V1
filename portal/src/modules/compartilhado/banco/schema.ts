@@ -6,4 +6,5 @@ export * from "@/modules/conta/conta.schema";
 export * from "@/modules/estudo/estudo.schema";
 export * from "@/modules/midia/midia.schema";
 export * from "@/modules/operacao/operacao.schema";
+export * from "@/modules/publicidade/publicidade.schema";
 export * from "./versao.schema";

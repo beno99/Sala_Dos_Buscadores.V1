@@ -24,7 +24,7 @@ const SECOES = [
     id: "politica-publicidade",
     titulo: "Política de publicidade",
     texto: [
-      "Os anúncios ajudam a manter o acervo aberto e passam por curadoria editorial antes de entrar. Não aceitamos charlatanismo, promessa de cura, manipulação religiosa, contagem regressiva ou urgência.",
+      "Os anúncios são publicados pelos anfitriões, responsáveis por suas ofertas e pelo atendimento. Não aceitamos charlatanismo, promessa de cura, manipulação religiosa, contagem regressiva ou urgência.",
       "Anúncios aparecem sempre com o rótulo “Publicidade” e o nome do anunciante, e nunca dentro da grade comparativa, das respostas do assistente ou da leitura de um conteúdo.",
     ],
   },
