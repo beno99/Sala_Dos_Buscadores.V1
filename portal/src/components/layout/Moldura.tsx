@@ -57,6 +57,7 @@ export function Moldura({
   conteudos,
   lateral,
   novidadesAnfitriao = 0,
+  mensagensNaoLidas = 0,
   children,
 }: {
   membroInicial: Membro;
@@ -66,6 +67,8 @@ export function Moldura({
   lateral: ModeloLateral;
   /** Decisões da curadoria que o anfitrião ainda não viu (contador de "Minhas Salas"). */
   novidadesAnfitriao?: number;
+  /** Mensagens diretas ainda não lidas (contador de "Mensagens"). */
+  mensagensNaoLidas?: number;
   children: ReactNode;
 }) {
   const caminho = usePathname();
@@ -118,6 +121,7 @@ export function Moldura({
   const grupos = gruposDaLateral(caminho, {
     admin,
     anfitriao: anfitriao ? { novidades: novidadesAnfitriao } : undefined,
+    mensagens: mensagensNaoLidas,
     sair: () => void sair(),
   });
   const menuConta = [

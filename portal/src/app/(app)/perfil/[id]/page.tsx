@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { notFound, redirect } from "next/navigation";
+import { ButtonLink } from "@/components/ds/Button";
 import { CabecalhoPerfilPublico, PerfilPublico } from "@/components/ds/PerfilPublico";
 import { pessoaPublicaComunidade } from "@/data/repositorio";
 import { BotaoSeguir } from "@/features/comunidade/ui/BotaoSeguir";
@@ -20,11 +21,16 @@ export default async function PerfilDaPessoa({ params }: { params: Promise<{ id:
         publicacoes={publicacoes.length}
         acao={
           id !== m.pessoa.id && (
-            <BotaoSeguir
-              alvo={{ tipo: "pessoa", id }}
-              nome={pessoa.nome}
-              seguindo={m.visao.seguindoPessoas.includes(id)}
-            />
+            <>
+              <BotaoSeguir
+                alvo={{ tipo: "pessoa", id }}
+                nome={pessoa.nome}
+                seguindo={m.visao.seguindoPessoas.includes(id)}
+              />
+              <ButtonLink href={`/mensagens/${id}` as Route} variant="secondary" icon="enviar">
+                Enviar mensagem
+              </ButtonLink>
+            </>
           )
         }
       />

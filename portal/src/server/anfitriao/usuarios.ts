@@ -22,6 +22,7 @@ import {
 } from "@/features/anfitriao/regras/perfil";
 import { validarEmail, validarPseudonimo, validarSenha } from "@/features/auth/validacao";
 import { contas } from "@/modules/conta";
+import { VALIDADE_REDEFINICAO_MIN } from "@/modules/conta/casos-de-uso/redefinir";
 import { hash } from "@/modules/conta/casos-de-uso/sessao";
 import type { Membro } from "@/modules/conta/conta.contratos";
 import { atorAuditoriaAtual, registrar } from "../auditoria";
@@ -659,32 +660,100 @@ export async function criarUsuarioAvulso(
   );
 }
 
-/** A curadoria troca o e-mail de uma conta; avisa o endereço antigo e o novo. */
-export async function alterarEmail(id: string, email: string, quem: string): Promise<ResultadoAcao> {
-  const novo = email.trim().toLowerCase();
-  const erroEmail = validarEmail(novo);
-  if (erroEmail) return falha(`Erro: ${erroEmail}`, { "campo-novo-email": erroEmail });
+/** A curadoria edita nome de exibição e e-mail; troca de e-mail avisa o antigo e o novo. */
+export async function editarUsuario(
+  id: string,
+  dados: { pseudonimo: string; email: string },
+  quem: string,
+): Promise<ResultadoAcao> {
+  const pseudonimo = dados.pseudonimo.trim().replace(/\s+/g, " ");
+  const email = dados.email.trim().toLowerCase();
+  const erros: Record<string, string> = {};
+  const erroNome = validarPseudonimo(pseudonimo);
+  const erroEmail = validarEmail(email);
+  if (erroNome) erros["campo-editar-nome"] = erroNome;
+  if (erroEmail) erros["campo-editar-email"] = erroEmail;
+  if (Object.keys(erros).length) return falha("Erro: confira os campos indicados.", erros);
   const conta = await contas.porId(id);
   if (!conta) return erro("esta conta não existe mais.");
-  if (conta.email === novo)
-    return falha("Erro: o e-mail é o mesmo.", { "campo-novo-email": "o e-mail é o mesmo." });
-  const atualizada = await contas.definirEmail(id, novo);
+  const mudancas = [
+    { campo: "Nome de exibição", antes: conta.pseudonimo, depois: pseudonimo },
+    { campo: "E-mail", antes: conta.email, depois: email },
+  ].filter((m) => m.antes !== m.depois);
+  if (!mudancas.length)
+    return falha("Erro: nada mudou.", { "campo-editar-nome": "nenhum dado foi alterado." });
+  const atualizada = await contas.atualizarCadastro(id, { pseudonimo, email });
   if (!atualizada) {
     const msg = "já existe uma conta com este e-mail.";
-    return falha(`Erro: ${msg}`, { "campo-novo-email": msg });
+    return falha(`Erro: ${msg}`, { "campo-editar-email": msg });
   }
+  registrar({ quem, acao: "editou", tipoItem: "usuario", itemId: id, itemTitulo: pseudonimo, mudancas });
+  if (email !== conta.email) {
+    const corpo = `A curadoria trocou o e-mail da sua conta de ${conta.email} para ${email}. Use o novo e-mail para entrar; a senha continua a mesma.`;
+    enviarEmail({ para: conta.email, assunto: "O e-mail da sua conta foi alterado", corpo });
+    enviarEmail({ para: email, assunto: "O e-mail da sua conta foi alterado", corpo });
+  }
+  return ok(undefined, `Dados de ${pseudonimo} atualizados.`);
+}
+
+/** Envia à pessoa o mesmo link de "Esqueci minha senha" (30 min, uso único). */
+export async function enviarLinkSenha(id: string, quem: string): Promise<ResultadoAcao> {
+  const conta = await contas.porId(id);
+  if (!conta) return erro("esta conta não existe mais.");
+  const pedido = await contas.pedirRedefinicao(conta.email);
+  if (!pedido) return erro("não foi possível gerar o link. Tente de novo.");
+  enviarEmail({
+    para: conta.email,
+    assunto: "Redefinir sua senha na Sala dos Buscadores",
+    corpo: [
+      `Olá, ${conta.pseudonimo}. A curadoria enviou um link para você escolher uma nova senha.`,
+      `Abra este link, que vale ${VALIDADE_REDEFINICAO_MIN} minutos e só pode ser usado uma vez:\n${URL_PUBLICA}/recuperar-senha?token=${pedido.token}`,
+      "Se não pediu, ignore esta mensagem: sua senha continua a mesma.",
+    ].join("\n\n"),
+  });
   registrar({
     quem,
     acao: "editou",
     tipoItem: "usuario",
     itemId: id,
     itemTitulo: conta.pseudonimo,
-    mudancas: [{ campo: "E-mail", antes: conta.email, depois: novo }],
+    mudancas: [{ campo: "Senha", antes: "", depois: "link de redefinição enviado" }],
   });
-  const corpo = `A curadoria trocou o e-mail da sua conta de ${conta.email} para ${novo}. Use o novo e-mail para entrar; a senha continua a mesma.`;
-  enviarEmail({ para: conta.email, assunto: "O e-mail da sua conta foi alterado", corpo });
-  enviarEmail({ para: novo, assunto: "O e-mail da sua conta foi alterado", corpo });
-  return ok(undefined, `E-mail de ${conta.pseudonimo} alterado para ${novo}.`);
+  return ok(undefined, `Link de redefinição enviado para ${conta.email}.`);
+}
+
+/** Senha provisória definida pela curadoria; não vale para contas da curadoria (use o link). */
+export async function definirSenhaProvisoria(
+  id: string,
+  senha: string,
+  quem: string,
+): Promise<ResultadoAcao> {
+  const erroSenha = validarSenha(senha);
+  if (erroSenha) return falha(`Erro: ${erroSenha}`, { "campo-senha-provisoria": erroSenha });
+  const conta = await contas.porId(id);
+  if (!conta) return erro("esta conta não existe mais.");
+  if (conta.papel === "administrador")
+    return erro("a senha de uma conta da curadoria só muda pelo link enviado ao e-mail dela.");
+  const r = await contas.definirSenhaPelaCuradoria(id, senha);
+  if (!r.ok) return erro(r.erro);
+  registrar({
+    quem,
+    acao: "editou",
+    tipoItem: "usuario",
+    itemId: id,
+    itemTitulo: conta.pseudonimo,
+    mudancas: [{ campo: "Senha", antes: "", depois: "senha provisória definida pela curadoria" }],
+  });
+  enviarEmail({
+    para: conta.email,
+    assunto: "Sua senha foi redefinida pela curadoria",
+    corpo:
+      "A curadoria definiu uma senha provisória para a sua conta e encerrou as sessões abertas. Peça a senha à curadoria por um canal seguro e troque-a depois em “Esqueci minha senha”.",
+  });
+  return ok(
+    undefined,
+    `Senha provisória definida para ${conta.pseudonimo}. As sessões abertas foram encerradas.`,
+  );
 }
 
 // ---------- perfil (§2) ----------

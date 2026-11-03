@@ -18,7 +18,7 @@ import type {
   TemaEditorial,
   VideoEditorial,
 } from "@/data/types";
-import type { TipoImagem } from "@/features/anfitriao/regras/imagem";
+import type { TipoMidia } from "@/features/anfitriao/regras/imagem";
 import type { Anuncio } from "@/features/anuncios/regras";
 import type { PedidoLixeiraArtigo } from "@/features/artigos/lixeira";
 import type { EscolhaDestaques } from "@/features/destaques/vagas";
@@ -38,7 +38,7 @@ import type { PedidoEditorial, ResultadoEditorial } from "./editorial-atomico";
 export interface MidiaGuardada {
   id: string;
   chave: string;
-  tipo: TipoImagem;
+  tipo: TipoMidia;
   tamanho: number;
   /** Id da conta que enviou. */
   donoId: string;

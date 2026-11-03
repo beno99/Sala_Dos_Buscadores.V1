@@ -17,6 +17,12 @@ export async function GET(_pedido: Request, { params }: RouteContext<"/midia/[id
       "Content-Length": String(midia.bytes.byteLength),
       "Cache-Control": "private, max-age=31536000, immutable",
       "X-Content-Type-Options": "nosniff",
+      ...(midia.tipo === "application/pdf"
+        ? {
+            "Content-Disposition": `attachment; filename="anexo-${id}.pdf"`,
+            "Content-Security-Policy": "sandbox",
+          }
+        : {}),
     },
   });
 }

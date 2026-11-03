@@ -2,7 +2,12 @@ import "server-only";
 import { autenticar } from "./casos-de-uso/autenticar";
 import { definirPapel } from "./casos-de-uso/papel";
 import { apagarConviccao, salvarPreferencias } from "./casos-de-uso/preferencias";
-import { linkDeRedefinicaoValido, pedirRedefinicao, redefinirSenha } from "./casos-de-uso/redefinir";
+import {
+  definirSenhaPelaCuradoria,
+  linkDeRedefinicaoValido,
+  pedirRedefinicao,
+  redefinirSenha,
+} from "./casos-de-uso/redefinir";
 import { registrar } from "./casos-de-uso/registrar";
 import { abrirSessao, encerrarSessao, membroDaSessao } from "./casos-de-uso/sessao";
 import { confirmarEmail, pedirVerificacao } from "./casos-de-uso/verificar";
@@ -45,7 +50,9 @@ export const contas = {
   porEmail: (email: string) => contaRepositorio.porEmail(email),
   listar: () => contaRepositorio.listar(),
   marcarEmailVerificado: (id: string) => contaRepositorio.marcarEmailVerificado(id),
-  definirEmail: (id: string, email: string) => contaRepositorio.definirEmail(id, email),
+  atualizarCadastro: (id: string, dados: { pseudonimo: string; email: string }) =>
+    contaRepositorio.atualizarCadastro(id, dados),
+  definirSenhaPelaCuradoria: ligar(definirSenhaPelaCuradoria),
   corrigirEmailPendente: (id: string, email: string, verificacao?: { tokenHash: string; expiraEm: Date }) =>
     contaRepositorio.corrigirEmailPendente(id, email, verificacao),
   excluir: (id: string) => contaRepositorio.excluir(id),

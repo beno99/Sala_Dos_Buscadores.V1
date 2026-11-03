@@ -28,6 +28,7 @@ const SECOES: Secao[] = [
   { href: "/conquistas" as Route, rotulo: "Conquistas", icone: "check", grupo: "Estudo" },
   { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
   { href: "/assistente", rotulo: "Assistente do acervo", icone: "assistente", grupo: "Ferramentas" },
+  { href: "/mensagens" as Route, rotulo: "Mensagens", icone: "comunidade", grupo: "Conta" },
   { href: "/ajustes" as Route, rotulo: "Ajustes", icone: "ajustes", grupo: "Conta" },
 ];
 
@@ -100,11 +101,14 @@ export function gruposDaLateral(
   {
     admin,
     anfitriao,
+    mensagens = 0,
     sair,
   }: {
     admin: boolean;
     /** Anfitrião: "Minhas Salas", com as decisões da curadoria ainda não vistas. */
     anfitriao?: { novidades: number };
+    /** Mensagens diretas não lidas. */
+    mensagens?: number;
     sair: () => void;
   },
 ): GrupoNavegacaoApp[] {
@@ -115,6 +119,7 @@ export function gruposDaLateral(
       icone: s.icone,
       href: s.href,
       ativo: ativa(s.href, caminho),
+      ...(s.href === "/mensagens" && mensagens > 0 ? { contagem: mensagens } : {}),
     })),
   }));
   const conta = grupos.at(-1);

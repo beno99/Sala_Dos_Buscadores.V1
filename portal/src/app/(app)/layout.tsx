@@ -6,6 +6,7 @@ import { listarConteudosBuscaveis } from "@/data/repositorio";
 import { aparenciaDoCookie, COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie } from "@/features/aparencia/tema";
 import * as conta from "@/modules/conta/conta.controller";
 import { novidadesDe } from "@/server/anfitriao/consultas";
+import { totalNaoLidas } from "@/server/conversa/consultas";
 import { modeloDaLateral } from "@/server/estudo";
 import { membroAtual, redirecionarParaEntrar } from "@/server/sessao";
 
@@ -31,6 +32,7 @@ export default async function LayoutApp({ children }: { children: ReactNode }) {
       conteudos={listarConteudosBuscaveis()}
       lateral={modeloDaLateral(membro)}
       novidadesAnfitriao={membro.papel === "anfitriao" ? novidadesDe(membro.id).length : 0}
+      mensagensNaoLidas={await totalNaoLidas(membro.id)}
     >
       {children}
     </Moldura>

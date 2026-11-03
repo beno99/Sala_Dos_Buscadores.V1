@@ -92,6 +92,13 @@
       "when": 1793725722002,
       "tag": "0012_anuncios_revisao",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793730541026,
+      "tag": "0013_mensagens_diretas",
+      "breakpoints": true
     }
   ]
 }

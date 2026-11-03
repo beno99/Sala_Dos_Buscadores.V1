@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
 import { Conversa } from "@/features/conversa/ui/Conversa";
 import { anfitriaoDaPagina } from "@/server/anfitriao/pagina";
 import { escreverACuradoriaAcao } from "@/server/conversa/acoes";
-import { conversaDoAnfitriao, nomeDoAnfitriao } from "@/server/conversa/consultas";
+import { conversaDoAnfitriao } from "@/server/conversa/consultas";
 
 export const metadata: Metadata = { title: "Conversa com a curadoria" };
 
@@ -22,8 +22,7 @@ export default async function ConversaDoAnfitriao() {
       </header>
       <Conversa
         mensagens={mensagens}
-        anfitriao={{ nome: nomeDoAnfitriao(membro.id), href: "/anfitriao/perfil", anfitriao: true }}
-        curadoria={{ nome: "Curadoria", href: "/anfitriao/conversa" }}
+        eu={{ papel: "anfitriao" }}
         enviar={escreverACuradoriaAcao}
         rotulo="Mensagem para a curadoria"
       />

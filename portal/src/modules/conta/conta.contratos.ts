@@ -50,8 +50,8 @@ export interface ContaRepositorio {
     verificacao?: { tokenHash: string; expiraEm: Date },
   ): Promise<Membro | null>;
   definirPapel(id: string, papel: Papel): Promise<Membro | null>;
-  /** Troca o e-mail pela curadoria, já confirmado. null se o e-mail já estiver em uso. */
-  definirEmail(id: string, email: string): Promise<Membro | null>;
+  /** A curadoria troca nome e e-mail; e-mail novo já confirmado. null se o e-mail já estiver em uso. */
+  atualizarCadastro(id: string, dados: { pseudonimo: string; email: string }): Promise<Membro | null>;
   definirPreferencias(id: string, preferencias: Preferencias | null): Promise<Membro | null>;
   definirSenha(id: string, senhaHash: string): Promise<void>;
   marcarEmailVerificado(id: string): Promise<Membro | null>;

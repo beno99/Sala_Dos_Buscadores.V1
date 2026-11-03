@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import { Arc } from "@/components/ds/Arc";
 import { Avatar } from "@/components/ds/Avatar";
 import { BotaoCompartilhar } from "@/components/ds/BotaoCompartilhar";
-import { classesDoBotao } from "@/components/ds/Button";
+import { ButtonLink, classesDoBotao } from "@/components/ds/Button";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
 import { Badge, SeloProveniencia } from "@/components/ds/Selos";
@@ -88,11 +88,16 @@ export default async function PaginaAnfitriao(props: PageProps<"/anfitrioes/[slu
           </div>
           <div className="sdb-profilehead__actions">
             {perfil.contaId !== comunidade.pessoa.id && (
-              <BotaoSeguir
-                alvo={{ tipo: "pessoa", id: perfil.contaId }}
-                nome={perfil.nome}
-                seguindo={comunidade.visao.seguindoPessoas.includes(perfil.contaId)}
-              />
+              <>
+                <BotaoSeguir
+                  alvo={{ tipo: "pessoa", id: perfil.contaId }}
+                  nome={perfil.nome}
+                  seguindo={comunidade.visao.seguindoPessoas.includes(perfil.contaId)}
+                />
+                <ButtonLink href={`/mensagens/${perfil.contaId}` as Route} variant="secondary" icon="enviar">
+                  Enviar mensagem
+                </ButtonLink>
+              </>
             )}
             <BotaoCompartilhar titulo={perfil.nome} />
           </div>

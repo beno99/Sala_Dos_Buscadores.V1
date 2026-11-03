@@ -2,7 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import type { BlocoCorpo } from "@/data/types";
 import { campoDoBloco } from "@/features/admin/regras/corpo";
-import { type TipoImagem, validarImagem } from "@/features/anfitriao/regras/imagem";
+import { type TipoImagem, validarAnexo, validarImagem } from "@/features/anfitriao/regras/imagem";
 import { armazenamentoS3 } from "@/modules/midia/armazenamento.s3";
 import type { ArmazenamentoDeArquivos } from "@/modules/midia/midia.contratos";
 import { acervo, comGravacoesDoPedido, type MidiaGuardada } from "./store";
@@ -91,9 +91,44 @@ async function carregarMidia(id: string): Promise<MidiaServida | undefined> {
   const midia = acervo().midias.get(id);
   const bytes = midia ? await armazenamento.baixar(midia.chave) : null;
   if (!midia || !bytes) return undefined;
+  if (midia.tipo === "application/pdf") return { tipo: midia.tipo, bytes };
   return midia.tipo === "image/webp" && bytes.byteLength < 600 * 1024
     ? { tipo: midia.tipo, bytes }
     : compactar(bytes, midia.tipo);
+}
+
+/** Anexo de mensagem: imagem (compactada como as outras) ou PDF guardado como veio. */
+export async function guardarAnexo(
+  bytes: Uint8Array,
+  donoId: string,
+): Promise<{ ok: true; id: string; url: string; tipo: MidiaGuardada["tipo"] } | { ok: false; erro: string }> {
+  const validacao = validarAnexo(bytes);
+  if (!validacao.ok) return validacao;
+  if (validacao.tipo !== "application/pdf") {
+    const r = await guardarImagem(bytes, donoId);
+    return r.ok ? { ...r, tipo: acervo().midias.get(r.id)?.tipo ?? validacao.tipo } : r;
+  }
+  const id = `m-${randomBytes(9).toString("base64url")}`;
+  const chave = `midias/${donoId}/${id}`;
+  await armazenamento.enviar(chave, bytes, validacao.tipo);
+  const midia: MidiaGuardada = {
+    id,
+    chave,
+    tipo: validacao.tipo,
+    tamanho: bytes.byteLength,
+    donoId,
+    criadoEm: new Date().toISOString(),
+  };
+  await comGravacoesDoPedido(() => {
+    acervo().midias.set(id, midia);
+  });
+  return { ok: true, id, url: urlDaMidia(id), tipo: validacao.tipo };
+}
+
+/** O anexo só entra numa mensagem se foi enviado pela mesma conta. */
+export function anexoDoDono(id: string, donoId: string): MidiaGuardada | undefined {
+  const midia = acervo().midias.get(id);
+  return midia?.donoId === donoId ? midia : undefined;
 }
 
 export async function obterMidia(id: string): Promise<MidiaServida | undefined> {
@@ -115,7 +150,8 @@ export async function obterMidia(id: string): Promise<MidiaServida | undefined> 
 /** A imagem só entra num item se foi enviada pela mesma conta. */
 export function midiaDoDono(id: string | null | undefined, donoId: string): string | undefined {
   if (!id) return undefined;
-  return acervo().midias.get(id)?.donoId === donoId ? id : undefined;
+  const midia = acervo().midias.get(id);
+  return midia?.donoId === donoId && midia.tipo.startsWith("image/") ? id : undefined;
 }
 
 /**

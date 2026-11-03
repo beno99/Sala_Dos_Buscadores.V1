@@ -43,3 +43,16 @@ export async function redefinirSenha(
   await sessoes.apagarDoUsuario(membro.id);
   return { ok: true, valor: membro };
 }
+
+/** Senha provisória definida pela curadoria; encerra as sessões abertas da conta. */
+export async function definirSenhaPelaCuradoria(
+  { contas, sessoes }: Pick<DepsConta, "contas" | "sessoes">,
+  id: string,
+  senha: string,
+): Promise<Resultado<Membro>> {
+  const membro = await contas.porId(id);
+  if (!membro) return { ok: false, erro: "esta conta não existe mais." };
+  await contas.definirSenha(membro.id, await bcrypt.hash(senha, CUSTO_BCRYPT));
+  await sessoes.apagarDoUsuario(membro.id);
+  return { ok: true, valor: membro };
+}

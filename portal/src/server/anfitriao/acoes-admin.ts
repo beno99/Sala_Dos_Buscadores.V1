@@ -131,8 +131,22 @@ export async function apagarConviteAcao(id: string) {
   return comAdmin((quem) => usuarios.apagarConvite(String(id), quem));
 }
 
-export async function alterarEmailAcao(contaId: string, email: string) {
-  return comAdmin((quem) => usuarios.alterarEmail(String(contaId), String(email ?? ""), quem));
+export async function editarUsuarioAcao(contaId: string, dados: { pseudonimo: string; email: string }) {
+  return comAdmin((quem) =>
+    usuarios.editarUsuario(
+      String(contaId),
+      { pseudonimo: String(dados?.pseudonimo ?? ""), email: String(dados?.email ?? "") },
+      quem,
+    ),
+  );
+}
+
+export async function enviarLinkSenhaAcao(contaId: string) {
+  return comAdmin((quem) => usuarios.enviarLinkSenha(String(contaId), quem));
+}
+
+export async function definirSenhaProvisoriaAcao(contaId: string, senha: string) {
+  return comAdmin((quem) => usuarios.definirSenhaProvisoria(String(contaId), String(senha ?? ""), quem));
 }
 
 export async function criarUsuarioAcao(dados: {

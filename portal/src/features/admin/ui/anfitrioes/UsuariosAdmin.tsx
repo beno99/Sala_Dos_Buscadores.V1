@@ -25,8 +25,9 @@ import {
 } from "@/server/anfitriao/acoes-admin";
 import { SheetMotivo } from "../SheetMotivo";
 import { FormConvite } from "./FormConvite";
-import { SheetAlterarEmail } from "./SheetAlterarEmail";
 import { SheetCriarUsuario } from "./SheetCriarUsuario";
+import { SheetEditarUsuario } from "./SheetEditarUsuario";
+import { SheetSenhaUsuario } from "./SheetSenhaUsuario";
 
 export type Aba = "usuarios" | "candidaturas" | "convites";
 
@@ -121,7 +122,8 @@ type Pedido =
   | { tipo: "promover"; usuario: UsuarioVisual }
   | { tipo: "rebaixar"; usuario: UsuarioVisual }
   | { tipo: "excluir"; usuario: UsuarioVisual }
-  | { tipo: "email"; usuario: UsuarioVisual }
+  | { tipo: "editar"; usuario: UsuarioVisual }
+  | { tipo: "senha"; usuario: UsuarioVisual }
   | { tipo: "aprovar"; candidatura: CandidaturaVisual }
   | { tipo: "recusar"; candidatura: CandidaturaVisual }
   | { tipo: "apagar"; convite: ConviteVisual };
@@ -286,9 +288,16 @@ export function UsuariosAdmin({
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => setPedido({ tipo: "email", usuario: u })}
+                    onClick={() => setPedido({ tipo: "editar", usuario: u })}
                   >
-                    Alterar e-mail
+                    Editar
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setPedido({ tipo: "senha", usuario: u })}
+                  >
+                    Redefinir senha
                   </Button>
                   {u.papel === "membro" ? (
                     <>
@@ -505,8 +514,14 @@ export function UsuariosAdmin({
 
       <SheetCriarUsuario aberto={criando} onFechar={() => setCriando(false)} />
 
-      <SheetAlterarEmail
-        usuario={pedido?.tipo === "email" ? pedido.usuario : null}
+      <SheetEditarUsuario
+        usuario={pedido?.tipo === "editar" ? pedido.usuario : null}
+        onFechar={() => setPedido(null)}
+      />
+
+      <SheetSenhaUsuario
+        key={pedido?.tipo === "senha" ? pedido.usuario.id : "fechado"}
+        usuario={pedido?.tipo === "senha" ? pedido.usuario : null}
         onFechar={() => setPedido(null)}
       />
 

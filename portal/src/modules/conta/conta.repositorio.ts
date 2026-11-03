@@ -134,14 +134,16 @@ export const contaRepositorio: ContaRepositorio = {
   async definirSenha(id, senhaHash) {
     await banco().update(usuarios).set({ senhaHash }).where(eq(usuarios.id, id));
   },
-  async definirEmail(id, email) {
+  async atualizarCadastro(id, { pseudonimo, email }) {
+    const atual = await contaRepositorio.porId(id);
+    const novoEmail = normalizar(email);
+    const campos: Partial<Linha> = { pseudonimo: pseudonimo.trim(), email: novoEmail };
+    if (atual && atual.email !== novoEmail) campos.emailVerificadoEm = new Date().toISOString();
     try {
-      return await atualizar(id, { email: normalizar(email), emailVerificadoEm: new Date().toISOString() });
+      return await atualizar(id, campos);
     } catch (erro) {
-      const codigo =
-        (erro as { code?: string; cause?: { code?: string } }).code ??
-        (erro as { cause?: { code?: string } }).cause?.code;
-      if (codigo === "23505") return null;
+      const e = erro as { code?: string; cause?: { code?: string } };
+      if ((e.code ?? e.cause?.code) === "23505") return null;
       throw erro;
     }
   },

@@ -37,3 +37,19 @@ export function validarImagem(bytes: Uint8Array): ResultadoImagem {
   if (!tipo) return { ok: false, erro: "o arquivo precisa ser JPEG, PNG ou WebP." };
   return { ok: true, tipo };
 }
+
+/* Anexos de mensagens (anfitrião e curadoria): imagens e PDF, com o mesmo limite de 5 MB. */
+
+export type TipoMidia = TipoImagem | "application/pdf";
+
+export const TIPOS_ANEXO: readonly string[] = [...TIPOS_IMAGEM, "application/pdf"];
+
+export function validarAnexo(bytes: Uint8Array): { ok: true; tipo: TipoMidia } | { ok: false; erro: string } {
+  if (bytes.byteLength > 0 && comeca(bytes, [0x25, 0x50, 0x44, 0x46, 0x2d])) {
+    if (bytes.byteLength > LIMITE_IMAGEM_BYTES)
+      return { ok: false, erro: `o arquivo tem ${megabytes(bytes.byteLength)} MB; o limite é 5 MB.` };
+    return { ok: true, tipo: "application/pdf" };
+  }
+  const r = validarImagem(bytes);
+  return r.ok ? r : { ok: false, erro: r.erro.replace("JPEG, PNG ou WebP", "JPEG, PNG, WebP ou PDF") };
+}
