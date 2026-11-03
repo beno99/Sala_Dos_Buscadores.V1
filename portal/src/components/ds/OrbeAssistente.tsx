@@ -32,6 +32,38 @@ export function OrbeAssistente({
   const tela = useRef<HTMLCanvasElement>(null);
   const renderizador = useRef<Renderizador | null>(null);
   const [sobre, setSobre] = useState(false);
+  const soltar = useRef<number | undefined>(undefined);
+
+  const botao = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    let dentro = false;
+    const mover = (e: PointerEvent) => {
+      if (e.pointerType !== "touch" || !botao.current) return;
+      const r = botao.current.getBoundingClientRect();
+      const agora =
+        e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (agora === dentro) return;
+      dentro = agora;
+      window.clearTimeout(soltar.current);
+      if (agora) setSobre(true);
+      else soltar.current = window.setTimeout(() => setSobre(false), 900);
+    };
+    const fim = (e: PointerEvent) => {
+      if (e.pointerType !== "touch" || !dentro) return;
+      dentro = false;
+      soltar.current = window.setTimeout(() => setSobre(false), 900);
+    };
+    window.addEventListener("pointermove", mover, { passive: true });
+    window.addEventListener("pointerup", fim);
+    window.addEventListener("pointercancel", fim);
+    return () => {
+      window.clearTimeout(soltar.current);
+      window.removeEventListener("pointermove", mover);
+      window.removeEventListener("pointerup", fim);
+      window.removeEventListener("pointercancel", fim);
+    };
+  }, []);
 
   useEffect(() => {
     if (!tela.current) return;
@@ -48,19 +80,12 @@ export function OrbeAssistente({
   useEffect(() => renderizador.current?.setHovered(sobre), [sobre]);
 
   useEffect(() => {
-    const semHover = window.matchMedia("(hover: none), (pointer: coarse)").matches;
-    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!semHover || reduzido || pausado) return;
-    let abrir = true;
-    const ciclo = window.setInterval(() => {
-      setSobre(abrir);
-      abrir = !abrir;
-    }, 2400);
-    return () => {
-      window.clearInterval(ciclo);
-      setSobre(false);
-    };
-  }, [pausado]);
+    const semHover = window.matchMedia("(hover: none), (pointer: coarse)");
+    const aplicar = () => renderizador.current?.setAmbient(semHover.matches);
+    aplicar();
+    semHover.addEventListener("change", aplicar);
+    return () => semHover.removeEventListener("change", aplicar);
+  }, []);
 
   // O hover só abre os anéis com ponteiro fino; ao sair (ou esconder a aba), eles se fecham.
   useEffect(() => {
@@ -71,6 +96,7 @@ export function OrbeAssistente({
 
   return (
     <button
+      ref={botao}
       className={cx("orb-launcher", acimaDaBarra && "orb-launcher--acima-da-barra")}
       type="button"
       popoverTarget={alvo}
@@ -86,8 +112,29 @@ export function OrbeAssistente({
           setSobre(true);
         }
       }}
-      onPointerLeave={() => setSobre(false)}
-      onPointerCancel={() => setSobre(false)}
+      onPointerDown={(e) => {
+        if (e.pointerType !== "touch") return;
+        window.clearTimeout(soltar.current);
+        setSobre(true);
+      }}
+      onPointerUp={(e) => {
+        if (e.pointerType !== "touch") return;
+        soltar.current = window.setTimeout(() => setSobre(false), 900);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "touch") {
+          soltar.current = window.setTimeout(() => setSobre(false), 900);
+          return;
+        }
+        setSobre(false);
+      }}
+      onPointerCancel={(e) => {
+        if (e.pointerType === "touch") {
+          soltar.current = window.setTimeout(() => setSobre(false), 900);
+          return;
+        }
+        setSobre(false);
+      }}
     >
       <OrbeVisual tela={tela} sobre={sobre} pausado={pausado} />
       <span className="orb-launcher__label" aria-hidden="true">

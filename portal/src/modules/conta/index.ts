@@ -45,6 +45,7 @@ export const contas = {
   porEmail: (email: string) => contaRepositorio.porEmail(email),
   listar: () => contaRepositorio.listar(),
   marcarEmailVerificado: (id: string) => contaRepositorio.marcarEmailVerificado(id),
+  definirEmail: (id: string, email: string) => contaRepositorio.definirEmail(id, email),
   corrigirEmailPendente: (id: string, email: string, verificacao?: { tokenHash: string; expiraEm: Date }) =>
     contaRepositorio.corrigirEmailPendente(id, email, verificacao),
   excluir: (id: string) => contaRepositorio.excluir(id),

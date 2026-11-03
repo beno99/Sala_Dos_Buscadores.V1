@@ -39,7 +39,7 @@ export type SlideBanner =
 function Midia({ midia }: { midia: MidiaBanner }) {
   return (
     <div className="sdb-banner__media">
-      <ImagemAcervo src={midia.imagem} placa={midia.placa} />
+      <ImagemAcervo src={midia.imagem} placa={midia.placa} carregamento="eager" />
     </div>
   );
 }

@@ -112,7 +112,7 @@ export function FormCadastroAnfitriao() {
       {geral && <Alerta variant="error" title={`Erro: ${geral}`} />}
 
       <fieldset className="m-0 flex min-w-0 flex-col gap-3 border-0 p-0">
-        <legend className="sdb-headline mb-3 p-0">Sua conta</legend>
+        <legend className="sdb-headline px-0 pt-0 pb-2">Sua conta</legend>
         <CampoTexto
           id="campo-pseudonimo"
           label="Nome de exibição"
@@ -156,7 +156,7 @@ export function FormCadastroAnfitriao() {
       </fieldset>
 
       <fieldset className="m-0 flex min-w-0 flex-col gap-3 border-0 p-0">
-        <legend className="sdb-headline mb-3 p-0">Sua candidatura</legend>
+        <legend className="sdb-headline px-0 pt-0 pb-2">Sua candidatura</legend>
         <CampoTexto
           id="campo-nome"
           label={

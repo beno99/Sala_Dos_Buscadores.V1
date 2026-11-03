@@ -13,7 +13,7 @@ export default async function Pagina() {
   if (membro?.papel === "anfitriao") redirect("/anfitriao" as Route);
   if (membro) {
     return (
-      <CenarioConta cadastro>
+      <CenarioConta cadastro fundo="/imagens/conta/cadastro-anfitriao.webp">
         <Alerta
           title="Você já está numa conta"
           actions={
@@ -30,7 +30,7 @@ export default async function Pagina() {
     );
   }
   return (
-    <CenarioConta cadastro>
+    <CenarioConta cadastro fundo="/imagens/conta/cadastro-anfitriao.webp">
       <FormCadastroAnfitriao />
     </CenarioConta>
   );

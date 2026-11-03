@@ -62,7 +62,7 @@ export function CardAcervo({
         {midia ??
           (imagem ? (
             // biome-ignore lint/performance/noImgElement: imagem decorativa servida de public/imagens.
-            <img className="sala__image" src={imagem} alt="" decoding="async" />
+            <img className="sala__image" src={imagem} alt="" decoding="async" loading="lazy" />
           ) : (
             <div className={`sala__placa sdb-plate--${placa}`} aria-hidden="true">
               {tipo === "Artigo" || tipo === "Fonte primária" ? (

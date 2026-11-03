@@ -139,7 +139,7 @@ const MAX_PIXEL_RATIO = 1.5;
 
 function unavailableController(canvas) {
   if (canvas?.dataset) canvas.dataset.renderer = 'fallback';
-  return { isAvailable: false, setPaused() {}, setActive() {}, setHovered() {}, destroy() {} };
+  return { isAvailable: false, setPaused() {}, setActive() {}, setHovered() {}, setAmbient() {}, destroy() {} };
 }
 
 /** An independently controlled graphite mineral sphere with no rings or external assets. */
@@ -341,6 +341,7 @@ export function initializeDarkOrb(canvas) {
       if (destroyed) return;
       hoverTarget = value && finePointer.matches && !reducedMotion.matches ? 1 : 0;
     },
+    setAmbient() {},
     destroy() {
       if (destroyed) return;
       destroyed = true;

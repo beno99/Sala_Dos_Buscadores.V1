@@ -10,7 +10,9 @@ export function ImagemAcervo({
   placa = "bordo",
   className = "",
   tituloFallback,
+  carregamento = "lazy",
 }: {
+  carregamento?: "lazy" | "eager";
   src?: string;
   tituloFallback?: string;
   placa?: Placa;
@@ -25,7 +27,7 @@ export function ImagemAcervo({
       {src && falhou !== src && (
         // biome-ignore lint/a11y/noNoninteractiveElementInteractions: onError trata falha da mídia, não interação.
         // biome-ignore lint/performance/noImgElement: asset local com fallback e proporção do contêiner.
-        <img src={src} alt="" decoding="async" onError={() => setFalhou(src)} />
+        <img src={src} alt="" decoding="async" loading={carregamento} onError={() => setFalhou(src)} />
       )}
     </div>
   );

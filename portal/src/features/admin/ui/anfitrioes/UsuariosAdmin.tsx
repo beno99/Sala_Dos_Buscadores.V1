@@ -24,6 +24,8 @@ import {
 } from "@/server/anfitriao/acoes-admin";
 import { SheetMotivo } from "../SheetMotivo";
 import { FormConvite } from "./FormConvite";
+import { SheetAlterarEmail } from "./SheetAlterarEmail";
+import { SheetCriarUsuario } from "./SheetCriarUsuario";
 
 export type Aba = "usuarios" | "candidaturas" | "convites";
 
@@ -116,6 +118,7 @@ type Pedido =
   | { tipo: "promover"; usuario: UsuarioVisual }
   | { tipo: "rebaixar"; usuario: UsuarioVisual }
   | { tipo: "excluir"; usuario: UsuarioVisual }
+  | { tipo: "email"; usuario: UsuarioVisual }
   | { tipo: "aprovar"; candidatura: CandidaturaVisual }
   | { tipo: "recusar"; candidatura: CandidaturaVisual }
   | { tipo: "apagar"; convite: ConviteVisual };
@@ -151,6 +154,7 @@ export function UsuariosAdmin({
   const [aba, setAba] = useState<Aba>(abaInicial);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [ocupado, setOcupado] = useState(false);
+  const [criando, setCriando] = useState(false);
   const pendentes = candidaturas.filter((c) => c.status === "pendente").length;
 
   const executar = async (acao: () => Promise<{ ok: boolean; mensagem: string }>) => {
@@ -190,6 +194,11 @@ export function UsuariosAdmin({
         aria-labelledby="usuarios-aba-usuarios"
         hidden={aba !== "usuarios"}
       >
+        <div className="mb-4 flex justify-end">
+          <Button variant="primary" size="sm" icon="mais" onClick={() => setCriando(true)}>
+            Criar usuário
+          </Button>
+        </div>
         <div className="grid gap-3 nav:grid-cols-3">
           <CampoTexto
             label="Buscar usuário"
@@ -261,33 +270,52 @@ export function UsuariosAdmin({
               cabecalho: "Ações",
               cabecalhoOculto: true,
               className: "sdb-table__actions",
-              celula: (u) =>
-                u.papel === "membro" ? (
+              celula: (u) => (
+                <>
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => setPedido({ tipo: "promover", usuario: u })}
+                    onClick={() => setPedido({ tipo: "email", usuario: u })}
                   >
-                    Promover a anfitrião
+                    Alterar e-mail
                   </Button>
-                ) : u.papel === "anfitriao" ? (
-                  <>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => setPedido({ tipo: "rebaixar", usuario: u })}
-                    >
-                      Tirar o papel
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setPedido({ tipo: "excluir", usuario: u })}
-                    >
-                      Remover usuário
-                    </Button>
-                  </>
-                ) : null,
+                  {u.papel === "membro" ? (
+                    <>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setPedido({ tipo: "promover", usuario: u })}
+                      >
+                        Promover a anfitrião
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setPedido({ tipo: "excluir", usuario: u })}
+                      >
+                        Remover usuário
+                      </Button>
+                    </>
+                  ) : u.papel === "anfitriao" ? (
+                    <>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setPedido({ tipo: "rebaixar", usuario: u })}
+                      >
+                        Tirar o papel
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setPedido({ tipo: "excluir", usuario: u })}
+                      >
+                        Remover usuário
+                      </Button>
+                    </>
+                  ) : null}
+                </>
+              ),
             },
           ]}
         />
@@ -461,6 +489,13 @@ export function UsuariosAdmin({
         mesmo e-mail.
       </ModalConfirmacao>
 
+      <SheetCriarUsuario aberto={criando} onFechar={() => setCriando(false)} />
+
+      <SheetAlterarEmail
+        usuario={pedido?.tipo === "email" ? pedido.usuario : null}
+        onFechar={() => setPedido(null)}
+      />
+
       <SheetMotivo
         aberto={pedido?.tipo === "recusar"}
         titulo="Recusar a candidatura"
@@ -491,9 +526,26 @@ export function UsuariosAdmin({
         }
       />
 
+      <ModalConfirmacao
+        open={pedido?.tipo === "excluir" && pedido.usuario.papel === "membro"}
+        titulo="Remover o usuário?"
+        icone="lixeira"
+        destrutivo
+        rotuloConfirmar="Remover"
+        carregando={ocupado}
+        onCancelar={() => setPedido(null)}
+        onConfirmar={() =>
+          pedido?.tipo === "excluir" &&
+          executar(() => excluirUsuarioAcao(pedido.usuario.id, { tipo: "manter" }))
+        }
+      >
+        A conta de {pedido?.tipo === "excluir" ? pedido.usuario.pseudonimo : ""} é apagada de vez, com o
+        progresso de estudo e o perfil. A pessoa recebe um e-mail. Isso não pode ser desfeito.
+      </ModalConfirmacao>
+
       <SheetRebaixar
         modo="excluir"
-        usuario={pedido?.tipo === "excluir" ? pedido.usuario : null}
+        usuario={pedido?.tipo === "excluir" && pedido.usuario.papel === "anfitriao" ? pedido.usuario : null}
         destinos={usuarios.filter(
           (u) => u.papel === "anfitriao" && u.id !== (pedido?.tipo === "excluir" ? pedido.usuario.id : ""),
         )}

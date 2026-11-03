@@ -16,7 +16,7 @@ export type OperacaoContaNoLote =
   | {
       tipo: "excluir-conta";
       id: string;
-      esperado: "anfitriao";
+      esperado: "membro" | "anfitriao";
       atorId: string;
       destinoId?: string;
     };

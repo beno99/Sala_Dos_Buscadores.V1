@@ -69,12 +69,47 @@ export async function guardarImagem(
   return { ok: true, id, url: urlDaMidia(id) };
 }
 
-export async function obterMidia(
-  id: string,
-): Promise<{ tipo: MidiaGuardada["tipo"]; bytes: Uint8Array } | undefined> {
+type MidiaServida = { tipo: MidiaGuardada["tipo"]; bytes: Uint8Array };
+
+const LIMITE_CACHE_BYTES = 200 * 1024 * 1024;
+const cacheMidias = new Map<string, Promise<MidiaServida | undefined>>();
+const tamanhoNoCache = new Map<string, number>();
+let bytesNoCache = 0;
+
+function guardarNoCache(id: string, tamanho: number) {
+  tamanhoNoCache.set(id, tamanho);
+  bytesNoCache += tamanho;
+  for (const [antigo, t] of tamanhoNoCache) {
+    if (bytesNoCache <= LIMITE_CACHE_BYTES) break;
+    tamanhoNoCache.delete(antigo);
+    cacheMidias.delete(antigo);
+    bytesNoCache -= t;
+  }
+}
+
+async function carregarMidia(id: string): Promise<MidiaServida | undefined> {
   const midia = acervo().midias.get(id);
   const bytes = midia ? await armazenamento.baixar(midia.chave) : null;
-  return midia && bytes ? { tipo: midia.tipo, bytes } : undefined;
+  if (!midia || !bytes) return undefined;
+  return midia.tipo === "image/webp" && bytes.byteLength < 600 * 1024
+    ? { tipo: midia.tipo, bytes }
+    : compactar(bytes, midia.tipo);
+}
+
+export async function obterMidia(id: string): Promise<MidiaServida | undefined> {
+  if (!acervo().midias.has(id)) return undefined;
+  const emCache = cacheMidias.get(id);
+  if (emCache) {
+    cacheMidias.delete(id);
+    cacheMidias.set(id, emCache);
+    return emCache;
+  }
+  const carregando = carregarMidia(id);
+  cacheMidias.set(id, carregando);
+  const resultado = await carregando.catch(() => undefined);
+  if (resultado) guardarNoCache(id, resultado.bytes.byteLength);
+  else cacheMidias.delete(id);
+  return resultado;
 }
 
 /** A imagem só entra num item se foi enviada pela mesma conta. */

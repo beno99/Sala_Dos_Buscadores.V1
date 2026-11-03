@@ -281,6 +281,30 @@ async function rebaixarPlano(
   return ok(undefined, mensagens[opcao.tipo]);
 }
 
+/** Apaga de vez a conta de um buscador; progresso, perfil e sessões saem junto (cascade). */
+function excluirMembroPlano(conta: Membro, quem: string): ResultadoAcao {
+  planejarContaNoPedido({
+    tipo: "excluir-conta",
+    id: conta.id,
+    esperado: "membro",
+    atorId: atorDaOperacao(),
+  });
+  registrar({
+    quem,
+    acao: "excluiu-definitivamente",
+    tipoItem: "usuario",
+    itemId: conta.id,
+    itemTitulo: conta.pseudonimo,
+  });
+  enviarEmail({
+    para: conta.email,
+    assunto: "Sua conta na Sala dos Buscadores foi excluída",
+    corpo:
+      "A curadoria excluiu sua conta. Isso não pode ser desfeito; para voltar a usar o portal, é preciso criar uma conta nova.",
+  });
+  return ok(undefined, `Conta excluída. ${conta.pseudonimo} não acessa mais o portal.`);
+}
+
 /**
  * Apaga de vez a conta de um anfitrião (sessões, redefinições e verificações
  * saem junto). Veja `disporItensDoAnfitriao` para o que acontece com as Salas
@@ -293,7 +317,8 @@ async function excluirContaPlano(
 ): Promise<ResultadoAcao> {
   const conta = await contas.porId(contaId);
   if (!conta) return erro("esta conta não existe mais.");
-  if (conta.papel !== "anfitriao") return erro("só contas de anfitrião são excluídas por aqui.");
+  if (conta.papel === "membro") return excluirMembroPlano(conta, quem);
+  if (conta.papel !== "anfitriao") return erro("contas da curadoria não são excluídas por aqui.");
 
   const r = await disporItensDoAnfitriao(contaId, opcao, quem);
   if (!r.ok) return r;
@@ -583,6 +608,83 @@ export async function aceitarConvite(
     mudancas: [{ campo: "Papel", antes: "", depois: "anfitrião (por convite)" }],
   });
   return ok(verificado, "Conta criada. Complete seu perfil de anfitrião.");
+}
+
+export const CARGOS_AVULSOS = ["membro", "anfitriao", "administrador"] as const;
+export type CargoAvulso = (typeof CARGOS_AVULSOS)[number];
+const NOME_CARGO: Record<CargoAvulso, string> = {
+  membro: "membro",
+  anfitriao: "anfitrião",
+  administrador: "curador",
+};
+
+export async function criarUsuarioAvulso(
+  dados: { pseudonimo: string; email: string; senha: string; papel: CargoAvulso },
+  quem: string,
+): Promise<ResultadoAcao<{ id: string }>> {
+  if (!CARGOS_AVULSOS.includes(dados.papel)) return erro("cargo inválido.");
+  const erroPseudonimo = validarPseudonimo(dados.pseudonimo);
+  if (erroPseudonimo) return falha(`Erro: ${erroPseudonimo}`, { "campo-avulso-nome": erroPseudonimo });
+  const erroEmail = validarEmail(dados.email);
+  if (erroEmail) return falha(`Erro: ${erroEmail}`, { "campo-avulso-email": erroEmail });
+  const erroSenha = validarSenha(dados.senha);
+  if (erroSenha) return falha(`Erro: ${erroSenha}`, { "campo-avulso-senha": erroSenha });
+  const r = await contas.registrar(
+    { pseudonimo: dados.pseudonimo, email: dados.email.trim().toLowerCase(), senha: dados.senha },
+    { papel: dados.papel },
+  );
+  if (!r.ok) {
+    const campo = r.campo === "email" ? "campo-avulso-email" : "campo-avulso-nome";
+    return falha(`Erro: ${r.erro}`, { [campo]: r.erro });
+  }
+  const criado = (await contas.marcarEmailVerificado(r.valor.id)) ?? r.valor;
+  if (dados.papel === "anfitriao") criarPerfil(criado.id, { nome: criado.pseudonimo });
+  registrar({
+    quem,
+    acao: "criou",
+    tipoItem: "usuario",
+    itemId: criado.id,
+    itemTitulo: criado.pseudonimo,
+    mudancas: [
+      {
+        campo: "Papel",
+        antes: "",
+        depois: `${NOME_CARGO[dados.papel]} (criado pela curadoria)`,
+      },
+    ],
+  });
+  return ok(
+    { id: criado.id },
+    `Conta de ${criado.pseudonimo} criada, já confirmada. Passe a senha à pessoa.`,
+  );
+}
+
+/** A curadoria troca o e-mail de uma conta; avisa o endereço antigo e o novo. */
+export async function alterarEmail(id: string, email: string, quem: string): Promise<ResultadoAcao> {
+  const novo = email.trim().toLowerCase();
+  const erroEmail = validarEmail(novo);
+  if (erroEmail) return falha(`Erro: ${erroEmail}`, { "campo-novo-email": erroEmail });
+  const conta = await contas.porId(id);
+  if (!conta) return erro("esta conta não existe mais.");
+  if (conta.email === novo)
+    return falha("Erro: o e-mail é o mesmo.", { "campo-novo-email": "o e-mail é o mesmo." });
+  const atualizada = await contas.definirEmail(id, novo);
+  if (!atualizada) {
+    const msg = "já existe uma conta com este e-mail.";
+    return falha(`Erro: ${msg}`, { "campo-novo-email": msg });
+  }
+  registrar({
+    quem,
+    acao: "editou",
+    tipoItem: "usuario",
+    itemId: id,
+    itemTitulo: conta.pseudonimo,
+    mudancas: [{ campo: "E-mail", antes: conta.email, depois: novo }],
+  });
+  const corpo = `A curadoria trocou o e-mail da sua conta de ${conta.email} para ${novo}. Use o novo e-mail para entrar; a senha continua a mesma.`;
+  enviarEmail({ para: conta.email, assunto: "O e-mail da sua conta foi alterado", corpo });
+  enviarEmail({ para: novo, assunto: "O e-mail da sua conta foi alterado", corpo });
+  return ok(undefined, `E-mail de ${conta.pseudonimo} alterado para ${novo}.`);
 }
 
 // ---------- perfil (§2) ----------

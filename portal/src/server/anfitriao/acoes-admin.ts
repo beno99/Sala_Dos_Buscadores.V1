@@ -130,3 +130,26 @@ export async function reprovarAnuncioAcao(anuncioId: string, motivo: string) {
 export async function apagarConviteAcao(id: string) {
   return comAdmin((quem) => usuarios.apagarConvite(String(id), quem));
 }
+
+export async function alterarEmailAcao(contaId: string, email: string) {
+  return comAdmin((quem) => usuarios.alterarEmail(String(contaId), String(email ?? ""), quem));
+}
+
+export async function criarUsuarioAcao(dados: {
+  pseudonimo: string;
+  email: string;
+  senha: string;
+  papel: usuarios.CargoAvulso;
+}) {
+  return comAdmin((quem) =>
+    usuarios.criarUsuarioAvulso(
+      {
+        pseudonimo: String(dados.pseudonimo ?? ""),
+        email: String(dados.email ?? ""),
+        senha: String(dados.senha ?? ""),
+        papel: usuarios.CARGOS_AVULSOS.includes(dados.papel) ? dados.papel : "membro",
+      },
+      quem,
+    ),
+  );
+}

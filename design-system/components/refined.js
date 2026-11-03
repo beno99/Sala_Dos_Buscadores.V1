@@ -351,6 +351,7 @@ function unavailableController(canvas) {
     setPaused() {},
     setActive() {},
     setHovered() {},
+    setAmbient() {},
     destroy() {},
   };
 }
@@ -383,6 +384,7 @@ function initializeGoldOrb(canvas) {
   let active = 0;
   let activeTarget = 0;
   let hovered = false;
+  let ambient = false;
   let ringOpen = 0;
   const durationToken = getComputedStyle(canvas).getPropertyValue('--duration-spring').trim();
   const durationSeconds = parseFloat(durationToken) / (durationToken.endsWith('ms') ? 1000 : 1);
@@ -489,7 +491,7 @@ function initializeGoldOrb(canvas) {
     previousTick = now;
     elapsed += delta;
     active += (activeTarget - active) * (1 - Math.exp(-delta * 8));
-    const targetOpen = hovered ? 1 : 0;
+    const targetOpen = hovered ? 1 : ambient ? 0.42 * (0.5 - 0.5 * Math.cos(elapsed * 1.15)) : 0;
     // Retarget from the current pose so rapid pointer changes never jump.
     ringOpen += (targetOpen - ringOpen) * (1 - Math.exp(-delta * openingRate));
     if (Math.abs(targetOpen - ringOpen) < 0.0005) ringOpen = targetOpen;
@@ -577,6 +579,10 @@ function initializeGoldOrb(canvas) {
     setHovered(value) {
       if (destroyed) return;
       hovered = Boolean(value);
+    },
+    setAmbient(value) {
+      if (destroyed) return;
+      ambient = Boolean(value);
     },
     destroy() {
       if (destroyed) return;

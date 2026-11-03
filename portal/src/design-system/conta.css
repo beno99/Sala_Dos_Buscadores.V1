@@ -167,6 +167,7 @@
   width: min(480px, 100%);
   padding: var(--space-5);
   border-radius: var(--radius-xl);
+  border: 0.5px solid var(--nav-edge);
   background: var(--nav-fill);
   box-shadow: var(--shadow-card);
 }

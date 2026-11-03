@@ -8,14 +8,14 @@ export const CUSTO_BCRYPT = 12;
 export const novoIdConta = () => `u-${randomBytes(6).toString("hex")}`;
 
 /**
- * Cadastro público sempre cria membro; administrador só existe por atribuição
- * (RF-08). O cadastro por convite válido cria anfitrião: quem confere o
+ * Cadastro público sempre cria membro; administrador só nasce pela conta
+ * criada por outro administrador em /admin/usuarios (RF-08). O cadastro por convite válido cria anfitrião: quem confere o
  * convite é o módulo de anfitriões, antes de chamar aqui.
  */
 export async function registrar(
   { contas }: Pick<DepsConta, "contas">,
   dados: { pseudonimo: string; email: string; senha: string },
-  opcoes: { papel?: Exclude<Papel, "administrador"> } = {},
+  opcoes: { papel?: Papel } = {},
 ): Promise<Resultado<Membro>> {
   if (await contas.porEmail(dados.email)) {
     return {
