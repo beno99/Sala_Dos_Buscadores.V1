@@ -36,8 +36,8 @@ export default async function SalasPage() {
             Salas da curadoria
           </h1>
           <p className="sdb-footnote m-0">
-            <b className="text-label">{oficiais.length} Salas abertas,</b> em ordem alfabética. A ordem não
-            indica importância; novas Salas entram nos próximos ciclos.
+            <b className="text-label">{oficiais.length} Salas abertas.</b> “Comece por aqui” vem primeiro; as
+            outras, em ordem alfabética, que não indica importância. Novas Salas entram nos próximos ciclos.
           </p>
         </div>
         <GradeSalas id="grade-curadoria" salas={oficiais} temas={temas(oficiais)} />

@@ -73,7 +73,7 @@ export default async function Biblioteca(props: PageProps<"/biblioteca">) {
         <FaixaBiblioteca
           id="faixa-salas"
           titulo="Salas"
-          legenda={`${plural(salas.length, "Sala aberta", "Salas abertas")}, em ordem alfabética.`}
+          legenda={`${plural(salas.length, "Sala aberta", "Salas abertas")}. “Comece por aqui” primeiro; as outras em ordem alfabética.`}
           rotuloItens="Salas"
           larguraItem={340}
           temas={temas}

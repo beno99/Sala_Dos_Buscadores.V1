@@ -28,7 +28,10 @@ export function salaVisivel(sala: SalaParaVisibilidade, artigos: Iterable<Artigo
 }
 
 /** Ordem pública: oficiais primeiro, depois as de anfitriões; cada grupo pelo nome. */
-export function ordenarSalas<T extends Pick<Sala, "nome" | "origem">>(salas: T[]): T[] {
-  const peso = (s: T) => (s.origem === "oficial" ? 0 : 1);
+/** "Comece por aqui" abre todas as listas de Salas, antes das outras oficiais. */
+export const SALA_INICIAL = "comece-por-aqui";
+
+export function ordenarSalas<T extends Pick<Sala, "nome" | "origem" | "slug">>(salas: T[]): T[] {
+  const peso = (s: T) => (s.slug === SALA_INICIAL ? -1 : s.origem === "oficial" ? 0 : 1);
   return [...salas].sort((a, b) => peso(a) - peso(b) || a.nome.localeCompare(b.nome, "pt-BR"));
 }

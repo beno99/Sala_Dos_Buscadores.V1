@@ -30,7 +30,7 @@ export function instalarRegistroSalas(fonte: () => Sala[]): void {
   (globalThis as ComRegistro)[CHAVE_REGISTRO] = fonte;
 }
 
-/** Salas visíveis ao público: oficiais primeiro, depois as de anfitriões, cada grupo em ordem alfabética. */
+/** Salas visíveis ao público: "Comece por aqui", depois as oficiais e as de anfitriões, cada grupo em ordem alfabética. */
 export function todasAsSalas(): Sala[] {
   return (globalThis as ComRegistro)[CHAVE_REGISTRO]?.() ?? [];
 }

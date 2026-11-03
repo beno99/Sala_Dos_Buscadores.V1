@@ -1,4 +1,5 @@
 import type { SalaSlug, TemaSlug } from "@/data/types";
+import { SALA_INICIAL } from "@/features/anfitriao/regras/visibilidade";
 import type { RespostaConviccao } from "@/features/onboarding/preferencias";
 import type { ItemAcervo, Leitura } from "./tipos";
 
@@ -82,12 +83,13 @@ export function ordenarSalas(salas: SalaSlug[], ctx: Contexto): { sala: SalaSlug
     .filter((s) => !andamento.includes(s) && !interesse.includes(s))
     .sort((a, b) => afinidade(b, ctx.conviccao) - afinidade(a, ctx.conviccao) || a.localeCompare(b));
 
-  return [
+  const ordem = [
     ...andamento.map((sala) => ({ sala, motivo: "andamento" as const })),
     ...interesse.map((sala) => ({ sala, motivo: "interesse" as const })),
     ...(ampliar ? [{ sala: ampliar, motivo: "ampliar" as const }] : []),
     ...outras.map((sala) => ({ sala, motivo: "outra" as const })),
   ];
+  return [...ordem.filter((o) => o.sala === SALA_INICIAL), ...ordem.filter((o) => o.sala !== SALA_INICIAL)];
 }
 
 const foiLido = (c: ItemAcervo, leituras: Leitura[]) =>
