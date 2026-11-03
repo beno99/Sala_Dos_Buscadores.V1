@@ -40,9 +40,11 @@ function tamanho(n: number) {
 /** Envia a imagem para o servidor, que confere os magic bytes e o tamanho de novo. */
 async function enviarImagem(
   arquivo: File,
+  finalidade: Finalidade,
 ): Promise<{ ok: true; imagem: ImagemEnviada } | { ok: false; erro: string }> {
   const corpo = new FormData();
   corpo.set("arquivo", arquivo);
+  corpo.set("finalidade", finalidade);
   try {
     const r = await fetch("/midia", { method: "POST", body: corpo });
     const dados = (await r.json()) as { ok: boolean; id?: string; url?: string; erro?: string };
@@ -129,7 +131,7 @@ export function CampoImagem({
     setErro(null);
     setEnviando(true);
     // Envia os bytes originais. Uma futura versão otimizada deve ser outro arquivo.
-    const r = await enviarImagem(original);
+    const r = await enviarImagem(original, finalidade);
     setEnviando(false);
     if (entrada.current) entrada.current.value = "";
     // Em erro, a imagem anterior e o resto do formulário ficam como estavam.

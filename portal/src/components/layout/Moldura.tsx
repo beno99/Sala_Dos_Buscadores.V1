@@ -103,7 +103,7 @@ export function Moldura({
     const abrir = (e: Event) => {
       const pedido = (e as CustomEvent<Abertura>).detail;
       if (pedido === "assistente") setAssistente(true);
-      if (pedido === "conquistas") router.push("/conquistas" as Route);
+      if (pedido === "conquistas") router.push("/jornada" as Route);
       if (pedido === "niveis") setConquistas(pedido);
       if (pedido === "preferencias") {
         setVezOnboarding((v) => v + 1);
@@ -140,7 +140,7 @@ export function Moldura({
           {
             label: `Suas conquistas (${lateral.conquistas.filter((c) => c.obtida).length} de ${lateral.conquistas.length})`,
             icon: "check" as const,
-            onSelect: () => router.push("/conquistas" as Route),
+            onSelect: () => router.push("/jornada" as Route),
           },
         ]
       : []),
@@ -208,7 +208,7 @@ export function Moldura({
                     <button
                       type="button"
                       className="sdb-sidenav__cta"
-                      onClick={() => router.push("/conquistas" as Route)}
+                      onClick={() => router.push("/jornada" as Route)}
                     >
                       Ver conquistas
                     </button>

@@ -1,5 +1,5 @@
 import { LIMITE_IMAGEM_BYTES } from "@/features/anfitriao/regras/imagem";
-import { guardarImagem } from "@/server/midia";
+import { guardarImagem, SAIDA_POR_USO, type UsoComSaida } from "@/server/midia";
 import { membroAtual } from "@/server/sessao";
 
 /*
@@ -20,14 +20,18 @@ export async function POST(pedido: Request) {
     return Response.json({ ok: false, erro: "a imagem passa do limite de 5 MB." }, { status: 413 });
   }
   let arquivo: FormDataEntryValue | null = null;
+  let uso: UsoComSaida | undefined;
   try {
-    arquivo = (await pedido.formData()).get("arquivo");
+    const dados = await pedido.formData();
+    arquivo = dados.get("arquivo");
+    const finalidade = String(dados.get("finalidade") ?? "");
+    if (finalidade in SAIDA_POR_USO) uso = finalidade as UsoComSaida;
   } catch {
     return Response.json({ ok: false, erro: "envie a imagem no campo “arquivo”." }, { status: 400 });
   }
   if (!(arquivo instanceof Blob)) {
     return Response.json({ ok: false, erro: "escolha uma imagem para enviar." }, { status: 400 });
   }
-  const r = await guardarImagem(new Uint8Array(await arquivo.arrayBuffer()), donoId);
+  const r = await guardarImagem(new Uint8Array(await arquivo.arrayBuffer()), donoId, uso);
   return r.ok ? Response.json(r, { status: 201 }) : Response.json(r, { status: 422 });
 }

@@ -3,14 +3,14 @@ import type { Route } from "next";
 import type { ConquistaVisual } from "@/components/ds/Conquista";
 import { salaPorSlug, temaPorSlug } from "@/data/catalogo";
 import { trilhaDaSala } from "@/data/referencia/trilhas";
-import { acervoDeEstudo, acervoPublico, listarSalas, temasDaSala } from "@/data/repositorio";
+import { acervoDeEstudo, acervoPublico, listarSalas, temasDaSala, videosDeEstudo } from "@/data/repositorio";
 import type { Nivel, SalaSlug } from "@/data/types";
 import type { SalaNaGrade } from "@/features/acervo/GradeSalas";
 import { avaliarConquistas } from "@/features/estudo/conquistas";
 import { nivelNoAssunto, textoQuantoFalta } from "@/features/estudo/niveis";
 import { leiturasEmAndamento, resumirVisitas } from "@/features/estudo/painel";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { imagem, imagemDoCardDaSala } from "./imagens";
+import { imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
 
@@ -40,13 +40,12 @@ export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
   const p = progressoDe(m.id);
   const acervo = acervoDeEstudo();
   const salas = await listarSalas();
-  const oficiais = salas.filter((s) => s.origem === "oficial");
   const visitas = resumirVisitas(
     p.salasVisitadas,
     salas.map((s) => s.slug),
   );
   const lidas = p.leituras.filter((l) => l.concluidaEm).length;
-  const conquistas = avaliarConquistas(p, { acervo, totalSalas: oficiais.length });
+  const conquistas = avaliarConquistas(p, { contaId: m.id, acervo, videos: videosDeEstudo() });
 
   const niveis = [...new Set([...p.salasVisitadas, ...p.leituras.map((l) => l.sala)])]
     .map((sala) => ({ sala, n: nivelNoAssunto({ tipo: "sala", sala }, acervo, p.leituras) }))
@@ -72,7 +71,7 @@ export async function modeloDoPerfil(m: Membro): Promise<ModeloPerfil> {
   const visitadas = new Set(p.salasVisitadas);
   const perfil = perfilDe(m.id);
   return {
-    capa: perfil.capa ?? imagem("banner", "marca-colunata") ?? imagem("banner", "marca"),
+    capa: perfil.capa,
     enviadas: {
       foto: perfil.fotoId && perfil.foto ? { id: perfil.fotoId, url: perfil.foto } : null,
       capa: perfil.capaId && perfil.capa ? { id: perfil.capaId, url: perfil.capa } : null,

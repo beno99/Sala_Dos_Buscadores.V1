@@ -8,8 +8,29 @@ export interface Leitura {
   /** 0 a 100, acompanha a rolagem do texto. */
   pct: number;
   atualizadaEm: string;
-  /** Preenchido quando a pessoa chega ao fim do texto. */
+  /**
+   * Conclusão da leitura. Desde a Jornada do Buscador (03/11/2026) só vale a
+   * declarada ("Marcar leitura como concluída"); as anteriores, pela rolagem,
+   * ficam como importadas.
+   */
   concluidaEm?: string;
+  origem?: "declarada";
+  /** Temas do conteúdo no momento da conclusão (mudança editorial depois não reescreve). */
+  temas?: TemaSlug[];
+}
+
+export interface VideoConcluido {
+  id: string;
+  sala: SalaSlug;
+  temas: TemaSlug[];
+  em: string;
+}
+
+/** Correção de uma marcação (desmarcar), guardada no histórico. */
+export interface AjusteJornada {
+  alvo: string;
+  acao: "desmarcou";
+  em: string;
 }
 
 export type ConquistaId =
@@ -48,6 +69,13 @@ export interface ProgressoEstudo {
   /** Leitura cujo "Continuar" a pessoa dispensou ("sala/slug"). */
   continuarDispensado: string | null;
   mostrarNiveis: boolean;
+  /** Jornada do Buscador. Opcionais: progressos anteriores não têm. */
+  videosConcluidos?: VideoConcluido[];
+  /** Gemas concedidas: código (ou "código:tema") → data. Nunca são retiradas. */
+  gemas?: Record<string, string>;
+  /** Títulos por tema: tema → título → data. */
+  titulos?: Record<string, Record<string, string>>;
+  ajustes?: AjusteJornada[];
 }
 
 /** O mínimo de um conteúdo publicado que as regras de estudo precisam. */
@@ -58,6 +86,16 @@ export interface ItemAcervo {
   tipo: TipoConteudo;
   nivel: Nivel;
   publicadoEm: string;
+  /** Conta do anfitrião autor; conteúdo próprio não gera crédito de estudo. */
+  donoId?: string;
+}
+
+/** Vídeo publicado, para as regras de estudo. */
+export interface ItemVideo {
+  id: string;
+  sala: SalaSlug;
+  temas: TemaSlug[];
+  donoId?: string;
 }
 
 export const chaveLeitura = (sala: string, slug: string) => `${sala}/${slug}`;
@@ -83,4 +121,8 @@ export type EventoEstudo =
   | { tipo: "leitura"; sala: SalaSlug; slug: string; pct: number }
   | { tipo: "comparacao"; tema: TemaSlug }
   | { tipo: "verbete"; termo: string }
-  | { tipo: "fontes" };
+  | { tipo: "fontes" }
+  | { tipo: "concluir"; sala: SalaSlug; slug: string }
+  | { tipo: "desmarcar"; sala: SalaSlug; slug: string }
+  | { tipo: "concluir-video"; id: string }
+  | { tipo: "desmarcar-video"; id: string };

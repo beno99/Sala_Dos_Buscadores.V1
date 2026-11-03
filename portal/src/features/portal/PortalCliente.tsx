@@ -360,8 +360,8 @@ export function PortalCliente({
             ) : (
               <p>Um espaço para acompanhar suas leituras e descobertas.</p>
             )}
-            <ButtonLink href="/conquistas" variant="secondary" size="sm" icon="trilha">
-              Ver conquistas
+            <ButtonLink href="/jornada" variant="secondary" size="sm" icon="trilha">
+              Ver minha Jornada
             </ButtonLink>
           </section>
           {membro?.papel === "membro" && (

@@ -3,7 +3,7 @@ import { escolherRelacionados } from "@/features/acervo/relacionados";
 import type { ConteudoBuscavel } from "@/features/busca/sugestoes";
 import { ordenarRanking } from "@/features/destaques/ranking";
 import { type Candidato, type GrupoVaga, montarVagas } from "@/features/destaques/vagas";
-import type { ItemAcervo } from "@/features/estudo/tipos";
+import type { ItemAcervo, ItemVideo } from "@/features/estudo/tipos";
 import { inicialDoTitulo } from "@/lib/texto";
 import { imagem, imagemDoCard } from "@/server/imagens";
 import { acervo } from "@/server/store";
@@ -230,6 +230,17 @@ export function acervoDeEstudo(): ItemAcervo[] {
     tipo: c.tipo,
     nivel: c.nivel,
     publicadoEm: c.publicadoEm,
+    ...(c.revisao?.donoId ? { donoId: c.revisao.donoId } : {}),
+  }));
+}
+
+/** Vídeos no ar, para as regras de estudo da Jornada. */
+export function videosDeEstudo(): ItemVideo[] {
+  return videosPublicados().map((v) => ({
+    id: v.id,
+    sala: v.sala,
+    temas: [...v.temas],
+    ...(v.revisao?.donoId ? { donoId: v.revisao.donoId } : {}),
   }));
 }
 

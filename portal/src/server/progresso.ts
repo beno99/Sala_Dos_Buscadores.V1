@@ -1,15 +1,15 @@
 import "server-only";
-import { salasOficiais, todasAsSalas, todosOsTemas } from "@/data/catalogo";
-import { conquistasNovas } from "@/features/estudo/conquistas";
+import { todasAsSalas, todosOsTemas } from "@/data/catalogo";
 import { alternarItem, type TipoEstante } from "@/features/estudo/estante";
 import {
-  type ConquistaId,
   chaveLeitura,
   type EventoEstudo,
   type ItemAcervo,
+  type ItemVideo,
   type ProgressoEstudo,
   progressoVazio,
 } from "@/features/estudo/tipos";
+import { type CodigoGema, conceder } from "@/features/jornada/regras";
 import { progressos } from "./store";
 
 /*
@@ -29,8 +29,8 @@ export function progressoDe(contaId: string): ProgressoEstudo {
 }
 
 export interface ResultadoEvento {
-  /** Conquistas obtidas agora. */
-  novas: ConquistaId[];
+  /** Gemas da Jornada concedidas agora. */
+  novas: CodigoGema[];
   /** O resumo (lateral, indicadores) mudou e vale atualizar a página. */
   mudouResumo: boolean;
 }
@@ -40,6 +40,7 @@ export function registrarEvento(
   contaId: string,
   evento: EventoEstudo,
   acervo: ItemAcervo[],
+  videos: ItemVideo[],
   agora = new Date(),
 ): ResultadoEvento | null {
   const p = doMembro(contaId);
@@ -67,10 +68,60 @@ export function registrarEvento(
         atual.pct = Math.max(atual.pct, pct);
         atual.atualizadaEm = quando;
       }
+      // Desde a Jornada, chegar ao fim do texto não conclui: a conclusão é declarada.
+      if (atual) mudouResumo = false;
       const leitura = p.leituras.find((l) => l.sala === evento.sala && l.slug === evento.slug);
-      if (leitura && leitura.pct >= 100 && !leitura.concluidaEm) leitura.concluidaEm = quando;
       if (p.continuarDispensado === chaveLeitura(evento.sala, evento.slug) && !leitura?.concluidaEm) {
         p.continuarDispensado = null;
+      }
+      break;
+    }
+    case "concluir":
+    case "desmarcar": {
+      const item = acervo.find((c) => c.sala === evento.sala && c.slug === evento.slug);
+      if (!item || item.donoId === contaId) return null;
+      let leitura = p.leituras.find((l) => l.sala === evento.sala && l.slug === evento.slug);
+      if (evento.tipo === "concluir") {
+        if (leitura?.concluidaEm) return { novas: [], mudouResumo: false };
+        if (!leitura) {
+          leitura = { sala: item.sala, slug: item.slug, pct: 0, atualizadaEm: quando };
+          p.leituras.push(leitura);
+        }
+        Object.assign(leitura, {
+          concluidaEm: quando,
+          origem: "declarada",
+          temas: [...item.temas],
+          atualizadaEm: quando,
+        });
+        if (!p.salasVisitadas.includes(item.sala)) p.salasVisitadas.push(item.sala);
+      } else {
+        if (!leitura?.concluidaEm) return { novas: [], mudouResumo: false };
+        delete leitura.concluidaEm;
+        delete leitura.origem;
+        delete leitura.temas;
+        p.ajustes = [
+          ...(p.ajustes ?? []),
+          { alvo: chaveLeitura(item.sala, item.slug), acao: "desmarcou", em: quando },
+        ];
+      }
+      break;
+    }
+    case "concluir-video":
+    case "desmarcar-video": {
+      const video = videos.find((v) => v.id === evento.id);
+      if (!video || video.donoId === contaId) return null;
+      const lista = p.videosConcluidos ?? [];
+      const ja = lista.some((v) => v.id === video.id);
+      if (evento.tipo === "concluir-video") {
+        if (ja) return { novas: [], mudouResumo: false };
+        p.videosConcluidos = [
+          ...lista,
+          { id: video.id, sala: video.sala, temas: [...video.temas], em: quando },
+        ];
+      } else {
+        if (!ja) return { novas: [], mudouResumo: false };
+        p.videosConcluidos = lista.filter((v) => v.id !== video.id);
+        p.ajustes = [...(p.ajustes ?? []), { alvo: `video:${video.id}`, acao: "desmarcou", em: quando }];
       }
       break;
     }
@@ -96,8 +147,7 @@ export function registrarEvento(
       return null;
   }
 
-  const novas = conquistasNovas(p, { acervo, totalSalas: salasOficiais().length });
-  for (const id of novas) p.conquistas[id] = quando;
+  const novas = conceder(p, { contaId, acervo, videos }, quando);
   gravar(contaId, p);
   return { novas, mudouResumo: mudouResumo || novas.length > 0 };
 }

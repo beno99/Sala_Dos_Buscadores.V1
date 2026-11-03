@@ -7,14 +7,18 @@ import { CampoTexto } from "@/components/ds/Campos";
 import { Select } from "@/components/ds/CamposExtras";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import type { Video } from "@/data/types";
+import { BotaoConcluir } from "@/features/jornada/BotaoConcluir";
 import { CardDoVideo } from "./CardDoVideo";
 
 export function CatalogoVideos({
   videos,
   salas,
+  jornada,
 }: {
   videos: Video[];
   salas: { slug: string; nome: string; origem: "oficial" | "anfitriao" }[];
+  /** Vídeos já concluídos e os do próprio anfitrião (sem botão de conclusão). */
+  jornada?: { concluidos: string[]; proprios: string[] };
 }) {
   const [busca, setBusca] = useState("");
   const [sala, setSala] = useState("");
@@ -101,6 +105,12 @@ export function CatalogoVideos({
           {encontrados.map((v) => (
             <div key={v.id} className="flex min-w-0 flex-col gap-2">
               <CardDoVideo video={v} nomeSala={salas.find((s) => s.slug === v.sala)?.nome ?? v.sala} />
+              {jornada && !jornada.proprios.includes(v.id) && (
+                <BotaoConcluir
+                  alvo={{ tipo: "video", id: v.id }}
+                  concluido={jornada.concluidos.includes(v.id)}
+                />
+              )}
               <p className="sdb-footnote">
                 {salas.find((s) => s.slug === v.sala)?.origem === "anfitriao"
                   ? "Sala de Anfitrião"

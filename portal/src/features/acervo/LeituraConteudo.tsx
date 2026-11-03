@@ -18,6 +18,7 @@ import { itemDaImagem } from "@/data/imagens";
 import { PROVENIENCIA_AJUDA } from "@/data/rotulos";
 import type { Citacao, Conteudo, Fonte, Sala, Video } from "@/data/types";
 import { BotaoSalvar } from "@/features/estudo/BotaoSalvar";
+import { BotaoConcluir } from "@/features/jornada/BotaoConcluir";
 import { formatarData, iniciais } from "@/lib/texto";
 import { CardDoVideo } from "./CardDoVideo";
 
@@ -31,6 +32,12 @@ interface LeituraConteudoProps {
   relacionados?: Conteudo[];
   /** Imagem de card recebida por consumidores legados; não substitui o topo do artigo. */
   imagemCard?: string;
+  /** Jornada do Buscador: conclusão declarada do artigo e dos vídeos (sem botão em conteúdo próprio). */
+  jornada?: {
+    artigo: { concluido: boolean; proprio: boolean };
+    videosConcluidos: string[];
+    videosProprios: string[];
+  };
 }
 
 /**
@@ -49,6 +56,7 @@ export function LeituraConteudo({
   videos,
   relacionados = [],
   imagemCard,
+  jornada,
 }: LeituraConteudoProps) {
   const temas = conteudo.temas.map((t) => temaPorSlug(t)).filter((t) => t !== undefined);
   const assinatura = conteudo.anfitriao;
@@ -138,6 +146,13 @@ export function LeituraConteudo({
             </Alerta>
           )}
 
+          {jornada && !jornada.artigo.proprio && (
+            <BotaoConcluir
+              alvo={{ tipo: "artigo", sala: sala.slug, slug: conteudo.slug }}
+              concluido={jornada.artigo.concluido}
+            />
+          )}
+
           {/* TODO(comunidade): comentários vinculados ao conteúdo (RF-32 a RF-36) entram aqui, no fim da coluna
               do texto, com moderação humana obrigatória em casos sensíveis. */}
         </CorpoArtigo>
@@ -151,7 +166,15 @@ export function LeituraConteudo({
                 </h2>
                 <div className="sdb-article__videos">
                   {videos.map((v) => (
-                    <CardDoVideo key={v.id} video={v} nomeSala={sala.nome} />
+                    <div key={v.id} className="flex min-w-0 flex-col gap-2">
+                      <CardDoVideo video={v} nomeSala={sala.nome} />
+                      {jornada && !jornada.videosProprios.includes(v.id) && (
+                        <BotaoConcluir
+                          alvo={{ tipo: "video", id: v.id }}
+                          concluido={jornada.videosConcluidos.includes(v.id)}
+                        />
+                      )}
+                    </div>
                   ))}
                 </div>
               </section>

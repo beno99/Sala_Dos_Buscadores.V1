@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useToast } from "@/components/ds/Toast";
+import { GEMAS } from "../jornada/regras";
 import { registrarEstudoAcao } from "./acoes";
-import { CONQUISTAS } from "./conquistas";
 import { ouvirEstudo } from "./eventos";
 import type { EventoEstudo } from "./tipos";
 
@@ -22,8 +22,8 @@ export function useOuvinteEstudo() {
       if (!r) return;
       if (r.mostrarNiveis) {
         for (const id of r.novas) {
-          const c = CONQUISTAS.find((x) => x.id === id);
-          if (c) toast(`Conquista: ${c.nome}.`, { icon: c.icone });
+          const g = GEMAS.find((x) => x.codigo === id);
+          if (g) toast(`Gema da Jornada: ${g.nome} · ${g.modalidade}.`, { icon: "trilha" });
         }
       }
       if (r.mudouResumo) router.refresh();

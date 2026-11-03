@@ -45,15 +45,13 @@ export default async function Perfil() {
   const comunidade = await consultarComunidade();
   return (
     <div className="flex flex-col gap-9">
-      <header className="sdb-profilehead">
-        <div className="sdb-profilehead__cover">
-          {m.capa ? (
-            // biome-ignore lint/performance/noImgElement: capa decorativa servida de public/imagens.
+      <header className={m.capa ? "sdb-profilehead" : "sdb-profilehead sdb-profilehead--sem-capa"}>
+        {m.capa && (
+          <div className="sdb-profilehead__cover">
+            {/* biome-ignore lint/performance/noImgElement: capa enviada pela própria conta, servida por /midia. */}
             <img src={m.capa} alt="" decoding="async" style={{ objectPosition: "50% 40%" }} />
-          ) : (
-            <div className="sdb-plate sdb-plate--bordo" aria-hidden="true" />
-          )}
-        </div>
+          </div>
+        )}
         <div className="sdb-profilehead__row">
           <span className="sdb-profilehead__photo">
             <Avatar iniciais={iniciais(membro.pseudonimo)} foto={m.foto} />
@@ -86,7 +84,12 @@ export default async function Perfil() {
             <ButtonLink href={"/ajustes" as Route} variant="secondary" size="sm">
               Ajustes
             </ButtonLink>
-            <EditarPerfil foto={m.enviadas.foto} capa={m.enviadas.capa} sobre={m.sobre} />
+            <EditarPerfil
+              foto={m.enviadas.foto}
+              capa={m.enviadas.capa}
+              sobre={m.sobre}
+              nome={membro.pseudonimo}
+            />
           </div>
         </div>
       </header>
@@ -198,7 +201,7 @@ export default async function Perfil() {
             <Cabecalho
               id="titulo-conquistas"
               titulo="Conquistas"
-              acao={{ rotulo: "Ver todas as conquistas", href: "/conquistas" as Route }}
+              acao={{ rotulo: "Ver minha Jornada", href: "/jornada" as Route }}
               nota={`${m.conquistas.filter((c) => c.obtida).length} de ${m.conquistas.length}`}
             />
             <ColecaoConquistas conquistas={m.conquistas} compacta />

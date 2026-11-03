@@ -38,7 +38,7 @@ export function ModalConquistas({
           <span />
         )}
         <h2 id={`${id}-titulo`} className="sdb-sheet__title">
-          {vista === "conquistas" ? "Suas conquistas" : "Como os níveis funcionam"}
+          {vista === "conquistas" ? "Gemas da Jornada" : "Como os níveis funcionam"}
         </h2>
         <Button variant="plain" onClick={onFechar}>
           Fechar
@@ -51,8 +51,8 @@ export function ModalConquistas({
               {obtidas.length} de {conquistas.length} obtidas. Só você vê: não há placar nem comparação entre
               pessoas.
             </p>
-            <ButtonLink href="/conquistas" onClick={onFechar}>
-              Abrir coleção de conquistas
+            <ButtonLink href="/jornada" onClick={onFechar}>
+              Abrir Minha Jornada
             </ButtonLink>
             <Button variant="secondary" onClick={() => setVista("niveis")}>
               Como os níveis funcionam
@@ -70,8 +70,9 @@ export function ModalConquistas({
               <li>Avançado: com todos os conteúdos do assunto lidos.</li>
             </ul>
             <p className="sdb-body-sm m-0">
-              Uma leitura conta quando você chega ao fim do texto. Os níveis medem só o estudo no acervo e não
-              dizem nada sobre crença ou espiritualidade. Em Ajustes, você desliga níveis e conquistas.
+              Uma leitura conta quando você a marca como concluída, no fim do texto. Os níveis medem só o
+              estudo no acervo e não dizem nada sobre crença ou espiritualidade. Em Ajustes, você desliga
+              níveis e conquistas.
             </p>
           </>
         )}

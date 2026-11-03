@@ -25,20 +25,40 @@ export const urlDaMidia = (id: string) => `/midia/${id}`;
 
 const LADO_MAXIMO = 2560;
 
+/**
+ * Tamanho de saída por uso. A foto de perfil aparece com até 128 px (256 px em
+ * telas 2×): sai quadrada em 320 × 320, cortada no centro. A capa do perfil, até
+ * 2400 px de largura. O resto mantém o limite geral.
+ */
+export const SAIDA_POR_USO = {
+  avatar: { largura: 320, altura: 320, quadrada: true },
+  "capa-perfil": { largura: 2400, altura: 2400, quadrada: false },
+} as const;
+export type UsoComSaida = keyof typeof SAIDA_POR_USO;
+
 async function compactar(
   bytes: Uint8Array,
   tipo: TipoImagem,
+  uso?: UsoComSaida,
 ): Promise<{ bytes: Uint8Array; tipo: TipoImagem }> {
+  const saida = uso ? SAIDA_POR_USO[uso] : { largura: LADO_MAXIMO, altura: LADO_MAXIMO, quadrada: false };
   try {
     const { default: sharp } = await import("sharp");
     sharp.cache(false);
-    const saida = await sharp(bytes, { animated: true, failOn: "error" })
-      .rotate()
-      .resize({ width: LADO_MAXIMO, height: LADO_MAXIMO, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 88, alphaQuality: 100, smartSubsample: true, effort: 5 })
+    const imagem = sharp(bytes, { animated: !saida.quadrada, failOn: "error" }).rotate();
+    const pronta = await imagem
+      .resize({
+        width: saida.largura,
+        height: saida.altura,
+        fit: saida.quadrada ? "cover" : "inside",
+        position: "attention",
+        withoutEnlargement: !saida.quadrada,
+      })
+      .webp({ quality: saida.quadrada ? 82 : 88, alphaQuality: 100, smartSubsample: true, effort: 5 })
       .toBuffer();
-    return saida.byteLength < bytes.byteLength
-      ? { bytes: new Uint8Array(saida), tipo: "image/webp" }
+    // Com uso definido, a saída vale sempre (o tamanho é parte do contrato); sem uso, só se ficou menor.
+    return uso || pronta.byteLength < bytes.byteLength
+      ? { bytes: new Uint8Array(pronta), tipo: "image/webp" }
       : { bytes, tipo };
   } catch {
     return { bytes, tipo };
@@ -48,12 +68,13 @@ async function compactar(
 export async function guardarImagem(
   bytes: Uint8Array,
   donoId: string,
+  uso?: UsoComSaida,
 ): Promise<{ ok: true; id: string; url: string } | { ok: false; erro: string }> {
   const validacao = validarImagem(bytes);
   if (!validacao.ok) return validacao;
   const id = `m-${randomBytes(9).toString("base64url")}`;
   const chave = `midias/${donoId}/${id}`;
-  const final = await compactar(bytes, validacao.tipo);
+  const final = await compactar(bytes, validacao.tipo, uso);
   await armazenamento.enviar(chave, final.bytes, final.tipo);
   const midia: MidiaGuardada = {
     id,

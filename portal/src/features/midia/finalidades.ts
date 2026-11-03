@@ -108,11 +108,11 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
   avatar: {
     rotulo: "Foto de perfil",
     descricao: "Use uma foto quadrada, com o rosto no centro.",
-    largura: 512,
-    altura: 512,
+    largura: 320,
+    altura: 320,
     proporcao: "1:1",
     exibicao:
-      "Aparece num círculo. Envie a foto quadrada, com o rosto no centro: fora do quadrado, as bordas do arquivo ficam de fora do círculo.",
+      "Aparece num círculo. Ao enviar, a foto é recortada em quadrado no centro e compactada em 320 × 320 px.",
     usos: ["lateral do portal", "cabeçalho do Perfil", "publicações e comentários na Comunidade"],
   },
   // Capa do Perfil: 1.088 × 218 em 1440; mínimo de 140 px de altura no celular.
@@ -123,7 +123,7 @@ export const FINALIDADES: Record<Finalidade, OrientacaoImagem> = {
     altura: 480,
     proporcao: "5:1",
     exibicao:
-      "Aparece inteira no topo do Perfil; arquivos de outra proporção ganham fundo em cima e embaixo ou nas laterais.",
+      "Aparece inteira no topo do Perfil; arquivos de outra proporção ganham fundo em cima e embaixo ou nas laterais. É compactada ao enviar (até 2.400 px de largura).",
     usos: ["topo do Perfil"],
   },
   // Publicação da Comunidade: coluna do feed de até 720 px.

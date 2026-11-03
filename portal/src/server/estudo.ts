@@ -1,7 +1,7 @@
 import "server-only";
 import type { Route } from "next";
 import type { Indicador } from "@/components/ds/PainelIndicadores";
-import { salaPorSlug, salasOficiais, temaPorSlug, todosOsTemas } from "@/data/catalogo";
+import { salaPorSlug, temaPorSlug, todosOsTemas } from "@/data/catalogo";
 import { DESTAQUES_DO_CANAL } from "@/data/referencia/banner";
 import {
   acervoDeEstudo,
@@ -9,6 +9,7 @@ import {
   alcanceDoTema,
   listarSalas,
   type SalaResumo,
+  videosDeEstudo,
 } from "@/data/repositorio";
 import type { Conteudo, Nivel, Placa, SalaSlug, TemaSlug } from "@/data/types";
 import { avaliarConquistas, type EstadoConquista } from "@/features/estudo/conquistas";
@@ -173,7 +174,7 @@ export function modeloDaLateral(m: Membro): ModeloLateral {
     },
     mostrarNiveis: p.mostrarNiveis,
     ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
-    conquistas: avaliarConquistas(p, { acervo, totalSalas: salasOficiais().length }),
+    conquistas: avaliarConquistas(p, { contaId: m.id, acervo, videos: videosDeEstudo() }),
   };
 }
 

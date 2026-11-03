@@ -17,6 +17,8 @@ export interface ConquistaVisual {
   indisponibilidade?: string;
   em?: string;
   parcial?: { atual: number; alvo: number };
+  /** Modalidade da gema da Jornada ("Primeiro passo"); sem ela, o nome da pedra. */
+  modalidade?: string;
 }
 
 /**
@@ -26,13 +28,19 @@ export interface ConquistaVisual {
  */
 export function CardConquista({ c, numero }: { c: ConquistaVisual; numero: number }) {
   const arte = arteDaConquista(c.id);
-  const estado = c.obtida ? "Obtida" : c.disponibilidade === "em-breve" ? "Em breve" : "Bloqueada";
+  const estado = c.obtida
+    ? "Conquistada"
+    : c.disponibilidade === "em-breve"
+      ? "Em preparação"
+      : c.parcial && c.parcial.atual > 0
+        ? "Em progresso"
+        : "Disponível";
   const rodape = c.obtida
     ? c.em
-      ? `Obtida em ${formatarData(c.em.slice(0, 10))}`
-      : "Conquista obtida"
+      ? `Conquistada em ${formatarData(c.em.slice(0, 10))}`
+      : "Conquistada"
     : c.disponibilidade === "em-breve"
-      ? "Atividade em breve"
+      ? `${c.criterio} ${c.indisponibilidade ?? ""}`.trim()
       : `${c.criterio}${c.parcial ? ` · ${c.parcial.atual} de ${c.parcial.alvo}` : ""}`;
   return (
     <article
@@ -58,7 +66,7 @@ export function CardConquista({ c, numero }: { c: ConquistaVisual; numero: numbe
       </div>
       <div className="sdb-badge-card__body">
         <h3 className="sdb-badge-card__name">{c.nome}</h3>
-        <p className="sdb-badge-card__gem">{arte.gema}</p>
+        <p className="sdb-badge-card__gem">{c.modalidade ?? arte.gema}</p>
         <p className="sdb-badge-card__foot">{rodape}</p>
       </div>
     </article>

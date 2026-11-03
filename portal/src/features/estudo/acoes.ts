@@ -1,7 +1,7 @@
 "use server";
 
 import { salaPorSlug } from "@/data/catalogo";
-import { acervoDeEstudo, acervoPublico } from "@/data/repositorio";
+import { acervoDeEstudo, acervoPublico, videosDeEstudo } from "@/data/repositorio";
 import {
   alternarNaEstante,
   dispensarContinuar,
@@ -22,7 +22,7 @@ export async function registrarEstudoAcao(
   const membro = await membroAtual();
   if (!membro) return null;
   return comGravacoesDoPedido(() => {
-    const r = registrarEvento(membro.id, evento, acervoDeEstudo());
+    const r = registrarEvento(membro.id, evento, acervoDeEstudo(), videosDeEstudo());
     if (!r) return null;
     return { ...r, mostrarNiveis: progressoDe(membro.id).mostrarNiveis };
   });
