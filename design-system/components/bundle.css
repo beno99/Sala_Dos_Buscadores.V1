@@ -2208,8 +2208,10 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 .sdb-community-demo { width: 100%; }
 .sdb-community__feed > .sdb-community__toolbar { margin-bottom: 0; }
 .sdb-community__feed > [role="status"]:empty { display: none; }
-/* A grade da Comunidade mantém as colunas próximas também em molduras largas. */
+/* A grade da Comunidade mantém as colunas próximas também em molduras largas
+   e fica centrada na área de conteúdo, com o cabeçalho alinhado a ela (03/11/2026). */
 .sdb-community__layout { max-width: calc(var(--community-feed) + var(--community-sidebar) + var(--space-5)); }
+.sdb-community--in-app { width: 100%; max-width: calc(var(--community-feed) + var(--community-sidebar) + var(--space-5)); margin-inline: auto; }
 
 /* PortalInicio · frame 15:355 (26/10/2026). Geometria específica da home;
    cores, materiais, famílias e movimento seguem os quatro temas. */
