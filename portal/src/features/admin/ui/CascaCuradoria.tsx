@@ -76,6 +76,12 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
       contagem: c.fontes,
     },
     {
+      href: "/admin/temas" as Route,
+      rotulo: "Temas",
+      icone: "glossario",
+      ativo: em("/admin/temas"),
+    },
+    {
       href: "/admin/destaques" as Route,
       rotulo: "Destaques",
       icone: "destaques",

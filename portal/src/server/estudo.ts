@@ -26,7 +26,7 @@ import {
 import { chaveLeitura, type ProgressoEstudo } from "@/features/estudo/tipos";
 import { plural } from "@/lib/texto";
 import type { Membro } from "@/modules/conta/conta.contratos";
-import { type AnuncioNoPortal, anuncioParaOPortal } from "./anuncios";
+import { type AnuncioNoPortal, anunciosDoPortal } from "./anuncios";
 import { imagem, imagemDoCard, imagemDoCardDaSala } from "./imagens";
 import { perfilDe } from "./perfilBuscador";
 import { progressoDe } from "./progresso";
@@ -116,7 +116,7 @@ export interface ModeloPortal {
   ultimaLida?: ConteudoComImagem;
   recentes: ConteudoComImagem[];
   ampliar?: ConteudoComImagem & { motivo: string };
-  anuncioPortal?: AnuncioNoPortal;
+  anunciosPortal: AnuncioNoPortal[];
   nivelFoco?: NivelEmFoco;
   mostrarNiveis: boolean;
 }
@@ -341,7 +341,7 @@ export async function modeloDoPortal(m: Membro): Promise<ModeloPortal> {
         }
       : {}),
     ...(p.mostrarNiveis ? { nivelFoco: nivelEmFoco(p, m) } : {}),
-    anuncioPortal: anuncioParaOPortal(m.id),
+    anunciosPortal: anunciosDoPortal(m.id),
     mostrarNiveis: p.mostrarNiveis,
   };
 }

@@ -71,14 +71,14 @@ test("rascunho incompleto, envio à curadoria e aprovação", async () => {
   assert.equal(s.enviarAnuncio(id, false, ana).ok, false, "sem aceite não envia");
   ok(s.enviarAnuncio(id, true, ana));
   assert.equal(s.anuncioDoDono(id, "ana")?.status, "em_revisao");
-  assert.equal(s.anuncioParaOPortal("visitante"), undefined, "em revisão não vai ao Portal");
+  assert.equal(s.anunciosDoPortal("visitante").length, 0, "em revisão não vai ao Portal");
   assert.equal(s.salvarAnuncio({ ...completo("m-ana"), id }, ana, "automatico").ok, false);
 
   ok(await revisao.aprovarAnuncio(id, "Curadoria"));
   const publicado = s.anuncioDoDono(id, "ana");
   assert.equal(publicado?.status, "publicado");
   assert.ok(publicado?.publicadoEm);
-  assert.equal(s.anuncioParaOPortal("visitante")?.id, id);
+  assert.equal(s.anunciosDoPortal("visitante")[0]?.id, id);
 });
 
 test("editar anúncio no ar exige confirmação e tira do ar", async () => {
@@ -93,7 +93,7 @@ test("editar anúncio no ar exige confirmação e tira do ar", async () => {
   const r = ok(s.salvarAnuncio(mudado, ana, "manual"));
   assert.equal(r.saiuDoAr, true);
   assert.equal(s.anuncioDoDono(id, "ana")?.status, "rascunho");
-  assert.equal(s.anuncioParaOPortal("visitante"), undefined);
+  assert.equal(s.anunciosDoPortal("visitante").length, 0);
   assert.equal(s.excluirAnuncio(id, ana).ok, false, "o que já foi ao ar não se exclui");
 });
 

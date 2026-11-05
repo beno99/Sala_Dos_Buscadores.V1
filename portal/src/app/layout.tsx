@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   title: { default: "A Sala dos Buscadores", template: "%s · A Sala dos Buscadores" },
   description:
     "Portal de estudo que organiza tradições religiosas, espirituais e filosóficas em Salas, com busca comparativa por tema e um assistente de IA que cita as fontes.",
+  icons: {
+    icon: "/imagens/logo_sala.png",
+  },
 };
 
 export const viewport: Viewport = {

@@ -4,7 +4,7 @@ import { ListaSalasAnfitriao } from "@/features/anfitriao/ui/ListaSalasAnfitriao
 import { painelDoAnfitriao } from "@/server/anfitriao/consultas";
 import { anfitriaoDaPagina } from "@/server/anfitriao/pagina";
 
-export const metadata: Metadata = { title: "Minhas Salas" };
+export const metadata: Metadata = { title: "Salas criadas" };
 
 /** As Salas do anfitrião, cada uma com os artigos dela. */
 export default async function MinhasSalas() {
@@ -13,7 +13,7 @@ export default async function MinhasSalas() {
   return (
     <>
       <header className="flex flex-col gap-4">
-        <h1 className="sdb-title-1">Minhas Salas</h1>
+        <h1 className="sdb-title-1">Salas criadas</h1>
         <p className="sdb-body-sm sdb-secondary max-w-read">
           Abra uma Sala para editar, escrever artigos nela e enviar para a revisão da curadoria.
         </p>

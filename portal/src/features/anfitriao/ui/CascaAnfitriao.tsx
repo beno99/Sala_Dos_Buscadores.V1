@@ -34,7 +34,7 @@ function itens(caminho: string, c: ContagensAnfitriao): ItemNavegacao[] {
     },
     {
       href: "/anfitriao/salas" as Route,
-      rotulo: "Minhas Salas",
+      rotulo: "Salas criadas",
       icone: "salas",
       ativo:
         (em("/anfitriao/salas") && !criando("/anfitriao/salas") && !/\/artigos\/novo$/.test(caminho)) ||

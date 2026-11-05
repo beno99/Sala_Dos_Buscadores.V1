@@ -8,6 +8,7 @@ import { Button, ButtonLink } from "@/components/ds/Button";
 import { CardAnuncio } from "@/components/ds/CardAnuncio";
 import { CardConteudo } from "@/components/ds/CardConteudo";
 import { CardSala } from "@/components/ds/CardSala";
+import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
 import { Icon } from "@/components/ds/Icon";
@@ -242,6 +243,23 @@ export function PortalCliente({
               </Link>
             </div>
           </section>
+          {modelo.anunciosPortal.length > 0 && (
+            <Carrossel
+              id="home-publicidade"
+              titulo="Publicidade"
+              rotuloItens="anúncios"
+              larguraItem={320}
+              acoes={
+                <Button variant="plain" size="sm" onClick={() => setPolitica(true)}>
+                  Sobre os anúncios
+                </Button>
+              }
+            >
+              {modelo.anunciosPortal.map((a) => (
+                <CardAnuncio key={a.id} anuncio={a} />
+              ))}
+            </Carrossel>
+          )}
           <section className="sdb-home__section" aria-labelledby="home-retomada">
             <Cabecalho
               id="home-retomada"
@@ -375,14 +393,6 @@ export function PortalCliente({
                 Quero ser anfitrião
               </ButtonLink>
             </section>
-          )}
-          {modelo.anuncioPortal && (
-            <div className="sdb-home__publicidade">
-              <CardAnuncio anuncio={modelo.anuncioPortal} />
-              <Button variant="plain" size="sm" onClick={() => setPolitica(true)}>
-                Sobre os anúncios
-              </Button>
-            </div>
           )}
           <section className="sdb-home__section" aria-labelledby="home-comunidade">
             <Cabecalho

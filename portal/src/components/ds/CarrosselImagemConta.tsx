@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { proximoSlide } from "@/features/estudo/banner";
 import { Button } from "./Button";
 
-const INTERVALO_MS = 8000;
+const INTERVALO_MS = 3000;
 
 const IMAGENS = [
   "/imagens/conta/carrossel-01-nag-hammadi.webp",
@@ -17,7 +17,7 @@ const IMAGENS = [
 
 /**
  * Carrossel de imagens do acesso (CenarioConta, variante entrada): troca a
- * cada 8 s com esmaecido cruzado de 900 ms (CSS); para com o ponteiro em
+ * cada 3 s com esmaecido cruzado de 900 ms (CSS); para com o ponteiro em
  * cima, o foco dentro, a aba oculta, `prefers-reduced-motion` e o botão de
  * pausa, como o Banner rotativo do Portal. Setas e indicadores trocam a cena
  * manualmente.

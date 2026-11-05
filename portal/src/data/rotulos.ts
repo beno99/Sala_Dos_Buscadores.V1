@@ -7,9 +7,9 @@ export const NIVEL_ROTULO: Record<Nivel, string> = {
 };
 
 export const NIVEL_AJUDA: Record<Nivel, string> = {
-  1: "Contexto e vocabulário",
-  2: "Leitura comentada",
-  3: "Crítica textual e línguas originais",
+  1: "Apresenta os conceitos e explica o vocabulário, sem exigir conhecimento prévio.",
+  2: "Pressupõe familiaridade com o tema e aprofunda interpretações e contexto.",
+  3: "Pressupõe uma base sólida e discute questões técnicas, fontes e debates especializados.",
 };
 
 export const PROVENIENCIA_ROTULO: Record<Proveniencia, string> = {

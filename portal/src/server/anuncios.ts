@@ -61,18 +61,19 @@ function rodizio(texto: string, n: number): number {
 }
 
 /**
- * Um anúncio aprovado pela curadoria, de quem ainda é anfitrião. Com `chave`
- * (o id de quem visita), a mesma pessoa vê o mesmo anúncio o dia todo.
+ * Anúncios aprovados pela curadoria, de quem ainda é anfitrião. Com `chave`
+ * (o id de quem visita), a lista começa sempre no mesmo anúncio o dia todo.
  */
-export function anuncioParaOPortal(chave?: string): AnuncioNoPortal | undefined {
+export function anunciosDoPortal(chave?: string): AnuncioNoPortal[] {
   const publicados = anuncioDoPortal(acervo().anuncios.values())
     .filter((a) => !congelado(a) && contaNoDiretorio(a.donoId)?.papel === "anfitriao")
     .sort((a, b) => a.id.localeCompare(b.id))
     .flatMap((a) => comImagem(a) ?? []);
-  const vez = chave
+  if (!publicados.length) return [];
+  const inicio = chave
     ? rodizio(`${chave}:${agora().slice(0, 10)}`, publicados.length)
     : Math.floor(Math.random() * publicados.length);
-  return publicados[vez];
+  return [...publicados.slice(inicio), ...publicados.slice(0, inicio)];
 }
 
 type Salvo = { id: string; status: Anuncio["status"]; saiuDoAr: boolean; salvoEm: string };

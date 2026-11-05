@@ -447,7 +447,6 @@ export function EditorArtigoAnfitriao({
                   id="campo-nivel"
                   legenda="Nível de aprofundamento"
                   nome="nivel"
-                  help="Sem escolha, Iniciante."
                   valor={`${form.nivel ?? 1}` as `${Nivel}`}
                   opcoes={([1, 2, 3] as Nivel[]).map((n) => ({
                     value: `${n}` as `${Nivel}`,

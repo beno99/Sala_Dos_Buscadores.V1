@@ -687,6 +687,17 @@ export async function editarUsuario(
     const msg = "já existe uma conta com este e-mail.";
     return falha(`Erro: ${msg}`, { "campo-editar-email": msg });
   }
+  const perfil = acervo().perfis.get(id);
+  if (perfil && pseudonimo !== perfil.nome) {
+    const novo: PerfilAnfitriao = {
+      ...perfil,
+      nome: pseudonimo,
+      slug: slugUnico(slugDoNome(pseudonimo), slugsDePerfis(id)),
+      atualizadoEm: agora(),
+    };
+    acervo().perfis.set(id, novo);
+    propagarAssinatura(novo, perfil.slug, id);
+  }
   registrar({ quem, acao: "editou", tipoItem: "usuario", itemId: id, itemTitulo: pseudonimo, mudancas });
   if (email !== conta.email) {
     const corpo = `A curadoria trocou o e-mail da sua conta de ${conta.email} para ${email}. Use o novo e-mail para entrar; a senha continua a mesma.`;
@@ -758,6 +769,33 @@ export async function definirSenhaProvisoria(
 
 // ---------- perfil (§2) ----------
 
+/** A assinatura acompanha o perfil nas Salas e nos artigos escritos por esta pessoa. */
+function propagarAssinatura(perfil: PerfilAnfitriao, slugAntigo: string | undefined, donoId: string) {
+  const assinatura = { nome: perfil.nome, credencial: perfil.credencial, slug: perfil.slug };
+  for (const s of acervo().salas.values()) {
+    if (!s.lixeira && s.revisao?.donoId === donoId)
+      acervo().salas.set(s.id, {
+        ...s,
+        anfitriao: { ...assinatura },
+        tradicaoCurta: perfil.nome,
+        tradicao: `Sala de anfitrião · ${perfil.nome}`,
+      });
+  }
+  for (const c of acervo().conteudos.values()) {
+    if (
+      !salaNaLixeira(c.sala) &&
+      c.revisao &&
+      (c.anfitriao?.slug === slugAntigo || (!slugAntigo && c.revisao.donoId === donoId))
+    ) {
+      acervo().conteudos.set(c.id, {
+        ...c,
+        anfitriao: { ...assinatura },
+        autoria: { nome: assinatura.nome, credencial: assinatura.credencial },
+      });
+    }
+  }
+}
+
 export function salvarPerfil(f: FormPerfil, dono: Membro): ResultadoAcao<PerfilAnfitriao> {
   if (dono.papel !== "anfitriao") return erro("só anfitriões têm perfil público.");
   const anterior = acervo().perfis.get(dono.id);
@@ -776,31 +814,7 @@ export function salvarPerfil(f: FormPerfil, dono: Membro): ResultadoAcao<PerfilA
   if (f.link.trim()) perfil.link = f.link.trim();
   acervo().perfis.set(dono.id, perfil);
 
-  // A assinatura acompanha o perfil nas Salas e nos artigos escritos por esta pessoa.
-  const assinatura = { nome: perfil.nome, credencial: perfil.credencial, slug: perfil.slug };
-  const slugAntigo = anterior?.slug;
-  for (const s of acervo().salas.values()) {
-    if (!s.lixeira && s.revisao?.donoId === dono.id)
-      acervo().salas.set(s.id, {
-        ...s,
-        anfitriao: { ...assinatura },
-        tradicaoCurta: perfil.nome,
-        tradicao: `Sala de anfitrião · ${perfil.nome}`,
-      });
-  }
-  for (const c of acervo().conteudos.values()) {
-    if (
-      !salaNaLixeira(c.sala) &&
-      c.revisao &&
-      (c.anfitriao?.slug === slugAntigo || (!slugAntigo && c.revisao.donoId === dono.id))
-    ) {
-      acervo().conteudos.set(c.id, {
-        ...c,
-        anfitriao: { ...assinatura },
-        autoria: { nome: assinatura.nome, credencial: assinatura.credencial },
-      });
-    }
-  }
+  propagarAssinatura(perfil, anterior?.slug, dono.id);
   const mudancas = anterior
     ? (["nome", "slug", "credencial", "apresentacao", "link"] as const)
         .filter((k) => (anterior[k] ?? "") !== (perfil[k] ?? ""))

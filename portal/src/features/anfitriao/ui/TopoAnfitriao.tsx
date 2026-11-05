@@ -1,5 +1,7 @@
 "use client";
 
+import type { Route } from "next";
+import { useRouter } from "next/navigation";
 import { BarraSuperior } from "@/components/ds/BarraSuperior";
 import { ButtonLink } from "@/components/ds/Button";
 import { Menu } from "@/components/ds/Menu";
@@ -17,6 +19,7 @@ export function TopoAnfitriao({
   lateralTranslucida?: boolean;
 }) {
   const { membro, sair } = useSessao();
+  const router = useRouter();
   return (
     <BarraSuperior
       titulo="Anfitrião"
@@ -32,7 +35,10 @@ export function TopoAnfitriao({
               triggerClassName="sdb-topbar__account"
               triggerLabel={`Conta de ${membro.pseudonimo}`}
               titulo={`Conectado como ${membro.pseudonimo}`}
-              items={[{ label: "Sair", icon: "sair", onSelect: () => sair() }]}
+              items={[
+                { label: "Ver meu perfil", icon: "pessoa", onSelect: () => router.push("/perfil" as Route) },
+                { label: "Sair", icon: "sair", onSelect: () => sair() },
+              ]}
               trigger={
                 <span className="sdb-avatar" aria-hidden="true">
                   {iniciaisDe(membro.pseudonimo)}
