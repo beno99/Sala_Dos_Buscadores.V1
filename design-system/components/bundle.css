@@ -2473,6 +2473,10 @@ a.sdb-authorship__name:focus-visible { outline: 3px solid var(--focus-ring); out
 .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__controls { position: absolute; top: var(--space-4); right: var(--space-4); left: auto; bottom: auto; z-index: 2; padding: 0; }
 .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__controls [data-tip]::after { top: calc(100% + 10px); bottom: auto; }
 .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__actions .sdb-btn--primary { background: var(--bege-damasco); color: var(--grafite-profundo); box-shadow: none; }
+@container sdb-banner (max-width: 620px) {
+  .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__slide .sdb-banner__text { position: static; background: none; padding: var(--space-4) var(--space-5) var(--space-5); }
+  .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__controls { position: static; top: auto; right: auto; padding: var(--space-4) var(--space-5); justify-content: center; }
+}
 .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__actions { margin-top: 0; }
 .sdb-banner--fluxo.sdb-banner--cheio .sdb-banner__actions .sdb-btn { height: auto; min-height: 48px; white-space: normal; }
 .sdb-banner--fluxo .sdb-dots { flex-wrap: wrap; justify-content: center; }
