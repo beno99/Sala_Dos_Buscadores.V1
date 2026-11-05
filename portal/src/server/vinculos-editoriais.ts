@@ -9,6 +9,7 @@ export interface VideoSelecionavel {
   titulo: string;
   sala: string;
   status: string;
+  origem: string;
 }
 
 /** Relação única: VideoEditorial.artigos. O formulário do artigo é apenas uma projeção. */
@@ -16,7 +17,8 @@ export function idsVideosDoArtigo(artigoId: string): string[] {
   return [...acervo().videos.values()].filter((v) => v.artigos.includes(artigoId)).map((v) => v.id);
 }
 export function videosSelecionaveis(escopo: EscopoVinculo): VideoSelecionavel[] {
-  const visiveis = new Set(todasAsSalas().map((s) => s.slug));
+  const salas = todasAsSalas();
+  const visiveis = new Set(salas.map((s) => s.slug));
   return [...acervo().videos.values()]
     .filter(
       (v) =>
@@ -24,7 +26,15 @@ export function videosSelecionaveis(escopo: EscopoVinculo): VideoSelecionavel[] 
         v.status !== "arquivado" &&
         (escopo === "administrador" || (v.status === "publicado" && visiveis.has(v.sala))),
     )
-    .map(({ id, titulo, sala, status }) => ({ id, titulo, sala, status }));
+    .map((v) => ({
+      id: v.id,
+      titulo: v.titulo,
+      sala: v.sala,
+      status: v.status,
+      origem: v.revisao?.donoId
+        ? (acervo().perfis.get(v.revisao.donoId)?.nome ?? "Anfitrião")
+        : `Curadoria · ${salas.find((s) => s.slug === v.sala)?.nome ?? v.sala}`,
+    }));
 }
 export function erroVideosDoArtigo(
   artigoId: string | null,

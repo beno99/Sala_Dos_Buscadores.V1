@@ -72,7 +72,9 @@ export function SeletorVideosArtigo({
                 />
                 <div className="flex-1">
                   <div className="font-medium text-sm">{v.titulo}</div>
-                  <div className="text-xs text-slate-600">{v.status}</div>
+                  <div className="text-xs text-slate-600">
+                    {v.origem} · {v.status}
+                  </div>
                 </div>
               </button>
             ))}

@@ -154,21 +154,27 @@ export function RevisaoMidiasAnfitriao({
         {anuncios.length === 0 ? (
           <p className="sdb-body-sm sdb-secondary">{vazioAnuncios}</p>
         ) : (
-          <div className="grid gap-6 [grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))]">
+          <div className="grid gap-x-6 gap-y-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))]">
             {anuncios.map((a) => (
-              <div key={a.id} className="flex flex-col gap-3">
-                {a.anfitriao && (
-                  <a className="sdb-link sdb-footnote" href={a.anfitriao.href}>
-                    {a.anfitriao.nome}
-                  </a>
-                )}
-                <div className="sdb-row">
-                  <SeloStatus status={a.status} />
-                  <span className="sdb-footnote">Destino: {a.href || "sem link"}</span>
+              <div key={a.id} className="grid row-span-4 grid-rows-subgrid gap-3">
+                <div className="flex flex-col gap-2">
+                  {a.anfitriao && (
+                    <a className="sdb-link sdb-footnote" href={a.anfitriao.href}>
+                      {a.anfitriao.nome}
+                    </a>
+                  )}
+                  <div className="sdb-row">
+                    <SeloStatus status={a.status} />
+                    <span className="sdb-footnote">Destino: {a.href || "sem link"}</span>
+                  </div>
                 </div>
-                {a.oculto && <p className="sdb-footnote m-0">Arquivado pela curadoria: {a.oculto.motivo}</p>}
                 <CardAnuncio anuncio={a} />
-                {a.status === "em_revisao" && decisao("anuncio", a.id, a.titulo)}
+                <div className="flex flex-col gap-2">
+                  {a.oculto && (
+                    <p className="sdb-footnote m-0">Arquivado pela curadoria: {a.oculto.motivo}</p>
+                  )}
+                  {a.status === "em_revisao" && decisao("anuncio", a.id, a.titulo)}
+                </div>
                 <div className="sdb-row">
                   {a.status === "publicado" && (
                     <Button

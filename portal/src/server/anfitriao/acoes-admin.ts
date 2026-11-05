@@ -1,10 +1,12 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { ConflitoEditorial } from "@/modules/acervo/editorial-atomico";
+import { incluirMensagem } from "@/modules/conversa/conversa.repositorio";
 import { auditarComo } from "@/server/auditoria";
 import { AcessoNegado, exigirAdmin } from "../sessao";
-import { comGravacoesDoPedido } from "../store";
+import { acervo, comGravacoesDoPedido } from "../store";
 import type { ResultadoAcao } from "./comum";
 import * as revisao from "./revisao";
 import * as usuarios from "./usuarios";
@@ -16,7 +18,7 @@ import * as usuarios from "./usuarios";
  */
 
 async function comAdmin<T>(
-  fazer: (quem: string) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
+  fazer: (quem: string, atorId: string) => ResultadoAcao<T> | Promise<ResultadoAcao<T>>,
 ): Promise<ResultadoAcao<T>> {
   let quem: string;
   let atorId: string;
@@ -35,7 +37,7 @@ async function comAdmin<T>(
   }
   let r: ResultadoAcao<T>;
   try {
-    r = await comGravacoesDoPedido(() => auditarComo(atorId, () => fazer(quem)));
+    r = await comGravacoesDoPedido(() => auditarComo(atorId, () => fazer(quem, atorId)));
   } catch (e) {
     if (e instanceof ConflitoEditorial) return { ok: false, conflito: true, mensagem: e.message };
     throw e;
@@ -53,7 +55,24 @@ export async function reprovarSalaAcao(salaId: string, motivo: string) {
 }
 
 export async function aprovarArtigoAcao(artigoId: string) {
-  return comAdmin((quem) => revisao.aprovarArtigo(String(artigoId), quem));
+  return comAdmin(async (quem, atorId) => {
+    const id = String(artigoId);
+    const artigo = acervo().conteudos.get(id);
+    const donoId = artigo?.revisao?.donoId;
+    const r = await revisao.aprovarArtigo(id, quem);
+    if (r.ok && artigo && donoId) {
+      const sala = [...acervo().salas.values()].find((s) => s.slug === artigo.sala);
+      await incluirMensagem({
+        id: `m-${randomUUID()}`,
+        anfitriaoId: donoId,
+        autorId: atorId,
+        texto: `Seu artigo “${artigo.titulo}” foi aprovado e publicado${sala ? ` na Sala “${sala.nome}”` : ""}.`,
+        anexos: [],
+        criadaEm: new Date().toISOString(),
+      });
+    }
+    return r;
+  });
 }
 
 export async function reprovarArtigoAcao(artigoId: string, motivo: string) {

@@ -62,41 +62,49 @@ export default async function DiretorioAnfitrioes(props: PageProps<"/anfitrioes"
           return (
             <article
               key={p.slug}
-              className="sdb-card flex flex-col gap-4"
+              className="sdb-card sdb-card--host flex flex-col gap-5 p-6"
               aria-labelledby={`anfitriao-${p.slug}`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-start gap-4">
                 <Avatar
-                  size="lg"
+                  size="xl"
                   iniciais={iniciais(p.nome)}
                   foto={p.avatar ? urlDaMidia(p.avatar) : undefined}
                 />
                 <div className="flex min-w-0 flex-col gap-2">
-                  <Badge>Anfitrião</Badge>
-                  <h2 className="sdb-title-2" id={`anfitriao-${p.slug}`}>
-                    <Link href={`/anfitrioes/${p.slug}` as Route}>{p.nome}</Link>
+                  <div className="self-start">
+                    <Badge>Anfitrião</Badge>
+                  </div>
+                  <h2 className="sdb-title-2 break-words" id={`anfitriao-${p.slug}`}>
+                    <Link className="[color:inherit] no-underline" href={`/anfitrioes/${p.slug}` as Route}>
+                      {p.nome}
+                    </Link>
                   </h2>
-                  {p.credencial && <p className="sdb-body-sm">{p.credencial}</p>}
+                  {p.credencial && <p className="sdb-body-sm sdb-secondary">{p.credencial}</p>}
                 </div>
               </div>
-              <p className="sdb-footnote">
-                {plural(publicadas.length, "Sala publicada", "Salas publicadas")} ·{" "}
-                {plural(
-                  publicadas.reduce((n, s) => n + s.totalConteudos, 0),
-                  "conteúdo",
-                  "conteúdos",
-                )}
-              </p>
-              <ul className="flex flex-wrap gap-2" aria-label={`Salas de ${p.nome}`}>
-                {publicadas.map((s) => (
-                  <li key={s.slug}>
-                    <Link className="sdb-chip" href={`/salas/${s.slug}` as Route}>
-                      {s.nome}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link className="sdb-btn sdb-btn--secondary" href={`/anfitrioes/${p.slug}` as Route}>
+              {p.apresentacao && <p className="sdb-body-sm sdb-clamp-3 m-0">{p.apresentacao}</p>}
+              <div className="flex flex-col gap-3">
+                <p className="sdb-footnote m-0">
+                  {plural(publicadas.length, "Sala publicada", "Salas publicadas")} ·{" "}
+                  {plural(
+                    publicadas.reduce((n, s) => n + s.totalConteudos, 0),
+                    "conteúdo",
+                    "conteúdos",
+                  )}
+                </p>
+                <ul className="m-0 flex list-none flex-wrap gap-2 p-0" aria-label={`Salas de ${p.nome}`}>
+                  {publicadas.slice(0, 3).map((s) => (
+                    <li key={s.slug}>
+                      <Link className="sdb-chip" href={`/salas/${s.slug}` as Route}>
+                        {s.nome}
+                      </Link>
+                    </li>
+                  ))}
+                  {publicadas.length > 3 && <li className="sdb-footnote">+{publicadas.length - 3}</li>}
+                </ul>
+              </div>
+              <Link className="sdb-btn sdb-btn--secondary mt-auto" href={`/anfitrioes/${p.slug}` as Route}>
                 Conhecer perfil e materiais
               </Link>
             </article>

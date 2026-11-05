@@ -419,6 +419,7 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
   transition: opacity 180ms ease, transform 460ms var(--sdb-spring), visibility 0s;
 }
 .sdb-menu--static { position: relative; top: 0; }
+.sdb-panel:has(.sdb-menu.is-open), .sdb-material:has(.sdb-menu.is-open) { position: relative; z-index: 40; }
 .sdb-menu__label { padding: 8px 16px 4px; font: 600 12px/1.3 var(--font-ui); color: var(--label-secondary); }
 .sdb-menu__item {
   width: 100%; display: flex; align-items: center; gap: 16px; min-height: 42px; padding: 0 16px; border: 0; border-radius:16px;
@@ -1465,7 +1466,10 @@ button.sdb-sidenav__cta { border: 0; cursor: pointer; }
 .sdb-footer__button:hover { background: color-mix(in srgb, var(--bege-damasco) 86%, var(--branco)); }
 .sdb-footer__perks { margin: var(--space-4) 0 0; font: 400 14px/1.4 var(--font-ui); color: var(--label-secondary); }
 .sdb-footer__card { display: flex; flex-direction: column; gap: var(--space-3); padding: 44px var(--space-8) var(--space-7); border-radius: 32px; background: color-mix(in srgb, var(--bege-damasco) 82%, var(--label-brand) 10%); }
-.sdb-footer__card img { align-self: flex-end; width: 190px; height: auto; margin-right: -14px; }
+.sdb-footer__card img { align-self: center; width: 190px; height: auto; margin: 0; }
+.sdb-footer__card { align-items: center; text-align: center; }
+/* Card de anfitrião na listagem de Anfitriões: mesma moldura dourada da Sala de anfitrião. */
+.sdb-card.sdb-card--host { box-shadow: inset 0 0 0 1.5px var(--button-focus-ring), 0 0 0 1px var(--progress-gold-start); }
 .sdb-footer__card strong { font: 400 32px/1.2 var(--font-display-lower); color: var(--grafite-profundo); }
 .sdb-footer__card .sdb-footer__eyebrow { font-size: 11px; color: color-mix(in srgb, var(--grafite-profundo) 78%, transparent); }
 .sdb-footer__dark { display: flex; flex-direction: column; padding: 52px 80px var(--space-7); background: var(--grafite-profundo); color: var(--footer-ink); }
