@@ -1,56 +1,123 @@
 # A Sala dos Buscadores · MVP
 
-Portal de conhecimento que organiza tradições religiosas, espirituais, filosóficas e textos antigos em **Salas** (Biblioteca de Nag Hammadi, Corpus Hermeticum, O Caibalion, O Livro de Urântia, Apócrifos do Cristianismo Primitivo…), com busca comparativa por tema e um assistente de IA que consulta o próprio acervo. Posicionamento: curador de museu, não pregador. Toda a interface e o conteúdo são em português do Brasil.
+Portal de estudo que organiza tradições religiosas, espirituais, filosóficas e textos antigos em **Salas** (ex.: Biblioteca de Nag Hammadi, Corpus Hermeticum, O Caibalion, O Livro de Urântia), com busca comparativa por tema e um assistente de IA que consulta o próprio acervo.
+
+Posicionamento: **curadora de museu, não pregadora**. Toda a interface e o conteúdo são em português do Brasil.
+
+## Estrutura do repositório
+
+```
+portal/                    app Next.js 16 do MVP (ver portal/README.md)
+design-system/             fonte da verdade do design system (ver design-system/README.md)
+docs/
+  manual-operacao.md       operação editorial: Sala, artigo, fonte, vídeo, anúncio
+  banco/diagrama.md        diagrama do banco
+  pendencias.md            decisões em aberto (não implementar por suposição)
+  produto/                 documento de requisitos (.docx)
+  historico/               relatórios de entregas já concluídas (sem evidências)
+  imagens-originais/       originais das imagens do portal, fora do que é publicado
+.github/workflows/deploy.yml   deploy na VPS a cada push na main
+```
+
+Não há Docker local nem testes de Vitest. Persistência em PostgreSQL no Supabase; imagens no Supabase Storage via S3.
+
+## Comandos
+
+Dentro de `portal/`:
+
+- `bun run dev` — roda o portal (executa `ds:sync` antes).
+- `bun run check` — sincronia do design system, testes `ds:test`, lint (Biome) e typecheck. **Obrigatório antes de concluir qualquer mudança no portal.**
+- `bun run test:editorial` — testes `node:test` de regras editoriais e de Salas.
+- `bun run ds:sync` — copia `design-system/` para `portal/src/design-system/`.
+- `bun run db:generate` — gera migração após mudar um schema Drizzle.
+
+Na raiz, após mudar o design system:
+
+- `node design-system/scripts/build.mjs` (com `--check` só confere) — regenera `tokens.css`, exemplos e catálogo.
+- `node design-system/scripts/contraste.mjs` — confere AA nos quatro temas.
+- Depois, `bun run ds:sync` em `portal/`.
 
 ## Design system: obrigatório em toda tela
 
-- A interface usa **somente** a biblioteca em `design-system/`. Antes de criar ou mudar uma tela, leia `design-system/README.md`, `design-system/DIRETRIZES.md` e o guia de cada peça que for usar (`design-system/components/<Nome>/README.md`), e copie a estrutura HTML do exemplo (`design-system/exemplos/<Nome>.html`).
-- Carregue `design-system/tokens.css`, `design-system/components/bundle.css` e `design-system/components/bundle.js`. Classes `sdb-*`; comportamentos por atributos `data-*`; chame `SalaBuscadores.hydrate()` depois de inserir HTML dinâmico.
-- Temas via `data-theme` no `<html>`: `solido-claro` (padrão, paleta areia desde out 2026), `solido-escuro`, `vidro-claro`, `vidro-escuro`. Fundo chapado nos sólidos (areia no claro, grafite no escuro); `.sdb-ambient` só acende brilho nos temas de vidro.
-- Nunca escreva cores, fontes, raios, sombras ou curvas soltos: use as variáveis dos tokens (`var(--label)`, `var(--radius-lg)`…). Se faltar uma peça ou variação, estenda o design system primeiro (`tokens.json`, `components/bundle.css`, guia e `preview.html` da peça; depois `node design-system/scripts/build.mjs` regenera `tokens.css`, exemplos e catálogo, e `node design-system/scripts/contraste.mjs` confere AA) e avise o usuário que a versão publicada (https://claude.ai/artifact/1rSk2ixfmNQXjLu2AHBBJB) precisa ser atualizada.
-- Linguagem visual aprovada: Apple Human Interface Guidelines, no tema Sólido claro com a paleta areia do Figma "Sala_Dos_Buscadores › Jornada do buscador" (fundo areia chapado, lateral caramelo, cards de Sala e de conteúdo em areia quente, citações e painéis em creme, layout de painel com barra lateral, tudo alinhado à mesma grade, texto à esquerda). Vidro só na camada flutuante (botão do assistente, barra superior ao rolar, barra de abas do celular); botões e chips em cápsula; cantos contínuos; movimento com mola, interrompível, com resposta no pressionar. O estilo editorial de cantos retos foi rejeitado.
-- Marca: cores grafite `#111313`, bege `#F6E7CE`, bordô `#390007`, ouro `#D3C759` (só emblema/filete, nunca texto nem fundo de leitura), preto e branco; a paleta areia do tema claro (areia, caramelo, marrom `label-brand`, dourado escuro do item ativo, verde "nova", vermelho só em "Sair") está nos tokens e passa AA. Texto sobre fundo só nos pares das Diretrizes. O Avatar pode mostrar a foto que a própria pessoa enviou (lateral e Perfil); sem foto, iniciais. Único símbolo: o arco com escada. Sem cristais, mandalas, lua, velas, fumaça, gradiente roxo ou símbolos de tradições. Hident está provisoriamente trocada por Fraunces.
-- Para conferir visualmente, abra `design-system/catalogo.html` no navegador.
+- Antes de criar ou mudar uma tela, leia `design-system/README.md`, `design-system/DIRETRIZES.md`, `design-system/MARCA.md`, o guia da peça (`design-system/components/<Nome>/README.md`) e copie a estrutura do exemplo (`design-system/exemplos/<Nome>.html`).
+- Use **somente** a biblioteca: classes `sdb-*`, comportamentos por atributos `data-*`. Chame `SalaBuscadores.hydrate()` depois de inserir HTML dinâmico.
+- Temas via `data-theme` no `<html>`: `solido-claro` (padrão, paleta areia), `solido-escuro`, `vidro-claro`, `vidro-escuro`. Nos sólidos o fundo é chapado; `.sdb-ambient` só acende brilho nos temas de vidro.
+- **Nunca** escreva cores, fontes, raios, sombras ou curvas soltos. Use as variáveis dos tokens (`var(--label)`, `var(--radius-lg)`…).
+- Peça ou variação nova: estenda o design system primeiro (`tokens.json`, `components/bundle.css`, guia e `preview.html` da peça), rode `build.mjs` e `contraste.mjs`, e avise o usuário que a versão publicada (https://claude.ai/artifact/1rSk2ixfmNQXjLu2AHBBJB) precisa ser atualizada.
+- `portal/src/design-system/` é **cópia gerada**: nunca edite. O `build` falha se divergir. `components/refined-layout.css` é só do catálogo e não entra no portal.
+- Componentes React em `portal/src/components/ds/` emitem as mesmas classes e atributos dos exemplos. Não reescreva o CSS nem invente estilos inline; ajuste em linha só quando o exemplo da biblioteca faz o mesmo.
+- Tailwind entra sem preflight, só para layout de estrutura, com o tema mapeado para os tokens.
+- Linguagem visual aprovada: Apple Human Interface Guidelines, tema Sólido claro com a paleta areia. Vidro só na camada flutuante (botão do assistente, barra superior ao rolar, barra de abas do celular). Botões e chips em cápsula; cantos contínuos; movimento com mola, interrompível. O estilo editorial de cantos retos foi rejeitado.
+- Marca: o único símbolo é o arco com escada. Sem cristais, mandalas, lua, velas, fumaça, gradiente roxo ou símbolos de tradições. A fonte display-lower segue provisória (Fraunces), até o licenciamento de Hident.
+- Para conferir visualmente: `design-system/catalogo.html` no navegador.
 
 ## Conteúdo e voz
 
-- Precisa, serena, didática, firme. Nunca dogmática, sensacionalista, condescendente ou decorativa.
+- Precisa, serena, didática, firme. Nunca dogmática, sensacionalista, condescendente ou decorativa. Sem "desperte", "segredos revelados", urgência ou exclamações.
 - Toda afirmação é atribuída a uma fonte ("Segundo o Poimandres…"); nunca "a verdade é…". Datas incertas ficam incertas.
-- Todo conteúdo mostra o Selo de proveniência; toda resposta da IA é identificada como IA, separa trecho documental, interpretação editorial e síntese, cita fontes e vem com o Aviso de neutralidade.
-- Use conteúdo real do universo do projeto nos exemplos, nunca lorem ipsum.
+- Todo conteúdo mostra o Selo de proveniência. Toda resposta da IA é identificada como IA, separa trecho documental, interpretação editorial e síntese, cita fontes e vem com o Aviso de neutralidade.
+- A curadoria nunca dá Selo de proveniência a publicação da comunidade.
+- Use conteúdo real do universo do projeto nos exemplos, nunca lorem ipsum. Sem dados fictícios no banco.
 
-## Tecnologia
+## Arquitetura do portal
 
-- O MVP fica em `portal/`: Next.js 16 (App Router, Turbopack, React Compiler, typed routes) + TypeScript + Tailwind 4, lint e formatação com Biome; o projeto não tem testes automatizados de Vitest nem de Playwright. Persistência em PostgreSQL no Supabase (Drizzle, driver `pg`, pooler na porta 6543) e imagens no Supabase Storage via S3; não há Docker local. Diagrama em `docs/banco/diagrama.md`. Nunca coloque valores reais no `.env.example`. Ver `portal/README.md`.
-- `portal/src/design-system/` é uma cópia gerada por `npm run ds:sync` (tokens, bundle.css, bundle.js, fontes, `icons.generated.ts`, `fontes.generated.ts` e, desde a 1.0, `themes.css`, `refinement.css`, `card-sala.css`, `card-video.css`, `card-comparativo.css`, `assistant-orb.css` e o renderizador `gold-orb.js`). A fonte da verdade é `design-system/` na raiz: mude lá e rode o sync; nunca edite a cópia. O `build` falha se ela divergir. `components/refined-layout.css` é só da página de estudo do catálogo e não entra no portal.
-- Componentes React em `portal/src/components/ds/` emitem as mesmas classes e atributos dos exemplos (`sdb-*` e, nas peças refeitas na 1.0, `sala*`, `video*`, `comparativo*`/`comparison*`, `orb-*`/`assistant-chat*`); os comportamentos do `bundle.js` e dos módulos da 1.0 foram portados para React (eles não são carregados). A exceção é o desenho WebGL do orbe (`gold-orb.js`), usado como está. Não reescreva o CSS nem invente estilos inline; ajustes em linha só quando o exemplo da biblioteca faz o mesmo.
-- Tailwind entra sem preflight e só para layout de elementos de estrutura, com o tema mapeado para os tokens.
-- Backend em `portal/src/modules/<módulo>/`: controller → caso de uso → repositório (interface) com contratos (`*.contratos.ts`), schema Drizzle (`*.schema.ts`) e implementação Postgres (`*.repositorio.ts`); mudou um schema, rode `npm run db:generate`. O acervo é um snapshot do Postgres em `portal/src/server/store.ts`: escreva só por `set`/`delete` dos Maps (nunca mutando o objeto guardado) e espere `aguardarGravacoes()` na Server Action. Sem dados fictícios no banco. As telas leem só o que está publicado, por `portal/src/data/repositorio.ts`. A curadoria fica em `/admin`, restrita ao papel administrador, e toda Server Action confere o papel.
-- Papéis: `membro` (lê e pode se candidatar a anfitrião em `/ajustes`), `anfitriao` (mantém as próprias Salas, artigos, vídeos e anúncios em `app/anfitriao`, com a mesma casca da curadoria: `TopoAnfitriao` e `CascaAnfitriao` com menu lateral; tudo só vai ao ar depois da revisão da curadoria; não publica direto nem acessa `/admin`) e `administrador` (curadoria em `/admin`, publica direto nas Salas oficiais, revisa anfitriões em `/admin/anfitrioes` sem editar o conteúdo deles, gerencia usuários, candidaturas e convites). As Salas não são fixas: oficiais e de anfitriões vivem no store; o catálogo (`portal/src/data/catalogo.ts`) lê as visíveis de um registro instalado pelo store e pelo layout raiz. Toda ação de anfitrião confere papel e posse no servidor (`exigirAnfitriao`, `exigirDonoDaSala`, `exigirDonoDoArtigo` em `portal/src/server/sessao.ts`); regras puras em `portal/src/features/anfitriao/regras/`.
-- Acesso: o cadastro é obrigatório. Sem sessão, todas as rotas vão para `/entrar` (proxy + checagem no layout `app/(app)`), menos `/entrar`, `/cadastro` (inclusive o cadastro por convite de anfitrião, `/cadastro?convite=…`) e `/recuperar-senha`. Telas novas do app entram em `app/(app)`, dentro da moldura (lateral, barra superior, rodapé, botão do assistente). Interesses e religião ou convicção são perguntados no onboarding, sempre opcionais; a convicção só é salva com consentimento.
-- Comunidade: telas em `app/(app)/comunidade` (feed, `p/[id]`, `pessoas`, `salvos`, `regras`) e moderação em `/admin/comunidade`. Regras puras em `portal/src/features/comunidade/regras/`, escrita em `portal/src/server/comunidade/` (`acoes.ts` lê a sessão, `operacoes.ts` confere posse e papel). Novas publicações são exclusivas de administrador/anfitrião; membro lê, comenta, reage, salva, segue e denuncia (posts antigos e suas ações de posse são preservados); o anfitrião também oculta comentários nas próprias Salas, com motivo; o administrador decide denúncias, oculta e restaura, sem editar texto. A curadoria nunca dá Selo de proveniência a publicação da comunidade.
-- Lixeira de Salas: `SalaEditorial.lixeira` é uma exclusão reversível, independente do status editorial. Anfitrião exclui somente sua Sala; administrador exclui qualquer Sala e é o único que restaura em `/admin/lixeira/salas`. Nunca apagar Salas por `Map.delete`: usar `server/salas/lixeira.ts`, que confere permissão e persiste Sala + auditoria em transação com bloqueio de linha. Leituras públicas e listas de trabalho excluem Salas na lixeira; seus conteúdos, estado e slug permanecem guardados. Migração aditiva `0006_salas_lixeira.sql`. Refinamento de 02/11: artigos também têm lixeira; todos os artigos precisam ir à lixeira antes da Sala. Só curador restaura ou exclui definitivamente, com recusa de dependências e auditoria; nunca apagar por Map.delete. Migrações `0008_refinamento_portal.sql` e `0009_auditoria_ator.sql`.
-- Antes de concluir uma mudança no portal: `npm run check` (sincronia do design system, lint e typecheck).
+- Next.js 16 (App Router, Turbopack, React Compiler, typed routes), TypeScript, Tailwind 4, Biome.
+- Backend em `portal/src/modules/<módulo>/`: controller → caso de uso → repositório (interface), com contratos `*.contratos.ts`, schema Drizzle `*.schema.ts` e implementação Postgres `*.repositorio.ts`.
+- Regras puras em `portal/src/features/<área>/regras/`, sem acesso a banco.
+- **Acervo em snapshot**: `portal/src/server/store.ts` guarda o acervo em Maps. Escreva só por `set`/`delete` (nunca mutando o objeto guardado) e aguarde `aguardarGravacoes()` na Server Action.
+- As telas leem só o que está publicado, por `portal/src/data/repositorio.ts`.
+- Salas oficiais e de anfitriões vivem no store; o catálogo (`portal/src/data/catalogo.ts`) lê as visíveis.
+- Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis.
 
-## Referências
+## Acesso e papéis
 
-- Requisitos do produto: `Sala_dos_Buscadores_Documento_de_Requisitos_v1.docx`.
-- DNA criativo da marca: `BRANDIG_DNA/DNA.pdf`.
-- Referências visuais: `DESIGN SYSTEM/` (imagens e a fonte Gambetta original).
+- Cadastro obrigatório. Sem sessão, tudo vai para `/entrar` (proxy e checagem no layout `app/(app)`). Exceções: `/entrar`, `/cadastro` (inclusive o convite de anfitrião `/cadastro?convite=…`) e `/recuperar-senha`.
+- Telas novas do app entram em `app/(app)`, dentro da moldura (lateral, barra superior, rodapé, botão do assistente).
+- Conta com e-mail não confirmado não acessa o acervo autenticado.
+- Destino padrão ao entrar: membro `/`, anfitrião `/anfitriao`, administrador `/admin`.
+- Papéis:
+  - `membro`: lê, comenta, reage, salva, segue, denuncia; pode se candidatar a anfitrião em `/ajustes`.
+  - `anfitriao`: mantém as próprias Salas, artigos, vídeos e anúncios em `app/anfitriao`, com casca própria (`TopoAnfitriao` e `CascaAnfitriao`). Nada vai ao ar sem revisão da curadoria. Não acessa `/admin`.
+  - `administrador`: curadoria em `/admin`. Publica direto nas Salas oficiais, revisa anfitriões sem editar o conteúdo deles, gerencia usuários, candidaturas e convites. Administrador e curador são o mesmo papel.
+- **Toda Server Action confere papel e posse no servidor**: `exigirAnfitriao`, `exigirDonoDaSala`, `exigirDonoDoArtigo` em `portal/src/server/sessao.ts`.
+- Interesses e religião ou convicção são perguntados no onboarding, sempre opcionais. A convicção só é salva com consentimento.
 
+## Regras de domínio vigentes
 
-### Refinamento consolidado de 02/11/2026
+- **Lixeira de Salas e artigos**: `SalaEditorial.lixeira` é exclusão reversível, independente do status editorial. Anfitrião exclui só as próprias Salas; administrador exclui qualquer uma. Todo artigo precisa ir à lixeira antes da Sala. Só o curador restaura ou exclui definitivamente, com recusa de dependências e auditoria. Leituras públicas excluem itens da lixeira; conteúdo, estado e slug permanecem guardados.
+- **Nunca apagar por `Map.delete`.** Use `server/salas/lixeira.ts`, que confere permissão e persiste Sala + auditoria em transação com bloqueio de linha.
+- **Escritas editoriais** usam versão esperada e transação. Em conflito, o rascunho local é preservado.
+- **Auditoria** registra `atorId`. Registros antigos não são reatribuídos.
+- **Vínculo artigo–vídeo** é muitos-para-muitos por ID; `videos.artigos` é a única fonte da relação, inclusive entre Salas. Anfitrião altera só o delta dos próprios artigos. Não restaurar a antiga restrição de mesma Sala.
+- **Vídeos e anúncios de anfitrião** seguem rascunho → em revisão → publicado/reprovado. A curadoria aprova ou reprova em `/admin/anfitrioes/[contaId]` e não edita o conteúdo. Editar um anúncio no ar tira-o do ar até a nova aprovação. No Portal, anúncios publicados rodam de forma estável por pessoa e por dia.
+- **Comunidade** (`app/(app)/comunidade`, moderação em `/admin/comunidade`): publicações são exclusivas de administrador e anfitrião. O anfitrião oculta comentários nas próprias Salas, com motivo. O administrador decide denúncias, oculta e restaura, sem editar texto. Escrita em `portal/src/server/comunidade/`: `acoes.ts` lê a sessão e `operacoes.ts` confere posse e papel. Novas publicações podem vincular vídeo publicado do acervo, sem upload binário.
+- **Conversa anfitrião ↔ curadoria** (`/anfitriao/conversa`, `/admin/conversas`): tabela `mensagens_curadoria` só aceita inclusão, sem edição nem exclusão. Aviso por e-mail só quando a vez muda de lado. A tela atualiza a cada 15 s (sem WebSocket).
+- **Jornada do Buscador** (`/jornada`): conclusão só declarada ("Marcar leitura como concluída", "Marcar vídeo como concluído"); rolar até o fim não conclui. Gemas e títulos concedidos nunca são retirados. Conteúdo próprio do anfitrião não gera crédito. Leituras anteriores à Jornada contam como "importadas". Critérios numéricos seguem pendentes (`docs/pendencias.md`).
+- **Banner, card e topo** são finalidades independentes. **Tema global** e **aparência da esfera do assistente** são independentes.
+- **Perfil**: foto sai 320×320 recortada no centro; capa até 2400 px; ambas em WebP (`SAIDA_POR_USO` em `server/midia.ts`).
+- **Imagens**: só com direito de uso registrado. Imagens de anfitrião entram pelo Campo de imagem, com aceite de responsabilidade no envio.
 
-Referência e status por ID em `docs/refinamento-2026-11-02/relatorio.md`; operação em `docs/manual-operacao.md`. `/videos` consulta o acervo publicado e `/anfitrioes` expõe somente assinaturas com Salas públicas. Relações artigo–vídeo são muitos-para-muitos por ID, inclusive entre Salas; `videos.artigos` é a única fonte da relação. Host só altera o delta dos próprios artigos. Não restaurar a antiga restrição de mesma Sala. Escritas editoriais usam versão esperada e transação; conflito preserva rascunho local. Auditoria nova registra atorId, sem reatribuir registros antigos. Conta pendente de confirmação de e-mail não acessa o acervo autenticado; login padrão depende do papel. Banner/card/topo são finalidades independentes. Novas publicações na Comunidade podem vincular vídeo publicado do acervo, sem upload binário. Tema global e aparência da esfera são independentes. Agenda, critérios da Jornada, hierarquia do curador principal, contatos oficiais e limpeza de fontes permanecem decisões pendentes, não funcionalidades demonstrativas. Não aplicar migrações ao banco conectado ou publicar fixtures durante testes.
+## Banco e migrações
 
-Conversa anfitrião ↔ curadoria (03/11/2026): uma conversa por anfitrião em `/anfitriao/conversa`, lida e respondida por qualquer administrador em `/admin/conversas`. Tabela `mensagens_curadoria` (migração `0010_conversa_curadoria.sql`), só inclusão, sem edição nem exclusão; a escrita fica em `server/conversa/acoes.ts`, que confere o papel pela sessão. Aviso por e-mail só quando a vez muda de lado. A tela se atualiza a cada 15 s (sem WebSocket).
+- Migrações aditivas em `portal/drizzle/`. Mudou um schema: `bun run db:generate`.
+- **Não aplicar migrações em banco conectado** fora do fluxo controlado de entrega, com backup conforme a política do ambiente.
+- **Não rodar seed** em ambiente com dados reais. **Não publicar fixtures** durante testes.
+- Migrações aplicadas e registro de reversão: `docs/historico/refinamento-2026-11-02/migracoes-aplicadas.md`.
+- Reversão: mantenha a leitura que respeita a lixeira; não remova colunas aditivas nem volte a código que ignore essa marca.
+- Exclusão definitiva é irreversível por código. Exige backup operacional e a confirmação específica já prevista.
 
-### Painel do anfitrião, vídeos e publicidade (03/11/2026)
+## Testes e validação
 
-`/anfitriao` saiu da moldura do portal e tem casca própria (topo + menu lateral: Painel, Minhas Salas, Vídeos, Publicidade, Criar Sala, Criar artigo, Criar vídeo, Criar publicidade, Conversa com a curadoria, Comunidade, Perfil público). Administrador e curador são o mesmo papel. Vídeos de anfitrião ganham `revisao` (colunas `videos.dono_id` e `videos.revisao`) e seguem o ciclo rascunho → em revisão → publicado/reprovado; a curadoria só aprova ou reprova em `/admin/anfitrioes/[contaId]` e não os edita nos editores de vídeo.
+- Para ajustes, **não criar arquivos de teste novos**. Validar com `bun run check` e conferência no navegador.
+- Testes existentes: `portal/tests/*.test.ts` e `src/features/admin/regras/*.test.ts` (`bun run test:editorial`); `design-system/components/BarraFormatacao/marcacao.test.mjs` (`bun run ds:test`).
+- Harness de navegador em `portal/tests/*.browser.cjs`: usa Playwright e esbuild externos, pelas variáveis `PLAYWRIGHT_MODULE` e `ESBUILD_MODULE`. **Não roda no `bun run check`.** Gera capturas em pastas `evidencias/`, que estão no `.gitignore`.
+- Testes SQL usam PGlite isolado (`PGLITE_MODULE`), nunca o `DATABASE_URL` do projeto.
+- Homologação com sessões reais e dispositivos físicos ainda não foi feita (ver `docs/pendencias.md`).
 
-Publicidade do anfitrião: `/anfitriao/publicidade` (lista, `nova`, `[id]`), tabela `anuncios` (migração `0011_anuncios_anfitriao.sql`; `0012_anuncios_revisao.sql` acrescenta os status `em_revisao`/`reprovado`/`arquivado` e a coluna `revisao`), regras puras em `features/anuncios/regras.ts`, escrita em `server/anuncios.ts` (confere papel e posse; imagem precisa ser da mesma conta). O anúncio segue o mesmo ciclo dos vídeos: o rascunho salva sozinho, o envio exige os obrigatórios e o aceite, e só o aprovado pela curadoria aparece no Portal, na coluna direita logo abaixo de “Seu caminho”, em rodízio estável por pessoa e por dia entre os publicados de quem ainda é anfitrião. Editar um anúncio no ar tira-o do ar até a nova aprovação. Card único `components/ds/CardAnuncio.tsx` (classe `sdb-ad--portal`) no Portal, na prévia do editor e na revisão da curadoria. O chat entre anfitriões ainda não existe (decisão pendente).
+## Repositório: regras de organização
 
-### Jornada do Buscador, Etapa 1 (03/11/2026)
-
-Especificação v1.0 em `~/Downloads/Jornada_do_Buscador_*` (TXT e DOCX). Página `/jornada` ("Minha Jornada", substitui `/conquistas`, que redireciona): percursos por tema, próxima descoberta, progresso nas Salas (artigos e vídeos à parte), Gemas da Jornada e histórico. Regras puras em `features/jornada/regras.ts`; modelo em `server/jornada.ts`. Conclusão só declarada ("Marcar leitura como concluída" no fim do artigo; "Marcar vídeo como concluído" nos vídeos), com desmarcar registrado em `ajustes`; rolar até o fim não conclui mais. Leituras concluídas antes da Jornada contam como "importadas". Ativos: título Explorador e gemas Citrino, Esmeralda (5 conteúdos em 3 dias, fuso America/Sao_Paulo) e Opala; Cristal de Rocha, Safira, Turmalina, Ametista, Rubi e os títulos Investigador/Articulador/Aprofundador aparecem "Em preparação". Gemas e títulos concedidos nunca são retirados (`progresso.gemas`, `progresso.titulos`, no jsonb de `progresso_estudo`, sem migração). Conteúdo próprio do anfitrião não gera crédito. A arte das gemas é a da coleção anterior (`features/conquistas/paletas.ts`, agora com chave pelo código da gema). Perfil: sem capa padrão; foto sai 320×320 recortada no centro e capa até 2400 px, ambas em WebP (`SAIDA_POR_USO` em `server/midia.ts`).
+- Não adicionar DOCX, PDF, PNG de evidência, logs ou prints à árvore. Documentos de produto vão para `docs/produto/`; registros de entrega, para `docs/historico/`.
+- Moodboards e referências visuais não são versionados. Registre a referência em `design-system/MARCA.md`.
+- Não commitar nem fazer push sem pedido explícito.
+- `.env*` é ignorado. Nunca coloque valores reais no `.env.example`. Não exiba o conteúdo de `.env.local`.
+- Antes de remover um arquivo, confirme por busca que nada o referencia (código, `package.json`, `.vercelignore`, docs).

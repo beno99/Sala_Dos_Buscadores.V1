@@ -12,4 +12,4 @@
 
 1. Escolha o ícone em phosphoricons.com e ponha o nome dele em `phosphor.json` (`"nome": "icone-phosphor"`; use `"icone:fill"` para forçar o preenchido, como em `play` e `parar`).
 2. Baixe o pacote e gere: `npm pack @phosphor-icons/core@2.1.1 && tar xzf phosphor-icons-core-2.1.1.tgz`, depois `node design-system/scripts/icones-phosphor.mjs package`.
-3. Rode `node design-system/scripts/build.mjs` e, no portal, `npm run ds:sync`.
+3. Rode `node design-system/scripts/build.mjs` e, no portal, `bun run ds:sync`.

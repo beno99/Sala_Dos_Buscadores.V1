@@ -85,7 +85,17 @@ As fontes desta revisão estão em `tokens.json`, `components/bundle.css` e nas 
 | `exemplos/<Nome>.html` | exemplo completo, abre sozinho (`?tema=vidro-escuro` troca o tema) |
 | `catalogo.html` | todas as peças numa página |
 | `DIRETRIZES.md` | marca, voz, materiais, cor, forma, tipografia, movimento, iconografia |
-| `fonts/` | Gambetta variável + licença |
+| `fonts/` | Gambetta e General Sans variáveis + licenças |
+| `fonts/origem/Gambetta_Complete.zip` | pacote original da família Gambetta, fonte dos `.woff2` (não é carregado pelas páginas) |
+| `MARCA.md` | identidade, propósito, território, paleta da marca, tipografia e divergências em relação ao DNA original |
+| `catalogo.css` · `catalogo.js` | layout e comportamento do catálogo (não entram no portal) |
+| `components/refined-layout.css` | layout da página de estudo do catálogo (não entra no portal) |
+| `assets/` | `themes.css` (materiais dos temas) e `images/` |
+| `conteudo.json` | constante compartilhada: `limiteResumoLead` é lida pelo `build.mjs` e pelo portal (`features/anfitriao/regras/artigo.ts`) |
+| `data/video.json` | dado de demonstração do exemplo do CardVideo (lido pelo `build.mjs`; o portal não usa) |
+| `scripts/` | `build.mjs` (gera tokens, exemplos e catálogo), `contraste.mjs` (AA), `icones-phosphor.mjs` (ícones), `refined-entry.js`, `catalogo.modelo.html`, `assistant-widget.html` (modelos de geração) e os testes `test-*.cjs` |
+
+O que é copiado para o portal fica explícito em `portal/scripts/sync-design-system.mjs` (lista `FILES`). Qualquer arquivo fora dessa lista não chega ao portal.
 
 ## Peças
 

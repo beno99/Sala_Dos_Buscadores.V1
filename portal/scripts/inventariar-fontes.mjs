@@ -5,7 +5,7 @@ import nextEnv from "@next/env";
 import pg from "pg";
 
 nextEnv.loadEnvConfig(process.cwd());
-const destino = path.resolve(process.argv[2] ?? "../docs/refinamento-2026-11-02/fontes-revisao.md");
+const destino = path.resolve(process.argv[2] ?? "../docs/historico/refinamento-2026-11-02/fontes-revisao.md");
 const client = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   connectionTimeoutMillis: 10000,

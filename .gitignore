@@ -1,3 +1,8 @@
 .DS_Store
 .vercel
 .env*
+
+# logs e capturas de execução
+*.log
+evidencias/
+evidencias-*/

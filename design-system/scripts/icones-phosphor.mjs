@@ -9,7 +9,7 @@
  *   npm pack @phosphor-icons/core@2.1.1 && tar xzf phosphor-icons-core-2.1.1.tgz
  *   node design-system/scripts/icones-phosphor.mjs <pasta>/package
  *
- * Depois rode `node design-system/scripts/build.mjs` e, no portal, `npm run ds:sync`.
+ * Depois rode `node design-system/scripts/build.mjs` e, no portal, `bun run ds:sync`.
  */
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

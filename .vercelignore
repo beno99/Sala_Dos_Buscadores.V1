@@ -2,10 +2,7 @@
 !portal/.env.example
 .claude
 docs
-BRANDIG_DNA
-DESIGN SYSTEM
 *.docx
 *.pdf
 portal/node_modules
 portal/.next
-artifacts

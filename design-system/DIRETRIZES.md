@@ -4,6 +4,8 @@ A Sala dos Buscadores é um portal de estudo que organiza tradições religiosas
 
 A interface segue a linguagem de design da Apple (Human Interface Guidelines e Liquid Glass) vestida com as cores, as fontes e o arco da marca. Existem duas versões do mesmo sistema: **Sólido**, opaca e padrão do portal, e **Vidro**, translúcida. As duas têm modo claro e escuro.
 
+Identidade, propósito, território, tensão principal, tradução prática e a matriz de contraste da marca estão em [MARCA.md](MARCA.md). Este arquivo trata da aplicação na interface.
+
 ## Conteúdo e tom de voz
 
 A voz é precisa, serena, didática e firme. Nunca dogmática, sensacionalista, condescendente ou decorativa.
