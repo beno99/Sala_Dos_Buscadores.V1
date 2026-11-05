@@ -18,6 +18,7 @@ import "@/design-system/estados-interface.css";
 import "@/design-system/components/TelaAssistente/tela-assistente.css";
 import "@/design-system/components/Comunidade/comunidade.css";
 import "./globals.css";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { Providers } from "@/components/layout/Providers";
 import { GOOGLE_FONTS_URL } from "@/design-system/fontes.generated";
 import { COOKIE_LATERAL, COOKIE_TEMA, lateralDoCookie, temaDoCookie } from "@/features/aparencia/tema";
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           {children}
         </Providers>
+        <GoogleAnalytics />
       </body>
     </html>
   );
