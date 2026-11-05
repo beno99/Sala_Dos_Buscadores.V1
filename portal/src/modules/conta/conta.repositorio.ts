@@ -241,12 +241,7 @@ export const verificacaoRepositorio: VerificacaoRepositorio = {
       await tx.select().from(usuarios).where(eq(usuarios.id, token.usuarioId)).for("update");
       const [valido] = await tx
         .delete(verificacoesEmail)
-        .where(
-          and(
-            eq(verificacoesEmail.tokenHash, tokenHash),
-            gt(verificacoesEmail.expiraEm, agora.toISOString()),
-          ),
-        )
+        .where(eq(verificacoesEmail.tokenHash, tokenHash))
         .returning();
       if (!valido) return undefined;
       const [usuario] = await tx
