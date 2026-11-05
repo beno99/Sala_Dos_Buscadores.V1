@@ -11,7 +11,19 @@ concurrency:
 
 jobs:
   deploy:
+    name: Publicar A Sala dos Buscadores
     runs-on: [self-hosted, vps-sala]
     steps:
-      - run: /usr/local/bin/sala-deploy
-      - run: curl -fsS -o /dev/null -w "site respondeu %{http_code}\n" https://asaladosbuscadores.com.br/entrar
+      - name: Publicando a Sala na VPS
+        run: |
+          echo "Publicando a versão mais recente da Sala dos Buscadores na VPS..."
+          /usr/local/bin/sala-deploy
+      - name: Conferindo se o site está no ar
+        run: |
+          echo "Chamando https://asaladosbuscadores.com.br/entrar ..."
+          curl -fsS -o /dev/null -w "O site respondeu HTTP %{http_code}.\n" https://asaladosbuscadores.com.br/entrar
+      - name: Deploy concluído
+        run: echo "Deploy concluído. A Sala dos Buscadores está no ar em https://asaladosbuscadores.com.br"
+      - name: Aviso de falha
+        if: failure()
+        run: echo "O deploy não foi concluído. Veja o log do passo que falhou acima."
