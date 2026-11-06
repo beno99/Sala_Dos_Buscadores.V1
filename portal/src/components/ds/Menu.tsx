@@ -54,7 +54,7 @@ export function Menu({
     };
     document.addEventListener("pointerdown", fora);
     const primeiro = wrap.current?.querySelector<HTMLButtonElement>(".sdb-menu__item:not(:disabled)");
-    const t = setTimeout(() => primeiro?.focus(), 10);
+    const t = setTimeout(() => primeiro?.focus({ preventScroll: true }), 10);
     return () => {
       document.removeEventListener("pointerdown", fora);
       clearTimeout(t);
@@ -76,7 +76,7 @@ export function Menu({
     if (atual === -1) return;
     e.preventDefault();
     const passo = e.key === "ArrowDown" ? 1 : -1;
-    lista[(atual + passo + lista.length) % lista.length]?.focus();
+    lista[(atual + passo + lista.length) % lista.length]?.focus({ preventScroll: true });
   };
 
   const escolher = (item: ItemMenu) => {

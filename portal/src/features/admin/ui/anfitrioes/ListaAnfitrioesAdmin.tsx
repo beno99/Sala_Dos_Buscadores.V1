@@ -140,11 +140,16 @@ export function ListaAnfitrioesAdmin({
               </>
             ),
           },
-          { id: "salas", cabecalho: "Salas", className: "sdb-table__num", celula: (l) => l.salas },
+          {
+            id: "salas",
+            cabecalho: "Salas",
+            className: "sdb-table__num !text-right max-[719px]:!text-left",
+            celula: (l) => l.salas,
+          },
           {
             id: "publicados",
             cabecalho: "Publicados",
-            className: "sdb-table__num",
+            className: "sdb-table__num !text-right max-[719px]:!text-left",
             celula: (l) => l.publicados,
           },
           {

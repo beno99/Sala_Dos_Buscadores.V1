@@ -30,7 +30,6 @@ const SECOES: Secao[] = [
   { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
   { href: "/assistente", rotulo: "Assistente do acervo", icone: "assistente", grupo: "Ferramentas" },
   { href: "/mensagens" as Route, rotulo: "Mensagens", icone: "comunidade", grupo: "Conta" },
-  { href: "/ajustes" as Route, rotulo: "Ajustes", icone: "ajustes", grupo: "Conta" },
 ];
 
 const ativa = (href: string, caminho: string) =>

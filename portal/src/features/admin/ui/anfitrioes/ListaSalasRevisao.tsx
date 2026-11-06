@@ -46,14 +46,19 @@ export function ListaSalasRevisao({ contaId, salas }: { contaId: string; salas: 
         {
           id: "publicados",
           cabecalho: "Publicados",
-          className: "sdb-table__num",
+          className: "sdb-table__num !text-right max-[719px]:!text-left",
           celula: (s) => s.publicados,
         },
-        { id: "revisao", cabecalho: "Em revisão", className: "sdb-table__num", celula: (s) => s.emRevisao },
+        {
+          id: "revisao",
+          cabecalho: "Em revisão",
+          className: "sdb-table__num !text-right max-[719px]:!text-left",
+          celula: (s) => s.emRevisao,
+        },
         {
           id: "reprovados",
           cabecalho: "Reprovados",
-          className: "sdb-table__num",
+          className: "sdb-table__num !text-right max-[719px]:!text-left",
           celula: (s) => s.reprovados,
         },
         { id: "comparacao", cabecalho: "Na comparação", celula: (s) => (s.naComparacao ? "Sim" : "Não") },

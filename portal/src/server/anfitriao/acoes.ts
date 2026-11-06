@@ -165,7 +165,7 @@ export async function marcarAnuncioVistoAcao(anuncioId: string) {
 
 // ---------- membro ----------
 
-/** Candidatura a anfitrião, enviada por um membro em /ajustes. */
+/** Candidatura a anfitrião, enviada por um membro em /seja-anfitriao. */
 export async function candidatarAcao(form: FormCandidatura) {
   const membro = await membroAtual();
   if (!membro) return NEGADO("entre na sua conta para se candidatar.");

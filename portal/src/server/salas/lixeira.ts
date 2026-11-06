@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import {
   type AcaoLixeira,
   type AtorLixeira,
-  ErroLixeiraSala,
+  ehErroLixeiraSala,
   planejarLixeiraSala,
 } from "@/features/salas/lixeira";
 import { acervo, excluirSalaPermanentementeNoAcervo, mudarLixeiraSalaNoAcervo } from "../store";
@@ -27,8 +27,7 @@ export async function mudarLixeiraSala(id: string, acao: AcaoLixeira, ator: Ator
           : "Sala restaurada com seus conteúdos e endereço anteriores.",
     };
   } catch (e) {
-    if (e instanceof ErroLixeiraSala) return { ok: false as const, mensagem: `Erro: ${e.message}` };
-    // Não expor detalhes do banco; a transação falhou sem remover conteúdo.
+    if (ehErroLixeiraSala(e)) return { ok: false as const, mensagem: `Erro: ${e.message}` };
     return {
       ok: false as const,
       mensagem: "Erro: não foi possível alterar a lixeira. Atualize a página e tente novamente.",
@@ -45,7 +44,7 @@ export async function excluirSalaPermanentemente(id: string, ator: AtorLixeira) 
       mensagem: "Sala excluída definitivamente.",
     };
   } catch (e) {
-    if (e instanceof ErroLixeiraSala) return { ok: false as const, mensagem: `Erro: ${e.message}` };
+    if (ehErroLixeiraSala(e)) return { ok: false as const, mensagem: `Erro: ${e.message}` };
     return {
       ok: false as const,
       mensagem: "Erro: não foi possível excluir definitivamente. Atualize a página e tente novamente.",

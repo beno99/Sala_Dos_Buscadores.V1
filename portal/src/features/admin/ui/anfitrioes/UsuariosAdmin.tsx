@@ -332,7 +332,7 @@ export function UsuariosAdmin({
               cabecalhoOculto: true,
               className: "sdb-table__actions",
               celula: (u) => (
-                <>
+                <div className="flex items-center justify-end gap-2">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -381,7 +381,7 @@ export function UsuariosAdmin({
                         : []),
                     ]}
                   />
-                </>
+                </div>
               ),
             },
           ]}

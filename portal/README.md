@@ -5,13 +5,13 @@ Conta obrigatória com onboarding, acervo em Salas, busca comparativa, assistent
 ## Rodar
 
 ```bash
-npm install
+bun install
 cp .env.example .env.local   # ajuste SEED_ADMIN_EMAIL e SEED_ADMIN_SENHA
-npm run db:setup             # migrações e semente no banco do .env.local
-npm run dev                  # http://localhost:3000 (sincroniza o design system antes)
+bun run db:setup             # migrações e semente no banco do .env.local
+bun run dev                  # http://localhost:3000 (sincroniza o design system antes)
 ```
 
-A semente (`npm run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações e fontes). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria.
+A semente (`bun run db:seed`, idempotente) cria a conta de **administrador** do `.env.local` e importa o acervo oficial de `src/data/semente/` (Salas, conteúdos, citações e fontes). Não há contas nem pessoas fictícias no banco de desenvolvimento: membros se cadastram em `/cadastro`; anfitriões entram por candidatura ou convite da curadoria.
 
 Fluxo para demonstrar: **Criar conta** → onboarding (interesses e, se quiser, religião ou convicção) → Portal (“Comece por aqui”) → **Salas** → abrir uma Sala (conquista “Porta aberta”) → abrir um conteúdo (entra em “Continue de onde parou”) → lupa ou ⌘K / Ctrl K: “vida após a morte” → **Comparar** → **Perguntar ao assistente sobre este tema** → enviar. O botão flutuante abre o assistente por cima de qualquer página.
 
@@ -22,13 +22,14 @@ Entre por `/entrar` com a conta de administrador e use **Curadoria** no grupo Co
 
 | Script | O que faz |
 | --- | --- |
-| `npm run dev` / `build` / `start` | Next.js 16 (Turbopack) |
-| `npm run db:setup` | `db:migrate` e `db:seed` |
-| `npm run db:generate` | gera a migração SQL em `drizzle/` a partir dos `*.schema.ts` |
-| `npm run check` | `ds:check`, `ds:test`, `lint` e `typecheck` |
-| `npm run ds:sync` / `ds:check` | copia `../design-system` para `src/design-system` e gera ícones e URL das fontes / confere se está em dia |
-| `npm run lint` / `lint:fix` | Biome (lint + formatação + organização de imports) |
-| `npm run typecheck` | `next typegen` + `tsc` |
+| `bun run dev` / `build` / `start` | Next.js 16 (Turbopack) |
+| `bun run db:setup` | `db:migrate` e `db:seed` |
+| `bun run db:generate` | gera a migração SQL em `drizzle/` a partir dos `*.schema.ts` |
+| `bun run check:arquitetura` | guarda de arquitetura com teto por regra (`docs/ARQUITETURA.md`) |
+| `bun run check` | `ds:check`, `ds:test`, `lint` e `typecheck` |
+| `bun run ds:sync` / `ds:check` | copia `../design-system` para `src/design-system` e gera ícones e URL das fontes / confere se está em dia |
+| `bun run lint` / `lint:fix` | Biome (lint + formatação + organização de imports) |
+| `bun run typecheck` | `next typegen` + `tsc` |
 
 `SIMULAR_LATENCIA_MS` (padrão 600) controla a espera simulada da busca.
 
@@ -123,7 +124,7 @@ Diagrama: [`../docs/banco/diagrama.md`](../docs/banco/diagrama.md). Cada módulo
 
 - Banco e imagens no Supabase (projeto `sala-dos-buscadores-homolog`, São Paulo); site na Vercel (projeto `sala-dos-buscadores`, `https://sala-dos-buscadores.vercel.app`, funções em `gru1` por `vercel.json`). O projeto da Vercel usa `portal` como diretório raiz e sobe o repositório inteiro, porque o `prebuild` confere `../design-system`; o `.vercelignore` da raiz deixa de fora os `.env*` e o material de referência.
 - Variáveis locais só em `portal/.env.local` (fora do Git); o site usa as variáveis cadastradas na Vercel. `DATABASE_URL` aponta para o pooler em modo transação (porta 6543); o modo sessão (5432) aceita só 15 clientes e esgota com as instâncias da Vercel.
-- Seed: `npm run db:seed`, que lê o `.env.local`. Deploy: `vercel deploy --prod` na raiz do repositório.
+- Seed: `bun run db:seed`, que lê o `.env.local`. Deploy: `vercel deploy --prod` na raiz do repositório.
 
 ## Estrutura
 
@@ -151,14 +152,14 @@ Testes unitários e de componente ficam ao lado do código (`*.test.ts(x)`).
 ## Design system
 
 - O [guia da biblioteca React](src/components/ds/README.md) reúne os componentes, as variantes e os exemplos de uso alinhados a `../design-system/components`.
-- A fonte da verdade é `../design-system`. Mude lá e rode `npm run ds:sync`; o `build` falha se a cópia divergir.
+- A fonte da verdade é `../design-system`. Mude lá e rode `bun run ds:sync`; o `build` falha se a cópia divergir.
 - `tokens.css` e `bundle.css` entram no layout raiz, sem camada. O Tailwind entra **sem preflight** e só com tema e utilitários (`src/app/globals.css`), com espaçamento, cores e fontes mapeados para os tokens.
 - Tailwind é para layout de elementos de estrutura. Numa peça `sdb-*`, a classe da biblioteca vence o utilitário; quando o exemplo da biblioteca usa um ajuste em linha (`style="gap:8px"`), o componente repete o mesmo ajuste.
 - `bundle.js` não é carregado: seus comportamentos foram portados para React (`Segmented`, `Accordion`, `Menu`, `Drawer`, `Toast`, `useCopiar`), e os ícones são gerados dele em `icons.generated.ts`.
 
 ## Dados iniciais
 
-O acervo oficial vem de `src/data/semente/` pelo `npm run db:seed`. A tela e o mini chat usam `/api/assistente`, que responde com o Gemini (Google AI Studio, `gemini-3.5-flash-lite`) a partir do acervo publicado quando `GEMINI_API_KEY` está definida, e informa indisponibilidade sem ela. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala.
+O acervo oficial vem de `src/data/semente/` pelo `bun run db:seed`. A tela e o mini chat usam `/api/assistente`, que responde com o Gemini (Google AI Studio, `gemini-3.5-flash-lite`) a partir do acervo publicado quando `GEMINI_API_KEY` está definida, e informa indisponibilidade sem ela. Obras e referências citadas são reais; os artigos do acervo inicial são assinados pela equipe editorial de cada Sala.
 
 ## Fora desta etapa
 
@@ -173,7 +174,6 @@ novidades; apoio e publicidade vêm depois do estudo na ordem do DOM. O nível d
 “Seu caminho” reutiliza o cálculo da lateral. Sem retomada, há início honesto;
 sem sugestões ou anúncio, nenhum item é fabricado. Os estilos estão na origem
 do DS (`PortalInicio`, `bundle.css`), sincronizados por `ds:sync`.
-Capturas, medidas e decisões: `../artifacts/home-2026-10-26/LEIA-ME.md`.
 
 
 ## Assistente do acervo · tela aprovada em 27/10/2026
@@ -190,23 +190,28 @@ O diálogo de fontes e a cópia usam exclusivamente os trechos e as referências
 
 Consulte [Manual de operação](../docs/manual-operacao.md) para Sala, artigo, fonte, vídeo e seus requisitos de rascunho/publicação. Slugs de Sala são gerados atomicamente no primeiro salvamento e permanecem estáveis. Iniciais de artigo/fonte são derivadas do título; imagens de corpo preservam proporção e bytes originais; pendências levam a blocos de identidade estável. O seletor de vídeos mostra artigos recentes elegíveis, inclusive de outras Salas, com busca e atualização, e a thumbnail YouTube tem fallback sem chave adicional. Não há migração de schema nesta revisão.
 
-Testes adicionados usam `node:test` via `tsx`, sem conectar o banco configurado: `npm run test:editorial`. O teste SQL opcional usa PostgreSQL embarcado PGlite em módulo informado por `PGLITE_MODULE`; detalhes e evidências em [relatório C01–C08](../docs/revisoes-2026-10-31.md).
+Testes adicionados usam `node:test` via `tsx`, sem conectar o banco configurado: `bun run test:editorial`. O teste SQL opcional usa PostgreSQL embarcado PGlite em módulo informado por `PGLITE_MODULE`; detalhes e evidências em [relatório C01–C08](../docs/historico/revisoes-2026-10-31.md).
 
 ### Lixeira de Salas (31/10/2026)
 
-Anfitriões excluem as próprias Salas; administradores excluem qualquer Sala e restauram em `/admin/lixeira/salas`. A marca nullable `salas.lixeira` preserva estado, slug e todos os vínculos. Regras em `features/salas/lixeira.ts`, Server Actions em `server/salas/acoes.ts`, transação com auditoria em `modules/acervo/acervo.repositorio.ts`. Aplicar `drizzle/0006_salas_lixeira.sql` antes deste código em outro ambiente; não executar seeds. A migração adiciona somente uma coluna JSONB opcional. Detalhes e reversão em [relatório](../docs/lixeira-salas-2026-10-31.md), operação no [manual](../docs/manual-operacao.md).
+Anfitriões excluem as próprias Salas; administradores excluem qualquer Sala e restauram em `/admin/lixeira/salas`. A marca nullable `salas.lixeira` preserva estado, slug e todos os vínculos. Regras em `features/salas/lixeira.ts`, Server Actions em `server/salas/acoes.ts`, transação com auditoria em `modules/acervo/acervo.repositorio.ts`. Aplicar `drizzle/0006_salas_lixeira.sql` antes deste código em outro ambiente; não executar seeds. A migração adiciona somente uma coluna JSONB opcional. Detalhes e reversão em [relatório](../docs/historico/lixeira-salas-2026-10-31.md), operação no [manual](../docs/manual-operacao.md).
 
 
 ## Refinamento de 02/11/2026
 
-Implementação e evidências por P01–P34: [relatório](../docs/refinamento-2026-11-02/relatorio.md). O [manual](../docs/manual-operacao.md) foi atualizado para a operação vigente.
+Implementação e evidências por P01–P34: [relatório](../docs/historico/refinamento-2026-11-02/relatorio.md). O [manual](../docs/manual-operacao.md) foi atualizado para a operação vigente.
 
 - Novas rotas `/videos` e `/anfitrioes`, dentro da moldura/autenticação. Home destaca Salas, acesso ao assistente e prévia do feed existente.
 - Novos posts da Comunidade apenas para Curadoria e Anfitrião; vídeo opcional é vínculo com o acervo público. Imagens, quatro tipos, comentários e moderação existentes são preservados.
 - Lixeira de artigos, sequência artigo → Sala e exclusão definitiva restrita ao curador, sem cascatas de dependências. Restauração conserva estado e slug.
 - Artigos e vídeos se vinculam pelos dois editores, entre Salas. Escritas editoriais usam versão esperada, proteção de concorrência e auditoria por identidade da conta.
 - Confirmação de e-mail exigida para sessão ativa, correção/reenvio com validade e controle de intervalo. Destino padrão: membro `/`, anfitrião `/anfitriao`, administrador `/admin`.
-- Migrações aditivas `0008_refinamento_portal.sql` e `0009_auditoria_ator.sql`, aplicadas ao banco configurado em 02/11 após a entrega inicial (registro em `docs/refinamento-2026-11-02/migracoes-aplicadas.md`). Nos demais ambientes, aplicar no fluxo controlado de entrega com backup; não rodar seed. Reversão precisa manter leitura que respeite a lixeira de artigos.
-- Fontes do DS em `../design-system`; gerar com `node scripts/build.mjs` e `node scripts/contraste.mjs` a partir dessa pasta, depois `npm run ds:sync` no portal. A versão publicada do DS precisa acompanhar esta alteração.
+- Migrações aditivas `0008_refinamento_portal.sql` e `0009_auditoria_ator.sql`, aplicadas ao banco configurado em 02/11 após a entrega inicial (registro em `docs/historico/refinamento-2026-11-02/migracoes-aplicadas.md`). Nos demais ambientes, aplicar no fluxo controlado de entrega com backup; não rodar seed. Reversão precisa manter leitura que respeite a lixeira de artigos.
+- Fontes do DS em `../design-system`; gerar com `node scripts/build.mjs` e `node scripts/contraste.mjs` a partir dessa pasta, depois `bun run ds:sync` no portal. A versão publicada do DS precisa acompanhar esta alteração.
 
 Os testes adicionais de navegador são fixtures de componentes reais com dados locais explícitos, sem sessão/banco real, em `tests/*.browser.cjs`. Usam Playwright e esbuild disponibilizados externamente pelas variáveis `PLAYWRIGHT_MODULE` e `ESBUILD_MODULE`; não adicionam bibliotecas de produção. Testes SQL usam PGlite isolado via `PGLITE_MODULE`. Não confundir esses testes com homologação de SMTP, PostgreSQL remoto ou dispositivos físicos.
+
+
+## Arquitetura
+
+Padrões de camadas, formulários, erros e o guarda de arquitetura: [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).

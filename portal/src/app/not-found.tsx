@@ -1,26 +1,30 @@
 import type { Route } from "next";
-import { Alerta } from "@/components/ds/Alerta";
-import { ButtonLink } from "@/components/ds/Button";
+import Link from "next/link";
+import { IconeVolume } from "@/components/ds/EstadosInterface";
+import { InterfaceIcon } from "@/components/ds/InterfaceIcon";
 
 export default function NaoEncontrado() {
   return (
-    <div className="flex max-w-read flex-col gap-4">
-      <h1 className="sdb-title-1">Página não encontrada</h1>
-      <Alerta
-        title="Este endereço não leva a nenhuma Sala ou conteúdo do acervo"
-        actions={
-          <>
-            <ButtonLink href={"/" as Route} variant="primary" size="sm">
-              Ver as Salas
-            </ButtonLink>
-            <ButtonLink href={"/comparar" as Route} variant="secondary" size="sm">
-              Buscar por tema
-            </ButtonLink>
-          </>
-        }
-      >
-        O link pode estar incompleto ou o conteúdo pode ter mudado de lugar.
-      </Alerta>
-    </div>
+    <main className="flex min-h-dvh items-center justify-center p-4">
+      <section className="sdb-ui-empty w-full max-w-[560px]" aria-labelledby="nao-encontrado-titulo">
+        <IconeVolume simbolo="busca" />
+        <h1 id="nao-encontrado-titulo" className="sdb-title-2 mt-6">
+          Esta página não foi encontrada
+        </h1>
+        <p>
+          O endereço pode estar incompleto ou o conteúdo mudou de lugar. Volte às Salas ou busque um tema no
+          acervo.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link className="sdb-ui-primary" href={"/" as Route}>
+            Ver as Salas
+            <InterfaceIcon name="seta" />
+          </Link>
+          <Link className="sdb-ui-secondary" href={"/comparar" as Route}>
+            Buscar por tema
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }

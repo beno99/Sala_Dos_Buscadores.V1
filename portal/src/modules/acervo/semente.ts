@@ -2,7 +2,7 @@
  * Semente do banco: o acervo oficial (Salas, fontes, conteúdos e citações de
  * src/data/semente) e a conta de administrador. Idempotente: entra só o
  * registro do acervo que ainda não existe; a conta, se o e-mail ainda não existe.
- * Rodada por scripts/seed.ts (npm run db:seed).
+ * Rodada por scripts/seed.ts (bun run db:seed).
  */
 import bcrypt from "bcryptjs";
 import { CITACOES } from "@/data/semente/citacoes";

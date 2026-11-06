@@ -17,14 +17,14 @@ export default async function Pagina() {
         <Alerta
           title="Você já está numa conta"
           actions={
-            <ButtonLink href={"/ajustes" as Route} variant="secondary" size="sm">
-              Ir para os Ajustes
+            <ButtonLink href={"/portal" as Route} variant="secondary" size="sm">
+              Ir para o Portal
             </ButtonLink>
           }
         >
           {membro.papel === "administrador"
             ? "Contas da curadoria não se candidatam a anfitrião."
-            : "Envie sua candidatura a anfitrião pelos Ajustes, com a conta atual."}
+            : "Envie sua candidatura a anfitrião em Seja anfitrião, com a conta atual."}
         </Alerta>
       </CenarioConta>
     );

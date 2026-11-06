@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { cx } from "@/lib/cx";
-import { Button } from "./Button";
+import { Button, classesDoBotao } from "./Button";
 import { Icon, type IconName } from "./Icon";
 
 export interface ItemNavegacao {
@@ -13,6 +13,8 @@ export interface ItemNavegacao {
   ativo: boolean;
   contagem?: number;
   separarAntes?: boolean;
+  /** Ação principal de criação: aparece como botão preenchido. */
+  destaque?: boolean;
 }
 
 /** Navegação lateral (NavegacaoLateral): vidro, recolhível para só ícones; no celular vai para um Drawer. */
@@ -59,7 +61,12 @@ export function NavegacaoLateral({
           {i.separarAntes && <div className="sdb-sidenav__sep" role="separator" />}
           <Link
             href={i.href}
-            className="sdb-sidenav__item"
+            className={cx(
+              "sdb-sidenav__item",
+              i.destaque && classesDoBotao({ variant: "primary", size: "sm" }),
+              i.destaque &&
+                "!text-(--on-prominent) hover:!bg-(--prominent-fill) hover:!text-(--on-prominent)",
+            )}
             aria-current={i.ativo ? "page" : undefined}
             data-tip={recolhida && !sheet ? i.rotulo : undefined}
             data-tip-side={recolhida && !sheet ? "bottom" : undefined}

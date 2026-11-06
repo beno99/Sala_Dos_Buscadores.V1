@@ -55,7 +55,7 @@ export function ListaFontes({
     {
       id: "usos",
       cabecalho: "Citada por",
-      className: "sdb-table__num",
+      className: "sdb-table__num !text-right max-[719px]:!text-left",
       celula: (f) => (f.usos ? `${f.usos} (${f.usosPublicados} publ.)` : "Nenhum"),
     },
     {

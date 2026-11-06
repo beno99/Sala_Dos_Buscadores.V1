@@ -131,7 +131,7 @@ else {
 if (problems.length) {
   console.error("A cópia do design system no portal não bate com ../design-system:");
   for (const p of problems) console.error(`  - ${p}`);
-  console.error("Rode `npm run ds:sync` (e nunca edite src/design-system à mão).");
+  console.error("Rode `bun run ds:sync` (e nunca edite src/design-system à mão).");
   process.exit(1);
 }
 console.log(check ? "Design system em dia." : "Design system sincronizado.");

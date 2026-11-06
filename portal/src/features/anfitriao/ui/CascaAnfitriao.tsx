@@ -66,6 +66,7 @@ function itens(caminho: string, c: ContagensAnfitriao): ItemNavegacao[] {
       href: "/anfitriao/artigos/novo" as Route,
       rotulo: "Criar artigo",
       icone: "artigo",
+      destaque: true,
       ativo:
         caminho === "/anfitriao/artigos/novo" || /^\/anfitriao\/salas\/[^/]+\/artigos\/novo$/.test(caminho),
     },

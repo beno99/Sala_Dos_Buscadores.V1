@@ -22,12 +22,6 @@ export default async function MinhaJornada() {
     return (
       <section className="sdb-material sdb-panel flex max-w-read flex-col gap-3">
         <h1 className="sdb-title-1">Minha Jornada está oculta</h1>
-        <p className="sdb-body-sm m-0">Você pode voltar a exibir a Jornada e as gemas nos Ajustes.</p>
-        <div>
-          <ButtonLink href="/ajustes" variant="secondary">
-            Abrir Ajustes
-          </ButtonLink>
-        </div>
       </section>
     );
   const m = await modeloDaJornada(membro);

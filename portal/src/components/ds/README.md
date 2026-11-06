@@ -4,7 +4,7 @@ A referência visual e comportamental é [`design-system/components`](../../../.
 
 ## Estilos e atualização
 
-O layout raiz carrega os tokens, o bundle CSS, os temas, os estilos dos cartões, o orbe e os refinamentos, nessa ordem. `src/design-system` é gerado pelo sincronizador: edite a biblioteca de referência e execute `npm run ds:sync`. `npm run ds:check` detecta divergências.
+O layout raiz carrega os tokens, o bundle CSS, os temas, os estilos dos cartões, o orbe e os refinamentos, nessa ordem. `src/design-system` é gerado pelo sincronizador: edite a biblioteca de referência e execute `bun run ds:sync`. `bun run ds:check` detecta divergências.
 
 Não carregue `bundle.js` ou `refined.js` sobre os componentes React: seus eventos delegados duplicariam ações e alterariam o DOM fora do estado do React. Ícones e fontes são extraídos pelo sincronizador; o renderizador visual do orbe é reaproveitado diretamente.
 
@@ -73,9 +73,9 @@ O slot `acoes` de CardSala e CardConteudoVitrine recebe controles `.sala__save`;
 ## Verificar
 
 ```sh
-npm run check
-npm run build
-npm run test:e2e
+bun run check
+bun run build
+bun run test:e2e
 ```
 
 Os testes de controles, preferências, menus, diálogos e banner cobrem as interações; as jornadas do navegador validam a integração nas telas do portal em desktop e celular.

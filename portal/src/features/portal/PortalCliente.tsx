@@ -389,7 +389,7 @@ export function PortalCliente({
                 Mantenha uma Sala própria com seus estudos e fontes. A curadoria revisa cada Sala antes de ir
                 ao ar.
               </p>
-              <ButtonLink href={"/ajustes#ser-anfitriao" as Route} variant="secondary" size="sm" icon="salas">
+              <ButtonLink href={"/seja-anfitriao" as Route} variant="secondary" size="sm" icon="salas">
                 Quero ser anfitrião
               </ButtonLink>
             </section>

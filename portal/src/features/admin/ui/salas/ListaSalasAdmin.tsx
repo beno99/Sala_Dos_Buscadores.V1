@@ -203,10 +203,15 @@ export function ListaSalasAdmin({
             {
               id: "artigos",
               cabecalho: "Artigos",
-              className: "sdb-table__num",
+              className: "sdb-table__num !text-right max-[719px]:!text-left",
               celula: (s) => `${s.artigos.publicados} / ${s.artigos.total}`,
             },
-            { id: "videos", cabecalho: "Vídeos", className: "sdb-table__num", celula: (s) => s.videos },
+            {
+              id: "videos",
+              cabecalho: "Vídeos",
+              className: "sdb-table__num !text-right max-[719px]:!text-left",
+              celula: (s) => s.videos,
+            },
             { id: "comparacao", cabecalho: "Na comparação", celula: (s) => (s.naComparacao ? "Sim" : "Não") },
             {
               id: "atualizada",

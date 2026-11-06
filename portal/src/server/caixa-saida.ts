@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { after } from "next/server";
 import type { EmailEnviado } from "@/data/types";
 import { ASSINATURA_EMAIL } from "@/lib/email";
+import { ANEXO_LOGO, htmlEmail } from "./email-padrao";
 import { aposConfirmarPedido, caixaSaidaBruta, incluirEmail } from "./store";
 
 /*
@@ -19,6 +20,15 @@ export interface NovoEmail {
   corpo: string;
   /** HTML opcional (ex.: verificação de e-mail); sem ele, o provedor recebe só texto. */
   html?: string;
+  /** Imagens embutidas no HTML por `cid:<idConteudo>`. */
+  anexos?: AnexoEmail[];
+}
+
+export interface AnexoEmail {
+  nome: string;
+  tipo: string;
+  base64: string;
+  idConteudo: string;
 }
 
 /** Destinatário dos avisos para a curadoria (candidatura recebida). */
@@ -34,7 +44,7 @@ const REMETENTE =
     ? `A Sala dos Buscadores <verificacao@${process.env.RESEND_EMAIL_DOMAIN}>`
     : "A Sala dos Buscadores <onboarding@resend.dev>");
 
-async function enviarPeloResend(email: EmailEnviado, html?: string) {
+async function enviarPeloResend(email: EmailEnviado, html?: string, anexos?: AnexoEmail[]) {
   const chave = process.env.RESEND_API_KEY;
   if (!chave) return;
   const resposta = await fetch("https://api.resend.com/emails", {
@@ -46,6 +56,14 @@ async function enviarPeloResend(email: EmailEnviado, html?: string) {
       subject: email.assunto,
       text: email.corpo,
       ...(html && { html }),
+      ...(anexos?.length && {
+        attachments: anexos.map((a) => ({
+          filename: a.nome,
+          content: a.base64,
+          content_type: a.tipo,
+          content_id: a.idConteudo,
+        })),
+      }),
     }),
   });
   if (!resposta.ok) {
@@ -62,7 +80,14 @@ export function enviarEmail(novo: NovoEmail, quando = new Date()): EmailEnviado 
     quando: quando.toISOString(),
   });
   incluirEmail(email);
-  if (process.env.RESEND_API_KEY) aposConfirmarPedido(() => after(() => enviarPeloResend(email, novo.html)));
+  const html =
+    novo.html ??
+    htmlEmail({
+      titulo: email.assunto,
+      paragrafos: novo.corpo.trim().split(/\n{2,}/),
+    });
+  if (process.env.RESEND_API_KEY)
+    aposConfirmarPedido(() => after(() => enviarPeloResend(email, html, novo.anexos ?? [ANEXO_LOGO])));
   return { ...email };
 }
 

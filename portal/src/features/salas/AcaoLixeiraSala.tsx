@@ -114,7 +114,7 @@ export function AcaoLixeiraSala({
               {
                 {
                   mover:
-                    "A Sala sai do portal e das listas de trabalho. Antes, todos os artigos, inclusive rascunhos e arquivados, precisam estar na lixeira. Os conteúdos e vínculos são preservados. Somente a curadoria poderá restaurar a Sala.",
+                    "Ao mover esta Sala para a lixeira, ela sai do portal e das suas listas. Antes, todos os artigos da Sala, inclusive rascunhos e arquivados, precisam estar na lixeira; eles deixam de aparecer no portal. Nada é apagado: artigos, vínculos e publicações ficam guardados. Somente a curadoria poderá restaurar a Sala ou excluí-la de vez.",
                   restaurar:
                     "A Sala volta às listas com o mesmo endereço e os estados anteriores. Se já estava publicada, ela e seus conteúdos publicados voltam ao portal. Rascunhos continuam rascunhos.",
                   permanente:

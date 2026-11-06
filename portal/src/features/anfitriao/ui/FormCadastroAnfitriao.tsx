@@ -84,7 +84,7 @@ export function FormCadastroAnfitriao() {
           variant: "erro",
           title: "Erro: a candidatura não foi enviada",
         });
-        router.push("/ajustes" as Route);
+        router.push("/seja-anfitriao" as Route);
         return;
       }
       if ("erros" in r && r.erros) mostrarErros(r.erros);
@@ -235,7 +235,7 @@ export function FormCadastroAnfitriao() {
       </Button>
       <p className="sdb-footnote sdb-conta__alternativa">
         Já tem conta?{" "}
-        <Link href={"/entrar?voltar=%2Fajustes" as Route} className="sdb-link">
+        <Link href={"/entrar?voltar=%2Fseja-anfitriao" as Route} className="sdb-link">
           Entre e se candidate nos Ajustes
         </Link>
       </p>

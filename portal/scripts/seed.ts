@@ -1,5 +1,5 @@
 /*
- * Popula o banco: npm run db:seed (lê .env.local; ver .env.example).
+ * Popula o banco: bun run db:seed (lê .env.local; ver .env.example).
  * Roda com a condição react-server para os módulos marcados com server-only.
  */
 import { semear } from "@/modules/acervo/semente";

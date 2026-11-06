@@ -1,4 +1,5 @@
 import { mudarLixeiraArtigo } from "@/server/artigos/lixeira";
+import { enviarEmail } from "../caixa-saida";
 import { erroVideosDoArtigo, idsVideosDoArtigo } from "../vinculos-editoriais";
 import "server-only";
 import { todosOsTemas } from "@/data/catalogo";
@@ -455,6 +456,14 @@ function enviarSalaPlano(
       tipoItem: "sala",
       itemId: sala.id,
       itemTitulo: sala.nome,
+    });
+    enviarEmail({
+      para: dono.email,
+      assunto: `Recebemos sua Sala “${sala.nome}”`,
+      corpo: [
+        `Olá, ${dono.pseudonimo}. A curadoria recebeu a sua Sala “${sala.nome}” e vai analisá-la.`,
+        "Por favor, aguarde a resposta. Quando a curadoria aprovar ou reprovar a Sala, você receberá um e-mail com a decisão e, se houver, o motivo.",
+      ].join("\n\n"),
     });
     for (const id of plano.artigos) {
       const a = artigoDoDono(id, dono.id);

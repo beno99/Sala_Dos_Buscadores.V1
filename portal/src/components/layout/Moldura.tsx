@@ -144,7 +144,6 @@ export function Moldura({
           },
         ]
       : []),
-    { label: "Ajustes", icon: "ajustes" as const, onSelect: () => router.push("/ajustes") },
     ...(admin
       ? [{ label: "Curadoria", icon: "editar" as const, onSelect: () => router.push("/admin") }]
       : []),

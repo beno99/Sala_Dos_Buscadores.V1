@@ -81,9 +81,6 @@ export default async function Perfil() {
             </ul>
           </div>
           <div className="sdb-profilehead__actions">
-            <ButtonLink href={"/ajustes" as Route} variant="secondary" size="sm">
-              Ajustes
-            </ButtonLink>
             <EditarPerfil
               foto={m.enviadas.foto}
               capa={m.enviadas.capa}

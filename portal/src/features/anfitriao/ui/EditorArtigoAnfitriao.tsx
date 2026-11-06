@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alerta } from "@/components/ds/Alerta";
 import { Breadcrumbs } from "@/components/ds/Breadcrumbs";
-import { Button } from "@/components/ds/Button";
+import { Button, ButtonLink } from "@/components/ds/Button";
 import { CampoImagem, type ImagemEnviada } from "@/components/ds/CampoImagem";
 import { CampoTexto } from "@/components/ds/Campos";
 import { RadioGrupo, Select } from "@/components/ds/CamposExtras";
@@ -315,6 +315,22 @@ export function EditorArtigoAnfitriao({
           {!id && (
             <span className="sdb-footnote">O rascunho é salvo sozinho depois que você escreve o título.</span>
           )}
+          {id && !travado && (
+            <Button variant="destructive" size="sm" icon="lixeira" onClick={() => setExcluir(true)}>
+              Excluir artigo
+            </Button>
+          )}
+          {id && (
+            <ButtonLink
+              href={`/anfitriao/salas/${sala.id}/artigos/novo` as Route}
+              variant="primary"
+              size="sm"
+              icon="mais"
+              className="ml-auto"
+            >
+              Criar outro artigo
+            </ButtonLink>
+          )}
         </div>
         <h1 className="sdb-title-1">{titulo}</h1>
         {noAr && (
@@ -614,12 +630,17 @@ export function EditorArtigoAnfitriao({
                     Enviar para revisão
                   </Button>
                 ) : (
-                  <p className="sdb-footnote">
-                    Este artigo vai para a revisão junto com a Sala.{" "}
-                    <Link href={`/anfitriao/salas/${sala.id}` as Route} className="sdb-link">
+                  <div className="flex flex-col gap-3">
+                    <p className="sdb-footnote">Este artigo vai para a revisão junto com a Sala.</p>
+                    <ButtonLink
+                      href={`/anfitriao/salas/${sala.id}` as Route}
+                      variant="primary"
+                      block
+                      icon="enviar"
+                    >
                       Enviar pela Sala
-                    </Link>
-                  </p>
+                    </ButtonLink>
+                  </div>
                 )
               }
             />

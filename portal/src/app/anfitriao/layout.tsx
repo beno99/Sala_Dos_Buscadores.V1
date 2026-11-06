@@ -80,7 +80,7 @@ function AcessoRestrito({ admin }: { admin: boolean }) {
         <Alerta
           title="Esta área é dos anfitriões"
           actions={
-            <ButtonLink href={"/ajustes" as Route} variant="secondary" size="sm">
+            <ButtonLink href={"/seja-anfitriao" as Route} variant="secondary" size="sm">
               Quero ser anfitrião
             </ButtonLink>
           }

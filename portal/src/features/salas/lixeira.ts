@@ -10,7 +10,17 @@ export interface PedidoLixeiraSala {
   quando: string;
   auditoriaId: string;
 }
-export class ErroLixeiraSala extends Error {}
+export class ErroLixeiraSala extends Error {
+  constructor(mensagem: string) {
+    super(mensagem);
+    this.name = "ErroLixeiraSala";
+  }
+}
+
+/* instanceof falha quando o módulo é duplicado entre chunks do servidor; o nome da classe não muda. */
+export function ehErroLixeiraSala(erro: unknown): erro is ErroLixeiraSala {
+  return erro instanceof Error && erro.name === "ErroLixeiraSala";
+}
 
 export interface PedidoExclusaoPermanenteSala {
   id: string;

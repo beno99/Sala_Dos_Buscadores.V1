@@ -15,7 +15,6 @@ import { ModalConfirmacao } from "@/components/ds/Modal";
 import { TabelaDados } from "@/components/ds/TabelaDados";
 import { useToast } from "@/components/ds/Toast";
 import type { StatusEditorial } from "@/data/types";
-import { AcaoLixeiraSala } from "@/features/salas/AcaoLixeiraSala";
 import { formatarData } from "@/lib/texto";
 import { enviarSalaAcao, retirarDoArAcao, salvarSalaAcao } from "@/server/anfitriao/acoes";
 import { AvisoSaida, focarCampo } from "../../admin/ui/AvisoSaida";
@@ -186,16 +185,6 @@ export function EditorSala({
           {edicao.conflito}
         </Alerta>
       )}
-      <div className="sdb-row">
-        {id && (
-          <AcaoLixeiraSala
-            id={id}
-            nome={form.nome}
-            destino={"/anfitriao" as Route}
-            aoConcluir={() => setSujo(false)}
-          />
-        )}
-      </div>
 
       {status === "reprovado" && ultimoMotivo && (
         <Alerta variant="warning" title="Atenção: a curadoria pediu ajustes nesta Sala">

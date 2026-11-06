@@ -132,16 +132,16 @@ export default function PainelCuradoria() {
             <thead>
               <tr>
                 <th scope="col">Sala</th>
-                <th scope="col" className="sdb-table__num">
+                <th scope="col" className="sdb-table__num !text-right max-[719px]:!text-left">
                   Publicados
                 </th>
-                <th scope="col" className="sdb-table__num">
+                <th scope="col" className="sdb-table__num !text-right max-[719px]:!text-left">
                   Rascunhos
                 </th>
-                <th scope="col" className="sdb-table__num">
+                <th scope="col" className="sdb-table__num !text-right max-[719px]:!text-left">
                   Arquivados
                 </th>
-                <th scope="col" className="sdb-table__num">
+                <th scope="col" className="sdb-table__num !text-right max-[719px]:!text-left">
                   Vídeos
                 </th>
                 <th scope="col">
@@ -157,16 +157,16 @@ export default function PainelCuradoria() {
                       <Link href={`/admin/salas/${s.sala}` as Route}>{s.nome}</Link>
                     </span>
                   </td>
-                  <td data-label="Publicados" className="sdb-table__num">
+                  <td data-label="Publicados" className="sdb-table__num !text-right max-[719px]:!text-left">
                     {s.artigos.publicado}
                   </td>
-                  <td data-label="Rascunhos" className="sdb-table__num">
+                  <td data-label="Rascunhos" className="sdb-table__num !text-right max-[719px]:!text-left">
                     {s.artigos.rascunho}
                   </td>
-                  <td data-label="Arquivados" className="sdb-table__num">
+                  <td data-label="Arquivados" className="sdb-table__num !text-right max-[719px]:!text-left">
                     {s.artigos.arquivado}
                   </td>
-                  <td data-label="Vídeos" className="sdb-table__num">
+                  <td data-label="Vídeos" className="sdb-table__num !text-right max-[719px]:!text-left">
                     {s.videos}
                   </td>
                   <td className="sdb-table__go" aria-hidden="true">
@@ -189,7 +189,7 @@ export default function PainelCuradoria() {
             <thead>
               <tr>
                 <th scope="col">Proveniência</th>
-                <th scope="col" className="sdb-table__num">
+                <th scope="col" className="sdb-table__num !text-right max-[719px]:!text-left">
                   Artigos
                 </th>
               </tr>
@@ -198,7 +198,7 @@ export default function PainelCuradoria() {
               {(Object.keys(r.porProveniencia) as Proveniencia[]).map((p) => (
                 <tr key={p}>
                   <td data-label="Proveniência">{PROVENIENCIA_ROTULO[p]}</td>
-                  <td data-label="Artigos" className="sdb-table__num">
+                  <td data-label="Artigos" className="sdb-table__num !text-right max-[719px]:!text-left">
                     {r.porProveniencia[p]}
                   </td>
                 </tr>
