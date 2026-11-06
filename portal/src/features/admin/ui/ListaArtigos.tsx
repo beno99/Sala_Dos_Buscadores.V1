@@ -100,6 +100,7 @@ export function ListaArtigos({ itens, total, pagina, totalPaginas, filtros, sala
           </ButtonLink>
           <Menu
             right
+            up={itens.length > 3 && itens.indexOf(a) >= itens.length - 2}
             titulo={a.titulo || "Artigo"}
             triggerLabel={`Mais ações para ${a.titulo || "artigo sem título"}`}
             triggerClassName="sdb-btn sdb-btn--icon sdb-btn--secondary sdb-btn--sm"
