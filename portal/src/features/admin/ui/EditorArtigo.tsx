@@ -1083,6 +1083,16 @@ export function EditorArtigo({
                     Restaurar como rascunho
                   </Button>
                 )}
+                {form.id && (
+                  <Button
+                    variant="destructive"
+                    block
+                    icon="lixeira"
+                    onClick={() => pedir(alvo(form.id as string), "lixeira")}
+                  >
+                    Mover para a lixeira
+                  </Button>
+                )}
               </div>
               {form.id && !slugTravado && !arquivado && salasDestino.length > 0 && (
                 <Menu
