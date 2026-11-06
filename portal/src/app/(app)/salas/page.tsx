@@ -42,7 +42,7 @@ export default async function SalasPage() {
             cabecalho: (
               <div key="anfitrioes" className="flex flex-col gap-2">
                 <h2 id="titulo-anfitrioes" className="sdb-title-1">
-                  Salas de anfitriões
+                  Salas de Anfitriões
                 </h2>
                 <p className="sdb-footnote m-0 max-w-read">
                   Mantidas por autores convidados e revisadas pela curadoria antes de ir ao ar. Cada Sala
@@ -57,7 +57,7 @@ export default async function SalasPage() {
             cabecalho: (
               <div key="curadoria" className="flex flex-col gap-2">
                 <h2 id="titulo-curadoria" className="sdb-title-1">
-                  Salas da curadoria
+                  Salas da Curadoria
                 </h2>
                 <p className="sdb-footnote m-0">
                   <b className="text-label">{oficiais.length} Salas abertas.</b> “Comece por aqui” vem
