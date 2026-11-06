@@ -232,6 +232,7 @@ export function ListaArtigos({ itens, total, pagina, totalPaginas, filtros, sala
         className={pendente ? "opacity-60 transition-opacity" : "transition-opacity"}
       >
         <TabelaDados
+          classeWrap="!overflow-visible"
           legenda={`Artigos da Sala ${sala.nome} · página ${pagina} de ${totalPaginas}`}
           colunas={colunas}
           itens={itens}

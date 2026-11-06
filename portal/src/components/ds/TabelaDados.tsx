@@ -33,6 +33,8 @@ interface TabelaDadosProps<T> {
   navegacao?: boolean;
   /** Filtros e contagem acima da tabela (`.sdb-table__toolbar`). */
   barra?: ReactNode;
+  /** Classe extra no contêiner (ex.: deixar um menu de ações sair da tabela). */
+  classeWrap?: string;
 }
 
 /**
@@ -52,6 +54,7 @@ export function TabelaDados<T>({
   vazio,
   navegacao,
   barra,
+  classeWrap,
 }: TabelaDadosProps<T>) {
   const selecao = Boolean(selecionados && onSelecionar);
   const todos = itens.length > 0 && itens.every((i) => selecionados?.has(chave(i)));
@@ -66,7 +69,7 @@ export function TabelaDados<T>({
   };
 
   return (
-    <div className="sdb-table-wrap">
+    <div className={cx("sdb-table-wrap", classeWrap)}>
       {barra && <div className="sdb-table__toolbar">{barra}</div>}
       <table className={cx("sdb-table", navegacao && "sdb-table--nav")}>
         <caption>{legenda}</caption>
