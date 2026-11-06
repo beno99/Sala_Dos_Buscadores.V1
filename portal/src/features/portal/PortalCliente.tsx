@@ -151,7 +151,7 @@ export function PortalCliente({
       <section className="sdb-home__section sdb-home__salas" aria-labelledby="salas-recomendadas-titulo">
         <Cabecalho
           id="salas-recomendadas-titulo"
-          titulo="Encontre sua Sala de estudo"
+          titulo="Encontre sua Sala de Estudo"
           acao="Ver todas as Salas"
           href="/salas"
         />
@@ -208,7 +208,7 @@ export function PortalCliente({
       </section>
       <section className="sdb-home__assistant" aria-labelledby="home-assistente">
         <div>
-          <h2 id="home-assistente">Assistente do acervo</h2>
+          <h2 id="home-assistente">Assistente do Acervo</h2>
           <p>Faça uma pergunta, conecte perspectivas e consulte as fontes das Salas.</p>
         </div>
         <ButtonLink href="/assistente" variant="secondary" icon="assistente">

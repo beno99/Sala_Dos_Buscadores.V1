@@ -14,7 +14,7 @@ const COLUNAS: { titulo: string; links: { rotulo: string; href: string }[] }[] =
   {
     titulo: "Participe",
     links: [
-      { rotulo: "Quero ser Anfitrião", href: "/seja-anfitriao" },
+      { rotulo: "Quero ser Anfitrião", href: "/cadastro/anfitriao" },
       { rotulo: "Perguntas frequentes", href: "/sobre" },
       { rotulo: "Contato", href: "mailto:contato@asaladosbuscadores.com.br" },
     ],
