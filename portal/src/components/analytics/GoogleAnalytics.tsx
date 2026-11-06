@@ -5,7 +5,7 @@ import Script from "next/script";
 import { useEffect, useRef } from "react";
 import { deveMedirCaminho } from "@/features/analitica/regras/rastreio";
 
-const ID_MEDICAO = "G-Q8Q258867V";
+const ID_MEDICAO = "G-JZNRTQR4JH";
 
 declare global {
   interface Window {
