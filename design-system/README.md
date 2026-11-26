@@ -105,7 +105,7 @@ O que é copiado para o portal fica explícito em `portal/scripts/sync-design-sy
 | --- | --- |
 | [IconeVolume](components/IconeVolume/README.md) · [exemplo](exemplos/IconeVolume.html) | Ícones neutros em camadas, com sombra e detalhes da marca, para orientar em estados e diálogos. |
 | [Arco](components/Arco/README.md) · [exemplo](exemplos/Arco.html) | O arco com escada de degraus é o símbolo da marca: a porta aberta e a escada que cada pessoa sobe sozinha. |
-| [Iconografia](components/Iconografia/README.md) · [exemplo](exemplos/Iconografia.html) | Phosphor Regular, com Fill nos controles ativos; ícones incorporados, sem dependência de rede. |
+| [Iconografia](components/Iconografia/README.md) · [exemplo](exemplos/Iconografia.html) | Ícones da Sala (planos e monocromáticos, opacidade de 60% em repouso e 100% na interação pelo controle pai) e Phosphor Regular no restante; incorporados, sem dependência de rede. |
 | [Materiais](components/Materiais/README.md) · [exemplo](exemplos/Materiais.html) | Duas camadas, como no Liquid Glass da Apple: a camada de conteúdo usa materiais (fino, regular, espesso); a camada funcional, que flutua sobre o conteúdo, usa vidro. |
 | [Movimento](components/Movimento/README.md) · [exemplo](exemplos/Movimento.html) | Movimento a serviço da resposta: começa no toque, parte do valor atual e pode ser interrompido. |
 | [Proporcao](components/Proporcao/README.md) · [exemplo](exemplos/Proporcao.html) | Quanto de cada cor aparece em uma tela e quais pares de texto são permitidos. |

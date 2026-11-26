@@ -45,3 +45,5 @@ O card recebe somente imagemCard. O banner fica exclusivo da página da Sala; au
 ## Sala de Anfitrião (02/11/2026)
 
 `.sala--host` acrescenta detalhe dourado na moldura; o selo diz **Sala de Anfitrião**, e `.sala__signature` traz “Por” e nome público com link para o perfil existente. Cor nunca é a única distinção. Ausência de assinatura confirmada não autoriza inventar nome. O selo e a revisão não transferem a autoria à Curadoria.
+
+O marcador Salvar usa a família plana de Iconografia (`data-icon="salvar"` / `<Icon name="salvar" />`): recorte transparente, opacidade 60% / 100%, mesma geometria, sem compressão do botão. O fundo selecionado continua arredondado e recebe primeiro plano grafite.

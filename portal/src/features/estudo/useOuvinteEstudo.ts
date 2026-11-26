@@ -23,7 +23,7 @@ export function useOuvinteEstudo() {
       if (r.mostrarNiveis) {
         for (const id of r.novas) {
           const g = GEMAS.find((x) => x.codigo === id);
-          if (g) toast(`Gema da Jornada: ${g.nome} · ${g.modalidade}.`, { icon: "trilha" });
+          if (g) toast(`Gema da Jornada: ${g.nome} · ${g.modalidade}.`, { icon: "jornada" });
         }
       }
       if (r.mudouResumo) router.refresh();

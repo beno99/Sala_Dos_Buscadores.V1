@@ -102,6 +102,17 @@ const PARES_AREIA = [
   ["accent", "text-selection", "material-thick"],
 ];
 
+// Ícones planos: compõe também a opacidade de repouso (60%) antes de conferir 3:1.
+// [cor, camada, base]: a camada é composta sobre a base, e a base sobre o canvas. O desabilitado é informativo.
+const ICONES_SUPERFICIES = [["bg-canvas", "bg-canvas"], ["material-regular", "bg-canvas"], ["fill", "material-regular"], ["float-fill", "bg-canvas"], ["nav-fill", "bg-canvas"], ["card-warm", "bg-canvas"]];
+const ICONES = [
+  ...["icon-color", "icon-color-hover", "icon-color-selected", "icon-color-disabled"].flatMap((cor) => ICONES_SUPERFICIES.map(([camada, base]) => [cor, camada, base])),
+  // Selecionado sobre o indicador do controle: item atual da lateral, aba atual da barra, cápsula accent-fill.
+  ["icon-color-selected", "nav-active-fill", "nav-fill"],
+  ["icon-color-selected", "fill", "float-fill"],
+  ["icon-color-on-accent", "accent-fill", "bg-canvas"],
+];
+
 let falhas = 0;
 for (const { id } of tokens.color.themes) {
   const canvas = rgba(bruto("bg-canvas", id));
@@ -144,10 +155,20 @@ for (const { id } of tokens.color.themes) {
     if (r < 4.5) falhas++;
     linhas.push(`${r >= 4.5 ? "  " : "✗ "}${texto.padEnd(16)} sobre ${camada} (em ${base}) ${r.toFixed(2)}`);
   }
+  for (const [cor, camada, base] of ICONES) {
+    const informativo = cor === "icon-color-disabled";
+    const f = sobre(rgba(bruto(camada, id)), sobre(rgba(bruto(base, id)), canvas));
+    const tinta = rgba(bruto(cor, id));
+    tinta[3] *= cor === "icon-color" || informativo ? 0.60 : 1;
+    const r = razao(sobre(tinta, f), f);
+    const ok = informativo || r >= 3;
+    if (!ok) falhas++;
+    linhas.push(`${ok ? "  " : "✗ "}${cor.padEnd(20)} sobre ${camada} (em ${base}) ${r.toFixed(2)}${informativo ? " (desabilitado, informativo)" : " (ícone, mínimo 3:1)"}`);
+  }
   console.log(`\n${id}\n${linhas.join("\n")}`);
 }
 if (falhas) {
-  console.error(`\n${falhas} par(es) abaixo de 4,5:1.`);
+  console.error(`\n${falhas} par(es) abaixo do mínimo (4,5:1 texto, 3:1 ícone).`);
   process.exit(1);
 }
-console.log("\nTodos os pares de texto passam AA (4,5:1).");
+console.log("\nTodos os pares de texto passam AA (4,5:1) e as cores de ícone passam 3:1.");

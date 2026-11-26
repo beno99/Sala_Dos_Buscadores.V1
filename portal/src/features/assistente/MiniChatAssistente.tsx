@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { AvisoNeutralidade } from "@/components/ds/AvisoNeutralidade";
+import { Icon } from "@/components/ds/Icon";
 import { PausarOrbe } from "@/components/ds/OrbeAssistente";
 import { useConversa } from "./ConversaProvider";
 import { MensagemAssistente } from "./MensagemAssistente";
@@ -121,9 +122,7 @@ export function MiniChatAssistente({
           aria-label="Fechar assistente"
           onClick={onFechar}
         >
-          <svg viewBox="0 0 256 256" aria-hidden="true">
-            <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" />
-          </svg>
+          <Icon name="fechar" />
         </button>
       </header>
 

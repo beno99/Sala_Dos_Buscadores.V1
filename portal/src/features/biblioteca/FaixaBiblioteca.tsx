@@ -3,6 +3,7 @@
 import { type ReactNode, useState } from "react";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
+import { FiltrosTema } from "@/components/ds/FiltrosTema";
 import type { TemaSlug } from "@/data/types";
 import { cx } from "@/lib/cx";
 
@@ -51,7 +52,7 @@ export function FaixaBiblioteca({
   );
 
   return (
-    <section className="flex flex-col gap-5" aria-labelledby={`${id}-titulo`}>
+    <section className="flex min-w-0 flex-col gap-5" aria-labelledby={`${id}-titulo`}>
       <header className="flex flex-col gap-1">
         <h2 id={`${id}-titulo`} className="sdb-title-1 m-0">
           {titulo}
@@ -59,11 +60,9 @@ export function FaixaBiblioteca({
         <p className="sdb-footnote m-0">{legenda}</p>
       </header>
       {comItens.length > 1 && (
-        <div
-          className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
-          style={{ gap: 8 }}
-          role="group"
-          aria-label={`Filtrar ${rotuloItens} por tema`}
+        <FiltrosTema
+          className="border-x-0 border-t-0 border-b border-solid border-separator pb-5"
+          rotulo={`Filtrar ${rotuloItens} por tema`}
         >
           {comItens.map((t) => (
             <Chip
@@ -76,7 +75,7 @@ export function FaixaBiblioteca({
               {t.nome}
             </Chip>
           ))}
-        </div>
+        </FiltrosTema>
       )}
       <p className="sdb-sr" aria-live="polite">
         {escolhido ? `${visiveis.length} ${rotuloItens} sobre ${escolhido.nome.toLowerCase()}.` : ""}

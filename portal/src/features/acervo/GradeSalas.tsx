@@ -4,6 +4,7 @@ import { type ReactNode, useState } from "react";
 import { CardSala } from "@/components/ds/CardSala";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
+import { FiltrosTema } from "@/components/ds/FiltrosTema";
 import { Icon } from "@/components/ds/Icon";
 import type { SalaResumo } from "@/data/repositorio";
 import type { TemaSlug } from "@/data/types";
@@ -42,8 +43,8 @@ export function GradeSalas({
   const visiveis = filtrar(salas);
   const escolhido = temas.find((t) => t.slug === tema);
   return (
-    <div className="flex flex-col gap-9">
-      <div className="flex flex-col gap-5">
+    <div className="flex min-w-0 flex-col gap-9">
+      <div className="flex min-w-0 flex-col gap-5">
         {salas.length > 1 && (
           <form className="sdb-searchbar" role="search" onSubmit={(e) => e.preventDefault()}>
             <div className="sdb-searchbar__row">
@@ -64,11 +65,9 @@ export function GradeSalas({
           </form>
         )}
         {temas.length > 0 && (
-          <div
-            className="sdb-row border-x-0 border-t-0 border-b border-solid border-separator pb-5"
-            style={{ gap: 8 }}
-            role="group"
-            aria-label="Filtrar Salas por tema"
+          <FiltrosTema
+            className="border-x-0 border-t-0 border-b border-solid border-separator pb-5"
+            rotulo="Filtrar Salas por tema"
           >
             {temas.map((t) => (
               <Chip
@@ -81,7 +80,7 @@ export function GradeSalas({
                 {t.nome}
               </Chip>
             ))}
-          </div>
+          </FiltrosTema>
         )}
       </div>
       <p className="sdb-sr" aria-live="polite">
@@ -94,7 +93,7 @@ export function GradeSalas({
           return (
             <section
               key={g.id}
-              className="flex flex-col gap-5"
+              className="flex min-w-0 flex-col gap-5"
               aria-labelledby={g.cabecalho ? `titulo-${g.id}` : undefined}
             >
               {g.cabecalho}

@@ -85,14 +85,14 @@ function itens(caminho: string, c: ContagensAnfitriao): ItemNavegacao[] {
     {
       href: "/anfitriao/conversa" as Route,
       rotulo: "Conversa com a curadoria",
-      icone: "comunidade",
+      icone: "mensagens",
       ativo: em("/anfitriao/conversa"),
       separarAntes: true,
     },
     {
       href: "/comunidade" as Route,
       rotulo: "Comunidade",
-      icone: "comunidade",
+      icone: "grupo",
       ativo: false,
     },
     {

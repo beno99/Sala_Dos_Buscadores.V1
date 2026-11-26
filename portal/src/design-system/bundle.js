@@ -150,10 +150,45 @@
   };
   /* ICONES:FIM */
 
+  /* ICONES-SALA:INICIO Gerado por scripts/build.mjs de components/Iconografia/sala.json. */
+  var D = {
+    inicio: { fill: "<path d=\"M48 224 V104 A80 80 0 0 1 208 104 V224 H180 V104 A52 52 0 0 0 76 104 V224 Z\"/><path d=\"M92 92 L156 72 V224 L92 204 Z M132 144 H144 V168 H132 Z\"/>", line: "" },
+    salas: { fill: "<path d=\"M72 32 H204 Q224 32 224 52 V176 H196 V60 H72 Z\"/><rect x=\"32\" y=\"80\" width=\"144\" height=\"144\" rx=\"16\"/>", line: "" },
+    artigo: { fill: "<path d=\"M68 28 H144 V92 H208 V208 Q208 224 192 224 H68 Q48 224 48 204 V48 Q48 28 68 28 Z M80 116 V136 H176 V116 Z M80 152 V172 H176 V152 Z M80 188 V208 H140 V188 Z\"/><path d=\"M160 28 L208 76 H160 Z\"/>", line: "" },
+    video: { fill: "<path d=\"M48 48 H208 a12 12 0 0 1 12 12 V84 H36 V60 a12 12 0 0 1 12 -12 Z M88 48 L68 84 H96 L116 48 Z M148 48 L128 84 H156 L176 48 Z\"/><path d=\"M60 100 H196 a24 24 0 0 1 24 24 V200 a24 24 0 0 1 -24 24 H60 a24 24 0 0 1 -24 -24 V124 a24 24 0 0 1 24 -24 Z M114 134 L158 162 L114 190 Z\"/>", line: "" },
+    biblioteca: { fill: "<path d=\"M120 68 C96 52 64 48 32 52 V196 C64 192 96 196 120 212 Z\"/><path d=\"M136 68 C160 52 192 48 224 52 V196 C192 192 160 196 136 212 Z\"/>", line: "" },
+    destaques: { fill: "<path d=\"M128 24 L158 88 L228 98 L177 148 L189 220 L128 186 L67 220 L79 148 L28 98 L98 88 Z\"/>", line: "" },
+    anfitrioes: { fill: "<path d=\"M68 32 H188 a28 28 0 0 1 28 28 V196 a28 28 0 0 1 -28 28 H68 a28 28 0 0 1 -28 -28 V60 a28 28 0 0 1 28 -28 Z M78 58 H178 a12 12 0 0 1 12 12 V186 a12 12 0 0 1 -12 12 H78 a12 12 0 0 1 -12 -12 V70 a12 12 0 0 1 12 -12 Z\"/><circle cx=\"128\" cy=\"102\" r=\"24\"/><path d=\"M86 192 Q90 146 128 146 Q166 146 170 192 Z\"/>", line: "" },
+    grupo: { fill: "<circle cx=\"128\" cy=\"84\" r=\"28\"/><path d=\"M76 214 V196 a52 52 0 0 1 104 0 V214 Z\"/><circle cx=\"54\" cy=\"106\" r=\"20\"/><circle cx=\"202\" cy=\"106\" r=\"20\"/><path d=\"M20 202 V190 a30 30 0 0 1 30 -30 H58 V202 Z\"/><path d=\"M236 202 V190 a30 30 0 0 0 -30 -30 H198 V202 Z\"/>", line: "" },
+    trilha: { fill: "<path d=\"M56 224 V96 A72 72 0 0 1 200 96 V224 H176 V96 A48 48 0 0 0 80 96 V224 Z\"/><path d=\"M112 180 H144 L160 224 H96 Z\"/>", line: "" },
+    estante: { fill: "<path d=\"M64 60 H192 a12 12 0 0 1 12 12 V76 a12 12 0 0 1 -12 12 H64 a12 12 0 0 1 -12 -12 V72 a12 12 0 0 1 12 -12 Z\"/><path d=\"M60 104 H196 a24 24 0 0 1 24 24 V196 a24 24 0 0 1 -24 24 H60 a24 24 0 0 1 -24 -24 V128 a24 24 0 0 1 24 -24 Z M110 138 H146 a10 10 0 0 1 10 10 V148 a10 10 0 0 1 -10 10 H110 a10 10 0 0 1 -10 -10 V148 a10 10 0 0 1 10 -10 Z\"/>", line: "" },
+    jornada: { fill: "<rect x=\"52\" y=\"108\" width=\"52\" height=\"72\" rx=\"26\"/><rect x=\"58\" y=\"190\" width=\"40\" height=\"38\" rx=\"19\"/><rect x=\"152\" y=\"28\" width=\"52\" height=\"72\" rx=\"26\"/><rect x=\"158\" y=\"110\" width=\"40\" height=\"38\" rx=\"19\"/>", line: "" },
+    comparar: { fill: "<path d=\"M54 48 H98 a22 22 0 0 1 22 22 V186 a22 22 0 0 1 -22 22 H54 a22 22 0 0 1 -22 -22 V70 a22 22 0 0 1 22 -22 Z M61 84 H91 a9 9 0 0 1 9 9 V93 a9 9 0 0 1 -9 9 H61 a9 9 0 0 1 -9 -9 V93 a9 9 0 0 1 9 -9 Z M61 118 H75 a9 9 0 0 1 9 9 V127 a9 9 0 0 1 -9 9 H61 a9 9 0 0 1 -9 -9 V127 a9 9 0 0 1 9 -9 Z\"/><path d=\"M158 48 H202 a22 22 0 0 1 22 22 V186 a22 22 0 0 1 -22 22 H158 a22 22 0 0 1 -22 -22 V70 a22 22 0 0 1 22 -22 Z M165 84 H195 a9 9 0 0 1 9 9 V93 a9 9 0 0 1 -9 9 H165 a9 9 0 0 1 -9 -9 V93 a9 9 0 0 1 9 -9 Z M165 118 H179 a9 9 0 0 1 9 9 V127 a9 9 0 0 1 -9 9 H165 a9 9 0 0 1 -9 -9 V127 a9 9 0 0 1 9 -9 Z\"/>", line: "" },
+    assistente: { fill: "<path d=\"M76 44 H180 a40 40 0 0 1 40 40 V140 a40 40 0 0 1 -40 40 H116 L76 216 V180 a40 40 0 0 1 -40 -40 V84 a40 40 0 0 1 40 -40 Z M90 90 H166 a10 10 0 0 1 10 10 V100 a10 10 0 0 1 -10 10 H90 a10 10 0 0 1 -10 -10 V100 a10 10 0 0 1 10 -10 Z M90 126 H130 a10 10 0 0 1 10 10 V136 a10 10 0 0 1 -10 10 H90 a10 10 0 0 1 -10 -10 V136 a10 10 0 0 1 10 -10 Z\"/>", line: "" },
+    mensagens: { fill: "<path d=\"M94 40 H206 a18 18 0 0 1 18 18 V130 a18 18 0 0 1 -18 18 H194 V78 H76 V58 a18 18 0 0 1 18 -18 Z\"/><path d=\"M50 92 H162 a18 18 0 0 1 18 18 V194 a18 18 0 0 1 -18 18 H50 a18 18 0 0 1 -18 -18 V110 a18 18 0 0 1 18 -18 Z M50 110 L106 148 L162 110 V134 L106 172 L50 134 Z\"/>", line: "" },
+    curadoria: { fill: "<path d=\"M72 48 H184 a24 24 0 0 1 24 24 V200 a24 24 0 0 1 -24 24 H72 a24 24 0 0 1 -24 -24 V72 a24 24 0 0 1 24 -24 Z M80 48 V62 a14 14 0 0 0 14 14 H162 a14 14 0 0 0 14 -14 V48 Z M76 116 L110 150 L176 84 L176 124 L110 190 L76 156 Z\"/><rect x=\"94\" y=\"26\" width=\"68\" height=\"34\" rx=\"12\"/>", line: "" },
+    sair: { fill: "<path d=\"M140 36 H64 a24 24 0 0 0 -24 24 V196 a24 24 0 0 0 24 24 H140 V192 H72 V64 H140 Z\"/><path d=\"M104 112 H168 V80 L224 128 L168 176 V144 H104 Z\"/>", line: "" },
+    reticencias: { fill: "<circle cx=\"60\" cy=\"128\" r=\"22\"/><circle cx=\"128\" cy=\"128\" r=\"22\"/><circle cx=\"196\" cy=\"128\" r=\"22\"/>", line: "" },
+    busca: { fill: "<path d=\"M40 112 a72 72 0 1 0 144 0 a72 72 0 1 0 -144 0 Z M68 112 a44 44 0 1 0 88 0 a44 44 0 1 0 -88 0 Z\"/><path d=\"M181.3 158.7 L225.3 202.7 A16 16 0 0 1 202.7 225.3 L158.7 181.3 Z\"/>", line: "" },
+    tema: { fill: "<path d=\"M40 128 A88 88 0 1 1 216 128 A88 88 0 1 1 40 128 Z M128 64 A64 64 0 0 1 128 192 Z\"/>", line: "" },
+    pessoa: { fill: "<path d=\"M40 128 A88 88 0 1 1 216 128 A88 88 0 1 1 40 128 Z M100 98 A28 28 0 1 0 156 98 A28 28 0 1 0 100 98 Z M78 176 Q88 146 128 146 Q168 146 178 176 Q158 196 128 196 Q98 196 78 176 Z\"/>", line: "" },
+    voltar: { fill: "<path d=\"M36 128 L108 60 V104 H204 a16 16 0 0 1 16 16 V136 a16 16 0 0 1 -16 16 H108 V196 Z\"/>", line: "" },
+    fechar: { fill: "<path d=\"M72.5 55.5 L128 111 L183.5 55.5 L200.5 72.5 L145 128 L200.5 183.5 L183.5 200.5 L128 145 L72.5 200.5 L55.5 183.5 L111 128 L55.5 72.5 Z\"/>", line: "" },
+    salvar: { fill: "<path d=\"M80 40 H176 a16 16 0 0 1 16 16 V216 L128 176 L64 216 V56 a16 16 0 0 1 16 -16 Z\"/>", line: "" },
+    leitura: { fill: "<path d=\"M120 68 C96 52 64 48 32 52 V196 C64 192 96 196 120 212 Z\"/><path d=\"M136 68 C160 52 192 48 224 52 V196 C192 192 160 196 136 212 Z M160 72 V144 L180 130 L200 144 V72 Z\"/>", line: "" }
+  };
+  /* ICONES-SALA:FIM */
+
+  /* Família plana. A classe duo permanece como identificador compatível, sem duas camadas. */
+  function duo(name) {
+    return '<g class="sdb-icon__duo" fill="currentColor" fill-rule="evenodd">' + D[name].fill + '</g>';
+  }
+
   /* Phosphor: peso regular e, por baixo, o preenchido; o CSS mostra o preenchido no controle ativo. */
   function icon(name, cls) {
+    if (D[name]) return '<svg class="sdb-icon sdb-icon--duo ' + (cls || "") + '" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet" fill="currentColor" aria-hidden="true" focusable="false">' + duo(name) + "</svg>";
     if (!P[name]) name = "info";
-    return '<svg class="sdb-icon ' + (cls || "") + '" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><g class="sdb-icon__r">' + P[name] + '</g><g class="sdb-icon__f">' + PF[name] + "</g></svg>";
+    return '<svg class="sdb-icon ' + (cls || "") + '" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet" fill="currentColor" aria-hidden="true" focusable="false"><g class="sdb-icon__r">' + P[name] + '</g><g class="sdb-icon__f">' + PF[name] + "</g></svg>";
   }
 
   function arc(opts) {
@@ -190,11 +225,77 @@
     });
     Array.prototype.forEach.call(root.querySelectorAll("[data-sidenav-store]"), restoreSidenav);
     Array.prototype.forEach.call(root.querySelectorAll("[data-sdb-carousel]"), syncCarousel);
+    Array.prototype.forEach.call(root.querySelectorAll("[data-sdb-chipfilters]"), initChipFilters);
     Array.prototype.forEach.call(root.querySelectorAll("[data-sdb-banner]"), initBanner);
     Array.prototype.forEach.call(root.querySelectorAll("[data-sdb-steps]"), function (st) { showStep(st, 0, false); });
     Array.prototype.forEach.call(root.querySelectorAll("[data-share]"), syncShare);
     Array.prototype.forEach.call(root.querySelectorAll(".sdb-fmt"), initFormatacao);
     syncTopbars();
+  }
+
+  // ChipTema › filtros horizontais; não interfere na rolagem nativa.
+  function initChipFilters(root) {
+    if (root._chipFilters) return;
+    var rail = root.querySelector(".sdb-chiprow--filters");
+    var previous = root.querySelector("[data-chipfilters-prev]");
+    var next = root.querySelector("[data-chipfilters-next]");
+    if (!rail || !previous || !next) return;
+    root._chipFilters = true;
+    var gesture = null;
+    function measure() {
+      var max = rail.scrollWidth - rail.clientWidth;
+      root.setAttribute("data-overflow", max > 1 ? "true" : "false");
+      previous.disabled = rail.scrollLeft <= 1;
+      next.disabled = rail.scrollLeft >= max - 1;
+    }
+    function reveal(target) {
+      var chip = target.closest(".sdb-chip");
+      if (!chip || !rail.contains(chip)) return;
+      var area = rail.getBoundingClientRect();
+      var item = chip.getBoundingClientRect();
+      var padding = parseFloat(getComputedStyle(rail).paddingInlineStart);
+      var left = item.left - area.left - padding;
+      var right = item.right - area.right + padding;
+      if (left < 0 && right > 0) return;
+      var delta = left < 0 ? left : right > 0 ? right : 0;
+      if (delta) rail.scrollBy({ left: delta, behavior: "instant" });
+    }
+    function advance(direction) {
+      rail.scrollBy({ left: direction * rail.clientWidth * 0.8, behavior: reducedMotion() ? "instant" : "smooth" });
+    }
+    previous.addEventListener("click", function () { advance(-1); });
+    next.addEventListener("click", function () { advance(1); });
+    rail.addEventListener("scroll", measure, { passive: true });
+    rail.addEventListener("pointerdown", function (e) {
+      gesture = { x: e.clientX, y: e.clientY, scroll: rail.scrollLeft, dragged: false };
+    }, { passive: true });
+    rail.addEventListener("pointermove", function (e) {
+      if (gesture && Math.hypot(e.clientX - gesture.x, e.clientY - gesture.y) > 8) gesture.dragged = true;
+    }, { passive: true });
+    rail.addEventListener("pointercancel", function () { if (gesture) gesture.dragged = true; }, { passive: true });
+    rail.addEventListener("keydown", function () { gesture = null; }, true);
+    rail.addEventListener("focusin", function (e) {
+      if (!gesture || e.target.matches(":focus-visible")) reveal(e.target);
+    });
+    rail.addEventListener("click", function (e) {
+      var current = gesture;
+      gesture = null;
+      if (e.detail > 0 && current && (current.dragged || Math.abs(rail.scrollLeft - current.scroll) > 8)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      reveal(e.target);
+    }, true);
+    var resize = new ResizeObserver(measure);
+    function observe() {
+      resize.disconnect();
+      resize.observe(rail);
+      Array.prototype.forEach.call(rail.children, function (child) { resize.observe(child); });
+      measure();
+    }
+    new MutationObserver(observe).observe(rail, { childList: true, subtree: true, characterData: true });
+    observe();
   }
 
   function reducedMotion() {
@@ -1067,7 +1168,8 @@ function initFormatacao(bar) {
 
   window.SalaBuscadores = {
     icon: icon,
-    icons: Object.keys(P),
+    icons: Object.keys(P).concat(Object.keys(D).filter(function (n) { return !P[n]; })),
+    duoIcons: Object.keys(D),
     arc: arc,
     hydrate: hydrate,
     toast: toast,

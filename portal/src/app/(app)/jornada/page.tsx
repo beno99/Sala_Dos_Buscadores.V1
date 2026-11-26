@@ -66,7 +66,7 @@ export default async function MinhaJornada() {
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="sdb-title-2 m-0">{t.nomeTema}</h3>
                     {t.titulo && (
-                      <Badge variant="topic" icon="trilha">
+                      <Badge variant="topic" icon="jornada">
                         {t.titulo.nome} em {t.nomeTema}
                       </Badge>
                     )}
