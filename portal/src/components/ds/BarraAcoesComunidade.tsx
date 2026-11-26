@@ -79,7 +79,7 @@ export function BarraAcoesComunidade({
         disabled={bloqueada}
         onClick={onSalvar}
       >
-        <Icon name="estante" />
+        <Icon name="salvar" />
       </button>
       <div
         id={id}

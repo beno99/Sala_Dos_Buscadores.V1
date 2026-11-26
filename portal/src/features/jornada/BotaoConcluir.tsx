@@ -26,7 +26,7 @@ export function BotaoConcluir({ alvo, concluido: inicial }: { alvo: Alvo; conclu
       <Button
         variant={concluido ? "secondary" : "primary"}
         size={artigo ? undefined : "sm"}
-        icon={concluido ? "check" : "trilha"}
+        icon={concluido ? "check" : "jornada"}
         aria-pressed={concluido}
         onClick={alternar}
       >

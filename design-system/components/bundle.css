@@ -95,6 +95,43 @@ button.sdb-link { padding: 0; border: 0; background: none; font: inherit; font-w
 :is([aria-current="page"], [aria-selected="true"], [aria-pressed="true"]) .sdb-icon__f, .sdb-icon--fill .sdb-icon__f { display: inline; }
 /* Em 12–14 px o regular fica fino demais: um contorno de 8/256 aproxima o peso bold do Phosphor. */
 .sdb-icon--forte path { stroke: currentColor; stroke-width: 8; stroke-linejoin: round; }
+/* Família plana da Sala. O identificador legado duo é mantido por compatibilidade.
+   Cor explícita no SVG: rótulos destacados nunca tingem o desenho. */
+svg:has(> .sdb-icon__duo) {
+  color: var(--sdb-icon-surface, var(--icon-color)) !important;
+  fill: currentColor; stroke: none; opacity: .60;
+  transition: opacity 150ms var(--ease-standard);
+  transform: none !important; scale: none !important; filter: none !important;
+}
+.sdb-icon__duo, .sdb-icon__duo > * { fill: currentColor; fill-rule: evenodd; stroke: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  :where(a[href], button, summary, [role="button"], [role="link"], [role="tab"], [role="menuitem"], [role="menuitemradio"], [role="option"]):hover svg:has(> .sdb-icon__duo) { opacity: 1; }
+}
+:where(a[href], button, summary, [role="button"], [role="link"], [role="tab"], [role="menuitem"], [role="menuitemradio"], [role="option"]):is(:focus-visible, :active) svg:has(> .sdb-icon__duo),
+:is([aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]) svg:has(> .sdb-icon__duo),
+.sdb-icon--fill:has(> .sdb-icon__duo) { opacity: 1; }
+/* A superfície, e não a cor de destaque do rótulo, define o primeiro plano. */
+.sdb-btn--primary { --sdb-icon-surface: var(--on-prominent); }
+:is(.sdb-btn--gold, .sdb-alert--warning .sdb-alert__icon) { --sdb-icon-surface: var(--on-gold); }
+.sdb-btn--warm { --sdb-icon-surface: var(--grafite-profundo); }
+:is(.sdb-btn--destructive, .sdb-alert--error .sdb-alert__icon, .sdb-toast--error .sdb-toast__icon) { --sdb-icon-surface: var(--on-critical); }
+:is(.sdb-toast__icon, .sdb-palette__lead) { --sdb-icon-surface: var(--on-accent); }
+:is(.sdb-video__play, .sala__save) { --sdb-icon-surface: var(--on-media); }
+:is(.sdb-btn--icon[aria-pressed="true"], .sdb-chip:is([aria-pressed="true"], [aria-current="true"], [aria-current="page"]), .sdb-alpha button[aria-pressed="true"]) { --sdb-icon-surface: var(--icon-color-on-accent); }
+/* Controles desabilitados têm prioridade sobre todos os estados, inclusive hover. */
+:where(:disabled, [aria-disabled="true"], fieldset:disabled) svg:has(> .sdb-icon__duo) {
+  color: var(--icon-color-disabled) !important; opacity: .60 !important; transition: none !important;
+}
+/* Não escalar o controle da família ao pressionar; foco e fundo continuam independentes. */
+:where(a, button, summary):has(> svg > .sdb-icon__duo) { transform: none !important; scale: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  svg:has(> .sdb-icon__duo) { transition: none !important; }
+}
+@media (forced-colors: active) {
+  svg:has(> .sdb-icon__duo) { color: CanvasText !important; }
+  :where(:disabled, [aria-disabled="true"]) svg:has(> .sdb-icon__duo) { color: GrayText !important; }
+}
+
 .sdb-arc { display: inline-block; flex: none; width: 30px; height: 40px; color: var(--accent); }
 .sdb-arc--on-grafite { color: #FFFFFF; --sdb-arc-cut: #111313; }
 .sdb-arc--on-bege { color: #390007; --sdb-arc-cut: #F6E7CE; }
@@ -1919,6 +1956,19 @@ label.sdb-option { cursor: pointer; }
 .sdb-chiprow { display: flex; gap: 8px; margin: -2px; padding: 2px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
 .sdb-chiprow::-webkit-scrollbar { display: none; }
 .sdb-chiprow > .sdb-chip { flex: none; }
+
+/* ChipTema › filtros: a variante é opt-in; tags de metadados não mudam. */
+.sdb-chipfilters { display: flex; align-items: center; gap: var(--space-1); min-width: 0; max-width: 100%; }
+.sdb-chiprow--filters { flex: 1 1 auto; flex-wrap: nowrap; min-width: 0; margin: 0; padding: var(--space-2); gap: var(--space-2); scroll-padding-inline: var(--space-2); scroll-behavior: auto; }
+.sdb-chiprow--filters > .sdb-chip { flex: 0 0 auto; white-space: nowrap; min-height: 44px; height: auto; padding-block: var(--space-2); line-height: 1.25; }
+.sdb-chipfilters__nav { display: none; flex: 0 0 auto; }
+.sdb-chipfilters__nav[data-tip]::after { left: 0; transform: none !important; }
+.sdb-chipfilters__nav[data-tip]:last-child::after { left: auto; right: 0; }
+.sdb-chipfilters__nav[data-tip]:not(:hover):not(:focus-visible)::after { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .sdb-chipfilters[data-overflow="true"] > .sdb-chipfilters__nav { display: inline-flex; }
+}
+
 
 /* ---------- Índice A–Z compacto (VerbeteGlossario › --compacto) ---------- */
 .sdb-alpha--compact { flex-wrap: nowrap; justify-content: space-between; gap: 4px; margin: -2px; padding: 2px; overflow-x: auto; scrollbar-width: none; }

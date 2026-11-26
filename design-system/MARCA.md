@@ -142,6 +142,10 @@ Escalas do DNA, para referência: display-xl 96–120 px, display-l 64–80 px, 
 
 ## Referências visuais estudadas
 
+Orientação vigente: os 24 ícones são planos, monocromáticos e preenchidos, com recortes transparentes. Mesma geometria e cor por superfície; apenas a opacidade muda (60% / 100%). Substitui as propostas 3D, duotone e hover dourado.
+
+Referência de linguagem estudada (26/11/2026): a prancha “[WIP] UI ICONS / WEEK 52”, com assinatura Nucleo, enviada pelo usuário. Orienta só a linguagem (formas simples e suaves, massas preenchidas com recortes, poucos traços); os desenhos do sistema são originais e nenhum ativo da prancha foi usado. A prancha conceitual anterior, com símbolos maciços em bordô e dourado, foi rejeitada.
+
 Os moodboards originais (imagens de Duomo App, Talk Sense, Figma Design System, A&B Testing, badges de conquista e apps de anotação) foram usados apenas como referência de linguagem e não fazem parte do sistema. Nenhum componente depende deles. Estão no histórico do git, na pasta `DESIGN SYSTEM/`.
 
 ## Divergências do DNA original

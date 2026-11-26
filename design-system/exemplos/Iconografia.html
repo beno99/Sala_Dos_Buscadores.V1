@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Iconografia · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=170aefaa5903">
-<link rel="stylesheet" href="../components/bundle.css?v=d0a08aab2252">
+<link rel="stylesheet" href="../tokens.css?v=a2d1eb15f51e">
+<link rel="stylesheet" href="../components/bundle.css?v=d7ceafda899a">
 <link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
 
 
@@ -15,21 +15,145 @@
 
 
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=d9c4fde8a155"></script>
+<script src="../components/bundle.js?v=ee5e7c560e51"></script>
 </head>
 <body>
-<div class="sdb-stage">
-  <div id="icon-grid" class="sdb-material sdb-grid" style="--sdb-col:104px;gap:0;padding:8px;border-radius:24px"></div>
-  <p class="sdb-hint">Phosphor, peso Regular; o Fill aparece sozinho no controle ativo. Sem cristais, mandalas, lua, velas, fumaça ou símbolos religiosos.</p>
+<style>
+  /* Só a prévia: hover e pressionado não podem ser congelados em CSS, então a demonstração aplica os mesmos tokens. */
+  .ico-demo-hover svg:has(> .sdb-icon__duo), .is-focus svg:has(> .sdb-icon__duo), .ico-demo-press svg:has(> .sdb-icon__duo) { opacity: 1; }
+  .ico-par { display: flex; flex-wrap: wrap; gap: 16px; }
+  .ico-par > div { display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-radius: 24px; background: var(--bg-canvas); }
+  .ico-par .sdb-icon { width: 32px; height: 32px; }
+  .ico-par > div { flex-wrap: wrap; max-width: 100%; }
+  @media (max-width: 560px) { .ico-par > div { padding: 16px; gap: 8px 12px; } .ico-par .sdb-icon { width: 24px; height: 24px; } }
+  .ico-lateral { max-width: 320px; }
+  .ico-size-32 { width: 32px; height: 32px; }
+  .ico-tema { padding: 24px; border-radius: 24px; background: var(--bg-canvas); color: var(--label); }
+  .ico-tabela { display: grid; grid-template-columns: minmax(96px, 1.2fr) repeat(6, minmax(44px, 1fr)); gap: 8px 4px; align-items: center; justify-items: center; }
+  .ico-tabela > :nth-child(7n + 1) { justify-self: start; }
+  .ico-tamanhos { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+  .ico-tamanhos > div { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 16px; background: var(--material-regular); }
+  .ico-tamanhos > div > span:first-child { display: flex; align-items: flex-end; gap: 16px; color: var(--label); }
+  .ico-temas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px; }
+  .ico-curto { display: none; }
+  @media (max-width: 560px) { .ico-tema { padding: 16px 8px; } .ico-tabela { grid-template-columns: minmax(72px, 1fr) repeat(6, 40px); gap: 8px 0; } .ico-longo { display: none; } .ico-curto { display: inline; } }
+</style>
+<div class="sdb-stage" style="display:flex;flex-direction:column;gap:32px">
+  <section>
+    <p class="sdb-meta">Conjunto da Sala · 20, 24 e 32 px</p>
+    <div id="ico-tamanhos" class="ico-tamanhos"></div>
+    <p class="sdb-hint">Desenhos próprios: massas preenchidas com recortes e cantos suaves, numa só cor. Trilhas é um portal com uma estrada que entra pelo vão; não substitui o arco da marca.</p>
+  </section>
+
+  <section>
+    <p class="sdb-meta">Mesma cor: repouso 60%, interação 100%</p>
+    <div class="ico-par">
+      <div data-theme="solido-claro"><span class="sdb-footnote">Repouso</span><span class="ico-amostra"></span></div>
+      <div data-theme="solido-claro" class="ico-demo-hover"><span class="sdb-footnote">Hover</span><span class="ico-amostra"></span></div>
+      <div data-theme="solido-escuro"><span class="sdb-footnote" style="color:var(--label)">Repouso</span><span class="ico-amostra"></span></div>
+      <div data-theme="solido-escuro" class="ico-demo-hover"><span class="sdb-footnote" style="color:var(--label)">Hover</span><span class="ico-amostra"></span></div>
+    </div>
+    <p class="sdb-hint">A opacidade muda no SVG inteiro: 60% no repouso, 100% na interação. Cor e geometria permanecem iguais. Texto, fundo e foco são independentes.</p>
+  </section>
+
+  <section>
+    <p class="sdb-meta">Estados nos quatro temas</p>
+    <div id="ico-temas" class="ico-temas"></div>
+    <p class="sdb-hint">Hover responde ao botão inteiro somente com mouse. Foco, pressão e seleção ficam a 100%. Experimente Tab, clique e toque; desabilitados não reagem. As colunas de hover, foco e pressão simulam visualmente esses estados.</p>
+  </section>
+
+  <section>
+    <p class="sdb-meta">Navegação lateral</p>
+    <div class="ico-temas">
+      <div class="ico-tema" data-theme="solido-claro" style="background:var(--nav-fill)">
+        <nav class="sdb-sidenav sdb-sidenav--sheet ico-lateral" aria-label="Exemplo de navegação lateral">
+          <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+          <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+          <a class="sdb-sidenav__item" href="#"><span data-icon="jornada"></span><span class="sdb-sidenav__label">Minha Jornada</span></a>
+          <a class="sdb-sidenav__item" href="#"><span data-icon="mensagens"></span><span class="sdb-sidenav__label">Mensagens</span><span class="sdb-sidenav__count">2</span></a>
+          <button class="sdb-sidenav__item" type="button" disabled><span data-icon="curadoria"></span><span class="sdb-sidenav__label">Curadoria (desabilitado)</span></button>
+          <button class="sdb-sidenav__item sdb-sidenav__item--sair" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+        </nav>
+      </div>
+      <div class="ico-tema" data-theme="solido-escuro" style="background:var(--nav-fill)">
+        <nav class="sdb-sidenav sdb-sidenav--sheet ico-lateral" aria-label="Exemplo de navegação lateral, tema escuro">
+          <a class="sdb-sidenav__item" href="#"><span data-icon="inicio"></span><span class="sdb-sidenav__label">Portal</span></a>
+          <a class="sdb-sidenav__item" href="#" aria-current="page"><span data-icon="trilha"></span><span class="sdb-sidenav__label">Trilhas</span></a>
+          <a class="sdb-sidenav__item" href="#"><span data-icon="jornada"></span><span class="sdb-sidenav__label">Minha Jornada</span></a>
+          <a class="sdb-sidenav__item" href="#"><span data-icon="mensagens"></span><span class="sdb-sidenav__label">Mensagens</span><span class="sdb-sidenav__count">2</span></a>
+          <button class="sdb-sidenav__item" type="button" disabled><span data-icon="curadoria"></span><span class="sdb-sidenav__label">Curadoria (desabilitado)</span></button>
+          <button class="sdb-sidenav__item sdb-sidenav__item--sair" type="button"><span data-icon="sair"></span><span class="sdb-sidenav__label">Sair</span></button>
+        </nav>
+      </div>
+    </div>
+    <p class="sdb-hint">O primeiro plano segue a superfície por token explícito, inclusive nos botões preenchidos. Sair preserva seu rótulo de perigo, mas o ícone usa a mesma cor neutra da família.</p>
+  </section>
+
+  <section>
+    <p class="sdb-meta">Barra do celular</p>
+    <div class="ico-temas">
+      <div class="ico-tema" data-theme="solido-claro">
+        <nav class="sdb-tabbar sdb-tabbar--app sdb-tabbar--static" aria-label="Navegação principal (sólido claro)">
+          <a href="#" aria-current="page"><span data-icon="inicio"></span>Portal</a>
+          <a href="#"><span data-icon="biblioteca"></span>Biblioteca</a>
+          <a href="#"><span data-icon="trilha"></span>Trilhas</a>
+          <a href="#"><span data-icon="estante"></span>Estante</a>
+          <button type="button" aria-haspopup="dialog"><span data-icon="reticencias"></span>Mais</button>
+        </nav>
+      </div>
+      <div class="ico-tema" data-theme="solido-escuro">
+        <nav class="sdb-tabbar sdb-tabbar--app sdb-tabbar--static" aria-label="Navegação principal (sólido escuro)">
+          <a href="#"><span data-icon="inicio"></span>Portal</a>
+          <a href="#"><span data-icon="biblioteca"></span>Biblioteca</a>
+          <a href="#" aria-current="page"><span data-icon="trilha"></span>Trilhas</a>
+          <a href="#"><span data-icon="estante"></span>Estante</a>
+          <button type="button" aria-haspopup="dialog"><span data-icon="reticencias"></span>Mais</button>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="sdb-meta">Demais ícones · Phosphor Regular, Fill no ativo</p>
+    <div id="icon-grid" class="sdb-material sdb-grid" style="--sdb-col:104px;gap:0;padding:8px;border-radius:24px"></div>
+    <p class="sdb-hint">Sem cristais, mandalas, lua, velas, fumaça ou símbolos religiosos.</p>
+  </section>
 </div>
-<script>SalaBuscadores.hydrate();
+<script>
+var CONJUNTO = [["inicio", "Portal"], ["salas", "Salas"], ["artigo", "Artigos"], ["video", "Vídeos"], ["biblioteca", "Biblioteca"], ["destaques", "Destaques"], ["anfitrioes", "Anfitriões"], ["grupo", "Comunidade"], ["trilha", "Trilhas"], ["estante", "Estante"], ["jornada", "Minha Jornada"], ["comparar", "Comparar"], ["assistente", "Assistente do acervo"], ["mensagens", "Mensagens"], ["curadoria", "Curadoria"], ["sair", "Sair"], ["reticencias", "Mais"], ["busca", "Busca"], ["tema", "Aparência"], ["pessoa", "Conta"], ["voltar", "Voltar"], ["fechar", "Fechar"], ["salvar", "Salvar"], ["leitura", "Leitura"]];
+var TEMAS = [["solido-claro", "Sólido claro"], ["solido-escuro", "Sólido escuro"], ["vidro-claro", "Vidro claro"], ["vidro-escuro", "Vidro escuro"]];
+var ESTADOS = [["Repouso", "", "Rep."], ["Hover", "ico-demo-hover", "Hover"], ["Foco", "is-focus", "Foco"], ["Pressionado", "ico-demo-press", "Press."], ["Selecionado", "selecionado", "Sel."], ["Desabilitado", "desabilitado", "Desab."]];
+var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+
+document.getElementById("ico-tamanhos").innerHTML = CONJUNTO.map(function (i) {
+  return '<div><span>' + SalaBuscadores.icon(i[0]) + SalaBuscadores.icon(i[0], "sdb-icon--lg") + SalaBuscadores.icon(i[0], "ico-size-32") + '</span><span class="sdb-footnote">' + esc(i[1]) + ' · <code>' + esc(i[0]) + "</code></span></div>";
+}).join("");
+
+document.getElementById("ico-temas").innerHTML = TEMAS.map(function (t) {
+  var cab = '<span class="sdb-footnote" style="font-weight:600">' + esc(t[1]) + "</span>" + ESTADOS.map(function (e) { return '<span class="sdb-footnote" style="font-size:11px;text-align:center" title="' + esc(e[0]) + '"><span class="ico-longo">' + esc(e[0]) + '</span><span class="ico-curto">' + esc(e[2]) + "</span></span>"; }).join("");
+  var linhas = CONJUNTO.map(function (i) {
+    return '<span class="sdb-footnote">' + esc(i[1]) + "</span>" + ESTADOS.map(function (e) {
+      var extra = e[1] === "selecionado" ? ' aria-pressed="true"' : e[1] === "desabilitado" ? " disabled" : "";
+      var cls = e[1] && e[1] !== "selecionado" && e[1] !== "desabilitado" ? " " + e[1] : "";
+      return '<button type="button" class="sdb-btn sdb-btn--icon sdb-btn--secondary' + cls + '"' + extra + ' aria-label="' + esc(i[1] + ", " + e[0].toLowerCase()) + '">' + SalaBuscadores.icon(i[0]) + "</button>";
+    }).join("");
+  }).join("");
+  return '<div class="ico-tema" data-theme="' + t[0] + '"><div class="ico-tabela">' + cab + linhas + "</div></div>";
+}).join("");
+
 var g = document.getElementById("icon-grid");
 SalaBuscadores.icons.forEach(function (n) {
+  if (SalaBuscadores.duoIcons.indexOf(n) >= 0) return;
   var c = document.createElement("div");
   c.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:16px";
   c.innerHTML = SalaBuscadores.icon(n, "sdb-icon--lg") + '<span style="font-size:11px;color:var(--label-secondary)">' + n + "</span>";
   g.appendChild(c);
 });
+Array.prototype.forEach.call(document.querySelectorAll(".ico-amostra"), function (el) {
+  el.innerHTML = ["inicio", "trilha", "biblioteca", "mensagens", "busca", "salvar"].map(function (n) { return SalaBuscadores.icon(n); }).join("");
+  el.style.cssText = "display:flex;flex-wrap:wrap;gap:12px";
+});
+SalaBuscadores.hydrate();
 </script>
 <script src="../components/refined.js?v=5fcfec37f059" defer></script>
 <script>

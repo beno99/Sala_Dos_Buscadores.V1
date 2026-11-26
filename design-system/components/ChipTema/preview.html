@@ -1,4 +1,4 @@
-<!-- @dsCard group="Componentes do acervo" height=280 subtitle="Temas que atravessam as Salas" -->
+<!-- @dsCard group="Componentes do acervo" height=880 subtitle="Temas que atravessam as Salas" -->
 <div class="sdb-stage">
   <div class="sdb-row" style="gap:8px">
     <button class="sdb-chip" type="button" data-toggle aria-pressed="true">Morte <span class="sdb-count">42</span></button>
@@ -18,7 +18,22 @@
   <h2 class="sdb-title-2" style="margin-top:16px">Abas de Sala</h2>
   <div style="max-width:420px"><div class="sdb-chiprow" role="group" aria-label="Sala"><button class="sdb-chip" type="button" aria-pressed="true">Todas <span class="sdb-count">20</span></button><button class="sdb-chip" type="button" aria-pressed="false">Apócrifos <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Nag Hammadi <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Corpus Hermeticum <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Caibalion <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Urântia <span class="sdb-count">4</span></button></div></div>
   <p class="sdb-hint">Seleção única com contagem, em <code>.sdb-chiprow</code>: sem quebra, rola na horizontal quando não cabe. Ordem alfabética, que não indica importância.</p>
-</div>
 <h2 class="sdb-title-2" style="margin-top:16px">Areia (filtro com contagem)</h2>
   <div class="sdb-row" style="gap:8px"><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Morte <span class="sdb-count">6</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">8</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="true">Conhecimento interior <span class="sdb-count">12</span></button></div>
+<h2 class="sdb-title-2">Filtrar Salas por tema · linha horizontal</h2>
+<div class="sdb-chipfilters" data-sdb-chipfilters data-overflow="false">
+  <button class="sdb-btn sdb-btn--secondary sdb-btn--icon sdb-chipfilters__nav" type="button" data-chipfilters-prev data-tip="Temas anteriores" aria-label="Temas anteriores" title="Temas anteriores" aria-controls="temas-salas" disabled><span data-icon="chevronEsquerda"></span></button>
+  <div id="temas-salas" class="sdb-chiprow sdb-chiprow--filters" role="group" aria-label="Filtrar Salas por tema">
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">8</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Morte <span class="sdb-count">6</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="true">Meditação <span class="sdb-count">4</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Origem do universo <span class="sdb-count">12</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Conhecimento interior <span class="sdb-count">9</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Consciência e interpretação dos textos antigos <span class="sdb-count">18</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Tempo <span class="sdb-count">5</span></button>
+  </div>
+  <button class="sdb-btn sdb-btn--secondary sdb-btn--icon sdb-chipfilters__nav" type="button" data-chipfilters-next data-tip="Próximos temas" aria-label="Próximos temas" title="Próximos temas" aria-controls="temas-salas" disabled><span data-icon="chevronDireita"></span></button>
+</div>
+<p class="sdb-hint">Deslize para ver os temas. No desktop, use também os botões anteriores/próximos. Tab alcança cada filtro; Enter ou Espaço alternam sua seleção.</p>
+</div>
 <script>SalaBuscadores.hydrate();</script>

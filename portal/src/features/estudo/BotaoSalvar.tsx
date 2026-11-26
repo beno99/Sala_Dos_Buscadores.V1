@@ -38,13 +38,7 @@ export function BotaoSalvar({
       data-tip={estilo === "card" ? (ativo ? "Tirar da Estante" : "Salvar na Estante") : undefined}
       onClick={() => void alternar(tipo, alvo)}
     >
-      {estilo === "sala" ? (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6.5 4.5h11v15l-5.5-3.75-5.5 3.75z" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <Icon name="estante" size={estilo === "card" ? "sm" : undefined} />
-      )}
+      <Icon name="salvar" size={estilo === "card" ? "sm" : undefined} />
     </button>
   );
 }

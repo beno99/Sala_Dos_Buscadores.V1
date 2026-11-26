@@ -86,6 +86,10 @@ const interfaceFile = join(target, "interface-icons.generated.ts");
 const interfaceIcons = JSON.parse(
   readFileSync(join(source, "components/EstadosInterface/icones.json"), "utf8"),
 );
+// Os nomes listados em Iconografia/sala.json › interface usam o desenho plano da Sala, como no runtime.
+const runtime = carregarRuntime(readFileSync(join(source, "components/bundle.js"), "utf8"));
+const sala = JSON.parse(readFileSync(join(source, "components/Iconografia/sala.json"), "utf8"));
+for (const name of sala.interface ?? []) interfaceIcons[name] = runtime.icon(name);
 const interfaceNodes = Object.fromEntries(
   Object.entries(interfaceIcons).map(([name, svg]) => [
     name,
@@ -99,7 +103,7 @@ if (!existsSync(interfaceFile) || readFileSync(interfaceFile, "utf8") !== interf
 }
 
 const iconsFile = join(target, "icons.generated.ts");
-const icons = generateIcons(readFileSync(join(source, "components/bundle.js"), "utf8"));
+const icons = generateIcons(runtime);
 const current = existsSync(iconsFile) ? readFileSync(iconsFile, "utf8") : "";
 if (current !== icons) {
   if (check) problems.push(`${relative(portal, iconsFile)} está desatualizado`);
@@ -136,12 +140,8 @@ if (problems.length) {
 }
 console.log(check ? "Design system em dia." : "Design system sincronizado.");
 
-/**
- * Executa o bundle.js num contexto isolado com um DOM mínimo, lê
- * `SalaBuscadores.icons` / `SalaBuscadores.icon(nome)` e converte cada SVG
- * numa árvore de nós que o React renderiza sem innerHTML.
- */
-function generateIcons(bundle) {
+/** Executa o bundle.js num contexto isolado com um DOM mínimo e devolve `SalaBuscadores`. */
+function carregarRuntime(bundle) {
   const noop = () => {};
   const document = {
     readyState: "complete",
@@ -154,8 +154,14 @@ function generateIcons(bundle) {
   const sandbox = { window, document, setTimeout: noop, requestAnimationFrame: noop, navigator: {} };
   vm.createContext(sandbox);
   vm.runInContext(bundle, sandbox);
-  const api = sandbox.window.SalaBuscadores;
+  return sandbox.window.SalaBuscadores;
+}
 
+/**
+ * Lê `SalaBuscadores.icons` / `SalaBuscadores.icon(nome)` e converte cada SVG
+ * numa árvore de nós que o React renderiza sem innerHTML.
+ */
+function generateIcons(api) {
   const entries = api.icons.map((name) => {
     const svg = api.icon(name);
     const body = svg.slice(svg.indexOf(">") + 1, svg.lastIndexOf("</svg>"));

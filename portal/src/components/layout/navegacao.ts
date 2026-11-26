@@ -22,14 +22,14 @@ const SECOES: Secao[] = [
   { href: "/videos" as Route, rotulo: "Vídeos", icone: "video", grupo: "Acervo" },
   { href: "/biblioteca" as Route, rotulo: "Biblioteca", icone: "biblioteca", grupo: "Acervo" },
   { href: "/destaques" as Route, rotulo: "Destaques", icone: "destaques", grupo: "Acervo" },
-  { href: "/anfitrioes" as Route, rotulo: "Anfitriões", icone: "anfitriao", grupo: "Acervo" },
-  { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "comunidade", grupo: "Estudo" },
+  { href: "/anfitrioes" as Route, rotulo: "Anfitriões", icone: "anfitrioes", grupo: "Acervo" },
+  { href: "/comunidade" as Route, rotulo: "Comunidade", icone: "grupo", grupo: "Estudo" },
   { href: "/trilhas" as Route, rotulo: "Trilhas", icone: "trilha", grupo: "Estudo" },
   { href: "/estante" as Route, rotulo: "Estante", icone: "estante", grupo: "Estudo" },
-  { href: "/jornada" as Route, rotulo: "Minha Jornada", icone: "trilha", grupo: "Estudo" },
+  { href: "/jornada" as Route, rotulo: "Minha Jornada", icone: "jornada", grupo: "Estudo" },
   { href: "/comparar", rotulo: "Comparar", icone: "comparar", grupo: "Ferramentas" },
   { href: "/assistente", rotulo: "Assistente do acervo", icone: "assistente", grupo: "Ferramentas" },
-  { href: "/mensagens" as Route, rotulo: "Mensagens", icone: "comunidade", grupo: "Conta" },
+  { href: "/mensagens" as Route, rotulo: "Mensagens", icone: "mensagens", grupo: "Conta" },
 ];
 
 const ativa = (href: string, caminho: string) =>
@@ -132,7 +132,7 @@ export function gruposDaLateral(
       contagem: anfitriao.novidades > 0 ? anfitriao.novidades : undefined,
     });
   }
-  if (admin) conta?.itens.push({ rotulo: "Curadoria", icone: "editar", href: "/admin" });
+  if (admin) conta?.itens.push({ rotulo: "Curadoria", icone: "curadoria", href: "/admin" });
   conta?.itens.push({ rotulo: "Sair", icone: "sair", onClick: sair, perigo: true });
   return grupos;
 }

@@ -9,6 +9,7 @@
   --bege-damasco: #F6E7CE;
   --bordo-rubro: #390007;
   --gold-texture: #D3C759;
+  --ouro-profundo: #8A5D00;
   --preto: #000000;
   --branco: #FFFFFF;
   --bg-canvas: #EBDCC1;
@@ -58,6 +59,11 @@
   --nav-control: rgba(255,255,255,0.24);
   --nav-active-fill: rgba(255,255,255,0.40);
   --nav-active-label: #73511D;
+  --icon-color: var(--grafite-profundo);
+  --icon-color-hover: var(--icon-color);
+  --icon-color-selected: var(--icon-color);
+  --icon-color-disabled: var(--label-tertiary);
+  --icon-color-on-accent: var(--branco);
   --topbar-edge: rgba(115,81,29,0.18);
   --card-warm: #E3C998;
   --chip-warm: #CDAD64;
@@ -136,6 +142,7 @@
   --bege-damasco: #F6E7CE;
   --bordo-rubro: #390007;
   --gold-texture: #D3C759;
+  --ouro-profundo: #8A5D00;
   --preto: #000000;
   --branco: #FFFFFF;
   --bg-canvas: #f1ebe0;
@@ -185,6 +192,11 @@
   --nav-control: var(--fill);
   --nav-active-fill: var(--accent-soft);
   --nav-active-label: var(--accent);
+  --icon-color: var(--grafite-profundo);
+  --icon-color-hover: var(--icon-color);
+  --icon-color-selected: var(--icon-color);
+  --icon-color-disabled: var(--label-tertiary);
+  --icon-color-on-accent: var(--branco);
   --topbar-edge: var(--separator);
   --card-warm: var(--material-regular);
   --chip-warm: var(--fill);
@@ -263,6 +275,7 @@
   --bege-damasco: #F6E7CE;
   --bordo-rubro: #390007;
   --gold-texture: #D3C759;
+  --ouro-profundo: #8A5D00;
   --preto: #000000;
   --branco: #FFFFFF;
   --bg-canvas: #121414;
@@ -312,6 +325,11 @@
   --nav-control: var(--fill);
   --nav-active-fill: var(--accent-soft);
   --nav-active-label: var(--accent);
+  --icon-color: #F5F5F4;
+  --icon-color-hover: var(--icon-color);
+  --icon-color-selected: var(--icon-color);
+  --icon-color-disabled: var(--label-tertiary);
+  --icon-color-on-accent: var(--grafite-profundo);
   --topbar-edge: var(--separator);
   --card-warm: var(--material-regular);
   --chip-warm: var(--fill);
@@ -390,6 +408,7 @@
   --bege-damasco: #F6E7CE;
   --bordo-rubro: #390007;
   --gold-texture: #D3C759;
+  --ouro-profundo: #8A5D00;
   --preto: #000000;
   --branco: #FFFFFF;
   --bg-canvas: #111313;
@@ -439,6 +458,11 @@
   --nav-control: var(--fill);
   --nav-active-fill: var(--accent-soft);
   --nav-active-label: var(--accent);
+  --icon-color: #F5F5F4;
+  --icon-color-hover: var(--icon-color);
+  --icon-color-selected: var(--icon-color);
+  --icon-color-disabled: var(--label-tertiary);
+  --icon-color-on-accent: var(--grafite-profundo);
   --topbar-edge: var(--separator);
   --card-warm: var(--material-regular);
   --chip-warm: var(--fill);
@@ -518,6 +542,7 @@
     --bege-damasco: #F6E7CE;
     --bordo-rubro: #390007;
     --gold-texture: #D3C759;
+    --ouro-profundo: #8A5D00;
     --preto: #000000;
     --branco: #FFFFFF;
     --bg-canvas: #111313;
@@ -567,6 +592,11 @@
     --nav-control: var(--fill);
     --nav-active-fill: var(--accent-soft);
     --nav-active-label: var(--accent);
+    --icon-color: #F5F5F4;
+    --icon-color-hover: var(--icon-color);
+    --icon-color-selected: var(--icon-color);
+    --icon-color-disabled: var(--label-tertiary);
+    --icon-color-on-accent: var(--grafite-profundo);
     --topbar-edge: var(--separator);
     --card-warm: var(--material-regular);
     --chip-warm: var(--fill);

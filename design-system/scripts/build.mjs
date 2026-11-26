@@ -37,10 +37,16 @@ const IDS_GRUPO = {
 const saidas = new Map();
 const marcacao = ler("components/BarraFormatacao/marcacao.mjs").replace(/^export /gm, "");
 const formatacao = "  /* FORMATACAO:INICIO Gerado de BarraFormatacao/marcacao.mjs e runtime.js. */\n" + marcacao + "\n" + ler("components/BarraFormatacao/runtime.js") + "\n  /* FORMATACAO:FIM */";
-saidas.set("components/bundle.js", ler("components/bundle.js").replace(/  \/\* FORMATACAO:INICIO[\s\S]*?\/\* FORMATACAO:FIM \*\//, () => formatacao));
+const sala = JSON.parse(ler("components/Iconografia/sala.json"));
+const icones = "  /* ICONES-SALA:INICIO Gerado por scripts/build.mjs de components/Iconografia/sala.json. */\n  var D = {\n" +
+  Object.entries(sala.icones).map(([nome, { fill, line }]) => `    ${nome}: { fill: ${JSON.stringify(fill)}, line: ${JSON.stringify(line ?? "")} }`).join(",\n") +
+  "\n  };\n  /* ICONES-SALA:FIM */";
+saidas.set("components/bundle.js", ler("components/bundle.js")
+  .replace(/  \/\* FORMATACAO:INICIO[\s\S]*?\/\* FORMATACAO:FIM \*\//, () => formatacao)
+  .replace(/  \/\* ICONES-SALA:INICIO[\s\S]*?\/\* ICONES-SALA:FIM \*\//, () => icones));
 saidas.set("tokens.css", gerarTokens());
 saidas.set("components/EstadosInterface/estados-interface.js",
-  ler("components/EstadosInterface/runtime.modelo.js").replace("/* ICONES */ {}", ler("components/EstadosInterface/icones.json").trim()));
+  ler("components/EstadosInterface/runtime.modelo.js").replace("/* ICONES */ {}", JSON.stringify(iconesInterface(), null, 2)));
 saidas.set("components/refined.js", gerarRuntime());
 const pecas = lerPecas();
 for (const p of pecas) saidas.set(`exemplos/${p.nome}.html`, gerarExemplo(p));
@@ -63,6 +69,18 @@ if (divergentes.length) {
   process.exit(1);
 }
 console.log(check ? "Design system em dia." : "Design system gerado.");
+
+// ---------- ícones de interface ----------
+
+/** Phosphor de icones.json, com os desenhos da Sala (sala.json › interface) no lugar dos nomes listados. */
+function iconesInterface() {
+  const base = JSON.parse(ler("components/EstadosInterface/icones.json"));
+  for (const nome of sala.interface ?? []) {
+    const { fill } = sala.icones[nome];
+    base[nome] = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet" fill="currentColor" aria-hidden="true" focusable="false"><g class="sdb-icon__duo" fill="currentColor" fill-rule="evenodd">${fill}</g></svg>`;
+  }
+  return base;
+}
 
 // ---------- tokens.css ----------
 

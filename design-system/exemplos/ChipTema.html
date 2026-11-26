@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChipTema · A Sala dos Buscadores</title>
-<link rel="stylesheet" href="../tokens.css?v=170aefaa5903">
-<link rel="stylesheet" href="../components/bundle.css?v=d0a08aab2252">
+<link rel="stylesheet" href="../tokens.css?v=a2d1eb15f51e">
+<link rel="stylesheet" href="../components/bundle.css?v=d7ceafda899a">
 <link rel="stylesheet" href="../assets/themes.css?v=e62c6481f72a">
 
 
@@ -15,7 +15,7 @@
 
 
 <script>try { var t = new URLSearchParams(location.search).get("tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<script src="../components/bundle.js?v=d9c4fde8a155"></script>
+<script src="../components/bundle.js?v=ee5e7c560e51"></script>
 </head>
 <body>
 <div class="sdb-stage">
@@ -37,9 +37,24 @@
   <h2 class="sdb-title-2" style="margin-top:16px">Abas de Sala</h2>
   <div style="max-width:420px"><div class="sdb-chiprow" role="group" aria-label="Sala"><button class="sdb-chip" type="button" aria-pressed="true">Todas <span class="sdb-count">20</span></button><button class="sdb-chip" type="button" aria-pressed="false">Apócrifos <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Nag Hammadi <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Corpus Hermeticum <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Caibalion <span class="sdb-count">4</span></button><button class="sdb-chip" type="button" aria-pressed="false">Urântia <span class="sdb-count">4</span></button></div></div>
   <p class="sdb-hint">Seleção única com contagem, em <code>.sdb-chiprow</code>: sem quebra, rola na horizontal quando não cabe. Ordem alfabética, que não indica importância.</p>
-</div>
 <h2 class="sdb-title-2" style="margin-top:16px">Areia (filtro com contagem)</h2>
   <div class="sdb-row" style="gap:8px"><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Morte <span class="sdb-count">6</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">8</span></button><button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="true">Conhecimento interior <span class="sdb-count">12</span></button></div>
+<h2 class="sdb-title-2">Filtrar Salas por tema · linha horizontal</h2>
+<div class="sdb-chipfilters" data-sdb-chipfilters data-overflow="false">
+  <button class="sdb-btn sdb-btn--secondary sdb-btn--icon sdb-chipfilters__nav" type="button" data-chipfilters-prev data-tip="Temas anteriores" aria-label="Temas anteriores" title="Temas anteriores" aria-controls="temas-salas" disabled><span data-icon="chevronEsquerda"></span></button>
+  <div id="temas-salas" class="sdb-chiprow sdb-chiprow--filters" role="group" aria-label="Filtrar Salas por tema">
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Alma <span class="sdb-count">8</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Morte <span class="sdb-count">6</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="true">Meditação <span class="sdb-count">4</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Origem do universo <span class="sdb-count">12</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Conhecimento interior <span class="sdb-count">9</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Consciência e interpretação dos textos antigos <span class="sdb-count">18</span></button>
+    <button class="sdb-chip sdb-chip--sand" type="button" data-toggle aria-pressed="false">Tempo <span class="sdb-count">5</span></button>
+  </div>
+  <button class="sdb-btn sdb-btn--secondary sdb-btn--icon sdb-chipfilters__nav" type="button" data-chipfilters-next data-tip="Próximos temas" aria-label="Próximos temas" title="Próximos temas" aria-controls="temas-salas" disabled><span data-icon="chevronDireita"></span></button>
+</div>
+<p class="sdb-hint">Deslize para ver os temas. No desktop, use também os botões anteriores/próximos. Tab alcança cada filtro; Enter ou Espaço alternam sua seleção.</p>
+</div>
 <script>SalaBuscadores.hydrate();</script>
 <script src="../components/refined.js?v=5fcfec37f059" defer></script>
 <script>

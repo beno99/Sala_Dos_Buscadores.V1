@@ -6,7 +6,7 @@
 
 ## Uso e estados
 
-Use ícones existentes `util`, `assistente`, `mais`, `estante`, `glossario`, `busca`. Sem emoji. Curtir/Salvar/Reações usam aria-pressed; Reagir usa aria-expanded e aria-controls. Contagens entram no nome acessível (“Curtir, 5 curtidas”). Alvo mínimo community-touch (44 px), mola curta e interrompível em transform; prefers-reduced-motion elimina transformação. Callback/estado no React; o catálogo simula apenas estado local.
+Use ícones existentes `util`, `assistente`, `mais`, `salvar`, `glossario`, `busca`. Sem emoji. Curtir/Salvar/Reações usam aria-pressed; Reagir usa aria-expanded e aria-controls. Contagens entram no nome acessível (“Curtir, 5 curtidas”). Alvo mínimo community-touch (44 px), mola curta e interrompível em transform; prefers-reduced-motion elimina transformação. Callback/estado no React; o catálogo simula apenas estado local.
 
 ## Temas, acessibilidade e contrato
 

@@ -82,8 +82,8 @@
 }
 /* Forma, foco, hover e pressão vêm da família compartilhada de botões. */
 .sala__save { flex: none; background-color: var(--sala-overlay); color: var(--branco); }
-.sala__save svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; }
-.sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--bordo-rubro); }
+.sala__save svg { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+.sala__save[aria-pressed="true"] { background: var(--bege-damasco); color: var(--grafite-profundo); --sdb-icon-surface: var(--grafite-profundo); }
 .sala__save[aria-pressed="true"] svg { fill: currentColor; }
 .sala__body {
   position: relative;

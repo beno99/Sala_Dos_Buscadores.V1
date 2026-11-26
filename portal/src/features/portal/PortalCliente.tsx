@@ -11,6 +11,7 @@ import { CardSala } from "@/components/ds/CardSala";
 import { Carrossel } from "@/components/ds/Carrossel";
 import { Chip } from "@/components/ds/Chip";
 import { EstadoSecao } from "@/components/ds/EstadosInterface";
+import { FiltrosTema } from "@/components/ds/FiltrosTema";
 import { Icon } from "@/components/ds/Icon";
 import { LinhaConteudo, ListaLinhas } from "@/components/ds/ListaConteudos";
 import { PainelIndicadores } from "@/components/ds/PainelIndicadores";
@@ -159,7 +160,7 @@ export function PortalCliente({
         {modelo.temas.length > 0 && (
           <details className="sdb-home__filtros">
             <summary>Filtrar Salas por tema{temaEscolhido ? `: ${temaEscolhido.nome}` : ""}</summary>
-            <div className="sdb-carousel__chips" role="group" aria-label="Filtrar Salas por tema">
+            <FiltrosTema rotulo="Filtrar Salas por tema">
               {modelo.temas.map((t) => (
                 <Chip
                   key={t.slug}
@@ -171,7 +172,7 @@ export function PortalCliente({
                   {t.nome}
                 </Chip>
               ))}
-            </div>
+            </FiltrosTema>
           </details>
         )}
         <div className={`sdb-home__grid${salas.length === 1 ? " sdb-home__grid--single" : ""}`}>
@@ -378,7 +379,7 @@ export function PortalCliente({
             ) : (
               <p>Um espaço para acompanhar suas leituras e descobertas.</p>
             )}
-            <ButtonLink href="/jornada" variant="secondary" size="sm" icon="trilha">
+            <ButtonLink href="/jornada" variant="secondary" size="sm" icon="jornada">
               Ver minha Jornada
             </ButtonLink>
           </section>

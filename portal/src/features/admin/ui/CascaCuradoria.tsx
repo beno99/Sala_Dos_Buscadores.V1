@@ -49,14 +49,14 @@ function itens(caminho: string, c: Contagens): ItemNavegacao[] {
     {
       href: "/admin/comunidade" as Route,
       rotulo: "Comunidade",
-      icone: "comunidade",
+      icone: "grupo",
       ativo: em("/admin/comunidade"),
       contagem: c.denuncias || undefined,
     },
     {
       href: "/admin/conversas" as Route,
       rotulo: "Conversas",
-      icone: "comunidade",
+      icone: "mensagens",
       ativo: em("/admin/conversas"),
       contagem: c.conversas || undefined,
     },

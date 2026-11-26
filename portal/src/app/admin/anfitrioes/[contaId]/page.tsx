@@ -52,7 +52,7 @@ export default async function SalasDoAnfitriao(props: PageProps<"/admin/anfitrio
         </p>
         {conta.papel === "anfitriao" && (
           <div className="sdb-row">
-            <ButtonLink href={`/admin/conversas/${contaId}` as Route} variant="secondary" icon="comunidade">
+            <ButtonLink href={`/admin/conversas/${contaId}` as Route} variant="secondary" icon="mensagens">
               Conversar
             </ButtonLink>
           </div>
